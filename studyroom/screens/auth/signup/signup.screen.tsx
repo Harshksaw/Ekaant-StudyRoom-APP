@@ -341,7 +341,7 @@ export default function SignUpScreen() {
 
                   // marginTop: 15,
                 }}
-                // onPress={handleSignIn}
+                onPress={()=> router.back()}
               >
                 <Text
                   style={{
