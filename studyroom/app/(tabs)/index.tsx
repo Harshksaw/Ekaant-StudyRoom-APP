@@ -241,7 +241,6 @@ export default function index() {
         {filters.map((filter) => (
           <TouchableOpacity
             style={{
-
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
@@ -260,12 +259,11 @@ export default function index() {
       </View>
 
       <ScrollView style={styles.listings}>
-
         <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
         >
           <Text
             style={{
@@ -281,7 +279,8 @@ export default function index() {
             name={"arrow-forward"}
             size={24}
             color="black"
-            style={{ marginHorizontal: 10 }}/>
+            style={{ marginHorizontal: 10 }}
+          />
         </View>
         {data && data.map((item) => renderItem({ item }))}
       </ScrollView>
@@ -310,11 +309,8 @@ const styles = StyleSheet.create({
     height: 50,
     marginHorizontal: 10,
     gap: 10,
-
   },
   listings: {
-
-
     marginBottom: 360,
   },
   card: {
