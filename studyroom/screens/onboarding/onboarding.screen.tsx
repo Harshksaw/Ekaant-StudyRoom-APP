@@ -1,9 +1,9 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, Pressable } from "react-native";
 import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
 import { Nunito_400Regular, Nunito_700Bold } from "@expo-google-fonts/nunito";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { router } from "expo-router";
+import { Navigator, router } from "expo-router";
 import { StyleSheet } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -14,6 +14,7 @@ import {
   responsiveWidth,
 } from "react-native-responsive-dimensions";
 import Button from "@/components/Button";
+import Carousel from "react-native-intro-carousel";
 
 export default function OnBoardingScreen() {
   let [fontsLoaded, fontError] = useFonts({
@@ -26,50 +27,122 @@ export default function OnBoardingScreen() {
     return null;
   }
 
+  //   return (
+  //     <LinearGradient
+  //       colors={["#E5ECF9", "#F6F7F9"]}
+  //       style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+  //     >
+  //       <View style={styles.firstContainer}>
+  //         <View>
+  //           <Image
+  //             style={{
+  //               width: responsiveWidth(70),
+  //               height: responsiveHeight(55),
+  //               marginBottom: responsiveHeight(5),
+  //               marginTop: responsiveHeight(-15),
+  //               resizeMode: "contain",
+  //             }}
+  //             source={require("../../assets/images/Study.png")}
+  //           />
+  //         </View>
+
+  //         {/* <Button text={"Get Started"} width={responsiveWidth(60)} /> */}
+  //       </View>
+  //     </LinearGradient>
+  //   );
+
   return (
-    <LinearGradient
-      colors={["#E5ECF9", "#F6F7F9"]}
-      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-    >
-      <View style={styles.firstContainer}>
-        <View>
-          <Image
-            style={{
-              width: responsiveWidth(70),
-              height: responsiveHeight(55),
-              marginBottom: responsiveHeight(5),
-              marginTop: responsiveHeight(-15),
-              resizeMode: "contain",
-            }}
-            source={require("../../assets/images/Study.png")}
-          />
+    <Carousel
+      data={[
+        {
+          key: "1",
+          title: "Welcome",
+          description: "This is a cool package lorem ipsum",
+          image: require("../../assets/images/Study.png"),
+          data: {
+            name: "John Doe",
+            age: 25,
+          },
+        },
+        {
+          key: "2",
+          title: "loremp ipsum lorem ipsum ",
+          description: "This is a cool package lorem ipsum 2 lorem ipsume",
+          image: require("../../assets/images/Study.png"),
+          data: {
+            name: "John Doe",
+            age: 25,
+          },
+        },
+        {
+          key: "3",
+          title: "Read",
+          description: "This is a cool package lorem ipsum 3",
+          image: require("../../assets/images/Study.png"),
+          data: {
+            name: "John Doe",
+            age: 25,
+          },
+        },
+      ]}
+      buttonsConfig={{
+        disabled: true,
+      }}
+      renderItem={({ item, index }, goToSlide) => (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+
+
+            width: "90%",
+          }}
+        >
+          <Image source={item.image} style={{ width: 200, height: 200 }} />
+
+          <Text style={{ fontSize: 36, fontWeight: "bold" ,margin:20}}>{item.title}</Text>
+          <Text style={{ fontSize: 16, color: "gray" }}>
+            {item.description}
+          </Text>
+
+          <View style={index === 2 ? { flexDirection: "column-reverse", justifyContent: "center", alignItems:'center' } : { flexDirection: "row", justifyContent: "space-between" ,alignItems:'center' }}>
+
+          {
+            index !== 0 && (
+              <Pressable
+                style={{ padding: 10, borderRadius: 5 }}
+                onPress={() =>router.push("/(routes)/welcome")}
+              >
+                <Button  
+                text="skip"
+                  width={responsiveWidth(20)}
+                />
+              </Pressable>
+            )
+          }
+       
+
+            <Pressable
+              style={{
+                padding: 10,
+                borderRadius: 5,
+                marginLeft: 10,
+              }}
+              onPress={() => goToSlide(index + 1)}
+            >
+              <Button text={
+                index === 2 ? "Get Started" : "Next" 
+
+
+
+
+              } width={index === 2 ? responsiveWidth(60) : responsiveWidth(40)} />
+            </Pressable>
+          </View>
         </View>
-
-        {/* <View style={styles.titleWrapper}>
-     
-          <Text style={[styles.titleText, { fontFamily: "Raleway_700Bold" }]}>
-            Start Learning With
-          </Text>
-          
-        </View> */}
-        {/* <View>
-         
-          <Text style={[styles.titleText, { fontFamily: "Raleway_700Bold" }]}>
-            Becodemy
-          </Text>
-        </View> */}
-        {/* <View style={styles.dscpWrapper}>
-          <Text style={[styles.dscpText, { fontFamily: "Nunito_400Regular" }]}>
-            Explore a variety of interactive lesson,
-          </Text>
-          <Text style={[styles.dscpText, { fontFamily: "Nunito_400Regular" }]}>
-            video, quizze & assignment.
-          </Text>
-        </View> */}
-
-        <Button text={"Get Started"} width={responsiveWidth(60)} />
-      </View>
-    </LinearGradient>
+      )}
+    />
   );
 }
 const styles = StyleSheet.create({
