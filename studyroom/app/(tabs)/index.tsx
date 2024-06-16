@@ -9,6 +9,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Cards from "../../components/Cards";
 
 export default function index() {
   const data = [
@@ -155,59 +156,8 @@ export default function index() {
     { id: 3, name: "Filter 3" },
   ];
 
-  // return <HomeScreen />;
-  const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <Image
-        source={{ uri: item.imageUrl }}
-        style={{ width: 100, height: 100, borderRadius: 20 }}
-      />
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "column",
-          width: 200,
-          marginLeft: 20,
-          // justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <View
-          style={{
-            flex: 1,
-            width: 250,
 
-            marginHorizontal: 10,
-            flexDirection: "column",
-            justifyContent: "space-evenly",
-
-            // justifyContent:'flex-start',
-            alignItems: "flex-start",
-          }}
-        >
-          <Text>{item.title}</Text>
-          <Text>{item.about}</Text>
-        </View>
-
-        <View
-          style={{
-            // flex:1,
-            height: 20,
-            width: 250,
-            flexDirection: "row",
-            paddingRight: 20,
-
-            justifyContent: "space-between",
-            alignItems: "space-between",
-          }}
-        >
-          <Text>{item.ratings}********</Text>
-          <Text>{item.distance}</Text>
-        </View>
-      </View>
-    </View>
-  );
-
+ 
   return (
     <SafeAreaView
       style={{
@@ -240,6 +190,7 @@ export default function index() {
       <View style={styles.filters}>
         {filters.map((filter) => (
           <TouchableOpacity
+          key={filter.id}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -282,7 +233,10 @@ export default function index() {
             style={{ marginHorizontal: 10 }}
           />
         </View>
-        {data && data.map((item) => renderItem({ item }))}
+
+        {data && data.map((item, index) => <Cards item={item}
+        key={index}
+        />)}
       </ScrollView>
     </SafeAreaView>
   );
@@ -313,18 +267,5 @@ const styles = StyleSheet.create({
   listings: {
     marginBottom: 360,
   },
-  card: {
-    margin: 10,
-    backgroundColor: "white",
 
-    flexDirection: "row",
-
-    marginBottom: 10,
-    marginHorizontal: 10,
-    borderRadius: 20,
-    padding: 10,
-
-    // justifyContent: "flex-start",
-    alignItems: "center",
-  },
 });
