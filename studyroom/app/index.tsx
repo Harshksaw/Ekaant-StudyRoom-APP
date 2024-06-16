@@ -14,7 +14,8 @@ const [user, setUser] = useState(false);
         <Loader />
       ) : (
         )} */}
-        <Redirect href={!user ? "/(routes)/welcome" : "/(tabs)"} />
+        {/* <Redirect href={user ? "/(routes)/welcome" : "/(tabs)"} /> */}
+        <Redirect href="(tabs)" />
     </>
   );
 }
