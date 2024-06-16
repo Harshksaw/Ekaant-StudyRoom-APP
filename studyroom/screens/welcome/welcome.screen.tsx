@@ -1,11 +1,11 @@
-
 import React from "react";
-import { Link, Stack, useNavigation } from "expo-router";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { Link, Stack, router, useNavigation } from "expo-router";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useEffect } from "react";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAssets } from "expo-asset";
+
 export default function Home() {
   const navigation = useNavigation();
 
@@ -33,30 +33,28 @@ export default function Home() {
         </Text>
       </View>
 
-
       <View style={styles.view2}>
-
         <View style={styles.buttonBox}>
-
-          <Text style={styles.buttonText}>Get started</Text>
-        {/* <linearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.buttonBox}> */}
-
+          <TouchableOpacity onPress={() => router.push("/(routes)/signup")}>
+            <Text style={styles.buttonText}>Get started</Text>
+          </TouchableOpacity>
+          {/* <linearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.buttonBox}> */}
         </View>
-{/* </linearGradient> */}
+        {/* </linearGradient> */}
         <Text style={styles.orText}>or</Text>
-        <View style={{
 
-
-
-
-        }}>
-          <Link href={{ pathname: "welcome" }}>
-            <Text style={{
-              color: "#007AFF",
-              fontSize: 25,
-              fontWeight: "600",
-              textAlign: "center",
-            }}>Login</Text>
+        <View style={{}}>
+          <Link href={{ pathname: "login" }}>
+            <Text
+              style={{
+                color: "#007AFF",
+                fontSize: 25,
+                fontWeight: "600",
+                textAlign: "center",
+              }}
+            >
+              Login
+            </Text>
           </Link>
         </View>
       </View>
@@ -130,7 +128,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 // import React from 'react';
 // import { View, Text, StyleSheet, Image } from 'react-native';
 // import { SafeAreaView } from 'react-native-safe-area-context';
@@ -154,7 +151,6 @@ const styles = StyleSheet.create({
 //     container: {
 //         flex: 1,
 //         backgroundColor: 'black',
-
 
 //         // flexDirection: 'column-reverse',
 //         justifyContent: 'center',

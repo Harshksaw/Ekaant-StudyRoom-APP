@@ -1,70 +1,330 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { FlatList } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function index() {
+  const data = [
+    {
+      id: 1,
+      title: "Card 1",
+      about: "About Card 1lo lroem ipsum mono",
+      ratings: 4.5,
+      distance: "2 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 2,
+      title: "Card 2",
+      about: "About Card 2lo lroem ipsum mono",
+      ratings: 3.8,
+      distance: "5 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 3,
+      title: "Card 3",
+      about: "About Card 3lo lroem ipsum mono",
+      ratings: 4.2,
+      distance: "3 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 4,
+      title: "Card 4",
+      about: "About Card 4lo lroem ipsum mono",
+      ratings: 4.0,
+      distance: "1 mile",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 5,
+      title: "Card 5",
+      about: "About Card 5lo lroem ipsum mono",
+      ratings: 4.7,
+      distance: "10 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 6,
+      title: "Card 6",
+      about: "About Card 6lo lroem ipsum mono",
+      ratings: 3.5,
+      distance: "7 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 7,
+      title: "Card 7",
+      about: "About Card 7lo lroem ipsum mono",
+      ratings: 4.9,
+      distance: "3 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 8,
+      title: "Card 8",
+      about: "About Card 8lo lroem ipsum mono",
+      ratings: 4.3,
+      distance: "5 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 9,
+      title: "Card 9",
+      about: "About Card 9lo lroem ipsum mono",
+      ratings: 4.1,
+      distance: "8 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 10,
+      title: "Card 10",
+      about: "About Card 1lo lroem ipsum mono0",
+      ratings: 4.6,
+      distance: "4 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 11,
+      title: "Card 11",
+      about: "About Card 1lo lroem ipsum mono1",
+      ratings: 3.9,
+      distance: "6 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 12,
+      title: "Card 12",
+      about: "About Card 1lo lroem ipsum mono2",
+      ratings: 4.8,
+      distance: "9 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 13,
+      title: "Card 13",
+      about: "About Card 1lo lroem ipsum mono3",
+      ratings: 4.4,
+      distance: "3 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 14,
+      title: "Card 14",
+      about: "About Card 1lo lroem ipsum mono4",
+      ratings: 4.2,
+      distance: "7 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+    {
+      id: 15,
+      title: "Card 15",
+      about: "About Card 1lo lroem ipsum mono5",
+      ratings: 4.7,
+      distance: "5 miles",
+      imageUrl:
+        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+    },
+  ];
 
-export default function HomeScreen() {
+  const filters = [
+    { id: 1, name: "Filter 1" },
+    { id: 2, name: "Filter 2" },
+    { id: 3, name: "Filter 3" },
+  ];
+
+  // return <HomeScreen />;
+  const renderItem = ({ item }) => (
+    <View style={styles.card}>
+      <Image
+        source={{ uri: item.imageUrl }}
+        style={{ width: 100, height: 100, borderRadius: 20 }}
+      />
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column",
+          width: 200,
+          marginLeft: 20,
+          // justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            width: 250,
+
+            marginHorizontal: 10,
+            flexDirection: "column",
+            justifyContent: "space-evenly",
+
+            // justifyContent:'flex-start',
+            alignItems: "flex-start",
+          }}
+        >
+          <Text>{item.title}</Text>
+          <Text>{item.about}</Text>
+        </View>
+
+        <View
+          style={{
+            // flex:1,
+            height: 20,
+            width: 250,
+            flexDirection: "row",
+            paddingRight: 20,
+
+            justifyContent: "space-between",
+            alignItems: "space-between",
+          }}
+        >
+          <Text>{item.ratings}********</Text>
+          <Text>{item.distance}</Text>
+        </View>
+      </View>
+    </View>
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView
+      style={{
+        backgroundColor: "white",
+      }}
+    >
+      <View style={styles.header}></View>
+      <View style={styles.welcome}>
+        <Text
+          style={{
+            fontSize: 25,
+            fontWeight: "bold",
+            color: "black",
+          }}
+        >
+          Welcome,
+          <Text
+            style={{
+              fontSize: 25,
+              fontWeight: "bold",
+              color: "green",
+            }}
+          >
+            Harsh
+          </Text>
+        </Text>
+      </View>
+      <View style={styles.carousel}></View>
+
+      <View style={styles.filters}>
+        {filters.map((filter) => (
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              height: 40,
+              // paddingHorizontal: 10,
+              paddingHorizontal: 10,
+              backgroundColor: "blue",
+              borderRadius: 40,
+            }}
+            // onPress={onPress}
+          >
+            <Ionicons name={"arrow-back"} size={24} color="white" />
+            <Text style={{ color: "white", marginLeft: 5 }}>{filter.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <ScrollView style={styles.listings}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              color: "black",
+              marginHorizontal: 10,
+            }}
+          >
+            Near By
+          </Text>
+          <Ionicons
+            name={"arrow-forward"}
+            size={24}
+            color="black"
+            style={{ marginHorizontal: 10 }}
+          />
+        </View>
+        {data && data.map((item) => renderItem({ item }))}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  header: {
+    height: 80,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  welcome: {
+    height: 50,
+    marginLeft: 20,
+
+    justifyContent: "center",
+
+    alignItems: "flex-start",
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  carousel: {
+    height: 200,
+    backgroundColor: "yellow",
+  },
+  filters: {
+    flexDirection: "row",
+    height: 50,
+    marginHorizontal: 10,
+    gap: 10,
+  },
+  listings: {
+    marginBottom: 360,
+  },
+  card: {
+    margin: 10,
+    backgroundColor: "white",
+
+    flexDirection: "row",
+
+    marginBottom: 10,
+    marginHorizontal: 10,
+    borderRadius: 20,
+    padding: 10,
+
+    // justifyContent: "flex-start",
+    alignItems: "center",
   },
 });
