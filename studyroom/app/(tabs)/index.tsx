@@ -8,9 +8,10 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FlatList } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
+import Header from "@/components/Header";
 
 export default function index() {
   const width = Dimensions.get("window").width;
@@ -160,6 +161,17 @@ export default function index() {
 
   // return <HomeScreen />;
   const renderItem = ({ item }) => (
+
+    <TouchableOpacity
+    onPress={() =>
+      router.push({
+        pathname: "/(routes)/card-details",
+        params: { item: JSON.stringify(item) },
+      })
+    }
+    >
+
+    
     <View style={styles.card}>
       <Image
         source={{ uri: item.imageUrl }}
@@ -209,6 +221,7 @@ export default function index() {
         </View>
       </View>
     </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -217,7 +230,8 @@ export default function index() {
         backgroundColor: "white",
       }}
     >
-      <View style={styles.header}></View>
+      {/* <View style={styles.header}></View> */}
+      <Header/>
       <View style={styles.welcome}>
         <View></View>
 
@@ -316,6 +330,14 @@ export default function index() {
           />
         </View>
         {data && data.map((item) => renderItem({ item }))}
+
+        {data?.length === 0 && (
+          <Text
+            style={{ textAlign: "center", paddingTop: 50, fontSize: 18 }}
+          >
+            No data available!
+          </Text>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
