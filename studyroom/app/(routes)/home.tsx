@@ -32,23 +32,16 @@ export default function Home() {
         </Text>
       </View>
 
-
       <View style={styles.view2}>
-
         {/* <View style={styles.buttonBox}> */}
 
         {/* <linearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.buttonBox}> */}
 
-          <Text style={styles.buttonText}>Get started</Text>
-{/* </linearGradient> */}
+        <Text style={styles.buttonText}>Get started</Text>
+        {/* </linearGradient> */}
         {/* </View> */}
         <Text style={styles.orText}>or</Text>
-        <View style={{
-
-
-
-
-        }}>
+        <View style={{}}>
           <Link href={{ pathname: "welcome" }}>
             <Text style={styles.buttonText}>Login</Text>
           </Link>
