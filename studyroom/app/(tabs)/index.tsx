@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
@@ -9,8 +10,10 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Carousel from "react-native-reanimated-carousel";
 
 export default function index() {
+  const width = Dimensions.get("window").width;
   const data = [
     {
       id: 1,
@@ -216,6 +219,8 @@ export default function index() {
     >
       <View style={styles.header}></View>
       <View style={styles.welcome}>
+        <View></View>
+
         <Text
           style={{
             fontSize: 25,
@@ -234,8 +239,36 @@ export default function index() {
             Harsh
           </Text>
         </Text>
+
+
       </View>
-      <View style={styles.carousel}></View>
+      <View style={styles.carousel}>
+        <Carousel
+          loop
+          width={width}
+          height={width / 2.2}
+          autoPlay={true}
+          data={[...new Array(6).keys()]}
+          scrollAnimationDuration={2500}
+          // onSnapToItem={(index) => console.log("current index:", index)}
+          renderItem={({ index }) => (
+            <View
+              style={{
+                flex: 1,
+                // borderWidth: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+              source={require("../../assets/images/slider1.png")}
+              width={width}
+              
+              />
+            </View>
+          )}
+        />
+      </View>
 
       <View style={styles.filters}>
         {filters.map((filter) => (
@@ -301,8 +334,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   carousel: {
-    height: 200,
-    backgroundColor: "yellow",
+    height: 220,
+    // backgroundColor: "yellow",
   },
   filters: {
     flexDirection: "row",
