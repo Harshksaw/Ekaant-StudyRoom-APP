@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, Pressable } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
 import { Nunito_400Regular, Nunito_700Bold } from "@expo-google-fonts/nunito";
 import { LinearGradient } from "expo-linear-gradient";
@@ -95,50 +95,62 @@ export default function OnBoardingScreen() {
             alignItems: "center",
             justifyContent: "center",
 
-
             width: "90%",
           }}
         >
           <Image source={item.image} style={{ width: 200, height: 200 }} />
 
-          <Text style={{ fontSize: 36, fontWeight: "bold" ,margin:20}}>{item.title}</Text>
+          <Text style={{ fontSize: 36, fontWeight: "bold", margin: 20 }}>
+            {item.title}
+          </Text>
           <Text style={{ fontSize: 16, color: "gray" }}>
             {item.description}
           </Text>
 
-          <View style={index === 2 ? { flexDirection: "column-reverse", justifyContent: "center", alignItems:'center' } : { flexDirection: "row", justifyContent: "space-between" ,alignItems:'center' }}>
-
-          {
-            index !== 0 && (
-              <Pressable
+          <View
+            style={
+              index === 2
+                ? {
+                    flexDirection: "column-reverse",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }
+                : {
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }
+            }
+          >
+            {index !== 0 && (
+              <TouchableOpacity
                 style={{ padding: 10, borderRadius: 5 }}
-                onPress={() =>router.push("/(routes)/welcome")}
+                onPress={() => router.push("/(routes)/welcome")}
               >
-                <Button  
-                text="skip"
-                  width={responsiveWidth(20)}
-                />
-              </Pressable>
-            )
-          }
-       
+                <Button text="skip" width={responsiveWidth(20)} />
+              </TouchableOpacity>
+            )}
 
-            <Pressable
+            <TouchableOpacity
               style={{
                 padding: 10,
                 borderRadius: 5,
                 marginLeft: 10,
               }}
-              onPress={() => goToSlide(index + 1)}
+              // {index === 2 && router.push("/(routes)/welcome")  }
+              onPress={() => {
+                if (index === 2) {
+                  router.push("/(routes)/welcome");
+                } else {
+                  goToSlide(index + 1);
+                }
+              }}
             >
-              <Button text={
-                index === 2 ? "Get Started" : "Next" 
-
-
-
-
-              } width={index === 2 ? responsiveWidth(60) : responsiveWidth(40)} />
-            </Pressable>
+              <Button
+                text={index === 2 ? "Get Started" : "Next"}
+                width={index === 2 ? responsiveWidth(60) : responsiveWidth(40)}
+              />
+            </TouchableOpacity>
           </View>
         </View>
       )}
