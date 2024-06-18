@@ -9,7 +9,6 @@ export default function TabsLayout() {
       screenOptions={({ route }) => {
         return {
           tabBarIcon: ({ color }) => {
-          
             return (
               <Image
                 style={{ width: 25, height: 25, tintColor: color }}
@@ -26,7 +25,13 @@ export default function TabsLayout() {
       <Tabs.Screen name="search/index" />
       <Tabs.Screen name="courses/index" />
       <Tabs.Screen name="profile/index" />
-      <Tabs.Screen name="(routes)/card-details" />
+      <Tabs.Screen
+        name="(routes)/card-details/index"
+        options={{
+          headerShown: false,
+          tabBarShowLabel: false,
+        }}
+      />
     </Tabs>
   );
 }

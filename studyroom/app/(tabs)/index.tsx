@@ -29,6 +29,8 @@ export default function index() {
         "https://picsum.photos/id/238/200/300",
         "https://picsum.photos/id/239/200/300",
       ],
+      location: "123 Main St, City, State",
+      amenities: ["Swimming Pool", "Gym", "Restaurant"],
     },
     {
       id: 2,
@@ -42,6 +44,8 @@ export default function index() {
         "https://picsum.photos/id/238/200/300",
         "https://picsum.photos/id/239/200/300",
       ],
+      location: "456 Elm St, City, State",
+      amenities: ["Parking", "Spa", "Bar"],
     },
     {
       id: 3,
@@ -55,6 +59,8 @@ export default function index() {
         "https://picsum.photos/id/238/200/300",
         "https://picsum.photos/id/239/200/300",
       ],
+      location: "789 Oak St, City, State",
+      amenities: ["WiFi", "Laundry", "Fitness Center"],
     },
     {
       id: 4,
@@ -68,6 +74,8 @@ export default function index() {
         "https://picsum.photos/id/238/200/300",
         "https://picsum.photos/id/239/200/300",
       ],
+      location: "987 Pine St, City, State",
+      amenities: ["Pool Table", "Conference Room", "Library"],
     },
     {
       id: 5,
@@ -81,6 +89,8 @@ export default function index() {
         "https://picsum.photos/id/238/200/300",
         "https://picsum.photos/id/239/200/300",
       ],
+      location: "654 Maple St, City, State",
+      amenities: ["Playground", "Tennis Court", "Cafe"],
     },
   ];
 
@@ -99,7 +109,9 @@ export default function index() {
       router.push({
         pathname: "/(routes)/card-details",
         params: { item: JSON.stringify(item) },
+        
       })
+
     }
     >
 
