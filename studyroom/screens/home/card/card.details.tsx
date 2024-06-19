@@ -3,8 +3,9 @@ import Header from "@/components/Header";
 import StarRating from "@/components/Ratinstar";
 import getPlaceNameFromCoordinates from "@/utils/location";
 import { useRoute } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -13,6 +14,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Modal,
+  Button,
 } from "react-native";
 
 import Carousel from "react-native-reanimated-carousel";
@@ -27,6 +30,12 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
   const params = useRoute();
   const data = JSON.parse(params.params.item);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -122,6 +131,35 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             </View>
           </View>
 
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isModalVisible}
+            onRequestClose={toggleModal}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <TouchableOpacity
+                // onPress={() => Linking.openURL('mailto:example@example.com')}
+                >
+                  <Text style={{ color: "blue" }}>
+                    Email: example@example.com
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                // onPress={() => Linking.openURL('tel:+1234567890')}
+                >
+                  <Text style={{ color: "blue" }}>Phone: +1234567890</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={toggleModal}>
+                  <Ionicons name="close" size={30} color="#000" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+
           <View
             style={{
               flexDirection: "row",
@@ -135,6 +173,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 width: "50%",
                 borderRadius: 50,
               }}
+              onPress={toggleModal}
             >
               <View
                 style={{
@@ -234,9 +273,10 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
             {/* ///review by user */}
 
-        
             <View>
-              <Text style={{fontWeight: "bold", fontSize: 20, margin: 10}}>User Reviews</Text>
+              <Text style={{ fontWeight: "bold", fontSize: 20, margin: 10 }}>
+                User Reviews
+              </Text>
               <View
                 style={{
                   flexDirection: "column",
@@ -246,45 +286,41 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                   // justifyContent: "space-between",
                 }}
               >
-
-            {[1,1,1].map((item)=>(
-                  <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    // margin: 20,
-                    padding: 10,
-                    paddingHorizontal:20,
-                    borderRadius: 20,
-                    backgroundColor: "lightgray",
-    
-                    alignSelf: "flex-start",
-                    gap: 10,
-                  }}
-                >
-                      <Avatar name="Arsh" />
+                {[1, 1, 1].map((item) => (
                   <View
                     style={{
-                      flexDirection: "column",
-    
-                      marginTop: 10,
-    
-    
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      // margin: 20,
+                      padding: 10,
+                      paddingHorizontal: 20,
                       borderRadius: 20,
-                      padding: 7,
+                      backgroundColor: "lightgray",
+
                       alignSelf: "flex-start",
+                      gap: 10,
                     }}
                   >
-                
-                    <Text>Name</Text>
-                    <Text>Review revis iss dd</Text>
-                  </View>
-    
-                  <StarRating rating={3} />
-                </View>
+                    <Avatar name="Arsh" />
+                    <View
+                      style={{
+                        flexDirection: "column",
 
-            ))}
+                        marginTop: 10,
+
+                        borderRadius: 20,
+                        padding: 7,
+                        alignSelf: "flex-start",
+                      }}
+                    >
+                      <Text>Name</Text>
+                      <Text>Review revis iss dd</Text>
+                    </View>
+
+                    <StarRating rating={3} />
+                  </View>
+                ))}
                 {/* {data.map((review: any, index: any) => (
                   <View
                     key={index}
@@ -353,6 +389,27 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "black",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)", // This will give a semi-transparent background
+  },
+  modalView: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    gap: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
 
