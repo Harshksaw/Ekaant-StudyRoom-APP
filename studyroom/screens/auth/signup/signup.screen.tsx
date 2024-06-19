@@ -36,6 +36,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 //   import { SERVER_URI } from "@/utils/uri";
 import { Toast } from "react-native-toast-notifications";
+import Button from "@/components/Button";
 
 export default function SignUpScreen() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
@@ -64,70 +65,6 @@ export default function SignUpScreen() {
     return null;
   }
 
-  //   const handlePasswordValidation = (value: string) => {
-  //     const password = value;
-  //     const passwordSpecialCharacter = /(?=.*[!@#$&*])/;
-  //     const passwordOneNumber = /(?=.*[0-9])/;
-  //     const passwordSixValue = /(?=.{6,})/;
-
-  //     if (!passwordSpecialCharacter.test(password)) {
-  //       setError({
-  //         ...error,
-  //         password: "Write at least one special character",
-  //       });
-  //       setUserInfo({ ...userInfo, password: "" });
-  //     } else if (!passwordOneNumber.test(password)) {
-  //       setError({
-  //         ...error,
-  //         password: "Write at least one number",
-  //       });
-  //       setUserInfo({ ...userInfo, password: "" });
-  //     } else if (!passwordSixValue.test(password)) {
-  //       setError({
-  //         ...error,
-  //         password: "Write at least 6 characters",
-  //       });
-  //       setUserInfo({ ...userInfo, password: "" });
-  //     } else {
-  //       setError({
-  //         ...error,
-  //         password: "",
-  //       });
-  //       setUserInfo({ ...userInfo, password: value });
-  //     }
-  //   };
-
-  // const handleSignIn = async () => {
-  //   setButtonSpinner(true);
-  //   await axios
-  //     .post(`${SERVER_URI}/registration`, {
-  //       name: userInfo.name,
-  //       email: userInfo.email,
-  //       password: userInfo.password,
-  //     })
-  //     .then(async (res) => {
-  //       await AsyncStorage.setItem(
-  //         "activation_token",
-  //         res.data.activationToken
-  //       );
-  //       Toast.show(res.data.message, {
-  //         type: "success",
-  //       });
-  //       setUserInfo({
-  //         name: "",
-  //         email: "",
-  //         password: "",
-  //       });
-  //       setButtonSpinner(false);
-  //       router.push("/(routes)/verifyAccount");
-  //     })
-  //     .catch((error) => {
-  //       setButtonSpinner(false);
-  //       Toast.show("Email already exist!", {
-  //         type: "danger",
-  //       });
-  //     });
-  // };
   const validatePassword = (password: string) => {
     // Check if password is at least 8 characters long
     if (password.length < 8) {
@@ -144,19 +81,7 @@ export default function SignUpScreen() {
     return null;
   };
 
-  // Use the validation function when setting the password
-  // const handlePasswordChange = (password: string) => {
-  //     const validationError = validatePassword(password);
-  //     if (validationError) {
-  //         // Show error message to the user
-  //         // Alert.alert(validationError);
-  //         console.log(validationError);
-  //     } else {
-  //             setUserInfo({ ...userInfo, password: password });
-  //     }
-  // };
 
-  // In your TextInput for password
 
   return (
     <LinearGradient
@@ -165,18 +90,17 @@ export default function SignUpScreen() {
     >
       <View>
         <View style={styles.signInImage}>
-
           <Text style={[styles.welcomeText, { fontFamily: "Raleway_700Bold" }]}>
             Create an {""} Account
           </Text>
-          <Text style={[ { fontFamily: "Raleway_700Bold" }]}>
-            Create an Account
-          </Text>
+          <Image source={require("../../../assets/images/bubble2.png")}
+          style={{
+            marginRight: -100,
+          }}
+          />
         </View>
 
-        {/* <Text style={styles.learningText}>
-            Create an account to Becodemy to get all features
-          </Text> */}
+  
         <View style={styles.inputContainer}>
           <View>
             <TextInput
@@ -260,44 +184,6 @@ export default function SignUpScreen() {
                 <Entypo name="cross" size={18} color={"red"} />
               </View>
             )}
-            {/* <View style={{ marginTop: 15 }}>
-              <TextInput
-                //   style={commonStyles.input}
-                keyboardType="default"
-                secureTextEntry={!isPasswordVisible}
-                defaultValue=""
-                placeholder="********"
-                onChangeText={handlePasswordValidation}
-              />
-              <TouchableOpacity
-                style={styles.visibleIcon}
-                onPress={() => setPasswordVisible(!isPasswordVisible)}
-              >
-                {isPasswordVisible ? (
-                  <Ionicons
-                    name="eye-off-outline"
-                    size={23}
-                    color={"#747474"}
-                  />
-                ) : (
-                  <Ionicons name="eye-outline" size={23} color={"#747474"} />
-                )}
-              </TouchableOpacity>
-              <SimpleLineIcons
-                style={styles.icon2}
-                name="lock"
-                size={20}
-                color={"#A1A1A1"}
-              />
-            </View> */}
-            {/* {error.password && (
-              <View style={[commonStyles.errorContainer, { top: 145 }]}>
-                <Entypo name="cross" size={18} color={"red"} />
-                <Text style={{ color: "red", fontSize: 11, marginTop: -1 }}>
-                  {error.password}
-                </Text>
-              </View>
-            )} */}
 
             <View
               style={{
@@ -308,27 +194,25 @@ export default function SignUpScreen() {
             >
               <TouchableOpacity
                 style={{
-                  padding: 16,
+                  padding: 20,
                   borderRadius: 8,
                   marginHorizontal: 16,
-                  backgroundColor: "#2467EC",
+
                   marginTop: 15,
                 }}
-                // onPress={handleSignIn}
+                onPress={()=> router.push("/(tabs)")}
               >
                 {buttonSpinner ? (
                   <ActivityIndicator size="small" color={"white"} />
                 ) : (
-                  <Text
-                    style={{
-                      color: "white",
-                      textAlign: "center",
-                      fontSize: 16,
-                      fontFamily: "Raleway_700Bold",
-                    }}
-                  >
-                    Sign Up
-                  </Text>
+
+                  <Button
+                    text="Sign Up"
+                    // onPress={() => {
+                    //   router.push("/(routes)/login");
+                    // }}
+                    />
+                  
                 )}
               </TouchableOpacity>
 
@@ -341,7 +225,7 @@ export default function SignUpScreen() {
 
                   // marginTop: 15,
                 }}
-                onPress={()=> router.back()}
+                onPress={() => router.back()}
               >
                 <Text
                   style={{
@@ -368,18 +252,19 @@ const styles = StyleSheet.create({
     width: "60%",
     height: 300,
     flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
 
     alignSelf: "center",
     marginTop: 50,
   },
   welcomeText: {
     flexDirection: "row",
+    maxWidth: 200,
 
     textAlign: "center",
     fontSize: 30,
-    marginLeft:-40,
-
-
+    marginLeft: -40,
 
     marginTop: 100,
   },
@@ -420,11 +305,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 10,
   },
-  signupRedirect: {
-    flexDirection: "row",
-    marginHorizontal: 16,
-    justifyContent: "center",
-    marginBottom: 20,
-    marginTop: 20,
-  },
+ 
 });

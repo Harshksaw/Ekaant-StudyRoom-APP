@@ -231,6 +231,7 @@ export default function index() {
       <View style={styles.filters}>
         {filters.map((filter) => (
           <TouchableOpacity
+          key={filter.id}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -312,18 +313,5 @@ const styles = StyleSheet.create({
   listings: {
     marginBottom: 360,
   },
-  card: {
-    margin: 10,
-    backgroundColor: "white",
 
-    flexDirection: "row",
-
-    marginBottom: 10,
-    marginHorizontal: 10,
-    borderRadius: 20,
-    padding: 10,
-
-    // justifyContent: "flex-start",
-    alignItems: "center",
-  },
 });
