@@ -1,6 +1,7 @@
 import React from "react";
 import { Sidebar, Navbar } from "../components/index";
 import SeatLayout from "@/components/seatinglayout/SeatLayout";
+import Seats from "@/components/seatinglayout/SeatLayout";
 
 const Dashboard = () => {
   return (
@@ -14,13 +15,12 @@ const Dashboard = () => {
         </div>
         <div className="basis-[80%]">
             Seating Plan
+            <Seats/>
 
 
 
         </div>
-        <div>
-          <SeatLayout/>
-        </div>
+      
       </div>
     </div>
   );
