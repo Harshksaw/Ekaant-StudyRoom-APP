@@ -1,3 +1,4 @@
+import Avatar from "@/components/AvatarComponent";
 import Header from "@/components/Header";
 import StarRating from "@/components/Ratinstar";
 import getPlaceNameFromCoordinates from "@/utils/location";
@@ -30,30 +31,30 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header />
-    <View
-    style={{flex:1}}
-    >
-
-
-      <Carousel
-        loop
-        width={width}
-        height={width / 1.2} // Adjusted height for better aspect ratio
-        autoPlay={true}
-        data={data.imageUrl}
-        scrollAnimationDuration={4000}
-        renderItem={({ item, index }) => (
-          <View style={styles.imageContainer}>
-            <Image source={{ uri: item }} style={styles.image} />
-          </View>
-        )}
-      />
-    </View>
+      <View style={{ flex: 1 }}>
+        <Carousel
+          loop
+          width={width}
+          height={width / 1.2} // Adjusted height for better aspect ratio
+          autoPlay={true}
+          data={data.imageUrl}
+          scrollAnimationDuration={4000}
+          renderItem={({ item, index }) => (
+            <View style={styles.imageContainer}>
+              <Image source={{ uri: item }} style={styles.image} />
+            </View>
+          )}
+        />
+      </View>
 
       <ScrollView
-      style={{flex: 1,
-        backgroundColor: "red",
-        marginHorizontal: 0, flexDirection: "column", marginTop:-200}}
+        style={{
+          flex: 1,
+
+          marginHorizontal: 0,
+          flexDirection: "column",
+          marginTop: -200,
+        }}
       >
         <View style={styles.cardDetails}>
           <Text style={styles.heading}>{data.title}</Text>
@@ -96,7 +97,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 flexDirection: "row",
                 flexWrap: "wrap",
                 gap: 10,
-                margin:10,
+                margin: 10,
                 // justifyContent: "space-between",
               }}
             >
@@ -189,32 +190,32 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
           {/* //ratings */}
 
           <View
-          style={{
-            flexDirection: "column",
-            justifyContent  : "center",
-            alignContent: "center",
-      
-          }}
-          >
-            <Text
             style={{
-              margin:20,
-              fontFamily: "Roboto",
-              fontSize: 20,
-              fontStyle: "normal",
-              fontWeight: "700",
-
-              textAlign: "center",
               flexDirection: "column",
               justifyContent: "center",
-              alignItems: "center",
-
+              alignContent: "center",
             }}
-            >Reviews</Text>
+          >
+            <Text
+              style={{
+                margin: 20,
+                fontFamily: "Roboto",
+                fontSize: 20,
+                fontStyle: "normal",
+                fontWeight: "700",
+
+                textAlign: "center",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              Reviews
+            </Text>
 
             <View
               style={{
-                marginHorizontal:'auto',
+                marginHorizontal: "auto",
                 flexWrap: "wrap",
                 backgroundColor: "lightgray",
 
@@ -224,13 +225,87 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 justifyContent: "space-between",
                 alignSelf: "flex-start",
                 gap: 10,
-
               }}
             >
               {/* <Text>4.5</Text> */}
               <StarRating rating={4.5} />
               <Text>10 Reviews</Text>
+            </View>
 
+            {/* ///review by user */}
+
+        
+            <View>
+              <Text style={{fontWeight: "bold", fontSize: 20, margin: 10}}>User Reviews</Text>
+              <View
+                style={{
+                  flexDirection: "column",
+                  flexWrap: "wrap",
+                  gap: 10,
+                  // margin: 10,
+                  // justifyContent: "space-between",
+                }}
+              >
+
+            {[1,1,1].map((item)=>(
+                  <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    // margin: 20,
+                    padding: 10,
+                    paddingHorizontal:20,
+                    borderRadius: 20,
+                    backgroundColor: "lightgray",
+    
+                    alignSelf: "flex-start",
+                    gap: 10,
+                  }}
+                >
+                      <Avatar name="Arsh" />
+                  <View
+                    style={{
+                      flexDirection: "column",
+    
+                      marginTop: 10,
+    
+    
+                      borderRadius: 20,
+                      padding: 7,
+                      alignSelf: "flex-start",
+                    }}
+                  >
+                
+                    <Text>Name</Text>
+                    <Text>Review revis iss dd</Text>
+                  </View>
+    
+                  <StarRating rating={3} />
+                </View>
+
+            ))}
+                {/* {data.map((review: any, index: any) => (
+                  <View
+                    key={index}
+                    style={{
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                      marginTop: 10,
+                      borderColor: "black",
+                      borderWidth: 1,
+                      borderRadius: 20,
+                      padding: 7,
+                      alignSelf: "flex-start",
+                    }}
+                  >
+
+                    <Text>{review.rating}</Text>
+
+                    <StarRating rating={review.rating} />
+                  </View>
+                ))} */}
+              </View>
             </View>
           </View>
         </View>
