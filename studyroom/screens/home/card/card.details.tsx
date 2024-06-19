@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import StarRating from "@/components/Ratinstar";
 import getPlaceNameFromCoordinates from "@/utils/location";
 import { useRoute } from "@react-navigation/native";
 
@@ -10,6 +11,7 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 
 import Carousel from "react-native-reanimated-carousel";
@@ -28,6 +30,10 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header />
+    <View
+    style={{flex:1}}
+    >
+
 
       <Carousel
         loop
@@ -42,137 +48,193 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
           </View>
         )}
       />
+    </View>
 
-      <View style={styles.cardDetails}>
-        <Text style={styles.heading}>{data.title}</Text>
-        <Text
-          style={{
-            fontSize: 15,
-            color: "black",
-            fontWeight: "semi-bold",
-          }}
-        >
-          {data.location}
-        </Text>
+      <ScrollView
+      style={{flex: 1,
+        backgroundColor: "red",
+        marginHorizontal: 0, flexDirection: "column", marginTop:-200}}
+      >
+        <View style={styles.cardDetails}>
+          <Text style={styles.heading}>{data.title}</Text>
+          <Text
+            style={{
+              fontSize: 15,
+              color: "black",
+              fontWeight: "semi-bold",
+            }}
+          >
+            {data.location}
+          </Text>
 
-        <Text style={styles.amenities}>About</Text>
-        <Text
-          style={{
-            fontSize: 15,
+          <Text style={styles.amenities}>About</Text>
+          <Text
+            style={{
+              fontSize: 15,
 
-            borderRadius: 10,
-            padding: 10,
-            marginBottom: 10,
-          }}
-          numberOfLines={7}
-        >
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum magni
-          illo fuga, tempora pariatur ea non minus est? Laudantium, ex deleniti.
-          Architecto perferendis id iure nesciunt? Repudiandae delectus
-          blanditiis exercitationem. Lorem ipsum dolor sit, amet consectetur
-          adipisicing elit. Corporis, excepturi dignissimos. Corporis nisi natus
-          hic, sapiente veritatis temporibus delectus aliquam quisquam
-          architecto odio laudantium? Veniam, eum. Soluta quis sunt accusamus.
-        </Text>
+              borderRadius: 10,
+              padding: 10,
+              marginBottom: 10,
+            }}
+            numberOfLines={7}
+          >
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
+            magni illo fuga, tempora pariatur ea non minus est? Laudantium, ex
+            deleniti. Architecto perferendis id iure nesciunt? Repudiandae
+            delectus blanditiis exercitationem. Lorem ipsum dolor sit, amet
+            consectetur adipisicing elit. Corporis, excepturi dignissimos.
+            Corporis nisi natus hic, sapiente veritatis temporibus delectus
+            aliquam quisquam architecto odio laudantium? Veniam, eum. Soluta
+            quis sunt accusamus.
+          </Text>
 
-        <View>
-          <Text>Amenities</Text>
+          <View>
+            <Text>Amenities</Text>
+
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: 10,
+                margin:10,
+                // justifyContent: "space-between",
+              }}
+            >
+              {data.amenities.map((amenity: string, index: any) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginTop: 10,
+                    borderColor: "black",
+                    borderWidth: 1,
+                    borderRadius: 20,
+                    padding: 7,
+                    alignSelf: "flex-start",
+                  }}
+                >
+                  {/* Your text here */}
+                  <Text>{amenity}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
 
           <View
             style={{
               flexDirection: "row",
-              flexWrap: "wrap",
+              // justifyContent: "flex-end",
               gap: 10,
-              // justifyContent: "space-between",
+              borderRadius: 20,
             }}
           >
-            {data.amenities.map((amenity: string, index: any) => (
+            <TouchableOpacity
+              style={{
+                width: "50%",
+                borderRadius: 50,
+              }}
+            >
               <View
-              key={index}
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginTop: 10,
-                  borderColor: "black",
-                  borderWidth: 1,
-                  borderRadius: 20,
-                  padding: 7,
-                  alignSelf: "flex-start",
+                  backgroundColor: "lightgray",
+
+                  padding: 10,
+
+                  borderRadius: 50,
+
+                  marginTop: 20,
                 }}
               >
-                {/* Your text here */}
-                <Text>{amenity}</Text>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "black",
+                  }}
+                >
+                  Contact
+                </Text>
               </View>
-            ))}
-          </View>
-        </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                width: "50%",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "blue",
 
-        <View
+                  padding: 10,
+
+                  borderRadius: 50,
+
+                  marginTop: 20,
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "white",
+                    fontSize: 15,
+                    fontWeight: "bold",
+                  }}
+                >
+                  Book Now
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {/* //ratings */}
+
+          <View
           style={{
-            flexDirection: "row",
-            // justifyContent: "flex-end",
-            gap: 10,
-            borderRadius: 20,
+            flexDirection: "column",
+            justifyContent  : "center",
+            alignContent: "center",
+      
           }}
-        >
-          <TouchableOpacity
-            style={{
-              width: "50%",
-              borderRadius: 50,
-            }}
           >
+            <Text
+            style={{
+              margin:20,
+              fontFamily: "Roboto",
+              fontSize: 20,
+              fontStyle: "normal",
+              fontWeight: "700",
+
+              textAlign: "center",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+
+            }}
+            >Reviews</Text>
+
             <View
               style={{
+                marginHorizontal:'auto',
+                flexWrap: "wrap",
                 backgroundColor: "lightgray",
 
-                padding: 10,
+                borderRadius: 20,
+                flexDirection: "row",
+                padding: 20,
+                justifyContent: "space-between",
+                alignSelf: "flex-start",
+                gap: 10,
 
-                borderRadius: 50,
-
-                marginTop: 20,
               }}
             >
-              <Text
-                style={{
-                  textAlign: "center",
-                  color: "black",
-                }}
-              >
-                Contact
-              </Text>
+              {/* <Text>4.5</Text> */}
+              <StarRating rating={4.5} />
+              <Text>10 Reviews</Text>
+
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              width: "50%",
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "blue",
-
-                padding: 10,
-
-                borderRadius: 50,
-
-                marginTop: 20,
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "center",
-                  color: "white",
-                  fontSize: 15,
-                  fontWeight: "bold",
-
-                }}
-              >
-                Book Now
-              </Text>
-            </View>
-          </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -183,6 +245,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
 
     flexDirection: "column", // Arrange children in columns
+    // justifyContent: "space-between", // Arrange children in columns
+    // alignItems: "center", // Arrange children in columns
   },
   imageContainer: {
     // flex: 1,
@@ -201,9 +265,9 @@ const styles = StyleSheet.create({
   cardDetails: {
     flexDirection: "column", // Arrange children in columns
     gap: 10, // Add gap between children
-    height: 400, // Adjust height for better spacing
-    marginBottom: 120, // Add margin for better spacing
-    padding: 20, // Add padding for better spacing
+    // height: 400, // Adjust height for better spacing
+    // marginBottom: 120, // Add margin for better spacing
+    padding: 10, // Add padding for better spacing
   },
   heading: {
     fontSize: 25,
