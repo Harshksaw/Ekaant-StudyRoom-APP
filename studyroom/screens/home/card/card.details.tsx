@@ -86,8 +86,9 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               // justifyContent: "space-between",
             }}
           >
-            {data.amenities.map((amenity: string) => (
+            {data.amenities.map((amenity: string, index: any) => (
               <View
+              key={index}
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
