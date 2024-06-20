@@ -120,13 +120,230 @@ async function signIn(req, res, next) {
   }
 }
 
-function updateProfile(req, res) {
-  // Implement the logic to update user profile
+
+
+let otpTest  = 0;
+
+// async function sendOtp(phoneNumber) {
+//   // """Sends an OTP (One-Time Password) to the provided phone number using Fast2SMS Quick API.
+
+//   // Args:
+//   //     phoneNumber (str): The recipient's phone number in international format (e.g., +1234567890).
+
+//   // Returns:
+//   //     Promise<object>: A promise that resolves to a dictionary containing the API response,
+//   //                        including success status and message.
+//   // """
+
+//   // Replace 'YOUR_API_KEY' with your actual Fast2SMS API key
+//   const apiKey ="FpDr9oekQIfa4x0PbKgHwyTcZ3Euj8672nYVMvUGtS5CNdRBXARQGtnPEZCmjkVXIsuHxg6hovJFYdMB";
+//   const senderId = "FAST2SMS"; // You can customize the sender ID if allowed by Fast2SMS
+//   // FpDr9oekQIfa4x0PbKgHwyTcZ3Euj8672nYVMvUGtS5CNdRBXARQGtnPEZCmjkVXIsuHxg6hovJFYdMB
+//   // const message = encodeURIComponent(`${senderId} Your OTP is {code}`); // URL-encode message
+//   // Generate a random 6-digit OTP
+//   const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+//   otpTest = otpCode;
+
+
+//     // temporary test
+
+
+
+//   const message = `Your OTP is ${otpCode}`;
+
+//   // sms data
+
+//   // if (!phoneNumber || !/^\d{10}$/.test(phoneNumber)) {
+//   //   // Check if phone number is a 10-digit number
+//   //   throw new Error("Invalid phone number");
+//   // }
+//   // console.log("phone number is in function", phoneNumber, message);
+//   // try {
+//   //   // const response = await axios.post(
+//   //   //   "https://www.fast2sms.com/dev/bulkV2",
+//   //   //   smsData,
+//   //   //   {
+//   //   //     headers: {
+//   //   //       Authorization: apiKey,
+//   //   //     },
+//   //   //   }
+//   //   // const response = await axios.post(
+//   //   //   "https://www.fast2sms.com/dev/bulkV2",
+//   //   //   {
+//   //   //     sender_id: senderId,
+//   //   //     message: message,
+//   //   //     language: "english",
+//   //   //     route: "q",
+//   //   //     numbers: phoneNumber,
+//   //   //   },
+//   //   //   {
+//   //   //     headers: {
+//   //   //       authorization: apiKey,
+//   //   //     },
+//   //   //   }
+//   //   // );
+
+//   //   return { success: response.data.return, message: response.data.message };
+//   //   //https://www.fast2sms.com/dev/bulkV2?authorization=FpDr9oekQIfa4x0PbKgHwyTcZ3Euj8672nYVMvUGtS5CNdRBXARQGtnPEZCmjkVXIsuHxg6hovJFYdMB&route=q&message=&flash=0&numbers=
+//   //   // https: return response.data; // Return the JSON response
+//   //   // console.log("response is ", response.data);
+//   // } catch (error) {
+//   //   return { success: false, message: `Error sending OTP: ${error.message}` };
+//   // }
+
+
+//   return 
+
+
+// }
+
+// Example usage (assuming a web framework like Express)
+
+// async function sendOtp(phoneNumber) {
+//   // """Sends an OTP (One-Time Password) to the provided phone number using Fast2SMS Quick API.
+
+//   // Args:
+//   //     phoneNumber (str): The recipient's phone number in international format (e.g., +1234567890).
+
+//   // Returns:
+//   //     Promise<object>: A promise that resolves to a dictionary containing the API response,
+//   //                        including success status and message.
+//   // """
+
+//   // Replace 'YOUR_API_KEY' with your actual Fast2SMS API key
+//   const apiKey ="FpDr9oekQIfa4x0PbKgHwyTcZ3Euj8672nYVMvUGtS5CNdRBXARQGtnPEZCmjkVXIsuHxg6hovJFYdMB";
+//   const senderId = "FAST2SMS"; // You can customize the sender ID if allowed by Fast2SMS
+//   // FpDr9oekQIfa4x0PbKgHwyTcZ3Euj8672nYVMvUGtS5CNdRBXARQGtnPEZCmjkVXIsuHxg6hovJFYdMB
+//   // const message = encodeURIComponent(`${senderId} Your OTP is {code}`); // URL-encode message
+//   // Generate a random 6-digit OTP
+//   const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+//   otpTest = otpCode;
+
+
+//     // temporary test
+
+
+
+//   const message = `Your OTP is ${otpCode}`;
+
+//   // sms data
+
+//   // if (!phoneNumber || !/^\d{10}$/.test(phoneNumber)) {
+//   //   // Check if phone number is a 10-digit number
+//   //   throw new Error("Invalid phone number");
+//   // }
+//   // console.log("phone number is in function", phoneNumber, message);
+//   // try {
+//   //   // const response = await axios.post(
+//   //   //   "https://www.fast2sms.com/dev/bulkV2",
+//   //   //   smsData,
+//   //   //   {
+//   //   //     headers: {
+//   //   //       Authorization: apiKey,
+//   //   //     },
+//   //   //   }
+//   //   // const response = await axios.post(
+//   //   //   "https://www.fast2sms.com/dev/bulkV2",
+//   //   //   {
+//   //   //     sender_id: senderId,
+//   //   //     message: message,
+//   //   //     language: "english",
+//   //   //     route: "q",
+//   //   //     numbers: phoneNumber,
+//   //   //   },
+//   //   //   {
+//   //   //     headers: {
+//   //   //       authorization: apiKey,
+//   //   //     },
+//   //   //   }
+//   //   // );
+
+//   //   return { success: response.data.return, message: response.data.message };
+//   //   //https://www.fast2sms.com/dev/bulkV2?authorization=FpDr9oekQIfa4x0PbKgHwyTcZ3Euj8672nYVMvUGtS5CNdRBXARQGtnPEZCmjkVXIsuHxg6hovJFYdMB&route=q&message=&flash=0&numbers=
+//   //   // https: return response.data; // Return the JSON response
+//   //   // console.log("response is ", response.data);
+//   // } catch (error) {
+//   //   return { success: false, message: `Error sending OTP: ${error.message}` };
+//   // }
+
+
+//   return 
+
+
+// }
+
+
+
+// Example usage (assuming a web framework like Express)
+async function sendOtp(phoneNumber) {
+  const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+  console.log(`OTP for ${phoneNumber} is ${otpCode}`);
+
+  otpTest = otpCode;
+  return { success: true, message: `OTP sent to ${phoneNumber}` };
 }
+async function generateOtp(req, res, next) {
+  const phoneNumber = req.body.phoneNumber;
+  console.log("phone number is ", phoneNumber);
+  if (!phoneNumber || !/^\d{10}$/.test(phoneNumber)) {
+    console.log("invalid phone number is ", phoneNumber);
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing phone number" });
+  }
+  console.log("phone number is ", phoneNumber);
+  // try {
+    const response = await sendOtp(phoneNumber);
+
+    res.json(response);
+  // } catch (error) {
+  //   console.error(error);
+  //   console.error(error.response ? error.response.data : error);
+  //   res.status(500).json({ success: false, message: "Internal server error" });
+  // }
+}
+
+async function verifyOtp(req, res){
+  const { phoneNumber, otp } = req.body;
+
+
+  if(otp !== otpTest){
+    return res.status(400).json({ message: "Invalid OTP" });
+  }
+
+  return res.status(200).json({ message: "OTP verified successfully" });
+
+  // if (!phoneNumber || !/^\d{10}$/.test(phoneNumber)) {
+  //   return res.status(400).json({ message: "Invalid phone number" });
+  // }
+
+  // if (!otp || !/^\d{6}$/.test(otp)) {
+  //   return res.status(400).json({ message: "Invalid OTP" });
+  // }
+
+  // try {
+  //   const isValid = await otpService.verifyOtp(phoneNumber, otp);
+
+  //   if (isValid) {
+  //     res.status(200).json({ message: "OTP verified successfully" });
+  //   } else {
+  //     res.status(400).json({ message: "Invalid OTP" });
+  //   }
+  // } catch (error) {
+  //   res.status(500).json({ message: "An error occurred while verifying the OTP" });
+  // }
+}
+
+
 
 module.exports = {
   signUp,
   signIn,
-  updateProfile,
+  // updateProfile,
   pingAuthController,
+  generateOtp,
+  verifyOtp,
+
 };
