@@ -1,10 +1,40 @@
-const mongoose = require('mongoose');
-const UserSchema = new mongoose.Schema(
-    
-    {
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
+const UserSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  phoneNumber: {
+    type: Number,
+    required: true,
+    maxLength: 10,
+    minLength: 10,
+  },
+  password: {
+    type: String,
+    required: true,
+    minLength: 8,
+  },
+});
+// password hashing--
+UserSchema.methods.createHash = async function (password) {
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  return await bcrypt.hash(password, salt);
+};
 
-        
-    })
-const User = mongoose.model('User', UserSchema);
+// validate password--
+UserSchema.methods.validatePassword = async function (candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+const User = mongoose.model("User", UserSchema);
+
 module.exports = User;
