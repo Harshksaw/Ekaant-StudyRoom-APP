@@ -1,9 +1,8 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
-import { Nunito_400Regular, Nunito_700Bold } from "@expo-google-fonts/nunito";
-import { LinearGradient } from "expo-linear-gradient";
+// import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
+// import { Nunito_400Regular, Nunito_700Bold } from "@expo-google-fonts/nunito";
 
-import { Navigator, router } from "expo-router";
+import { router } from "expo-router";
 import { StyleSheet } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -14,18 +13,19 @@ import {
   responsiveWidth,
 } from "react-native-responsive-dimensions";
 import Button from "@/components/Button";
+
 import Carousel from "react-native-intro-carousel";
 
 export default function OnBoardingScreen() {
-  let [fontsLoaded, fontError] = useFonts({
-    Raleway_700Bold,
-    Nunito_400Regular,
-    Nunito_700Bold,
-  });
+  // let [fontsLoaded, fontError] = useFonts({
+  //   Raleway_700Bold,
+  //   Nunito_400Regular,
+  //   Nunito_700Bold,
+  // });
 
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }
+  // if (!fontsLoaded && !fontError) {
+  //   return null;
+  // }
 
   //   return (
   //     <LinearGradient

@@ -42,12 +42,13 @@ function RootLayoutNav() {
         <Stack.Screen name="(routes)/signup/index" options={{
           headerShown: false
         }} />
-        <Stack.Screen name="(routes)/onboarding/index" options={{
+        <Stack.Screen name="(routes)/card-details/index" options={{
           headerShown: false
         }} />
         <Stack.Screen name="(tabs)" options={{
           headerShown: false
         }} />
+   
       </Stack>
 
   );
