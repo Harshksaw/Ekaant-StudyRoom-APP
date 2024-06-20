@@ -1,5 +1,3 @@
-// const { UserService } = require("../services");
-// const { UserRepository } = require("../repositories");
 const { StatusCodes } = require("http-status-codes");
 const logger = require("../config/logger.config");
 const zod = require("zod");
@@ -98,7 +96,8 @@ async function signIn(req, res, next) {
           success: true,
           message: "User authenticated successfully",
           error: {},
-          data: { token },
+          data: { user, user_id: user._id },
+          token: token,
         });
       } else {
         return res.status(StatusCodes.UNAUTHORIZED).json({
