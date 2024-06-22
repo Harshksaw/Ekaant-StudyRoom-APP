@@ -8,8 +8,9 @@ const AuthRouter = express.Router();
 AuthRouter.get('/ping', AuthController.pingAuthController);
 AuthRouter.post('/signup', AuthController.signUp);
 AuthRouter.post('/signin', AuthController.signIn);
-AuthRouter.put('/profile', AuthController.updateProfile);
-
+// AuthRouter.put('/profile', AuthController.updateProfile);
+AuthRouter.post('/otp', AuthController.generateOtp);
+AuthRouter.post('/verify', AuthController.verifyOtp);
 
 
 

@@ -23,6 +23,36 @@ const UserSchema = new mongoose.Schema({
     required: true,
     minLength: 8,
   },
+  accountType: {
+    type: String,
+    enum: ["Admin", "User", "Owner"],
+    required: true,
+  },
+  additionalDetails: {
+    type: [String],
+    required: false,
+    // ref: "Profile",
+  },
+  ownedProperties: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Library",
+    },
+  ],
+  bookings: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Library",
+    },
+  ],
+  image: {
+    type: String,
+    required: optional,
+  },
+
+  resetPasswordExpires: {
+    type: Date,
+  },
 });
 // password hashing--
 UserSchema.methods.createHash = async function (password) {
