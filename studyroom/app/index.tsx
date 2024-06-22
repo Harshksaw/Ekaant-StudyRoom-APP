@@ -14,8 +14,8 @@ const [user, setUser] = useState(false);
         <Loader />
       ) : (
         )} */}
-        {/* <Redirect href={!user ? "/(routes)/onboarding" : "/(tabs)"} /> */}
-        <Redirect href="(routes)/SeatBooking" />
+        <Redirect href={user ? "/(routes)/onboarding" : "/(tabs)"} />
+        {/* <Redirect href="(routes)/SeatBooking" /> */}
     </>
   );
 }

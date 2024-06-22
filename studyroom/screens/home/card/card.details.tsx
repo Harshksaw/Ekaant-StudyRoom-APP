@@ -158,6 +158,8 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 </TouchableOpacity>
               </View>
             </View>
+
+        
           </Modal>
 
           <View
