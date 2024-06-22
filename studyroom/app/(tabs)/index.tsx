@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
@@ -7,148 +8,92 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FlatList } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
-import Cards from "../../components/Cards";
+import Carousel from "react-native-reanimated-carousel";
+import Header from "@/components/Header";
+import { router } from "expo-router";
 
 export default function index() {
+  const width = Dimensions.get("window").width;
   const data = [
     {
       id: 1,
-      title: "Card 1",
-      about: "About Card 1lo lroem ipsum mono",
-      ratings: 4.5,
-      distance: "2 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+      title: "Title 1",
+      about: "About 1",
+      ratings: 5,
+      distance: "10 km",
+      thumbnail: "https://picsum.photos/id/237/200/300",
+      imageUrl: [
+        "https://picsum.photos/id/237/200/300",
+        "https://picsum.photos/id/238/200/300",
+        "https://picsum.photos/id/239/200/300",
+      ],
+      location: "123 Main St, City, State",
+      amenities: ["Swimming Pool", "Gym", "Restaurant"],
     },
     {
       id: 2,
-      title: "Card 2",
-      about: "About Card 2lo lroem ipsum mono",
-      ratings: 3.8,
-      distance: "5 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+      title: "Title 2",
+      about: "About 2",
+      ratings: 4,
+      distance: "5 km",
+      thumbnail: "https://picsum.photos/id/237/200/300",
+      imageUrl: [
+        "https://picsum.photos/id/237/200/300",
+        "https://picsum.photos/id/238/200/300",
+        "https://picsum.photos/id/239/200/300",
+      ],
+      location: "456 Elm St, City, State",
+      amenities: ["Parking", "Spa", "Bar"],
     },
     {
       id: 3,
-      title: "Card 3",
-      about: "About Card 3lo lroem ipsum mono",
-      ratings: 4.2,
-      distance: "3 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+      title: "Title 3",
+      about: "About 3",
+      ratings: 3,
+      distance: "8 km",
+      thumbnail: "https://picsum.photos/id/237/200/300",
+      imageUrl: [
+        "https://picsum.photos/id/237/200/300",
+        "https://picsum.photos/id/238/200/300",
+        "https://picsum.photos/id/239/200/300",
+      ],
+      location: "789 Oak St, City, State",
+      amenities: ["WiFi", "Laundry", "Fitness Center"],
     },
     {
       id: 4,
-      title: "Card 4",
-      about: "About Card 4lo lroem ipsum mono",
-      ratings: 4.0,
-      distance: "1 mile",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+      title: "Title 3",
+      about: "About 3",
+      ratings: 3,
+      distance: "8 km",
+      thumbnail: "https://picsum.photos/id/237/200/300",
+      imageUrl: [
+        "https://picsum.photos/id/237/200/300",
+        "https://picsum.photos/id/238/200/300",
+        "https://picsum.photos/id/239/200/300",
+      ],
+      location: "987 Pine St, City, State",
+      amenities: ["Pool Table", "Conference Room", "Library"],
     },
     {
       id: 5,
-      title: "Card 5",
-      about: "About Card 5lo lroem ipsum mono",
-      ratings: 4.7,
-      distance: "10 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
-    },
-    {
-      id: 6,
-      title: "Card 6",
-      about: "About Card 6lo lroem ipsum mono",
-      ratings: 3.5,
-      distance: "7 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
-    },
-    {
-      id: 7,
-      title: "Card 7",
-      about: "About Card 7lo lroem ipsum mono",
-      ratings: 4.9,
-      distance: "3 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
-    },
-    {
-      id: 8,
-      title: "Card 8",
-      about: "About Card 8lo lroem ipsum mono",
-      ratings: 4.3,
-      distance: "5 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
-    },
-    {
-      id: 9,
-      title: "Card 9",
-      about: "About Card 9lo lroem ipsum mono",
-      ratings: 4.1,
-      distance: "8 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
-    },
-    {
-      id: 10,
-      title: "Card 10",
-      about: "About Card 1lo lroem ipsum mono0",
-      ratings: 4.6,
-      distance: "4 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
-    },
-    {
-      id: 11,
-      title: "Card 11",
-      about: "About Card 1lo lroem ipsum mono1",
-      ratings: 3.9,
-      distance: "6 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
-    },
-    {
-      id: 12,
-      title: "Card 12",
-      about: "About Card 1lo lroem ipsum mono2",
-      ratings: 4.8,
-      distance: "9 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
-    },
-    {
-      id: 13,
-      title: "Card 13",
-      about: "About Card 1lo lroem ipsum mono3",
-      ratings: 4.4,
-      distance: "3 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
-    },
-    {
-      id: 14,
-      title: "Card 14",
-      about: "About Card 1lo lroem ipsum mono4",
-      ratings: 4.2,
-      distance: "7 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
-    },
-    {
-      id: 15,
-      title: "Card 15",
-      about: "About Card 1lo lroem ipsum mono5",
-      ratings: 4.7,
-      distance: "5 miles",
-      imageUrl:
-        "https://img.traveltriangle.com/blog/wp-content/uploads/2023/06/PTV-India-Cover-Final.png",
+      title: "Title 3",
+      about: "About 3",
+      ratings: 3,
+      distance: "8 km",
+      thumbnail: "https://picsum.photos/id/237/200/300",
+      imageUrl: [
+        "https://picsum.photos/id/237/200/300",
+        "https://picsum.photos/id/238/200/300",
+        "https://picsum.photos/id/239/200/300",
+      ],
+      location: "654 Maple St, City, State",
+      amenities: ["Playground", "Tennis Court", "Cafe"],
     },
   ];
+
 
   const filters = [
     { id: 1, name: "Filter 1" },
@@ -156,16 +101,84 @@ export default function index() {
     { id: 3, name: "Filter 3" },
   ];
 
+  // return <HomeScreen />;
+  const renderItem = ({ item }) => (
 
- 
+    <TouchableOpacity
+    onPress={() =>
+      router.push({
+        pathname: "/(routes)/card-details",
+        params: { item: JSON.stringify(item) },
+        
+      })
+
+    }
+    >
+
+    
+    <View style={styles.card}>
+      <Image
+        source={{ uri: item.thumbnail }}
+        style={{ width: 100, height: 100, borderRadius: 20 }}
+      />
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column",
+          width: 200,
+          marginLeft: 20,
+          // justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            width: 250,
+
+            marginHorizontal: 10,
+            flexDirection: "column",
+            justifyContent: "space-evenly",
+
+            // justifyContent:'flex-start',
+            alignItems: "flex-start",
+          }}
+        >
+          <Text>{item.title}</Text>
+          <Text>{item.about}</Text>
+        </View>
+
+        <View
+          style={{
+            // flex:1,
+            height: 20,
+            width: 250,
+            flexDirection: "row",
+            paddingRight: 20,
+
+            justifyContent: "space-between",
+            alignItems: "space-between",
+          }}
+        >
+          <Text>{item.ratings}********</Text>
+          <Text>{item.distance}</Text>
+        </View>
+      </View>
+    </View>
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView
       style={{
         backgroundColor: "white",
       }}
     >
-      <View style={styles.header}></View>
+      {/* <View style={styles.header}></View> */}
+      <Header/>
       <View style={styles.welcome}>
+        <View></View>
+
         <Text
           style={{
             fontSize: 25,
@@ -184,13 +197,40 @@ export default function index() {
             Harsh
           </Text>
         </Text>
+
+
       </View>
-      <View style={styles.carousel}></View>
+      <View style={styles.carousel}>
+        <Carousel
+          loop
+          width={width}
+          height={width / 2.2}
+          autoPlay={true}
+          data={[...new Array(6).keys()]}
+          scrollAnimationDuration={2500}
+          // onSnapToItem={(index) => console.log("current index:", index)}
+          renderItem={({ index }) => (
+            <View
+              style={{
+                flex: 1,
+                // borderWidth: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+              source={require("../../assets/images/slider1.png")}
+              width={width}
+              
+              />
+            </View>
+          )}
+        />
+      </View>
 
       <View style={styles.filters}>
         {filters.map((filter) => (
           <TouchableOpacity
-          key={filter.id}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -233,10 +273,15 @@ export default function index() {
             style={{ marginHorizontal: 10 }}
           />
         </View>
+        {data && data.map((item) => renderItem({ item }))}
 
-        {data && data.map((item, index) => <Cards item={item}
-        key={index}
-        />)}
+        {data?.length === 0 && (
+          <Text
+            style={{ textAlign: "center", paddingTop: 50, fontSize: 18 }}
+          >
+            No data available!
+          </Text>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -255,8 +300,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   carousel: {
-    height: 200,
-    backgroundColor: "yellow",
+    height: 220,
+    // backgroundColor: "yellow",
   },
   filters: {
     flexDirection: "row",
@@ -267,5 +312,18 @@ const styles = StyleSheet.create({
   listings: {
     marginBottom: 360,
   },
+  card: {
+    margin: 10,
+    backgroundColor: "white",
 
+    flexDirection: "row",
+
+    marginBottom: 10,
+    marginHorizontal: 10,
+    borderRadius: 20,
+    padding: 10,
+
+    // justifyContent: "flex-start",
+    alignItems: "center",
+  },
 });

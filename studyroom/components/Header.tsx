@@ -1,0 +1,121 @@
+import React, { useEffect, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Platform,
+  PermissionsAndroid,
+} from "react-native";
+
+
+
+const citiesData = [
+  { id: 1, name: "Mumbai" },
+  { id: 2, name: "Delhi" },
+  { id: 3, name: "Bangalore" },
+  { id: 4, name: "Hyderabad" },
+  { id: 5, name: "Chennai" },
+  { id: 6, name: "Kolkata" },
+  { id: 7, name: "Ahmedabad" },
+  { id: 8, name: "Pune" },
+  { id: 9, name: "Surat" },
+  { id: 10, name: "Jaipur" },
+];
+
+const Header: React.FC = () => {
+  const [cities, setCities] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("");
+
+
+
+  return (
+    <View style={styles.header}>
+        <View style={styles.citySelector}>
+
+            <Text style={styles.label}>Select City:</Text>
+            <View style={styles.picker}>
+
+            <Text>Delhi</Text>
+            </View>
+        </View>
+
+
+      <View style={styles.logoContainer}>
+
+        <Image
+        height={20}
+
+          source={require("../assets/images/logo.png")}
+          style={styles.logo}
+        />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    // paddingTop: 16,
+    paddingBottom: 8,
+    backgroundColor: "#f2f2f2",
+  },
+  logoContainer: {
+    flex: 1,
+    alignItems: "center",
+  },
+  logo: {
+    width: 100,
+    height: 60,
+    resizeMode: "contain",
+  },
+  citySelector: {
+    flex: 2,
+    marginLeft: 16,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  picker: {
+    zIndex: 3,
+    height: 40,
+
+    borderRadius: 4,
+  },
+  selectedCity: {
+    flex: 1,
+    alignItems: "center",
+  },
+  selectedCityText: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  container: {
+    flex: 1, // Make content take full screen height
+  },
+  locationContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f0f0f0", // Light background
+    padding: 10,
+    margin: 10,
+  },
+  locationText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  locationData: {
+    fontSize: 16,
+  },
+  errorText: {
+    color: "red",
+  },
+});
+
+export default Header;

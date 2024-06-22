@@ -1,5 +1,8 @@
 import React from "react";
 import { Sidebar, Navbar } from "../components/index";
+import SeatLayout from "@/components/seatinglayout/SeatLayout";
+import Seats from "@/components/seatinglayout/SeatLayout";
+
 const Dashboard = () => {
   return (
     <div>
@@ -10,7 +13,14 @@ const Dashboard = () => {
         <div className="basis-[15%] h-100vh">
           <Sidebar />
         </div>
-        <div className="basis-[80%]">d</div>
+        <div className="basis-[80%]">
+            Seating Plan
+            <Seats/>
+
+
+
+        </div>
+      
       </div>
     </div>
   );
