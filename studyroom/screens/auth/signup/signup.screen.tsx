@@ -150,6 +150,10 @@ export default function SignUpScreen() {
       });
       console.log("resposne >>>>sign up>>>>>", response.data);
       if (response.data.success) {
+        await AsyncStorage.setItem(
+          "token",
+          JSON.stringify(response.data.token)
+        );
         setButtonSpinner(false);
         router.push("/(tabs)");
         // Toast.show("Account created successfully", {
