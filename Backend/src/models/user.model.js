@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
     unique: true,
   },
   phoneNumber: {
-    type: String,
+    type: Number,
     required: true,
     maxLength: 10,
     minLength: 10,
@@ -47,7 +47,7 @@ const UserSchema = new mongoose.Schema({
   ],
   image: {
     type: String,
-    required: optional,
+    required: false,
   },
 
   resetPasswordExpires: {
