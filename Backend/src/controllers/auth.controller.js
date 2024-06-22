@@ -7,8 +7,8 @@ const JWT_SECRET = "MY_SECRET_KEY";
 // signing up schema
 const signupSchema = zod.object({
   username: zod.string().min(3).max(255),
-  password: zod.string().min(8),
   email: zod.string().email(),
+  password: zod.string().min(8),
   phoneNumber: zod.number().min(9),
   
 });
@@ -56,6 +56,7 @@ async function signUp(req, res, next) {
       accountType: req.body.accountType,
     });
     // hashing the password--
+
     const hashedPassword = await newUser.createHash(req.body.password);
     console.log("hashedpassword is ", hashedPassword);
     newUser.password = hashedPassword;
@@ -314,7 +315,7 @@ async function generateOtp(req, res, next) {
 }
 
 async function verifyOtp(req, res){
-  const { phoneNumber, otp } = req.body;
+  const {  otp } = req.body;
   if(otp === '' || otp === null || otp === undefined){
     return res.status(200).json({ message: "Pass it" });
   }
