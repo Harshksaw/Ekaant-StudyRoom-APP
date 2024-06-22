@@ -10,7 +10,7 @@ AuthRouter.post('/signup', AuthController.signUp);
 AuthRouter.post('/signin', AuthController.signIn);
 // AuthRouter.put('/profile', AuthController.updateProfile);
 AuthRouter.post('/otp', AuthController.generateOtp);
-AuthRouter.post('/verify', AuthController.verifyOtp);
+AuthRouter.post('/verifyOtp', AuthController.verifyOtp);
 
 
 

@@ -9,7 +9,7 @@ const signupSchema = zod.object({
   username: zod.string().min(3).max(255),
   password: zod.string().min(8),
   email: zod.string().email(),
-  phoneNumber: zod.phoneNumber(),
+  phoneNumber: zod.number().min(9),
   
 });
 let pingCounter = 0;
@@ -25,6 +25,7 @@ async function signUp(req, res, next) {
 
 
   const { success } = signupSchema.safeParse(req.body);
+  console.log("success is ", success, req.body)
   if (!success) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       success: false,

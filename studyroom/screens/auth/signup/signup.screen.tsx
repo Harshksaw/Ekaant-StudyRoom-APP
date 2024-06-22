@@ -35,19 +35,25 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import axios from "axios";
 //   import { SERVER_URI } from "@/utils/uri";
-import { Toast } from "react-native-toast-notifications";
+
 import Button from "@/components/Button";
+import { Feather } from "@expo/vector-icons";
+import { BACKEND } from "@/utils/config";
 
 export default function SignUpScreen() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [buttonSpinner, setButtonSpinner] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [showOtp, setShowOtp] = useState(false);
+
+  const [verified , setVerified] = useState(false);
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
     phone: "",
     password: "",
   });
-  const [required, setRequired] = useState("");
+  const [required, setRequired] = useState(false);
   const [error, setError] = useState({
     password: "",
   });
@@ -81,8 +87,91 @@ export default function SignUpScreen() {
     return null;
   };
 
+  const sendOtp = async () => {
+    try {
+      console.log(userInfo.phone)
+      setShowOtp(true);
+      const response = await axios.post(
+        `${BACKEND}/api/v1/auth/otp`,
+        {
+          phoneNumber: userInfo.phone,
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
+  const verifyOtp = async () => {
+    try {
+      const response = await axios.post(
+        `${BACKEND}/api/v1/auth/verifyOtp`,
+        {
+          phoneNumber: userInfo.phone,
+          otp: otp,
+        }
+      );
+      if(response.data.success){
+        setVerified(true);
+      }
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const handleSignUp = async () => {  
+    // if (!userInfo.name || !userInfo.email || !userInfo.phone || !userInfo.password) {
+    //   setRequired(true);
+    //   return;
+    // }
+    // if (validatePassword(userInfo.password)) {
+    //   setError({ password: validatePassword(userInfo.password) });
+    //   return;
+    // }
+    // setButtonSpinner(true);
+
+    // if(!verified){
+    //   // Toast.show("Please verify your phone number", {
+    //   //   type: "danger",
+    //   // });
+    //   setButtonSpinner(false);
+    //   return;
+    // }
+    console.log('signup.screen.tsx>>>>>>',userInfo)
+    try {
 
 
+      const response = await axios.post(
+        `${BACKEND}/api/v1/auth/signup`,
+        {
+          username: userInfo.name,
+          email: userInfo.email,
+          password: userInfo.password,
+          phoneNumber: userInfo.phone,
+          accountType: "User",
+          
+          
+
+        }
+      );
+      console.log("resposne >>>>sign up>>>>>",response.data);
+      if (response.data.success) {
+        setButtonSpinner(false);
+        router.push("/(tabs)");
+        // Toast.show("Account created successfully", {
+        //   type: "success",
+        // });
+      }
+    } catch (error) {
+      console.log(error);
+      setButtonSpinner(false);
+      // Toast.show("An error occured", {
+      //   type: "danger",
+      // });
+    }
+  }
   return (
     <LinearGradient
       colors={["#E5ECF9", "#F6F7F9"]}
@@ -93,14 +182,14 @@ export default function SignUpScreen() {
           <Text style={[styles.welcomeText, { fontFamily: "Raleway_700Bold" }]}>
             Create an {""} Account
           </Text>
-          <Image source={require("../../../assets/images/bubble2.png")}
-          style={{
-            marginRight: -100,
-          }}
+          <Image
+            source={require("../../../assets/images/bubble2.png")}
+            style={{
+              marginRight: -100,
+            }}
           />
         </View>
 
-  
         <View style={styles.inputContainer}>
           <View>
             <TextInput
@@ -138,7 +227,14 @@ export default function SignUpScreen() {
             />
           </View>
 
-          <View>
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "center",
+              // alignItems: "center",
+              gap: 10,
+            }}
+          >
             <View
               style={[
                 styles.input,
@@ -159,13 +255,48 @@ export default function SignUpScreen() {
                   setUserInfo({ ...userInfo, phone: value })
                 }
               />
+
+              <Feather
+                style={{
+                  position: "absolute",
+                  right: 30,
+                  top: 15,
+                }}
+                onPress={sendOtp}
+                name="arrow-up-right"
+                size={24}
+                color="black"
+              />
             </View>
-            {/* <Fontisto
-                style={{ position: "absolute", left: 26, top: 17.8 }}
-                name="email"
-                size={20}
-                color={"#A1A1A1"}
-              /> */}
+            {showOtp && userInfo.phone.length >= 10 && (
+              <View
+                style={[
+                  styles.input,
+                  {
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingHorizontal: 30,
+                  },
+                ]}
+              >
+                <TextInput
+                  style={{ paddingLeft: 10 }}
+                  keyboardType="phone-pad"
+                  // value={userInfo.phone}
+                  placeholder="Otp"
+                  onChangeText={(value) => setOtp(value)}
+                />
+                <Feather
+                  style={{
+                    position: "absolute",
+                    right: 30,
+                    top: 15,
+                  }}
+                  onPress={verifyOtp}
+                name="send" size={24} color="black" />
+              </View>
+            )}
 
             <TextInput
               style={[styles.input, { marginTop: 15 }]}
@@ -200,20 +331,19 @@ export default function SignUpScreen() {
 
                   marginTop: 15,
                 }}
-                onPress={()=> router.push("/(tabs)")}
+                onPress={()=> handleSignUp()}
               >
-                {buttonSpinner ? (
-                  <ActivityIndicator size="small" color={"white"} />
-                ) : (
+              
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontSize: 16,
+                      fontFamily: "Raleway_700Bold",
+                    }}>
+                    Sign Up
+                    </Text>
+                
 
-                  <Button
-                    text="Sign Up"
-                    // onPress={() => {
-                    //   router.push("/(routes)/login");
-                    // }}
-                    />
-                  
-                )}
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -238,10 +368,10 @@ export default function SignUpScreen() {
                   Cancel
                 </Text>
               </TouchableOpacity>
+
             </View>
           </View>
         </View>
-
       </View>
     </LinearGradient>
   );
@@ -305,5 +435,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 10,
   },
- 
 });
