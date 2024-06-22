@@ -177,7 +177,7 @@ export default function index() {
       {/* <View style={styles.header}></View> */}
       <Header/>
       <View style={styles.welcome}>
-        <View></View>
+        {/* <View></View> */}
 
         <Text
           style={{
@@ -229,8 +229,9 @@ export default function index() {
       </View>
 
       <View style={styles.filters}>
-        {filters.map((filter) => (
+        {filters.map((filter, index) => (
           <TouchableOpacity
+          key={index}
             style={{
               flexDirection: "row",
               alignItems: "center",

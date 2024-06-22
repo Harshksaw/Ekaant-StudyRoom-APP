@@ -1,17 +1,27 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-
+const cors = require("cors");
 const { PORT } = require("./config/server.config");
 const apiRouter = require("./routes");
 const errorHandler = require("./utils/errorHandler");
 const connectToDB = require("./config/db.config");
+const cloudinary = require('cloudinary').v2;
 
+require('dotenv').config()
 // const PORT
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
+app.use(
+	cors({
+		origin: "*",
+		credentials: true,
+	})
+);
+
+
 
 // If any request comes and route starts with /api, we map it to apiRouter
 app.use("/api", apiRouter);
