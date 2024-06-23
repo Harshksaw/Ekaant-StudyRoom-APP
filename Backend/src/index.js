@@ -27,7 +27,7 @@ app.use(bodyParser.text());
 
 
 cloudinary.config({
-	cloud_name: 'dzwvmqbv0' ,
+	cloud_name:'dzwvmqbv0' ,
 	api_key:572782272174972,
 	api_secret:'Sx6t5hAG6ynwO6mr8GN-L55A7MI',
   });

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
 } from "react-native";
 import {
   AntDesign,
@@ -169,6 +170,10 @@ export default function SignUpScreen() {
     }
   };
   return (
+
+    <KeyboardAvoidingView>
+
+    
     <LinearGradient
       colors={["#E5ECF9", "#F6F7F9"]}
       style={{ flex: 1, paddingTop: 0 }}
@@ -374,6 +379,7 @@ export default function SignUpScreen() {
         </View>
       </View>
     </LinearGradient>
+    </KeyboardAvoidingView>
   );
 }
 
