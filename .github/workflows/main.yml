@@ -16,10 +16,10 @@ jobs:
           node-version: '20'
       - name: Install dependencies (Server)
         run: npm install
-        working-directory: ./server # Replace with your server directory path
+        working-directory: ./Backend # Replace with your server directory path
       - name: Run tests (Server)
         run: npm test
-        working-directory: ./server # Replace with your server directory path
+        working-directory: ./Backend # Replace with your server directory path
 
   build-and-test-react:
     needs: build-and-test-node
@@ -32,15 +32,15 @@ jobs:
           node-version: '20'
       - name: Install dependencies (React App)
         run: npm install
-        working-directory: ./react-app # Replace with your React app directory path
+        working-directory: ./admin # Replace with your React app directory path
       - name: Run tests (React App)
         run: npm test
-        working-directory: ./react-app # Replace with your React app directory path
+        working-directory: ./admin # Replace with your React app directory path
       - name: Build (React App)
         run: npm run build
-        working-directory: ./react-app # Replace with your React app directory path
+        working-directory: ./admin # Replace with your React app directory path
 
-   check-expo-app:
+  check-expo-app:
     needs: build-and-test-react
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +53,7 @@ jobs:
         run: npm install -g expo-cli
       - name: Install dependencies (Expo App)
         run: npm install
-        working-directory: ./expo-app # Replace with your Expo app directory path
+        working-directory: ./studyroom # Replace with your Expo app directory path
       - name: Check Expo project files
         run: expo doctor
-        working-directory: ./expo-app # Replace with your Expo app directory path
+        working-directory: ./studyroom # Replace with your Expo app directory path
