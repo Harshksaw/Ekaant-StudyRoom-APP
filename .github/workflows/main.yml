@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '20'
       - name: Install dependencies (Server)
-        run: npm install
+        run: npm install --legacu-peer-deps
         working-directory: ./Backend # Replace with your server directory path
       - name: Run tests (Server)
         run: npm test
