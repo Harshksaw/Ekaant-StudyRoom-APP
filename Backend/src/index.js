@@ -5,22 +5,32 @@ const { PORT } = require("./config/server.config");
 const apiRouter = require("./routes");
 const errorHandler = require("./utils/errorHandler");
 const connectToDB = require("./config/db.config");
-const cloudinary = require('cloudinary').v2;
+require("dotenv").config();
 
-require('dotenv').config()
+const cloudinary = require("cloudinary").v2;
+
+const Multer = require("multer");
+
+
+
 // const PORT
 const app = express();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.text());
 app.use(
 	cors({
 		origin: "*",
 		credentials: true,
 	})
 );
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.text());
 
+
+cloudinary.config({
+	cloud_name: 'dzwvmqbv0' ,
+	api_key:572782272174972,
+	api_secret:'Sx6t5hAG6ynwO6mr8GN-L55A7MI',
+  });
 
 
 // If any request comes and route starts with /api, we map it to apiRouter

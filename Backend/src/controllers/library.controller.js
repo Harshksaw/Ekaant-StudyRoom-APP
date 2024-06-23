@@ -1,12 +1,14 @@
 const {z} = require("zod");
-const express = require("express");
+
 const { LibraryController } = require("../controllers");
 const { uploadImageToCloudinary } = require("../utils/uploader")
 const multer  = require('multer')
+const express = require('express');
+const cloudinary = require('cloudinary').v2;
 // async function
 // create a library which
 
-const cloudinary = require('cloudinary').v2;
+
 
 const LibrarySchema = z.object({
   name: z.string(),
@@ -27,16 +29,8 @@ const LibrarySchema = z.object({
   })),
 });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now());
-  }
-});
 
-const upload = multer({ storage: storage });
+
 
 // Ping admin dummy API
 const pingAdmin=  (req, res) => {
@@ -53,12 +47,6 @@ const createRoom = async (req, res) => {
     // }
   
 
-    // const thumbnail = await cloudinary.uploader.upload(
-    //   req.files.thumbnail, {
-    //   folder: "layout",
-    // });
-    // console.log(thumbnail)
-
     const {
       name,
       description,
@@ -73,35 +61,55 @@ const createRoom = async (req, res) => {
       amenities,
       seatLayout,
 
-    } = safeParse(LibrarySchema, req.body);
+    } = req.body;
     console.log(name, description, thumbnail, imageUrl, location, Price, tags, contact, amenities, seatLayout, seatbooked);
-    res.status(201).json({
-      success: true,
-      message: 'Room created successfully',
-      room: newRoom,
-    });
-    return;
+
+    // try {
+    //   // Upload image to Cloudinary
+    //   const result = await cloudinary.uploader.upload(req.file.path, {
+    //     folder: 'thumb'
+    //   });
+    
+    //   // Assuming the creation of the room is successful and you have the room details
+    //   const { name } = req.body;
+    //   // Simulate room creation, replace with actual room creation logic
+    //   const newRoom = { name, imageUrl: result.secure_url };
+    
+    //   // Send a single response with the room creation success message and details
+    //   res.status(201).json({
+    //     success: true,
+    //     message: 'Room created successfully',
+    //     room: newRoom,
+    //   });
+    // } catch (error) {
+    //   console.error(error);
+    //   // Send an error response if anything goes wrong during the process
+    //   res.status(500).json({ error: 'Error processing your request' });
+    // }
+
+
+
     // Check if the room already exists
 
 
     // Create a new room document
-    const newRoom = new Room({
-      name,
-      description,
-      thumbnail,
-      imageUrl,
-      location,
-      Price,
-      tags,
-      reviews, // Make sure this ID exists in your database
-      contact,
-      amenities: amenities || [], // Handle optional field
-      seatLayout,
-      seatbooked,
-    });
+    // const newRoom = new Room({
+    //   name,
+    //   description,
+    //   thumbnail,
+    //   imageUrl,
+    //   location,
+    //   Price,
+    //   tags,
+    //   reviews, // Make sure this ID exists in your database
+    //   contact,
+    //   amenities: amenities || [], // Handle optional field
+    //   seatLayout,
+    //   seatbooked,
+    // });
 
-    // Save the new room to the database
-    await newRoom.save();
+    // // Save the new room to the database
+    // await newRoom.save();
 
     // Send a response back to the client
     res.status(201).json({
@@ -122,4 +130,6 @@ const createRoom = async (req, res) => {
 
   module.exports ={
     pingAdmin,
-    createRoom}
+    createRoom
+  
+  }
