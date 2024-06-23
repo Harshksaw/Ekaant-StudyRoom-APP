@@ -46,6 +46,7 @@ async function signUp(req, res, next) {
       email: req.body.email,
       password: req.body.password,
       phoneNumber: req.body.phoneNumber,
+      accountType: req.body.accountType
     });
     // hashing the password--
     const hashedPassword = await newUser.createHash(req.body.password);
