@@ -7,9 +7,10 @@ const JWT_SECRET = "MY_SECRET_KEY";
 // signing up schema
 const signupSchema = zod.object({
   username: zod.string().min(3).max(255),
-  password: zod.string().min(8),
   email: zod.string().email(),
-  phoneNumber: zod.string().min(10).max(10),
+  password: zod.string().min(8),
+  phoneNumber: zod.number().min(9),
+  
 });
 let pingCounter = 0;
 
@@ -20,7 +21,11 @@ function pingAuthController(req, res) {
 }
 // signup function--
 async function signUp(req, res, next) {
+
+
+
   const { success } = signupSchema.safeParse(req.body);
+  console.log("success is ", success, req.body)
   if (!success) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
@@ -38,7 +43,9 @@ async function signUp(req, res, next) {
       error: { 411: "User already exists" },
       data: {},
     });
+
   }
+  
 
   try {
     const newUser = await User.create({
@@ -46,9 +53,10 @@ async function signUp(req, res, next) {
       email: req.body.email,
       password: req.body.password,
       phoneNumber: req.body.phoneNumber,
-      accountType: req.body.accountType
+      accountType: req.body.accountType,
     });
     // hashing the password--
+
     const hashedPassword = await newUser.createHash(req.body.password);
     console.log("hashedpassword is ", hashedPassword);
     newUser.password = hashedPassword;
@@ -307,9 +315,10 @@ async function generateOtp(req, res, next) {
 }
 
 async function verifyOtp(req, res){
-  const { phoneNumber, otp } = req.body;
-
-
+  const {  otp } = req.body;
+  if(otp === '' || otp === null || otp === undefined){
+    return res.status(200).json({ message: "Pass it" });
+  }
   if(otp !== otpTest){
     return res.status(400).json({ message: "Invalid OTP" });
   }

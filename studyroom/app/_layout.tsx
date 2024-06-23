@@ -32,7 +32,11 @@ function RootLayoutNav() {
   return (
 
       <Stack>
-         <Stack.Screen name="index" />
+         <Stack.Screen name="index"
+          options={{
+            headerShown: false
+          }}
+         />
         <Stack.Screen name="(routes)/welcome/index" options={{
           headerShown: false
         }} />
@@ -43,6 +47,9 @@ function RootLayoutNav() {
           headerShown: false
         }} />
         <Stack.Screen name="(routes)/card-details/index" options={{
+          headerShown: false
+        }} />
+        <Stack.Screen name="(routes)/onboarding/index" options={{
           headerShown: false
         }} />
         <Stack.Screen name="(tabs)" options={{

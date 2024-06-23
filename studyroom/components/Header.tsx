@@ -36,7 +36,8 @@ const Header: React.FC = () => {
             <Text style={styles.label}>Select City:</Text>
             <View style={styles.picker}>
 
-            <Text>Delhi</Text>
+        
+            {/* <Text>Delhi</Text> */}
             </View>
         </View>
 

@@ -9,7 +9,7 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = ({ text, width}: ButtonProps) => {
-    console.log('Button.tsx', text, width);
+
     return (
         <LinearGradient
             start={{ x: 0, y: 1 }}
