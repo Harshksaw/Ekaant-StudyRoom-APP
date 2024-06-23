@@ -3,7 +3,7 @@ const express = require('express');
 const { LibraryController  } = require('../../controllers');
 const Library = express.Router();
 
-const cloudinary = require('../../config/cloudinary');
+
 const uploader = require('../../config/multer');
 
 Library.get('/ping', LibraryController.pingAdmin);

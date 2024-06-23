@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  KeyboardAvoidingView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -50,6 +51,7 @@ const LoginScreen: React.FC = () => {
   };
 
   return (
+    <KeyboardAvoidingView>
     <SafeAreaView style={styles.container}>
       <View
         style={{
@@ -162,6 +164,7 @@ const LoginScreen: React.FC = () => {
         </View>
       </View>
     </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 const styles = StyleSheet.create({
