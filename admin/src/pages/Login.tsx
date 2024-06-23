@@ -71,7 +71,7 @@ export default function Login() {
               className="py-5 px-20 rounded-lg mx-4 mt-4"
               onClick={() => handleLogin()}
             >
-              <span className="text-center text-lg font-bold">Sign Up</span>
+              <span className="text-center text-lg font-bold">Sign In</span>
             </button>
 
             <button
