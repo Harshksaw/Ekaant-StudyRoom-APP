@@ -32,6 +32,10 @@ const BookingScreen: React.FC = () => {
 //   useEffect(() => {
 //     console.log(selectedDate);
 //   }, [selectedDate]);
+const handleTimeSlotSelect = (timeSlot) => {
+  console.log("Selected Time Slot:", timeSlot);
+  // Handle the selected time slot as needed
+};
 
   return (
     <SafeAreaView
@@ -142,11 +146,17 @@ const BookingScreen: React.FC = () => {
 
 
                     ].map((slot, index) => (
+                      <TouchableOpacity
+                      
+                      >
+
                       <TimeSlot 
                       key={index} 
                       from={slot.from}
-                        to={slot.to}
+                      to={slot.to}
+                      onSelect={handleTimeSlotSelect} 
                       />
+                      </TouchableOpacity>
                     ))}
                   </View>
 
