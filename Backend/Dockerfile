@@ -1,20 +1,24 @@
-# Step 1: Base Image
+# NodeJS Version 18
 FROM node:21
 
-# Step 2: Working Directory
-WORKDIR /src
-
-# Step 3: Copy Package Files
-COPY package*.json ./
-
-# Step 4: Install Dependencies
-RUN npm install --legacy-peer-deps
-
-# Step 5: Copy Application Files
+# Copy Dir
 COPY . .
 
-# Step 6: Expose Port
+# Work to Dir
+
+# Copy package.json and package-lock.json (if available) to leverage Docker caching
+COPY package*.json ./
+
+# Install dependencies, ensuring native binaries are compiled for the container's architecture
+RUN npm install --legacy-peer-deps
+
+# Copy the rest of your application code
+COPY . .
+# Set Env
+
+
+
 EXPOSE 3000
 
-# Step 7: Start Command
-CMD ["npm", "start"]
+
+CMD ["npm", "run", "start"]
