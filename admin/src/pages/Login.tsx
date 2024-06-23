@@ -3,7 +3,7 @@ import React from "react";
 export default function Login() {
   return (
     <div>
-      <form className="max-w-sm mx-auto">
+      <form className="max-w-sm mx-auto bg">
         <div className="mb-5">
           <label
             htmlFor="email"

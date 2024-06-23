@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Send } from "lucide-react";
 const Register = () => {
   const [verified, setVerified] = useState(false);
   const [otp, setOtp] = useState(0);
@@ -10,7 +11,7 @@ const Register = () => {
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
-    phone: "",
+    phone: 0,
     password: "",
   });
   const [required, setRequired] = useState(false);
@@ -67,23 +68,24 @@ const Register = () => {
     }
   };
 
+console.log(typeof(userInfo.phone), " ========================")
   // signup--
   const handleSignUp = async () => {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/v1/auth/signup",
         {
-          name: userInfo.name,
+          username: userInfo.name,
           email: userInfo.email,
-          phone: userInfo.phone,
+          phoneNumber: parseInt(userInfo.phone),
           password: userInfo.password,
-          accountType: "user",
+          accountType: "Admin",
         }
       );
       if (response.data.success) {
         console.log("signup success");
         const token = response.data.token;
-        localStorage.setItem("token", token);
+        sessionStorage.setItem("token", token);
         navigate("/dashboard");
       }
     } catch (error) {
@@ -91,20 +93,21 @@ const Register = () => {
     }
   };
   return (
-    <div className="flex justify-center flex-col items-start ml-40">
+    <main className="flex justify-center w-full h-screen items-center">
+    <div className="flex gap-8 flex-col  w-full rounded-xl  bg-white shadow-md border max-w-sm p-8">
       {/* header */}
-      <div className="w-3/5 h-[300px]  justify-center items-center  mt-12">
-        <h1 className="max-w-xs text-center text-3xl ml-[40px] mt-[100px]">
+      <div className="space-y-6">
+        <h1 className="max-w-xs text-3xl text-center font-semibold">
           Create an {""} Account
         </h1>
         {/*TODO- image add */}
       </div>
       {/* Input container */}
-      <div className="mx-4 space-y-7.5">
+      <div className="space-y-4 ">
         {/* name-- */}
         <div className="">
           <input
-            className="h-14 mx-4 rounded-md  text-base bg-white text-gray-400"
+            className="px-4 py-2 w-full rounded-[8px] border text-base bg-white text-gray-400"
             value={userInfo.name}
             onChange={(e) => {
               setUserInfo({ ...userInfo, name: e.target.value });
@@ -115,7 +118,7 @@ const Register = () => {
         {/* email */}
         <div className="">
           <input
-            className="h-14 mx-4 rounded-md  text-base bg-white text-gray-400"
+            className="px-4 py-2 w-full rounded-[8px] border text-base bg-white text-gray-400"
             value={userInfo.email}
             onChange={(e) => {
               setUserInfo({ ...userInfo, email: e.target.value });
@@ -124,34 +127,35 @@ const Register = () => {
           />
         </div>
         {/* phone */}
-        <div className="flex-col justify-center gap-2">
-          <div className="flex justify-start items-center">
-            <p>+91</p>
+        <div className=" flex flex-col justify-center gap-6 ">
+          <div className="flex justify-start gap-2 items-center">
+            <p className="p-2 border rounded-[8px]">+91</p>
             <input
-              className=""
-              value={userInfo.phone.toString()} // Convert phone number to string for the value prop
+              type="number"
+              className="px-4 py-2 w-full rounded-[8px] border text-base bg-white text-gray-400"
+              value={userInfo?.phone.toString()} // Convert phone number to string for the value prop
               placeholder="phone"
               onChange={
                 (e) =>
                   setUserInfo({
                     ...userInfo,
-                    phone: parseInt(e.target.value, 10) || 0,
+                    phone: e.target.value || 0,
                   }) // Convert input value to number; use 0 as fallback
               }
             />
-            <button onClick={() => sendOtp}>sendOtp</button>
+            <Send onClick={() => sendOtp()} className="border rounded-[8px] p-3 h-10 w-12"  />
           </div>
           {showOtp && userInfo.phone >= 1000000 && (
-            <div className="flex justify-between items-center  ">
+            <div className="flex justify-between items-center gap-2 ">
               <input
-                className="pl-2.5"
+                className="px-4 py-2 w-full rounded-[8px] border text-base bg-white text-gray-400"
                 type="tel"
                 value={otp} // Uncomment to use
                 placeholder="Otp"
                 onChange={(e) => setOtp(e.target.value)}
               />
               <button
-                className="  border-none bg-transparent m"
+                className="  border rounded-[8px]  p-2 bg-transparent m"
                 onClick={verifyOtp}
               >
                 Verify
@@ -161,7 +165,7 @@ const Register = () => {
           {/* password */}
           <div className="">
             <input
-              className="h-14 mx-4 rounded-md pl-9 text-base bg-white text-gray-400"
+              className="px-4 py-2 w-full rounded-[8px] border text-base bg-white text-gray-400"
               value={userInfo.password}
               placeholder="password"
               type={isPasswordVisible ? "text" : "password"}
@@ -189,6 +193,7 @@ const Register = () => {
         </div>
       </div>
     </div>
+    </main>
   );
 };
 
