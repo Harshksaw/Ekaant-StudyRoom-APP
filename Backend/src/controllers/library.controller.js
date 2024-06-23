@@ -47,22 +47,30 @@ const createRoom = async (req, res) => {
     // }
   
 
-    const {
-      name,
-      description,
+    // const {
+    //   name,
+    //   description,
 
 
 
-      location,
-      Price,
-      tags,
+    //   location,
+    //   Price,
+    //   tags,
 
-      contact,
-      amenities,
-      seatLayout,
+    //   contact,
+    //   amenities,
+    //   seatLayout,
 
-    } = req.body;
-    console.log(name, description, thumbnail, imageUrl, location, Price, tags, contact, amenities, seatLayout, seatbooked);
+    // } = req.body;
+    const {name} = req.body;
+    const thumbnail = req.files.thumbnail && req.files.thumbnail[0] ? req.files.thumbnail[0] : null;
+
+    // Check if images are uploaded
+    const images = req.files.images ? req.files.images : [];
+    console.log(images, thumbnail, name);
+
+
+    // console.log(name, description, thumbnail, location, Price, tags, contact, amenities, seatLayout, seatbooked);
 
     // try {
     //   // Upload image to Cloudinary
@@ -115,7 +123,7 @@ const createRoom = async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Room created successfully',
-      room: newRoom,
+      // room: newRoom,
     });
   } catch (error) {
     console.error('Error creating room:', error);

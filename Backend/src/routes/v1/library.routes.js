@@ -7,7 +7,7 @@ const cloudinary = require('../../config/cloudinary');
 const uploader = require('../../config/multer');
 
 Library.get('/ping', LibraryController.pingAdmin);
-Library.post('/createLibrary',uploader.single("thumbnail"), LibraryController.createRoom);
+Library.post('/createLibrary',uploader.fields([{ name: 'thumbnail', maxCount: 1 }, { name: 'images', maxCount: 10 }]), LibraryController.createRoom);
 
 
 
