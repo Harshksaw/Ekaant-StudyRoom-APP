@@ -171,7 +171,7 @@ export default function SignUpScreen() {
   };
   return (
 
-    <KeyboardAvoidingView>
+
 
     
     <LinearGradient
@@ -379,7 +379,7 @@ export default function SignUpScreen() {
         </View>
       </View>
     </LinearGradient>
-    </KeyboardAvoidingView>
+
   );
 }
 
