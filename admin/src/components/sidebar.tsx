@@ -74,7 +74,7 @@ const Sidebar = () => {
             </p>
             <FaChevronDown
               color="black"
-              font-size="
+              fontSize="
             11px"
             />
           </div>
@@ -102,7 +102,6 @@ const Sidebar = () => {
           <p className="text-[14px] leading-5 font-normal text-black">Help</p>
         </div>
       </div>
-
 
       {/* todo-- yeh bhi theek krna hai */}
       <div className="">

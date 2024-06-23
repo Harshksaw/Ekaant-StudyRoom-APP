@@ -52,6 +52,9 @@ function RootLayoutNav() {
         <Stack.Screen name="(routes)/onboarding/index" options={{
           headerShown: false
         }} />
+        <Stack.Screen name="(routes)/library/library.booking" options={{
+          headerShown: false
+        }} />
         <Stack.Screen name="(tabs)" options={{
           headerShown: false
         }} />

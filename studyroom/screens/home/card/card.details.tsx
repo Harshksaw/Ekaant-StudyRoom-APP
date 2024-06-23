@@ -20,6 +20,7 @@ import {
 
 import Carousel from "react-native-reanimated-carousel";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
 
 interface CardDetailScreenProps {
   // Define your params here
@@ -202,6 +203,8 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               style={{
                 width: "50%",
               }}
+
+              onPress={() => router.push("/(routes)/library/library.booking")}
             >
               <View
                 style={{
