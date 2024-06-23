@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  KeyboardAvoidingView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -51,6 +52,7 @@ const LoginScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+     
       <View
         style={{
           position: "absolute",
@@ -63,6 +65,7 @@ const LoginScreen: React.FC = () => {
           zIndex: -1,
         }}
       >
+
         <Image
           source={require("../../../assets/images/bubble 02.png")}
           style={StyleSheet.absoluteFill}
@@ -160,6 +163,7 @@ const LoginScreen: React.FC = () => {
             </Text>
           </TouchableOpacity>
         </View>
+
       </View>
     </SafeAreaView>
   );
