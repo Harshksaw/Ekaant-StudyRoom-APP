@@ -6,7 +6,14 @@ import TimeSlot from "@/components/TimeSlot";
 import Calendar from "@/components/calendar/calendar";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const BookingScreen: React.FC = () => {
@@ -29,13 +36,22 @@ const BookingScreen: React.FC = () => {
     console.log("Selected seat:", selectedDate);
     setSeats(selectedDate);
   };
-//   useEffect(() => {
-//     console.log(selectedDate);
-//   }, [selectedDate]);
-const handleTimeSlotSelect = (timeSlot) => {
-  console.log("Selected Time Slot:", timeSlot);
-  // Handle the selected time slot as needed
-};
+  //   useEffect(() => {
+  //     console.log(selectedDate);
+  //   }, [selectedDate]);
+  const handleTimeSlotSelect = (timeSlot) => {
+    console.log("Selected Time Slot:", timeSlot);
+    // Handle the selected time slot as needed
+  };
+  const [selectedNumber, setSelectedNumber] = useState(null);
+
+  const handleSelectNumber = (number) => {
+    console.log("Selected Number:", number);
+    setSelectedNumber(number);
+    // if (onSelect) {
+    //   onSelect(number);
+    // }
+  };
 
   return (
     <SafeAreaView
@@ -55,11 +71,8 @@ const handleTimeSlotSelect = (timeSlot) => {
           justifyContent: "center",
         }}
       >
-        <Calendar onSelectDate={setSelectedDate} 
-        selected={selectedDate}
-        />
+        <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
       </View>
-   
 
       <View
         style={{
@@ -69,10 +82,7 @@ const handleTimeSlotSelect = (timeSlot) => {
           justifyContent: "center",
         }}
       >
-           <Seats
-      onSeatSelect={handleSeatSelect}
-      />
-     
+        <Seats onSeatSelect={handleSeatSelect} />
       </View>
 
       <TouchableOpacity
@@ -93,8 +103,6 @@ const handleTimeSlotSelect = (timeSlot) => {
           >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-         
-
                 <View>
                   <Text
                     style={{
@@ -102,16 +110,58 @@ const handleTimeSlotSelect = (timeSlot) => {
                       fontSize: 25,
                       fontStyle: "normal",
                       fontWeight: 500,
+                      textAlign: "center",
                     }}
                   >
                     Select Period
                   </Text>
-
-                  <Text
-                    style={{ color: "blue", fontSize: 20, fontWeight: 300, marginTop: 10, textAlign: "center"}}
+                  <View
+                    style={{
+                      height: 100,
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      alignItems: "center",
+                    }}
                   >
-                    {selectedDate}
-                  </Text>
+
+                    <Text
+                    style={{
+
+                      margin: 10,
+                      color: "black",
+                      fontSize: 25,
+                      fontStyle: "normal",
+                      fontWeight: 500,
+                    
+                    }}
+                    >{selectedNumber}</Text>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      style={
+                        {
+                          // alignContent: 'center',
+                        }
+                      }
+                    >
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                        (number) => (
+                          <TouchableOpacity
+                            key={number}
+                            style={[
+                              styles.numberButton,
+                              selectedNumber === number &&
+                                styles.selectedNumber,
+                            ]}
+                            onPress={() => handleSelectNumber(number)}
+                          >
+                            <Text style={styles.numberText}>{number}</Text>
+                          </TouchableOpacity>
+                        )
+                      )}
+                    </ScrollView>
+                  </View>
                 </View>
 
                 <View
@@ -140,22 +190,17 @@ const handleTimeSlotSelect = (timeSlot) => {
                     }}
                   >
                     {[
-                        {from:11, to:12},
-                        {from:11, to:22},
-                        {from:11, to:1}
-
-
+                      { from: 11, to: 12 },
+                      { from: 11, to: 22 },
+                      { from: 11, to: 1 },
                     ].map((slot, index) => (
-                      <TouchableOpacity
-                      
-                      >
-
-                      <TimeSlot 
-                      key={index} 
-                      from={slot.from}
-                      to={slot.to}
-                      onSelect={handleTimeSlotSelect} 
-                      />
+                      <TouchableOpacity>
+                        <TimeSlot
+                          key={index}
+                          from={slot.from}
+                          to={slot.to}
+                          onSelect={handleTimeSlotSelect}
+                        />
                       </TouchableOpacity>
                     ))}
                   </View>
@@ -218,6 +263,22 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  numberButton: {
+    marginHorizontal: 10,
+    width: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "green",
+    height: 40,
+    padding: 10,
+    borderRadius: 10,
+  },
+  selectedNumber: {
+    backgroundColor: "#007bff",
+  },
+  numberText: {
+    color: "#000",
   },
 });
 
