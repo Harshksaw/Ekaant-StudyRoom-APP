@@ -36,13 +36,15 @@ const BookingScreen: React.FC = () => {
     console.log("Selected seat:", selectedDate);
     setSeats(selectedDate);
   };
-  //   useEffect(() => {
-  //     console.log(selectedDate);
-  //   }, [selectedDate]);
-  const handleTimeSlotSelect = (timeSlot) => {
-    console.log("Selected Time Slot:", timeSlot);
-    // Handle the selected time slot as needed
+
+
+  const [selectedSlot, setSelectedSlot] = useState(null);
+
+  // Handler to update the selected slot
+  const handleTimeSlotSelect = (slot) => {
+    setSelectedSlot(slot);
   };
+  
   const [selectedNumber, setSelectedNumber] = useState(null);
 
   const handleSelectNumber = (number) => {
@@ -181,6 +183,7 @@ const BookingScreen: React.FC = () => {
                   >
                     Select Slot
                   </Text>
+
                   <View
                     style={{
                       flexDirection: "row",
@@ -194,14 +197,14 @@ const BookingScreen: React.FC = () => {
                       { from: 11, to: 22 },
                       { from: 11, to: 1 },
                     ].map((slot, index) => (
-                      <TouchableOpacity>
-                        <TimeSlot
-                          key={index}
-                          from={slot.from}
-                          to={slot.to}
-                          onSelect={handleTimeSlotSelect}
-                        />
-                      </TouchableOpacity>
+                      <TouchableOpacity key={index} onPress={() => handleTimeSlotSelect(slot)}>
+                      <TimeSlot
+                        from={slot.from}
+                        to={slot.to}
+                        selected={selectedSlot && selectedSlot.from === slot.from && selectedSlot.to === slot.to}
+                        onSelect={() => handleTimeSlotSelect(slot)}
+                      />
+                    </TouchableOpacity>
                     ))}
                   </View>
 
