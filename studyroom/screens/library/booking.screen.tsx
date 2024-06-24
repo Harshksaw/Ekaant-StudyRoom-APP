@@ -16,6 +16,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+const timeSlots = [
+  { from: '09:00', to: '10:00' },
+  { from: '10:00', to: '11:00' },
+  // Add more time slots as needed
+];
 const BookingScreen: React.FC = () => {
   const [seats, setSeats] = useState("");
 
@@ -53,6 +58,10 @@ const BookingScreen: React.FC = () => {
     // if (onSelect) {
     //   onSelect(number);
     // }
+  };
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
+  const handleSelectTimeSlot = (from: string) => {
+    setSelectedTimeSlot(from);
   };
 
   return (
@@ -192,20 +201,16 @@ const BookingScreen: React.FC = () => {
                       gap: 10,
                     }}
                   >
-                    {[
-                      { from: 11, to: 12 },
-                      { from: 11, to: 22 },
-                      { from: 11, to: 1 },
-                    ].map((slot, index) => (
-                      <TouchableOpacity key={index} onPress={() => handleTimeSlotSelect(slot)}>
-                      <TimeSlot
-                        from={slot.from}
-                        to={slot.to}
-                        selected={selectedSlot && selectedSlot.from === slot.from && selectedSlot.to === slot.to}
-                        onSelect={() => handleTimeSlotSelect(slot)}
-                      />
-                    </TouchableOpacity>
-                    ))}
+                     {timeSlots.map(slot => (
+        <TimeSlot
+          key={slot.from}
+          from={slot.from}
+          to={slot.to}
+          isSelected={selectedTimeSlot === slot.from}
+          onSelect={() => handleSelectTimeSlot(slot.from)}
+        />
+      ))}
+                   
                   </View>
 
                   <Text

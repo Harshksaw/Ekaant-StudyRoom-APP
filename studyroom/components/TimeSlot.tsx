@@ -7,19 +7,19 @@ interface TimeSlotProps {
   onSelect: (timeSlot: { from: string; to: string }) => void;
 }
 
-const TimeSlot: React.FC<TimeSlotProps> = ({ from, to, onSelect }) => {
-  const [isSelected, setIsSelected] = useState<boolean>(false); // Added explicit type
+const TimeSlot: React.FC<TimeSlotProps> = ({ from, to, onSelect, isSelected }) => {
+//   const [isSelected, setIsSelected] = useState<boolean>(false); // Added explicit type
 
-  const toggleSelection = () => {
-    const newSelectionState = !isSelected;
-    setIsSelected(newSelectionState); // Update selection state
-    if (newSelectionState) { // Only call onSelect when the item is selected
-      onSelect({ from, to }); // Invoke onSelect with the time slot
-    }
-  };
+//   const toggleSelection = () => {
+//     const newSelectionState = !isSelected;
+//     setIsSelected(newSelectionState); // Update selection state
+//     if (newSelectionState) { // Only call onSelect when the item is selected
+//       onSelect({ from, to }); // Invoke onSelect with the time slot
+//     }
+//   };
 
   return (
-    <TouchableOpacity onPress={toggleSelection}>
+    <TouchableOpacity onPress={onSelect}>
       <View style={[styles.container, isSelected ? styles.selected : {}]}>
         <Text style={[styles.text, isSelected ? styles.selectedText : {}]}>
           {from} to {to}
