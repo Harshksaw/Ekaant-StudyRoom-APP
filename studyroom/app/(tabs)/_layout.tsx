@@ -5,6 +5,7 @@ import { Image } from "react-native";
 export default function TabsLayout() {
   // const { user } = useUser();
   return (
+    
     <Tabs
     screenOptions={({ route }) => ({
       tabBarIcon: ({ color }) => {

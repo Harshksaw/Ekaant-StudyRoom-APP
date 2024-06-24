@@ -75,7 +75,8 @@ const styles = StyleSheet.create({
 export default function Seats({ onSeatSelect }) {
   // Handle seat selection in this parent component
   const handleSeatSelect = (selectedSeats) => {
-    console.log("Selected Seats:", selectedSeats);
+    onSeatSelect(selectedSeats);
+    // console.log("Selected Seats:", selectedSeats);
     // Perform further actions with selectedSeats data
   };
 

@@ -1,13 +1,14 @@
+
 import store from "@/redux/store"
-import BookingScreen from "@/screens/library/booking.screen"
+import CheckoutScreen from "@/screens/library/checkout.screen"
 import { Provider } from "react-redux"
 
 
-export default function LibraryBooking() {
+export default function CheckOutScreen() {
   return (
     <Provider store={store}>
 
-    <BookingScreen />
+    <CheckoutScreen />
   </Provider>
   )
 }
