@@ -80,6 +80,18 @@ export default function Login() {
             >
               <span className="text-center text-lg font-bold">Cancel</span>
             </button>
+
+            <button
+              className="py-4 px-16 rounded-lg mx-4 mb-25"
+              onClick={() => navigate("/register")}
+            >
+              <span className="text-center text-base font-normal">
+                Don't have Account?
+              </span>
+              <span className="text-center text-lg font-normal text-slate-300 underline">
+                register
+              </span>
+            </button>
           </div>
         </div>
       </div>
