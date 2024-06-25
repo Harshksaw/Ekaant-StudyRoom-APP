@@ -11,14 +11,14 @@ const LibrarySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  thumbnail: {
-    type: String,
-    required: true,
-  },
-  imageUrl: {
-    type: String,
-    required: true,
-  },
+
+ images:[{ type: String }],
+ thumbnail: {
+  type: String,
+
+},
+ 
+
   location: {
     type: String,
     required: true,
@@ -27,15 +27,11 @@ const LibrarySchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  // will see how to implement this-
-  // tags: {
-  //   // features example ["wifi", "parking", "ac", "food"]
-  //   type: [String],
-  //   required: true,
-  // },
+
   reviews: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "RatingAndReview",
+    // type: mongoose.Schema.Types.ObjectId,
+    type:String,
+    // ref: "RatingAndReview",
     required: optional,
   },
   contact: {
@@ -81,6 +77,6 @@ const LibrarySchema = new mongoose.Schema({
 });
 
 module.exports = {
-  // UserLibrary: mongoose.model("UserLibrary", UserLibrarySchema),
+
   Library: mongoose.model("Library", LibrarySchema),
 };
