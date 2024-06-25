@@ -24,82 +24,89 @@ const Sidebar = () => {
       items-center
      "
     >
-      <div className="flex items-center gap-4 py-5  ">
-        {/* <FaTachometerAlt color="white" /> */}
-        <img
-          src={dashboard}
-          alt=""
-          className="w-4
+      <div>
+        <div className="flex items-center gap-4 py-5  ">
+          {/* <FaTachometerAlt color="white" /> */}
+          <img
+            src={dashboard}
+            alt=""
+            className="w-4
         h-4 cursor-pointer"
-        />
-        <p className="text-base  font-bold text-green-600">Dashboard</p>
-      </div>
-      <div className="">
-        {/* <p className="text-[10px] font-extrabold leading-4 text-white/[0.4]">
+          />
+          <p className="text-base  font-bold text-green-600">Dashboard</p>
+        </div>
+        <div className="">
+          {/* <p className="text-[10px] font-extrabold leading-4 text-white/[0.4]">
           INTERFACE
         </p> */}
-        <div className="flex items-center justify-between   cursor-pointer">
-          <div className="flex items-center gap-2 ">
-            <FaRegSun color="black" />
-            <Booking />
+          <div className="flex items-center justify-between   cursor-pointer">
+            <div className="flex items-center gap-2 ">
+              <FaRegSun color="black" />
+              <Booking />
+            </div>
+
+            {/* <FaChevronRight color="white" /> */}
+          </div>
+          {/* todo-- */}
+          {/* manage user styling theek krne hai */}
+          <div className="flex items-center justify-between   cursor-pointer">
+            <div className="flex items-center gap-2 ">
+              <FaRegSun color="black" />
+              <ManageUsers />
+            </div>
+
+            {/* <FaChevronRight color="white" /> */}
           </div>
 
-          {/* <FaChevronRight color="white" /> */}
-        </div>
-        {/* todo-- */}
-        {/* manage user styling theek krne hai */}
-        <div className="flex items-center justify-between   cursor-pointer">
-          <div className="flex items-center gap-2 ">
-            <FaRegSun color="black" />
-            <ManageUsers />
-          </div>
+          <div className="flex items-center justify-between gap-[10px] py-[15px] cursor-pointer">
+            <div className="flex items-center  gap-2 px-1">
+              <FaRegChartBar color="black" />
 
-          {/* <FaChevronRight color="white" /> */}
-        </div>
+              <p className="text-[16px] leading-5 font-normal text-black" 
+              > 
+              <a href="/manage-seats">
 
-        <div className="flex items-center justify-between gap-[10px] py-[15px] cursor-pointer">
-          <div className="flex items-center  gap-2 px-1">
-            <FaRegChartBar color="black" />
-            <p className="text-[16px] leading-5 font-normal text-black">
-              Manage Seats
-            </p>
+                Manage Seats
+              </a>
+              </p>
+            </div>
+            {/* <FaChevronRight color="white" /> */}
           </div>
-          {/* <FaChevronRight color="white" /> */}
-        </div>
-        <div className="flex items-center justify-between gap-[10px] py-[15px] cursor-pointer">
-          <div className="flex items-center  gap-2 px-1">
-            <FaRegChartBar color="black" />
-            <p className="text-[16px] leading-5 font-normal text-black">
-              Reports
-            </p>
-            <FaChevronDown
-              color="black"
-              fontSize="
+          <div className="flex items-center justify-between gap-[10px] py-[15px] cursor-pointer">
+            <div className="flex items-center  gap-2 px-1">
+              <FaRegChartBar color="black" />
+              <p className="text-[16px] leading-5 font-normal text-black">
+                Reports
+              </p>
+              <FaChevronDown
+                color="black"
+                fontSize="
             11px"
-            />
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="pt-4 border-b  border-black pb-4 gap-5">
-        <div className="flex items-center justify-between gap-[10px] py-[15px] cursor-pointer">
-          <div className="flex items-center gap-[10px]">
-            <FaStickyNote color="black" />
-            <p className="text-[14px] leading-5 font-normal text-black">
-              Documents
-            </p>
+        <div className="pt-4 border-b  border-black pb-4 gap-5">
+          <div className="flex items-center justify-between gap-[10px] py-[15px] cursor-pointer">
+            <div className="flex items-center gap-[10px]">
+              <FaStickyNote color="black" />
+              <p className="text-[14px] leading-5 font-normal text-black">
+                Documents
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center justify-between gap-[10px] py-[15px] cursor-pointer">
-          <div className="flex items-center gap-[10px]">
+          <div className="flex items-center justify-between gap-[10px] py-[15px] cursor-pointer">
+            <div className="flex items-center gap-[10px]">
+              <FaRegSun color="black" />
+              <p className="text-[14px] leading-5 font-normal text-black">
+                Settings
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-[10px] py-[15px]">
             <FaRegSun color="black" />
-            <p className="text-[14px] leading-5 font-normal text-black">
-              Settings
-            </p>
+            <p className="text-[14px] leading-5 font-normal text-black">Help</p>
           </div>
-        </div>
-        <div className="flex items-center gap-[10px] py-[15px]">
-          <FaRegSun color="black" />
-          <p className="text-[14px] leading-5 font-normal text-black">Help</p>
         </div>
       </div>
 

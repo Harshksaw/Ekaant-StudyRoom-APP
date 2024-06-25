@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import ProtectedLayout from "./components/ProtectedLayout";
+import ManageSeats from "./pages/ManageSeats";
 function App() {
   // const [count, setCount] = useState(0);
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/view" element={<View />} />
             <Route path="/permission" element={<Permission />} />
             <Route path="/search" element={<Search />} />
+            <Route path="/manage-seats" element={<ManageSeats />} />
           </Route>
         </Routes>
       </BrowserRouter>
