@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const { optional } = require("zod");
 
-
 // library schema
 const LibrarySchema = new mongoose.Schema({
   name: {
@@ -28,13 +27,16 @@ const LibrarySchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  tags: {
-    type: [String],
-    required: true,
-  },
+  // will see how to implement this-
+  // tags: {
+  //   // features example ["wifi", "parking", "ac", "food"]
+  //   type: [String],
+  //   required: true,
+  // },
   reviews: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "RatingAndReview",
+    required: optional,
   },
   contact: {
     type: {},
@@ -42,17 +44,39 @@ const LibrarySchema = new mongoose.Schema({
   },
   amenities: {
     type: [String],
-    required: optional,
+    required: false,
   },
+
   seatLayout: {
-    // type: [{ row: Number, column: Number }],
-    type: [{ position: String }],
+    type: [
+      {
+        id: String,
+        label: String,
+      },
+    ],
     required: true,
   },
+
   seatbooked: {
     // type: [{ row: Number, column: Number }],
-    type: [{ position: String }],
-    required: true,
+    type: [
+      {
+        id: String,
+        label: String,
+      },
+    ],
+    required: false,
+  },
+
+  timeSlot: {
+    from: {
+      type: String,
+      required: true,
+    },
+    to: {
+      type: String,
+      required: true,
+    },
   },
 });
 
