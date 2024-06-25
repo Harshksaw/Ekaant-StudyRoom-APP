@@ -28,6 +28,7 @@ export default function TabsIndex() {
 
   return (
     <>
+    
       {/* {!loading ? (
         <Loader />
       ) : (
