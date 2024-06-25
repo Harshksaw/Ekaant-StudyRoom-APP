@@ -1,5 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-const logger = require("../config/logger.config");
+
 const zod = require("zod");
 const { User } = require("../models");
 const jwt = require("jsonwebtoken");

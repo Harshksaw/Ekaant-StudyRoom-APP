@@ -5,7 +5,7 @@ const { LibraryController } = require(".");
 const multer = require("multer");
 const express = require("express");
 const cloudinary = require("cloudinary").v2;
-const uploadImageToCloudinary = require("../utils/uploadImageToCloudinary");
+
 const { upload } = require("multer");
 const {Library} = require('../models/index')
 const { db } = require("../models/user.model");
