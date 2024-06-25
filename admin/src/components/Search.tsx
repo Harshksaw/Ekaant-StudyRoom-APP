@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "./Navbar";
-import Sidebar from "./sidebar";
+import Sidebar from "./Sidebar";
 const Search = () => {
   const [search, setSearch] = React.useState("search");
   React.useEffect(() => {

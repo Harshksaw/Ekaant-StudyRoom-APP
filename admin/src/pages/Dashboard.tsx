@@ -7,20 +7,13 @@ import { TableDemo } from "@/components/table/Table";
 const Dashboard = () => {
   return (
     <div>
-      <div className="h-[60px] w-full border-b">
-        <Navbar />
-      </div>
-      <div className="flex">
-        <div className="basis-[15%] h-100vh">
-          <Sidebar />
-        </div>
-        <div className="basis-[80%]">
+  
           Seating Plan
           <TableDemo />
           {/* <Seats /> */}
-        </div>
-      </div>
-      <div>{/* <Table /> */}</div>
+
+
+
     </div>
   );
 };

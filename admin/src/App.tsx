@@ -9,6 +9,8 @@ import { Permission, Search, View } from "./components";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Register from "./pages/Register";
+import Home from "./pages/Home";
+import ProtectedLayout from "./components/ProtectedLayout";
 function App() {
   // const [count, setCount] = useState(0);
 
@@ -20,7 +22,12 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={
+
+
+                 <Home/>
+
+              } />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/view" element={<View />} />
             <Route path="/permission" element={<Permission />} />
