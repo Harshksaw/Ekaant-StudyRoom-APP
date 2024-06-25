@@ -2,6 +2,7 @@ import React from "react";
 import { Sidebar, Navbar } from "../components/index";
 import SeatLayout from "@/components/seatinglayout/SeatLayout";
 import Seats from "@/components/seatinglayout/SeatLayout";
+import { TableDemo } from "@/components/table/Table";
 
 const Dashboard = () => {
   return (
@@ -14,14 +15,12 @@ const Dashboard = () => {
           <Sidebar />
         </div>
         <div className="basis-[80%]">
-            Seating Plan
-            <Seats/>
-
-
-
+          Seating Plan
+          <TableDemo />
+          {/* <Seats /> */}
         </div>
-      
       </div>
+      <div>{/* <Table /> */}</div>
     </div>
   );
 };
