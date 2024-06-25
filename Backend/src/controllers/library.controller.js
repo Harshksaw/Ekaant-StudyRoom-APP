@@ -1,12 +1,18 @@
 const { z } = require("zod");
 
 const { LibraryController } = require(".");
-const { uploadImageToCloudinary } = require("../utils/uploader");
+
 const multer = require("multer");
 const express = require("express");
 const cloudinary = require("cloudinary").v2;
+const uploadImageToCloudinary = require("../utils/uploadImageToCloudinary");
+const { upload } = require("multer");
+const {Library} = require('../models/index')
+const { db } = require("../models/user.model");
+
 // async function
 // create a library which
+
 
 const LibrarySchema = z.object({
   name: z.string(),
@@ -50,14 +56,7 @@ const pingAdmin = (req, res) => {
 // Assuming LibraryController.createRoom is an async function
 const createRoom = async (req, res) => {
   try {
-    // Validate the request body
-    const { success } = LibrarySchema.safeParse(req.body);
 
-    console.log(success, req.body);
-
-    if (!success) {
-      return res.status(400).json({ error: "Invalid request body" });
-    }
     const body = req.body;
     console.log(body);
     const {
@@ -73,35 +72,43 @@ const createRoom = async (req, res) => {
       timeSlot,
     } = body;
 
-    // Step 1: Receive Files
-    const files = req.files;
-    const thumbnail = files["thumbnail"] ? files["thumbnail"][0] : null;
-    const images = files["images"] || [];
 
-    // Initialize an array to hold Cloudinary URLs
-    let uploadedFilesUrls = [];
+    // Upload the thumbnail image to Cloudinary
+    const images = req.files?.images || []; 
 
-    // Step 2: Upload to Cloudinary
-    // Upload thumbnail if exists
-    if (thumbnail) {
-      const result = await cloudinary.uploader.upload(thumbnail.path);
-      uploadedFilesUrls.push({ url: result.url, type: "thumbnail" });
-    }
+    // if (!images.length) {
+    //   return res.status(400).json({ message: "No images uploaded!" });
+    // }
+    const uploadedImageUrls = req.files.map(file => file.path);
 
-    // Upload images
-    for (const image of images) {
-      const result = await cloudinary.uploader.upload(image.path);
-      uploadedFilesUrls.push({ url: result.url, type: "image" });
-    }
+    const libraryData = {
+      name,
+      description,
+      location,
+      Price,
+      reviews,
+      contact,
+      amenities,
+      seatLayout,
+      seatbooked,
+      timeSlot,
+      imageUrl: uploadedImageUrls,
+    };
 
-    // Step 3: Save URLs to your database
-    // This step depends on your database schema
-    // Example: await saveLibrary({ images: uploadedFilesUrls });
+    // Validate the library data
+    const LibraryData = await Library.create(libraryData);
 
-    // Step 4: Respond to the client
-    res.json({
+    LibraryData.save();
+ 
+
+    // const newLibrary = await Library.create(libraryData);
+
+    res.status(201).json({
       message: "Library created successfully",
-      urls: uploadedFilesUrls,
+      urls: uploadedImageUrls,
+      library: dbentry,
+
+
     });
   } catch (error) {
     console.error("Error uploading files to Cloudinary:", error);
