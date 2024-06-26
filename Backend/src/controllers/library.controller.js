@@ -66,7 +66,7 @@ const createRoom = async (req, res) => {
       location,
       price,
       reviews,
-      contact,
+
       amenities,
       seatLayout,
       seatbooked,
@@ -92,7 +92,7 @@ const createRoom = async (req, res) => {
       location,
       price,
       reviews,
-      contact,
+
       amenities,
       seatLayout,
       seatbooked,
@@ -112,7 +112,7 @@ const createRoom = async (req, res) => {
 
     res.status(201).json({
       message: "Library created successfully",
-      // urls: uploadedImageUrls,
+
       library: LibraryData,
 
 

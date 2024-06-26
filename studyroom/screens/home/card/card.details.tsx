@@ -166,39 +166,15 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
           <View
             style={{
               flexDirection: "row",
-              // justifyContent: "flex-end",
-              gap: 10,
+              justifyContent: "flex-end",
+              // gap: 10,
+              marginRight: 10,
               borderRadius: 20,
             }}
           >
-            <TouchableOpacity
-              style={{
-                width: "50%",
-                borderRadius: 50,
-              }}
-              onPress={toggleModal}
-            >
-              <View
-                style={{
-                  backgroundColor: "lightgray",
+            
 
-                  padding: 10,
 
-                  borderRadius: 50,
-
-                  marginTop: 20,
-                }}
-              >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "black",
-                  }}
-                >
-                  Contact
-                </Text>
-              </View>
-            </TouchableOpacity>
             <TouchableOpacity
               style={{
                 width: "50%",

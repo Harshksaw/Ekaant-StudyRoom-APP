@@ -8,7 +8,7 @@ const librarySchema = new mongoose.Schema({
   location: { type: String, required: true },
   price: { type: Number, required: true },
   reviews: { type: String, required: false }, // Optional field
-  contact: { type: mongoose.Schema.Types.Mixed, required: true }, // Use Mixed type for flexible objects
+
   amenities: [{ type: String }], // Not required by default
   seatLayout: [
     {
