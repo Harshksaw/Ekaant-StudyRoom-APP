@@ -1,82 +1,34 @@
 const mongoose = require("mongoose");
-const { optional } = require("zod");
 
-// library schema
-const LibrarySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-
- images:[{ type: String }],
- thumbnail: {
-  type: String,
-
-},
- 
-
-  location: {
-    type: String,
-    required: true,
-  },
-  Price: {
-    type: Number,
-    required: true,
-  },
-
-  reviews: {
-    // type: mongoose.Schema.Types.ObjectId,
-    type:String,
-    // ref: "RatingAndReview",
-    required: optional,
-  },
-  contact: {
-    type: {},
-    required: true,
-  },
-  amenities: {
-    type: [String],
-    required: false,
-  },
-
-  seatLayout: {
-    type: [
-      {
-        id: String,
-        label: String,
-      },
-    ],
-    required: true,
-  },
-
-  seatbooked: {
-    // type: [{ row: Number, column: Number }],
-    type: [
-      {
-        id: String,
-        label: String,
-      },
-    ],
-    required: false,
-  },
-
+// Define the library schema
+const librarySchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: { type: String, required: true },
+  images: [{ type: String, required: false }],
+  location: { type: String, required: true },
+  price: { type: Number, required: true },
+  reviews: { type: String, required: false }, // Optional field
+  contact: { type: mongoose.Schema.Types.Mixed, required: true }, // Use Mixed type for flexible objects
+  amenities: [{ type: String }], // Not required by default
+  seatLayout: [
+    {
+      id: { type: String, required: true },
+      label: { type: String, required: true },
+    }
+  ],
+  seatbooked: [
+    {
+      id: { type: String, required: false },
+      label: { type: String, required: false },
+    }
+  ],
   timeSlot: {
-    from: {
-      type: String,
-      required: true,
-    },
-    to: {
-      type: String,
-      required: true,
-    },
+    from: { type: String, required: false },
+    to: { type: String, required: false },
   },
 });
 
+// Export the model
 module.exports = {
-
-  Library: mongoose.model("Library", LibrarySchema),
+  Library: mongoose.model("Library", librarySchema),
 };

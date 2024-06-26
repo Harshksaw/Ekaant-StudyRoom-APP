@@ -7,7 +7,7 @@ const express = require("express");
 const cloudinary = require("cloudinary").v2;
 
 const { upload } = require("multer");
-const {Library} = require('../models/index')
+const {Library} = require('../models/library.model')
 const { db } = require("../models/user.model");
 
 // async function
@@ -57,13 +57,14 @@ const pingAdmin = (req, res) => {
 const createRoom = async (req, res) => {
   try {
 
+
     const body = req.body;
     console.log(body);
     const {
       name,
       description,
       location,
-      Price,
+      price,
       reviews,
       contact,
       amenities,
@@ -71,47 +72,53 @@ const createRoom = async (req, res) => {
       seatbooked,
       timeSlot,
     } = body;
+    const data = req.body;
+  
 
 
     // Upload the thumbnail image to Cloudinary
-    const images = req.files?.images || []; 
+    // const images = req.files?.images || []; 
 
     // if (!images.length) {
     //   return res.status(400).json({ message: "No images uploaded!" });
     // }
-    const uploadedImageUrls = req.files.map(file => file.path);
+  
+    const images = req.files.map(file => file.path);
+    console.log(images);
 
     const libraryData = {
       name,
       description,
       location,
-      Price,
+      price,
       reviews,
       contact,
       amenities,
       seatLayout,
       seatbooked,
       timeSlot,
-      imageUrl: uploadedImageUrls,
+      images
+
+  
     };
 
     // Validate the library data
     const LibraryData = await Library.create(libraryData);
 
-    LibraryData.save();
+    await LibraryData.save();
  
 
     // const newLibrary = await Library.create(libraryData);
 
     res.status(201).json({
       message: "Library created successfully",
-      urls: uploadedImageUrls,
-      library: dbentry,
+      // urls: uploadedImageUrls,
+      library: LibraryData,
 
 
     });
   } catch (error) {
-    console.error("Error uploading files to Cloudinary:", error);
+    console.error("Error ", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
