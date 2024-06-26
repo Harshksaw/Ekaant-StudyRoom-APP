@@ -7,12 +7,11 @@ const express = require("express");
 const cloudinary = require("cloudinary").v2;
 
 const { upload } = require("multer");
-const {Library} = require('../models/library.model')
+const { Library } = require("../models/library.model");
 const { db } = require("../models/user.model");
 
 // async function
 // create a library which
-
 
 const LibrarySchema = z.object({
   name: z.string(),
@@ -56,8 +55,6 @@ const pingAdmin = (req, res) => {
 // Assuming LibraryController.createRoom is an async function
 const createRoom = async (req, res) => {
   try {
-
-
     const body = req.body;
     console.log(body);
     const {
@@ -73,17 +70,15 @@ const createRoom = async (req, res) => {
       timeSlot,
     } = body;
     const data = req.body;
-  
-
 
     // Upload the thumbnail image to Cloudinary
-    // const images = req.files?.images || []; 
+    // const images = req.files?.images || [];
 
     // if (!images.length) {
     //   return res.status(400).json({ message: "No images uploaded!" });
     // }
-  
-    const images = req.files.map(file => file.path);
+
+    const images = req.files.map((file) => file.path);
     console.log(images);
 
     const libraryData = {
@@ -97,16 +92,13 @@ const createRoom = async (req, res) => {
       seatLayout,
       seatbooked,
       timeSlot,
-      images
-
-  
+      images,
     };
 
     // Validate the library data
     const LibraryData = await Library.create(libraryData);
 
     await LibraryData.save();
- 
 
     // const newLibrary = await Library.create(libraryData);
 
@@ -114,8 +106,6 @@ const createRoom = async (req, res) => {
       message: "Library created successfully",
 
       library: LibraryData,
-
-
     });
   } catch (error) {
     console.error("Error ", error);
@@ -123,7 +113,31 @@ const createRoom = async (req, res) => {
   }
 };
 
+// get all rooms
+const getLibrary = async (req, res) => {
+  try {
+    const rooms = await Library.find();
+    res.status(200).json(rooms);
+  } catch (error) {
+    console.error("Error ", error);
+    res.status(500).json({ error: "cannot get rooms" });
+  }
+};
+
+// get room by id
+const getLibraryById = async (req, res) => {
+  const { id } = req.params();
+  try {
+    const room = await Library.findById(id);
+    res.status(200).json(room);
+  } catch (error) {
+    console.error("Error ", error);
+    res.status(500).json({ error: "cannot get room" });
+  }
+};
 module.exports = {
   pingAdmin,
   createRoom,
+  getLibrary,
+  getLibraryById,
 };
