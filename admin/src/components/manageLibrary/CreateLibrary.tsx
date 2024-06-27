@@ -38,6 +38,12 @@ const CreateLibrary = () => {
     // Initial seat layout here
   ]);
 
+  const [images, setImages] = useState([]);
+
+  const handleFileChange = (event) => {
+    setImages(event.target.files); // This stores the FileList in state
+  };
+
   const handleSeatSelect = (seat) => {
     setSeatLayout([]);
 
@@ -48,9 +54,47 @@ const CreateLibrary = () => {
       "------------------------------",
       seatLayout,
       location,
-      "------------------------------"
+      "------------------------------",
+      title,
+      description,
+      price,
+      amenties,
+      location,
+      timeSlots
     );
   }, [seatLayout, location]);
+
+  const createLibraryApi = async (event) => {
+    event.preventDefault(); // Prevent the default form submission
+
+    const formData = new FormData();
+
+    // Append files to formData
+    // for (let i = 0; i < files.length; i++) {
+    //   formData.append("images", files[i]);
+    // }
+
+    // Append other form data
+    formData.append("seatLayout", JSON.stringify(seatLayout));
+    formData.append("seatBooked", JSON.stringify(seatBooked));
+
+    // Example of sending formData using fetch
+    try {
+      const response = await fetch("YOUR_ENDPOINT", {
+        method: "POST",
+        body: formData, // No headers for multipart/form-data, browser sets it
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data); // Handle success
+      } else {
+        console.error("Failed to submit form");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
 
   // const [libraryData, setLibraryData] = useState({
   //   name: title,
@@ -127,7 +171,6 @@ const CreateLibrary = () => {
     // Further processing or state updates with the selected location
   };
 
-
   const predefinedAmenities = [
     "Free WiFi",
     "Restrooms",
@@ -183,6 +226,16 @@ const CreateLibrary = () => {
           />
           {preInput("Photos", "more = better")}
           {/* <PhotosUploader addedPhotos={addedPhotos} onChange={setAddedPhotos} /> */}
+
+          <div className="m-10">
+            <input
+              type="file"
+              name="images"
+              accept="image/*"
+              multiple
+              onChange={handleFileChange}
+            />
+          </div>
 
           <div className="">
             <h2>Select Time Slots</h2>
