@@ -84,10 +84,8 @@ const createRoom = async (req, res) => {
       return res.status(400).json({ error: "Name and location are required." });
     }
    
-    let parsedSeatLayout = seatLayout;
-    let parsedSeatbooked = seatbooked;
 
-    // Error handling for JSON parsing
+
     try {
       if (typeof seatLayout === "string") {
         parsedSeatLayout = JSON.parse(seatLayout);
@@ -98,6 +96,16 @@ const createRoom = async (req, res) => {
     } catch (error) {
       return res.status(400).json({ error: "Invalid JSON format for seatLayout or seatbooked." });
     }
+    
+    // Add parsing logic for timeSlot
+    let parsedTimeSlot = timeSlot;
+    try {
+      if (typeof timeSlot === "string") {
+        parsedTimeSlot = JSON.parse(timeSlot);
+      }
+    } catch (error) {
+      return res.status(400).json({ error: "Invalid JSON format for timeSlot." });
+    }
     const libraryData = {
       name,
       description,
@@ -107,10 +115,9 @@ const createRoom = async (req, res) => {
       amenities,
       seatLayout: parsedSeatLayout,
       seatbooked: parsedSeatbooked,
-      timeSlot,
+      timeSlot: parsedTimeSlot, // Use the parsed version
       images,
     };
-
     const LibraryData = await Library.create(libraryData);
     await LibraryData.save();
 

@@ -7,6 +7,7 @@ import axios from "axios";
 import { Navigate, useParams } from "react-router-dom";
 import LocationSelector from "./LocationSelector.tsx";
 import Seats from "../seatinglayout/SeatLayout.tsx";
+import { BASEURL } from "@/lib/utils.ts";
 // import PhotosUploader from "./PhotosUploader.tsx";
 // type Props = {};
 
@@ -15,7 +16,7 @@ const CreateLibrary = () => {
   // const { id } = useParams();
   const [title, setTitle] = useState("");
 
-  const [addedPhotos, setAddedPhotos] = useState([]);
+  // const [addedPhotos, setAddedPhotos] = useState([]);
   const [description, setDescription] = useState("");
 
   const [amenties, setAmenties] = useState([]);
@@ -30,9 +31,7 @@ const CreateLibrary = () => {
     { from: "", to: "" },
   ]);
 
-  const [seatBooked, setSeatBooked] = useState([
-    // Initial booked seats here
-  ]);
+  const [seatBooked, setSeatBooked] = useState([]);
 
   const [seatLayout, setSeatLayout] = useState([
     // Initial seat layout here
@@ -41,7 +40,7 @@ const CreateLibrary = () => {
   const [images, setImages] = useState([]);
 
   const handleFileChange = (event) => {
-    setImages(event.target.files); // This stores the FileList in state
+    setImages(event.target.files); 
   };
 
   const handleSeatSelect = (seat) => {
@@ -64,66 +63,7 @@ const CreateLibrary = () => {
     );
   }, [seatLayout, location]);
 
-  const createLibraryApi = async (event) => {
-    event.preventDefault(); // Prevent the default form submission
-
-    const formData = new FormData();
-
-    // Append files to formData
-    // for (let i = 0; i < files.length; i++) {
-    //   formData.append("images", files[i]);
-    // }
-
-    // Append other form data
-    formData.append("seatLayout", JSON.stringify(seatLayout));
-    formData.append("seatBooked", JSON.stringify(seatBooked));
-
-    // Example of sending formData using fetch
-    try {
-      const response = await fetch("YOUR_ENDPOINT", {
-        method: "POST",
-        body: formData, // No headers for multipart/form-data, browser sets it
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data); // Handle success
-      } else {
-        console.error("Failed to submit form");
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  };
-
-  // const [libraryData, setLibraryData] = useState({
-  //   name: title,
-  //   description:description,
-  //   location: location ,
-  //   price: price,
-
-  //   timeSlots: timeSlots,
-
-  // });
-
-  // useEffect(() => {
-  //   if (!id) {
-  //     return;
-  // //   }
-  //   axios.get("/places/" + id).then((response) => {
-  //     const { data } = response;
-  //     setTitle(data.title);
-  //     setdescription(data.description);
-  //     setAddedPhotos(data.photos);
-  //     setDescription(data.description);
-  //     setPerks(data.perks);
-  //     setExtraInfo(data.extraInfo);
-  //     setCheckIn(data.checkIn);
-  //     setCheckOut(data.checkOut);
-  //     setMaxGuests(data.maxGuests);
-  //     setPrice(data.price);
-  //   });
-  // }, [id]);
+ 
   function inputHeader(text) {
     return <h2 className="text-2xl mt-4">{text}</h2>;
   }
@@ -189,10 +129,48 @@ const CreateLibrary = () => {
     }
   };
 
-  const savePlace = (event) => {
+  const savePlace = async(event) => {
     event.preventDefault();
-    // Save place logic here
-    // After saving, you might want to navigate to the next step or show a success message
+   
+  const formData = new FormData();
+
+  // Append files to formData
+  for (let i = 0; i < images.length; i++) {
+    formData.append("images", images[i]);
+  }
+
+
+  formData.append("name", title);
+  formData.append("description", description);
+  formData.append("location", JSON.stringify(location));
+  formData.append("price", JSON.stringify(price));
+
+  formData.append("amenities", JSON.stringify(amenties));
+  formData.append("seatLayout", JSON.stringify(seatLayout));
+
+  formData.append("timeSlot", JSON.stringify(timeSlots));
+  formData.append("seatLayout", JSON.stringify(seatLayout));
+  // formData.append("seatBooked", JSON.stringify(seatBooked));
+
+
+  try {
+    const response = await axios.post(`${BASEURL}/api/v1/library/createLibrary`, {
+      body: formData,
+    });
+    
+    
+    if (response.status === 200) {
+      const data = response;
+      console.log(data); // Handle success
+    } else {[
+  {"id": "1A", "label": "Seat 1A"},
+  {"id": "1B", "label": "Seat 1B"}
+]
+      console.error('Failed to submit form');
+    }
+  } catch (error) {
+    console.error('Error submitting form:', error);
+  }
   };
 
   const goToNextStep = () => {
