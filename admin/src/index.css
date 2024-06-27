@@ -9,6 +9,29 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="tel"],
+textarea {
+  @apply w-full border my-1 py-2 px-3 rounded-2xl;
+  max-width: 50vw;
+}
+input {
+  max-width: 50vw;
+}
+textarea {
+  height: 140px;
+}
+button {
+  @apply bg-gray-300;
+}
+button.primary {
+  background-color: black;
+  @apply bg-primary p-2 w-full text-white rounded-2xl;
 }
