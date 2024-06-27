@@ -22,10 +22,10 @@ const librarySchema = new mongoose.Schema({
       label: { type: String, required: false },
     }
   ],
-  timeSlot: {
+  timeSlot:[ {
     from: { type: String, required: false },
     to: { type: String, required: false },
-  },
+  }],
 });
 
 // Export the model
