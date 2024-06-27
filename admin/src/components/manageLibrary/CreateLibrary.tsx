@@ -1,10 +1,11 @@
 import React from "react";
 // import PhotosUploader from "../PhotosUploader.jsx";
-// import Perks from "../Perks.jsx";
+import Perks from "./Perks.tsx";
 import { useEffect, useState } from "react";
 import axios from "axios";
 // import AccountNav from "../AccountNav";
 import { Navigate, useParams } from "react-router-dom";
+import LocationSelector from "./LocationSelector.tsx";
 // type Props = {};
 
 const CreateLibrary = () => {
@@ -15,8 +16,8 @@ const CreateLibrary = () => {
   const [description, setDescription] = useState("");
   const [perks, setPerks] = useState([]);
   const [extraInfo, setExtraInfo] = useState("");
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [maxGuests, setMaxGuests] = useState(1);
   const [price, setPrice] = useState(100);
   const [redirect, setRedirect] = useState(false);
@@ -115,7 +116,7 @@ const CreateLibrary = () => {
         />
         {preInput("Perks", "select all the perks of your place")}
         <div className="grid mt-2 gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-          {/* <Perks selected={perks} onChange={setPerks} /> */}
+          <Perks selected={perks} onChange={setPerks} />
         </div>
         {preInput("Extra info", "house rules, etc")}
         <textarea
@@ -123,25 +124,25 @@ const CreateLibrary = () => {
           onChange={(e) => setExtraInfo(e.target.value)}
         />
         {preInput(
-          "Check in&out times",
+          "time slots",
           "add check in and out times, remember to have some time window for cleaning the room between guests"
         )}
         <div className="grid gap-2 grid-cols-2 md:grid-cols-4">
           <div>
-            <h3 className="mt-2 -mb-1">Check in time</h3>
+            <h3 className="mt-2 -mb-1"> from</h3>
             <input
               type="text"
-              value={checkIn}
-              onChange={(e) => setCheckIn(e.target.value)}
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
               placeholder="14"
             />
           </div>
           <div>
-            <h3 className="mt-2 -mb-1">Check out time</h3>
+            <h3 className="mt-2 -mb-1">to</h3>
             <input
               type="text"
-              value={checkOut}
-              onChange={(e) => setCheckOut(e.target.value)}
+              value={to}
+              onChange={(e) => setTo(e.target.value)}
               placeholder="11"
             />
           </div>
@@ -154,7 +155,7 @@ const CreateLibrary = () => {
             />
           </div>
           <div>
-            <h3 className="mt-2 -mb-1">Price per night</h3>
+            <h3 className="mt-2 -mb-1">Price</h3>
             <input
               type="number"
               value={price}
@@ -162,8 +163,9 @@ const CreateLibrary = () => {
             />
           </div>
         </div>
-        <button className="primary  ">Save</button>
+        <button className="primary my-4 bg-slate-500 ">Save</button>
       </form>
+      <LocationSelector />
     </div>
   );
 };
