@@ -22,7 +22,7 @@ const LibrarySchema = z.object({
   Price: z.number(),
   // tags: z.array(z.string()),
   reviews: z.string().uuid().optional(), // Assuming the ObjectId is a UUID; adjust as necessary
-  contact: z.record(z.any()), // Assuming contact is a flexible object; adjust as necessary
+
   amenities: z.array(z.string()).optional(), // Marked as optional to handle the 'required: optional'
   seatLayout: z.array(
     z.object({
