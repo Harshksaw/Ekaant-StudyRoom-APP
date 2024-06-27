@@ -63,13 +63,12 @@ const createRoom = async (req, res) => {
       location,
       price,
       reviews,
-
       amenities,
       seatLayout,
       seatbooked,
       timeSlot,
-    } = body;
-    const data = req.body;
+
+    } = req.body;
 
     // Upload the thumbnail image to Cloudinary
     // const images = req.files?.images || [];
@@ -79,32 +78,45 @@ const createRoom = async (req, res) => {
     // }
 
     const images = req.files.map((file) => file.path);
-    console.log(images);
+    // console.log(images);
 
+    if (!name || !location) {
+      return res.status(400).json({ error: "Name and location are required." });
+    }
+   
+    let parsedSeatLayout = seatLayout;
+    let parsedSeatbooked = seatbooked;
+
+    // Error handling for JSON parsing
+    try {
+      if (typeof seatLayout === "string") {
+        parsedSeatLayout = JSON.parse(seatLayout);
+      }
+      if (typeof seatbooked === "string") {
+        parsedSeatbooked = JSON.parse(seatbooked);
+      }
+    } catch (error) {
+      return res.status(400).json({ error: "Invalid JSON format for seatLayout or seatbooked." });
+    }
     const libraryData = {
       name,
       description,
       location,
       price,
       reviews,
-
       amenities,
-      seatLayout,
-      seatbooked,
+      seatLayout: parsedSeatLayout,
+      seatbooked: parsedSeatbooked,
       timeSlot,
       images,
     };
 
-    // Validate the library data
     const LibraryData = await Library.create(libraryData);
-
     await LibraryData.save();
 
     // const newLibrary = await Library.create(libraryData);
-
-    res.status(201).json({
+  res.status(201).json({
       message: "Library created successfully",
-
       library: LibraryData,
     });
   } catch (error) {
@@ -114,13 +126,22 @@ const createRoom = async (req, res) => {
 };
 
 // get all rooms
+
+
 const getLibrary = async (req, res) => {
   try {
-    const rooms = await Library.find();
-    res.status(200).json(rooms);
+    const roomsData = await Library.find();
+    res.status(200).json({
+      success: true,
+      count : roomsData.length,
+      data :roomsData,
+    });
   } catch (error) {
-    console.error("Error ", error);
-    res.status(500).json({ error: "cannot get rooms" });
+    console.error("Error fetching library data:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to retrieve library rooms. Please try again later.",
+    });
   }
 };
 

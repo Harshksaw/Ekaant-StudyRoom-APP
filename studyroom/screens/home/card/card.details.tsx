@@ -31,6 +31,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
   const params = useRoute();
   const data = JSON.parse(params.params.item);
+  console.log("card.details.tsx",data);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -42,7 +43,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     <SafeAreaView style={styles.container}>
       <Header />
       <View style={{ flex: 1 }}>
-        <Carousel
+        {/* <Carousel
           loop
           width={width}
           height={width / 1.2} // Adjusted height for better aspect ratio
@@ -54,7 +55,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               <Image source={{ uri: item }} style={styles.image} />
             </View>
           )}
-        />
+        /> */}
       </View>
 
       <ScrollView

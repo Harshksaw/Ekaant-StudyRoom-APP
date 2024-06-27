@@ -4,6 +4,7 @@ import { SplashScreen, Stack } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { View, useColorScheme } from 'react-native';
 import TabsIndex from './index';
+import CardDetailScreen from '@/screens/home/card/card.details';
 
 export default function RootLayout() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -46,7 +47,9 @@ function RootLayoutNav() {
         <Stack.Screen name="(routes)/signup/index" options={{
           headerShown: false
         }} />
-        <Stack.Screen name="(routes)/card-details/index" options={{
+        <Stack.Screen name="(routes)/card-details/index"
+          
+        options={{
           headerShown: false
         }} />
         <Stack.Screen name="(routes)/onboarding/index" options={{

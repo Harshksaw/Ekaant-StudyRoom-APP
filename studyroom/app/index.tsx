@@ -33,7 +33,7 @@ export default function TabsIndex() {
         <Loader />
       ) : (
         )} */}
-      <Redirect href={!user ? "(routes)/library/library.booking" : "/(routes)/onboarding"} />
+      <Redirect href={!user ? "(tabs)" : "/(routes)/onboarding"} />
       {/* <Redirect href="(routes)/SeatBooking" /> */}
     </>
   );
