@@ -21,6 +21,9 @@ const CreateLibrary = () => {
   const [maxGuests, setMaxGuests] = useState(1);
   const [price, setPrice] = useState(100);
   const [redirect, setRedirect] = useState(false);
+
+
+  const [location ,setLocation] = useState(null);
   // useEffect(() => {
   //   if (!id) {
   //     return;
@@ -85,6 +88,11 @@ const CreateLibrary = () => {
   if (redirect) {
     // return <Navigate to={"/account/places"} />;
   }
+  const handleLocationSelect = (location) => {
+    console.log("Selected Location:", location);
+    setLocation(location);
+    // Further processing or state updates with the selected location
+  };
 
   return (
     <div className="m-2 ">
@@ -163,9 +171,23 @@ const CreateLibrary = () => {
             />
           </div>
         </div>
-        <button className="primary my-4 bg-slate-500 ">Save</button>
+       
       </form>
-      <LocationSelector />
+      <LocationSelector onLocationSelect={handleLocationSelect} />
+
+
+      {title && address && description && perks.length > 0 && extraInfo && from && to && maxGuests && price ? (
+
+        <div className="flex justify-center">
+        <button className="bg-blue-300 w-20 h-5  rounded-md m-10 " onClick={savePlace}>
+          Save
+        </button>
+      </div>
+      ) : (
+        <div className="m-10 p-5 ">
+          <p className="text-red-500 align-center">Please fill all the fields</p>
+        </div>
+      )}
     </div>
   );
 };

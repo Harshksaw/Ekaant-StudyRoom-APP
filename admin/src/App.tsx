@@ -10,9 +10,10 @@ import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import ProtectedLayout from "./components/ProtectedLayout";
+
 import ManageSeats from "./pages/ManageSeats";
-import CreateLibrary from "./components/ManageLibrary/CreateLibrary";
+import CreateLibrary from "./components/manageLibrary/CreateLibrary";
+
 function App() {
   // const [count, setCount] = useState(0);
 
