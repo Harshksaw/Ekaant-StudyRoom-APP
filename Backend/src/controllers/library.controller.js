@@ -65,7 +65,7 @@ const createRoom = async (req, res) => {
       reviews,
       amenities,
       seatLayout,
-      seatbooked,
+
       timeSlot,
 
     } = req.body;
@@ -85,19 +85,26 @@ const createRoom = async (req, res) => {
     }
    
 
-
-    try {
-      if (typeof seatLayout === "string") {
-        parsedSeatLayout = JSON.parse(seatLayout);
-      }
-      if (typeof seatbooked === "string") {
-        parsedSeatbooked = JSON.parse(seatbooked);
-      }
-    } catch (error) {
-      return res.status(400).json({ error: "Invalid JSON format for seatLayout or seatbooked." });
-    }
-    
-    // Add parsing logic for timeSlot
+    // let parsedSeatLayout;
+    // let parsedSeatbooked;
+  
+    // try {
+    //   if (typeof seatLayout === "string") {
+    //     parsedSeatLayout = JSON.parse(seatLayout);
+    //   } else {
+    //     // If seatLayout is not a string, assume it's already in the correct format or undefined
+    //     parsedSeatLayout = seatLayout;
+    //   }
+    //   if (typeof seatbooked === "string") {
+    //     parsedSeatbooked = JSON.parse(seatbooked);
+    //   } else {
+    //     // If seatbooked is not a string, assume it's already in the correct format or undefined
+    //     parsedSeatbooked = seatbooked;
+    //   }
+    // } catch (error) {
+    //   return res.status(400).json({ error: "Invalid JSON format for seatLayout or seatbooked." });
+    // }
+  
     let parsedTimeSlot = timeSlot;
     try {
       if (typeof timeSlot === "string") {
@@ -113,9 +120,9 @@ const createRoom = async (req, res) => {
       price,
       reviews,
       amenities,
-      seatLayout: parsedSeatLayout,
-      seatbooked: parsedSeatbooked,
-      timeSlot: parsedTimeSlot, // Use the parsed version
+      seatLayout,
+
+      timeSlot: parsedTimeSlot,
       images,
     };
     const LibraryData = await Library.create(libraryData);
