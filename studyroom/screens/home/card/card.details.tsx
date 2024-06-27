@@ -19,7 +19,7 @@ import {
 
 import Carousel from "react-native-reanimated-carousel";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import Button from "@/components/Button";
 
 interface CardDetailScreenProps {
@@ -31,7 +31,13 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
   const params = useRoute();
   const data = JSON.parse(params.params.item);
-  console.log("card.details.tsx", data);
+
+
+
+  const seat = data.seatLayout;
+  console.log(seat)
+
+
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -39,23 +45,34 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     setIsModalVisible(!isModalVisible);
   };
 
+    const librarybooking = () => {
+
+      router.push({
+        pathname: "/(routes)/library/library.booking",
+        params: { item: JSON.stringify(seat) },
+      })
+
+      // params: { params.item.seatLayout },
+    // });
+
+    }
   return (
     <SafeAreaView style={styles.container}>
       <Header />
       <View style={{ flex: 1 }}>
-        {/* <Carousel
+        <Carousel
           loop
           width={width}
           height={width / 1.2} // Adjusted height for better aspect ratio
           autoPlay={true}
-          data={data.imageUrl}
-          scrollAnimationDuration={4000}
+          data={data.images}
+          scrollAnimationDuration={80000}
           renderItem={({ item, index }) => (
             <View style={styles.imageContainer}>
               <Image source={{ uri: item }} style={styles.image} />
             </View>
           )}
-        /> */}
+        />
       </View>
 
       <ScrollView
@@ -68,30 +85,27 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
         }}
       >
         <View style={styles.cardDetails}>
-
           <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 10,
-            gap: 10,
-          
-          }}
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 10,
+              gap: 10,
+            }}
           >
-
-          <Text style={styles.heading}>{data?.name}</Text>
-          <Text
-          style={{
-            fontSize: 15,
-            color: "blue",
-            fontWeight: "500",
-            fontStyle: "italic",
-
-          }}
-          > ₹{data?.price}/month
-
-          </Text>
+            <Text style={styles.heading}>{data?.name}</Text>
+            <Text
+              style={{
+                fontSize: 15,
+                color: "blue",
+                fontWeight: "500",
+                fontStyle: "italic",
+              }}
+            >
+              {" "}
+              ₹{data?.price}/month
+            </Text>
           </View>
 
           <View
@@ -123,6 +137,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               borderRadius: 10,
               padding: 10,
               marginBottom: 10,
+              minHeight: 100,
             }}
             numberOfLines={7}
           >
@@ -200,16 +215,19 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               borderRadius: 20,
             }}
           >
-            <TouchableOpacity
-              style={
-                {
-                  // width: "50%",
-                }
-              }
-              onPress={() => router.push("/(routes)/library/library.booking")}
-            >
-              <Button text="Book Now" width={300} />
-            </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => librarybooking()}
+              >
+                    <View>
+                <Button text="BookNow" width={300} />
+              </View>
+
+                {/* pathname: "/(routes)/library/library.booking", */}
+              </TouchableOpacity>
+
+          
+
           </View>
 
           {/* //ratings */}

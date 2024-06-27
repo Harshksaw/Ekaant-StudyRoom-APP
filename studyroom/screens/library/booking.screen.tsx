@@ -4,7 +4,7 @@ import Seats from "@/components/Seats";
 import TimeSlot from "@/components/TimeSlot";
 import Calendar from "@/components/calendar/calendar";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from 'react-redux'
 import {
@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { setBookingDetails } from "@/redux/bookingSlice";
+import { useRoute } from "@react-navigation/native";
 
 const timeSlots = [
   { from: "09:00", to: "10:00" },
@@ -24,7 +25,19 @@ const timeSlots = [
   // Add more time slots as needed
 ];
 const BookingScreen: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); 
+  const params = useRoute()
+
+  const data = JSON.parse(params.params.item);
+  console.log("params",data);
+
+
+
+
+  // QueryData.map((data) => {
+  //   console.log("QueryData", data); 
+  // })
+
 
 
   // State for managing seats selection

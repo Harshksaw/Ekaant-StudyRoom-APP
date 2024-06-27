@@ -42,7 +42,7 @@ const UserSchema = new mongoose.Schema({
   bookings: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Library",
+      ref: "Library", //bboking table
     },
   ],
   image: {

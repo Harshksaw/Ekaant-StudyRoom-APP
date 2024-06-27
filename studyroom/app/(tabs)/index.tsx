@@ -33,9 +33,8 @@ export default function index() {
     };
 
     fetchLibraryDate();
-    console.log(data)
+    console.log(data);
   }, []);
-
 
   const filters = [
     { id: 1, name: "Filter 1" },
@@ -45,72 +44,70 @@ export default function index() {
 
   // return <HomeScreen />;
   const renderItem = ({ item }) => (
-
     <TouchableOpacity
-    key={item._id}
-    onPress={() =>
-      router.push({
-        pathname: "/(routes)/card-details",
-        params: { item: JSON.stringify(item) },
-        
-      })
-
-    }
+      key={item._id}
+      onPress={() =>
+        router.push({
+          pathname: "/(routes)/card-details",
+          params: { item: JSON.stringify(item) },
+        })
+      }
     >
-
-    
-    <View style={styles.card}>
-      <Image
-        source={{ uri: item.thumbnail }}
-        style={{ width: 100, height: 100, borderRadius: 20 }}
-      />
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "column",
-          width: 200,
-          marginLeft: 20,
-          // justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.card}>
+        <Image
+          source={{ uri: item.images[0] }}
+          style={{ width: 100, height: 100, borderRadius: 20 }}
+        />
         <View
           style={{
             flex: 1,
-            width: 250,
 
-            marginHorizontal: 10,
             flexDirection: "column",
-            justifyContent: "space-evenly",
-
-            // justifyContent:'flex-start',
-            alignItems: "flex-start",
+            width: 200,
+            marginLeft: 20,
+            // justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          <Text>{item.name}</Text>
-          <Text>{item.description.split(" ").slice(0, 5).join(" ") + (item.description.split(" ").length > 5 ? "..." : "")}</Text>
-        </View>
+          <View
+            style={{
+              flex: 1,
+              width: 250,
 
-        <View
-          style={{
-            // flex:1,
-            height: 20,
-            width: 250,
-            flexDirection: "row",
-            paddingRight: 20,
+              marginHorizontal: 10,
+              flexDirection: "column",
+              justifyContent: "space-evenly",
 
-            justifyContent: "space-between",
-            alignItems: "space-between",
-          }}
-        >
-          
-            {item?.ratings ? <Text> ********{item?.ratings}</Text> : '' }
-            
-           
-          <Text>{item.distance}</Text>
+              // justifyContent:'flex-start',
+              alignItems: "flex-start",
+            }}
+          >
+            <Text>{item.name}</Text>
+            <Text>
+              {item.description.split(" ").slice(0, 5).join(" ") +
+                (item.description.split(" ").length > 5 ? "..." : "")}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              // flex:1,
+              height: 20,
+              width: 250,
+              flexDirection: "row",
+              paddingRight: 20,
+
+              justifyContent: "space-between",
+              alignItems: "space-between",
+            }}
+          >
+            {item?.ratings ? <Text> ********{item?.ratings}</Text> : ""}
+
+            <Text>{item.distance}</Text>
+          </View>
+
         </View>
       </View>
-    </View>
     </TouchableOpacity>
   );
 
@@ -121,7 +118,7 @@ export default function index() {
       }}
     >
       {/* <View style={styles.header}></View> */}
-      <Header/>
+      <Header />
       <View style={styles.welcome}>
         {/* <View></View> */}
 
@@ -143,8 +140,6 @@ export default function index() {
             Harsh
           </Text>
         </Text>
-
-
       </View>
       <View style={styles.carousel}>
         <Carousel
@@ -165,9 +160,8 @@ export default function index() {
               }}
             >
               <Image
-              source={require("../../assets/images/slider1.png")}
-              width={width}
-              
+                source={require("../../assets/images/slider1.png")}
+                width={width}
               />
             </View>
           )}
@@ -177,7 +171,7 @@ export default function index() {
       <View style={styles.filters}>
         {filters.map((filter, index) => (
           <TouchableOpacity
-          key={index}
+            key={index}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -222,20 +216,29 @@ export default function index() {
         </View>
 
         {isLoading ? (
-          <ActivityIndicator size="large" color="#0000ff" style={{ paddingTop: 50 }} />
+          <ActivityIndicator
+            size="large"
+            color="#0000ff"
+            style={{ paddingTop: 50 }}
+          />
         ) : (
           <>
-          {data && data.data.map((item) => renderItem({ item }))}
-          
-          {data?.length === 0 && (
-            <Text
-              style={{ textAlign: 'center', paddingTop: 50, fontSize: 18, color: 'gray' }}
-            >
-              No listings available at the moment.
-            </Text>
-          )}
-        </>
-      )}
+            {data && data.data.map((item) => renderItem({ item }))}
+
+            {data?.length === 0 && (
+              <Text
+                style={{
+                  textAlign: "center",
+                  paddingTop: 50,
+                  fontSize: 18,
+                  color: "gray",
+                }}
+              >
+                No listings available at the moment.
+              </Text>
+            )}
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
