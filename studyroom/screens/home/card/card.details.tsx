@@ -15,12 +15,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
-  Button,
 } from "react-native";
 
 import Carousel from "react-native-reanimated-carousel";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import Button from "@/components/Button";
 
 interface CardDetailScreenProps {
   // Define your params here
@@ -31,7 +31,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
   const params = useRoute();
   const data = JSON.parse(params.params.item);
-  console.log("card.details.tsx",data);
+  console.log("card.details.tsx", data);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -68,16 +68,52 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
         }}
       >
         <View style={styles.cardDetails}>
-          <Text style={styles.heading}>{data.title}</Text>
+
+          <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 10,
+            gap: 10,
+          
+          }}
+          >
+
+          <Text style={styles.heading}>{data?.name}</Text>
           <Text
+          style={{
+            fontSize: 15,
+            color: "blue",
+            fontWeight: "500",
+            fontStyle: "italic",
+
+          }}
+          > ₹{data?.price}/month
+
+          </Text>
+          </View>
+
+          <View
             style={{
-              fontSize: 15,
-              color: "black",
-              fontWeight: "semi-bold",
+              flexDirection: "row",
+              // justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 10,
+              gap: 10,
             }}
           >
-            {data.location}
-          </Text>
+            <Ionicons name="location" size={24} />
+            <Text
+              style={{
+                fontSize: 15,
+                color: "black",
+                fontWeight: "semi-bold",
+              }}
+            >
+              {data.location}
+            </Text>
+          </View>
 
           <Text style={styles.amenities}>About</Text>
           <Text
@@ -90,14 +126,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             }}
             numberOfLines={7}
           >
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
-            magni illo fuga, tempora pariatur ea non minus est? Laudantium, ex
-            deleniti. Architecto perferendis id iure nesciunt? Repudiandae
-            delectus blanditiis exercitationem. Lorem ipsum dolor sit, amet
-            consectetur adipisicing elit. Corporis, excepturi dignissimos.
-            Corporis nisi natus hic, sapiente veritatis temporibus delectus
-            aliquam quisquam architecto odio laudantium? Veniam, eum. Soluta
-            quis sunt accusamus.
+            {data?.description}
           </Text>
 
           <View>
@@ -160,51 +189,26 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 </TouchableOpacity>
               </View>
             </View>
-
-        
           </Modal>
 
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "flex-end",
+              justifyContent: "center",
               // gap: 10,
               marginRight: 10,
               borderRadius: 20,
             }}
           >
-            
-
-
             <TouchableOpacity
-              style={{
-                width: "50%",
-              }}
-
+              style={
+                {
+                  // width: "50%",
+                }
+              }
               onPress={() => router.push("/(routes)/library/library.booking")}
             >
-              <View
-                style={{
-                  backgroundColor: "blue",
-
-                  padding: 10,
-
-                  borderRadius: 50,
-
-                  marginTop: 20,
-                }}
-              >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "white",
-                    fontSize: 15,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Book Now
-                </Text>
-              </View>
+              <Button text="Book Now" width={300} />
             </TouchableOpacity>
           </View>
 
