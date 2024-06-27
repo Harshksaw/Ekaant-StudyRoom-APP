@@ -22,7 +22,7 @@ const ManageUsers = () => {
             <AccordionTrigger>Manage Team</AccordionTrigger>
             <AccordionContent>
               <Link
-                to="/view"
+                to="/manage-user/view"
                 className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
               >
                 View
@@ -30,7 +30,7 @@ const ManageUsers = () => {
             </AccordionContent>
             <AccordionContent>
               <Link
-                to="/permission"
+                to="/manage-user/permission"
                 className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
               >
                 Permission
@@ -38,7 +38,7 @@ const ManageUsers = () => {
             </AccordionContent>
             <AccordionContent>
               <Link
-                to="/search"
+                to="/manage-user/search"
                 className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
               >
                 Search
