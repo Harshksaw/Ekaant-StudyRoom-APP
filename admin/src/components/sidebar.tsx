@@ -11,7 +11,9 @@ import {
 } from "react-icons/fa";
 import dashboard from "../assets/images/chart-pie.png";
 import ManageUsers from "./ManageUsers";
-import Booking from "./Booking";
+// import Booking from "./ManageLibrary";
+import { Link } from "react-router-dom";
+import ManageLibrary from "./ManageLibrary";
 const Sidebar = () => {
   return (
     <div
@@ -42,7 +44,7 @@ const Sidebar = () => {
           <div className="flex items-center justify-between   cursor-pointer">
             <div className="flex items-center gap-2 ">
               <FaRegSun color="black" />
-              <Booking />
+              <ManageLibrary />
             </div>
 
             {/* <FaChevronRight color="white" /> */}
@@ -62,12 +64,8 @@ const Sidebar = () => {
             <div className="flex items-center  gap-2 px-1">
               <FaRegChartBar color="black" />
 
-              <p className="text-[16px] leading-5 font-normal text-black" 
-              > 
-              <a href="/manage-seats">
-
-                Manage Seats
-              </a>
+              <p className="text-[16px] leading-5 font-normal text-black">
+                <Link to="/manage-seats">Manage Seats</Link>
               </p>
             </div>
             {/* <FaChevronRight color="white" /> */}

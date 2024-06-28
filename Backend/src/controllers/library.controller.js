@@ -7,23 +7,22 @@ const express = require("express");
 const cloudinary = require("cloudinary").v2;
 
 const { upload } = require("multer");
-const {Library} = require('../models/index')
+const { Library } = require("../models/library.model");
 const { db } = require("../models/user.model");
 
 // async function
 // create a library which
 
-
 const LibrarySchema = z.object({
   name: z.string(),
   description: z.string(),
-  thumbnail: z.string(),
-  imageUrl: z.string(),
+  // thumbnail: z.string(),
+
   location: z.string(),
-  Price: z.number(),
+  price: z.number(),
   // tags: z.array(z.string()),
-  reviews: z.string().uuid().optional(), // Assuming the ObjectId is a UUID; adjust as necessary
-  contact: z.record(z.any()), // Assuming contact is a flexible object; adjust as necessary
+  // reviews: z.string().uuid().optional(), // Assuming the ObjectId is a UUID; adjust as necessary
+
   amenities: z.array(z.string()).optional(), // Marked as optional to handle the 'required: optional'
   seatLayout: z.array(
     z.object({
@@ -38,7 +37,7 @@ const LibrarySchema = z.object({
         label: z.string(),
       })
     )
-    .optional(), // Marked as optional since required is false
+    .optional(),
   timeSlot: z.object({
     from: z.string(),
     to: z.string(),
@@ -56,67 +55,125 @@ const pingAdmin = (req, res) => {
 // Assuming LibraryController.createRoom is an async function
 const createRoom = async (req, res) => {
   try {
-
     const body = req.body;
     console.log(body);
     const {
       name,
       description,
       location,
-      Price,
+      price,
       reviews,
-      contact,
       amenities,
       seatLayout,
-      seatbooked,
-      timeSlot,
-    } = body;
 
+      timeSlot,
+    } = req.body;
+    // console.log(">>>>>>>>>>>>>------",req.body, "------", JSON.parse(req.body.seatLayout), "------")
 
     // Upload the thumbnail image to Cloudinary
-    const images = req.files?.images || []; 
+    // const images = req.files?.images || [];
 
     // if (!images.length) {
     //   return res.status(400).json({ message: "No images uploaded!" });
     // }
-    const uploadedImageUrls = req.files.map(file => file.path);
 
+    const images = req.files.map((file) => file.path);
+    // console.log(images);
+
+    if (!name || !location) {
+      return res.status(400).json({ error: "Name and location are required." });
+    }
+
+    let parsedSeatLayout;
+
+    try {
+      if (typeof seatLayout === "string") {
+        parsedSeatLayout = JSON.parse(seatLayout);
+      } else {
+        // If seatLayout is not a string, assume it's already in the correct format or undefined
+        parsedSeatLayout = seatLayout;
+      }
+    } catch (error) {
+      return res
+        .status(400)
+        .json({ error: "Invalid JSON format for seatLayout or seatbooked." });
+    }
+
+    let parsedTimeSlot = timeSlot;
+    try {
+      if (typeof timeSlot === "string") {
+        parsedTimeSlot = JSON.parse(timeSlot);
+      }
+    } catch (error) {
+      return res
+        .status(400)
+        .json({ error: "Invalid JSON format for timeSlot." });
+    }
+
+    
     const libraryData = {
       name,
       description,
       location,
-      Price,
+      price,
       reviews,
-      contact,
       amenities,
-      seatLayout,
-      seatbooked,
-      timeSlot,
-      imageUrl: uploadedImageUrls,
+      seatLayout : parsedSeatLayout,
+
+      timeSlot : parsedTimeSlot,
+      images,
     };
 
-    // Validate the library data
-    const LibraryData = await Library.create(libraryData);
+    console.log("-----libraryr data ", parsedSeatLayout, "------");
 
-    LibraryData.save();
- 
+    const LibraryData = await Library.create(libraryData);
+    await LibraryData.save();
 
     // const newLibrary = await Library.create(libraryData);
-
     res.status(201).json({
       message: "Library created successfully",
-      urls: uploadedImageUrls,
-      library: dbentry,
-
-
+      library: LibraryData,
     });
   } catch (error) {
-    console.error("Error uploading files to Cloudinary:", error);
+    console.error("Error ", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// get all rooms
+
+const getLibrary = async (req, res) => {
+  try {
+    const roomsData = await Library.find();
+    res.status(200).json({
+      success: true,
+      count: roomsData.length,
+      data: roomsData,
+    });
+  } catch (error) {
+    console.error("Error fetching library data:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to retrieve library rooms. Please try again later.",
+    });
+  }
+};
+
+// get room by id
+const getLibraryById = async (req, res) => {
+  const { id } = req.params();
+  try {
+    const room = await Library.findById(id);
+    res.status(200).json(room);
+  } catch (error) {
+    console.error("Error ", error);
+    res.status(500).json({ error: "cannot get room" });
   }
 };
 
 module.exports = {
   pingAdmin,
   createRoom,
+  getLibrary,
+  getLibraryById,
 };

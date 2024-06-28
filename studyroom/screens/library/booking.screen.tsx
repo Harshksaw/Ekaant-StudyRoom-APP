@@ -4,9 +4,14 @@ import Seats from "@/components/Seats";
 import TimeSlot from "@/components/TimeSlot";
 import Calendar from "@/components/calendar/calendar";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import {
+  router,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+  useRouter,
+} from "expo-router";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from 'react-redux'
+import { useDispatch } from "react-redux";
 import {
   View,
   Text,
@@ -17,6 +22,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { setBookingDetails } from "@/redux/bookingSlice";
+import { useRoute } from "@react-navigation/native";
 
 const timeSlots = [
   { from: "09:00", to: "10:00" },
@@ -25,36 +31,23 @@ const timeSlots = [
 ];
 const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
+  const params = useRoute();
+
+  const data = JSON.parse(params.params.item);
+  console.log("Seat ----->>>>", data);
 
 
-  // State for managing seats selection
 
-  // State for managing date selection
+
   const [selectedSeat, setSelectedSeat] = useState(null);
-
   const [selectedDate, setSelectedDate] = useState(null);
-
-  // State for managing modal visibility
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  // State for managing slot selection
-
-  // State for managing number selection
   const [selectedNumber, setSelectedNumber] = useState(null);
-
-  // State for managing time slot selection
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
-
-  
-  // Handler for seat selection from child component
-
   const handleSeatSelect = (seatDataFromChild) => {
     setSelectedSeat(seatDataFromChild); // Update selected seats in parent state
     // Optionally, perform further actions on the selected seats here
   };
-  
-
-  // Handler for toggling modal visibility
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
@@ -72,32 +65,31 @@ const BookingScreen: React.FC = () => {
   const handleSelectTimeSlot = (from: string) => {
     setSelectedTimeSlot(from);
   };
-  console.log("=======", selectedSeat,selectedDate, selectedNumber, selectedTimeSlot);
+  console.log(
+    "=======",
+    selectedSeat,
+    selectedDate,
+    selectedNumber,
+    selectedTimeSlot
+  );
   const updateBookingDetails = () => {
     const details = {
-      seat : selectedSeat ,
+      seat: selectedSeat,
       date: selectedDate,
-      months : selectedNumber,
-      slot : selectedTimeSlot
+      months: selectedNumber,
+      slot: selectedTimeSlot,
     };
     dispatch(setBookingDetails(details));
   };
 
   const confirmBooking = () => {
-
     updateBookingDetails();
     setIsModalVisible(false);
 
-
-    router.push("/library/checkout.screen",
-
-    );
+    router.push("/library/checkout.screen");
     console.log("Booking Confirmed");
     // Perform further actions like API calls, etc.
-
-
-
-  }
+  };
 
   return (
     <SafeAreaView
@@ -107,6 +99,7 @@ const BookingScreen: React.FC = () => {
         // marginBottom: 20,
       }}
     >
+
       <View>
         <Header />
       </View>
@@ -117,9 +110,7 @@ const BookingScreen: React.FC = () => {
           justifyContent: "center",
         }}
       >
-           <Calendar onSelectDate={setSelectedDate} 
-        selected={selectedDate}
-        />
+        <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
       </View>
 
       <View
@@ -130,7 +121,7 @@ const BookingScreen: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        <Seats onSeatSelect={handleSeatSelect} />
+        <Seats onSeatSelect={handleSeatSelect} SeatLayout={data} />
       </View>
 
       <TouchableOpacity
@@ -260,15 +251,19 @@ const BookingScreen: React.FC = () => {
                     // marginTop: 20,
                   }}
                 >
-
-                  {selectedSeat?.length >0  && selectedDate && selectedNumber && selectedTimeSlot && (
-                    <TouchableOpacity style={{ backgroundColor: "green" }}
-                    onPress={confirmBooking}
-                    >
-                      <Text style={{ alignItems: "center", padding: 10 }}>Confirm</Text>
-                    </TouchableOpacity>
-                  )}
-                 
+                  {selectedSeat?.length > 0 &&
+                    selectedDate &&
+                    selectedNumber &&
+                    selectedTimeSlot && (
+                      <TouchableOpacity
+                        style={{ backgroundColor: "green" }}
+                        onPress={confirmBooking}
+                      >
+                        <Text style={{ alignItems: "center", padding: 10 }}>
+                          Confirm
+                        </Text>
+                      </TouchableOpacity>
+                    )}
 
                   <TouchableOpacity
                     onPress={toggleModal}

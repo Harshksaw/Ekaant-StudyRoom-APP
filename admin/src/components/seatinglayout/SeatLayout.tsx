@@ -20,7 +20,7 @@ const Seat = ({ seatData, isSelected, onSelect }) => {
   );
 };
 
-const Seats = () => {
+const Seats = ({onSeatSelect}) => {
   const [rows, setRows] = useState(0);
   const [columns, setColumns] = useState(0);
   const [showGrid, setShowGrid] = useState(false);
@@ -71,7 +71,9 @@ const Seats = () => {
     }
 
     console.log("Selected Seats:");
-    console.log(selectedSeats); // This stores the final data
+    onSeatSelect(selectedSeats);
+    console.log(selectedSeats); 
+
   };
 
   const handleSubmit = (e) => {

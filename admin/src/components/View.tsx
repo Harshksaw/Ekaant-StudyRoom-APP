@@ -4,13 +4,7 @@ import Sidebar from "./Sidebar";
 // import Sidebar from "./Sidebar";
 
 const View = () => {
-  return (
-    <div>
-   
-          <Sidebar />
-      
-    </div>
-  );
+  return <div>view</div>;
 };
 
 export default View;

@@ -16,15 +16,16 @@ const Multer = require("multer");
 // const PORT
 const app = express();
 app.use(
-	cors({
-		origin: "*",
-		credentials: true,
-	})
+  cors({
+    origin: "*", // Allow all origins
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.) to be sent with requests
+  })
 );
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.text());
+// app.use(bodyParser.text());
 
+app.use(express.json());
 
 
 

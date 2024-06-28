@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   }),
 });
 
-export default function Seats({ onSeatSelect }) {
+export default function Seats({ onSeatSelect,SeatLayout, BookedSeats }) {
   // Handle seat selection in this parent component
   const handleSeatSelect = (selectedSeats) => {
     onSeatSelect(selectedSeats);
@@ -82,8 +82,8 @@ export default function Seats({ onSeatSelect }) {
 
   return (
     <SeatsComponent
-      layout={[{id: '1-1'}, {id: '1-3'}, {id: '1-5'}, {id: '2-2'}, {id: '2-4'}, {id: '3-1'}, {id: '3-3'}, {id: '3-5'}, {id: '4-2'}, {id: '4-4'}, {id: '5-1'}, {id: '5-3'}]}
-      bookedSeats={[{id: '1-1'}, {id: '2-2'}, {id: '3-3'}, {id: '4-4'}, {id: '5-5'}]}
+      layout={SeatLayout}
+      bookedSeats={[]}
       onSeatSelect={handleSeatSelect}
     />
   );

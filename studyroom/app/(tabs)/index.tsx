@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   ScrollView,
@@ -13,87 +14,27 @@ import { Ionicons } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
 import Header from "@/components/Header";
 import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { fetchRoomData } from "@/hooks/api/library";
 
 export default function index() {
   const width = Dimensions.get("window").width;
-  const data = [
-    {
-      id: 1,
-      title: "Title 1",
-      about: "About 1",
-      ratings: 5,
-      distance: "10 km",
-      thumbnail: "https://picsum.photos/id/237/200/300",
-      imageUrl: [
-        "https://picsum.photos/id/237/200/300",
-        "https://picsum.photos/id/238/200/300",
-        "https://picsum.photos/id/239/200/300",
-      ],
-      location: "123 Main St, City, State",
-      amenities: ["Swimming Pool", "Gym", "Restaurant"],
-    },
-    {
-      id: 2,
-      title: "Title 2",
-      about: "About 2",
-      ratings: 4,
-      distance: "5 km",
-      thumbnail: "https://picsum.photos/id/237/200/300",
-      imageUrl: [
-        "https://picsum.photos/id/237/200/300",
-        "https://picsum.photos/id/238/200/300",
-        "https://picsum.photos/id/239/200/300",
-      ],
-      location: "456 Elm St, City, State",
-      amenities: ["Parking", "Spa", "Bar"],
-    },
-    {
-      id: 3,
-      title: "Title 3",
-      about: "About 3",
-      ratings: 3,
-      distance: "8 km",
-      thumbnail: "https://picsum.photos/id/237/200/300",
-      imageUrl: [
-        "https://picsum.photos/id/237/200/300",
-        "https://picsum.photos/id/238/200/300",
-        "https://picsum.photos/id/239/200/300",
-      ],
-      location: "789 Oak St, City, State",
-      amenities: ["WiFi", "Laundry", "Fitness Center"],
-    },
-    {
-      id: 4,
-      title: "Title 3",
-      about: "About 3",
-      ratings: 3,
-      distance: "8 km",
-      thumbnail: "https://picsum.photos/id/237/200/300",
-      imageUrl: [
-        "https://picsum.photos/id/237/200/300",
-        "https://picsum.photos/id/238/200/300",
-        "https://picsum.photos/id/239/200/300",
-      ],
-      location: "987 Pine St, City, State",
-      amenities: ["Pool Table", "Conference Room", "Library"],
-    },
-    {
-      id: 5,
-      title: "Title 3",
-      about: "About 3",
-      ratings: 3,
-      distance: "8 km",
-      thumbnail: "https://picsum.photos/id/237/200/300",
-      imageUrl: [
-        "https://picsum.photos/id/237/200/300",
-        "https://picsum.photos/id/238/200/300",
-        "https://picsum.photos/id/239/200/300",
-      ],
-      location: "654 Maple St, City, State",
-      amenities: ["Playground", "Tennis Court", "Cafe"],
-    },
-  ];
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState(null);
 
+  useEffect(() => {
+    const fetchLibraryDate = async () => {
+      setIsLoading(true);
+
+      const fetchedData = await fetchRoomData();
+      setData(fetchedData || []);
+      setIsLoading(false);
+    };
+
+    fetchLibraryDate();
+    console.log(data);
+  }, []);
 
   const filters = [
     { id: 1, name: "Filter 1" },
@@ -103,68 +44,70 @@ export default function index() {
 
   // return <HomeScreen />;
   const renderItem = ({ item }) => (
-
     <TouchableOpacity
-    onPress={() =>
-      router.push({
-        pathname: "/(routes)/card-details",
-        params: { item: JSON.stringify(item) },
-        
-      })
-
-    }
+      key={item._id}
+      onPress={() =>
+        router.push({
+          pathname: "/(routes)/card-details",
+          params: { item: JSON.stringify(item) },
+        })
+      }
     >
-
-    
-    <View style={styles.card}>
-      <Image
-        source={{ uri: item.thumbnail }}
-        style={{ width: 100, height: 100, borderRadius: 20 }}
-      />
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "column",
-          width: 200,
-          marginLeft: 20,
-          // justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.card}>
+        <Image
+          source={{ uri: item.images[0] }}
+          style={{ width: 100, height: 100, borderRadius: 20 }}
+        />
         <View
           style={{
             flex: 1,
-            width: 250,
 
-            marginHorizontal: 10,
             flexDirection: "column",
-            justifyContent: "space-evenly",
-
-            // justifyContent:'flex-start',
-            alignItems: "flex-start",
+            width: 200,
+            marginLeft: 20,
+            // justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          <Text>{item.title}</Text>
-          <Text>{item.about}</Text>
-        </View>
+          <View
+            style={{
+              flex: 1,
+              width: 250,
 
-        <View
-          style={{
-            // flex:1,
-            height: 20,
-            width: 250,
-            flexDirection: "row",
-            paddingRight: 20,
+              marginHorizontal: 10,
+              flexDirection: "column",
+              justifyContent: "space-evenly",
 
-            justifyContent: "space-between",
-            alignItems: "space-between",
-          }}
-        >
-          <Text>{item.ratings}********</Text>
-          <Text>{item.distance}</Text>
+              // justifyContent:'flex-start',
+              alignItems: "flex-start",
+            }}
+          >
+            <Text>{item.name}</Text>
+            <Text>
+              {item.description.split(" ").slice(0, 5).join(" ") +
+                (item.description.split(" ").length > 5 ? "..." : "")}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              // flex:1,
+              height: 20,
+              width: 250,
+              flexDirection: "row",
+              paddingRight: 20,
+
+              justifyContent: "space-between",
+              alignItems: "space-between",
+            }}
+          >
+            {item?.ratings ? <Text> ********{item?.ratings}</Text> : ""}
+
+            <Text>{item.distance}</Text>
+          </View>
+
         </View>
       </View>
-    </View>
     </TouchableOpacity>
   );
 
@@ -175,7 +118,7 @@ export default function index() {
       }}
     >
       {/* <View style={styles.header}></View> */}
-      <Header/>
+      <Header />
       <View style={styles.welcome}>
         {/* <View></View> */}
 
@@ -197,8 +140,6 @@ export default function index() {
             Harsh
           </Text>
         </Text>
-
-
       </View>
       <View style={styles.carousel}>
         <Carousel
@@ -219,9 +160,8 @@ export default function index() {
               }}
             >
               <Image
-              source={require("../../assets/images/slider1.png")}
-              width={width}
-              
+                source={require("../../assets/images/slider1.png")}
+                width={width}
               />
             </View>
           )}
@@ -231,7 +171,7 @@ export default function index() {
       <View style={styles.filters}>
         {filters.map((filter, index) => (
           <TouchableOpacity
-          key={index}
+            key={index}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -274,14 +214,30 @@ export default function index() {
             style={{ marginHorizontal: 10 }}
           />
         </View>
-        {data && data.map((item) => renderItem({ item }))}
 
-        {data?.length === 0 && (
-          <Text
-            style={{ textAlign: "center", paddingTop: 50, fontSize: 18 }}
-          >
-            No data available!
-          </Text>
+        {isLoading ? (
+          <ActivityIndicator
+            size="large"
+            color="#0000ff"
+            style={{ paddingTop: 50 }}
+          />
+        ) : (
+          <>
+            {data && data.data.map((item) => renderItem({ item }))}
+
+            {data?.length === 0 && (
+              <Text
+                style={{
+                  textAlign: "center",
+                  paddingTop: 50,
+                  fontSize: 18,
+                  color: "gray",
+                }}
+              >
+                No listings available at the moment.
+              </Text>
+            )}
+          </>
         )}
       </ScrollView>
     </SafeAreaView>

@@ -6,7 +6,7 @@ import ProtectedLayout from "./ProtectedLayout";
 const ProtectedRoute = () => {
   const userToken = localStorage.getItem("token"); // Retrieve the user token from local storage
 
-  return !userToken ? (
+  return userToken ? (
     <ProtectedLayout>
       <Outlet />
     </ProtectedLayout>

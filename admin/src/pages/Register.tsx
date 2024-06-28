@@ -77,7 +77,7 @@ const Register = () => {
         {
           username: userInfo.name,
           email: userInfo.email,
-          phoneNumber: parseInt(userInfo.phone),
+          phoneNumber: parseInt(userInfo?.phone),
           password: userInfo.password,
           accountType: "Admin",
         }
