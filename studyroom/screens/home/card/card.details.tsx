@@ -32,17 +32,14 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
   const params = useRoute();
   const data = JSON.parse(params.params.item);
-  const data2 = JSON.stringify(params.params.item);
 
-
-  console.log("======",data,"-----", data2)
 
   const [city, setCity] = useState("Delhi");  
 
   const seat = data.seatLayout;
-  console.log("=+++++++",data.location[0], data.location[0])
 
-  const locationData =async () => {
+
+  const locationData = async () => {
     const res = await getLocationName(data.location[0], data.location[1])
     setCity(res)
 
@@ -52,7 +49,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
 
 
-  // console.log(location, "location")
+
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
