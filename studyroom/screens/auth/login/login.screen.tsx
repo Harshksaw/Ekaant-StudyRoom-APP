@@ -39,7 +39,9 @@ const LoginScreen: React.FC = () => {
 
       console.log(response.data);
       if (response.data.success) {
+
         await AsyncStorage.setItem('token', JSON.stringify(response.data.token));
+        await AsyncStorage.setItem('userData', JSON.stringify(response.data));
     
         router.push("/(tabs)");
         

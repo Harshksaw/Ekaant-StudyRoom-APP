@@ -6,7 +6,7 @@ const BookingRouter = express.Router();
 
 
 BookingRouter.get('/ping', BookingController.pingBookingController);
-// BookingRouter.post('/signup', BookingController.signUp);
+BookingRouter.post('/createBooking', BookingController.createBooking);
 // BookingRouter.post('/signin', BookingController.signIn);
 // // BookingRouter.put('/profile', BookingController.updateProfile);
 // BookingRouter.post('/otp', BookingController.generateOtp);

@@ -24,7 +24,8 @@ const bookingSchema = new mongoose.Schema({
     },
     paid:{
         type: Boolean,
-        required: true,
+        default: false,
+        required: false,
     },
     timeSlot:{
         from: { type: String, required: false },
@@ -49,7 +50,12 @@ const bookingSchema = new mongoose.Schema({
         type: {},
         required: false,
     },
-
+    bookingStatus: {
+        type: String,
+        enum: ["PENDING", "CONFIRMED", "CANCELLED"],
+        default: "PENDING",
+        required: false,
+    },
 
     timeStamp: {
         type: Date,
