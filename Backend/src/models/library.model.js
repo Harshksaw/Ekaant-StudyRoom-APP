@@ -12,8 +12,8 @@ const librarySchema = new mongoose.Schema({
   amenities: [{ type: String }], // Not required by default
   seatLayout: [
     {
-      id: { type: String, required: true },
-      label: { type: String, required: true },
+      id: { type: String, required: false},
+      label: { type: String, required: false },
     }
   ],
   seatbooked: [

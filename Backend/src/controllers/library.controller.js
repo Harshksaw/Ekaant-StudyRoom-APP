@@ -16,12 +16,12 @@ const { db } = require("../models/user.model");
 const LibrarySchema = z.object({
   name: z.string(),
   description: z.string(),
-  thumbnail: z.string(),
-  imageUrl: z.string(),
+  // thumbnail: z.string(),
+
   location: z.string(),
-  Price: z.number(),
+  price: z.number(),
   // tags: z.array(z.string()),
-  reviews: z.string().uuid().optional(), // Assuming the ObjectId is a UUID; adjust as necessary
+  // reviews: z.string().uuid().optional(), // Assuming the ObjectId is a UUID; adjust as necessary
 
   amenities: z.array(z.string()).optional(), // Marked as optional to handle the 'required: optional'
   seatLayout: z.array(
@@ -37,7 +37,7 @@ const LibrarySchema = z.object({
         label: z.string(),
       })
     )
-    .optional(), // Marked as optional since required is false
+    .optional(),
   timeSlot: z.object({
     from: z.string(),
     to: z.string(),
@@ -67,8 +67,8 @@ const createRoom = async (req, res) => {
       seatLayout,
 
       timeSlot,
-
     } = req.body;
+    // console.log(">>>>>>>>>>>>>------",req.body, "------", JSON.parse(req.body.seatLayout), "------")
 
     // Upload the thumbnail image to Cloudinary
     // const images = req.files?.images || [];
@@ -83,36 +83,34 @@ const createRoom = async (req, res) => {
     if (!name || !location) {
       return res.status(400).json({ error: "Name and location are required." });
     }
-   
 
-    // let parsedSeatLayout;
-    // let parsedSeatbooked;
-  
-    // try {
-    //   if (typeof seatLayout === "string") {
-    //     parsedSeatLayout = JSON.parse(seatLayout);
-    //   } else {
-    //     // If seatLayout is not a string, assume it's already in the correct format or undefined
-    //     parsedSeatLayout = seatLayout;
-    //   }
-    //   if (typeof seatbooked === "string") {
-    //     parsedSeatbooked = JSON.parse(seatbooked);
-    //   } else {
-    //     // If seatbooked is not a string, assume it's already in the correct format or undefined
-    //     parsedSeatbooked = seatbooked;
-    //   }
-    // } catch (error) {
-    //   return res.status(400).json({ error: "Invalid JSON format for seatLayout or seatbooked." });
-    // }
-  
+    let parsedSeatLayout;
+
+    try {
+      if (typeof seatLayout === "string") {
+        parsedSeatLayout = JSON.parse(seatLayout);
+      } else {
+        // If seatLayout is not a string, assume it's already in the correct format or undefined
+        parsedSeatLayout = seatLayout;
+      }
+    } catch (error) {
+      return res
+        .status(400)
+        .json({ error: "Invalid JSON format for seatLayout or seatbooked." });
+    }
+
     let parsedTimeSlot = timeSlot;
     try {
       if (typeof timeSlot === "string") {
         parsedTimeSlot = JSON.parse(timeSlot);
       }
     } catch (error) {
-      return res.status(400).json({ error: "Invalid JSON format for timeSlot." });
+      return res
+        .status(400)
+        .json({ error: "Invalid JSON format for timeSlot." });
     }
+
+    
     const libraryData = {
       name,
       description,
@@ -120,16 +118,19 @@ const createRoom = async (req, res) => {
       price,
       reviews,
       amenities,
-      seatLayout,
+      seatLayout : parsedSeatLayout,
 
-      timeSlot: parsedTimeSlot,
+      timeSlot : parsedTimeSlot,
       images,
     };
+
+    console.log("-----libraryr data ", parsedSeatLayout, "------");
+
     const LibraryData = await Library.create(libraryData);
     await LibraryData.save();
 
     // const newLibrary = await Library.create(libraryData);
-  res.status(201).json({
+    res.status(201).json({
       message: "Library created successfully",
       library: LibraryData,
     });
@@ -141,14 +142,13 @@ const createRoom = async (req, res) => {
 
 // get all rooms
 
-
 const getLibrary = async (req, res) => {
   try {
     const roomsData = await Library.find();
     res.status(200).json({
       success: true,
-      count : roomsData.length,
-      data :roomsData,
+      count: roomsData.length,
+      data: roomsData,
     });
   } catch (error) {
     console.error("Error fetching library data:", error);
