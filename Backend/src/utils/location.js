@@ -1,17 +1,5 @@
-// import axios from 'axios';
 
-// export default async function getPlaceNameFromCoordinates(lat, lng) {
-//   try {
-//     const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=<span class="math-inline">\{lat\},</span>{lng}&key=YOUR_API_KEY`);
-//     // return response.data.results[0].formatted_address;
-//     console.log(response)
-//   } catch (error) {
-//     console.error('Error fetching place name:', error);
-//     // Handle the error here, e.g., return a default value or throw a custom error
-//   }
-// }
-
-
+const fetch = require('node-fetch');
 
 /**
  * Gets the location name from latitude and longitude using Google Maps Geocoding API.
@@ -20,17 +8,18 @@
  * @returns {Promise<string>} A promise that resolves to the location name.
  */
 
-
-export default async function getLocationName(latitude, longitude) {
-  const apiKey = `AIzaSyAkhIxMCNP3DGFWQDCi_a45pyPks0H1xXI`
+const API= process.env.GOOGLE_API;
+console.log(API)
+async function getLocationName(latitude, longitude) {
+  const apiKey = API; // Replace with your Google Maps API key
   const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
   try {
     const response = await fetch(url);
     const data = await response.json();
     if (data.status === 'OK') {
+      // Extract the location name from the first result
       const locationName = data.results[0].formatted_address;
-      console.log(locationName)
       return locationName;
     } else {
       throw new Error('Failed to get location name');
@@ -41,3 +30,4 @@ export default async function getLocationName(latitude, longitude) {
   }
 }
 
+module.exports = getLocationName;
