@@ -22,19 +22,28 @@ export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
-
+  const [notavailable, setNotAvailable] = useState(false);
+  const [reload, setReload] = useState(false);
   useEffect(() => {
     const fetchLibraryDate = async () => {
       setIsLoading(true);
-
-      const fetchedData = await fetchRoomData();
-      setData(fetchedData || []);
-      setIsLoading(false);
+      setReload(false)
+      try {
+        const fetchedData = await fetchRoomData();
+        setData(fetchedData || []);
+      } catch (error) {
+        console.error("Failed to fetch room data:", error);
+       setNotAvailable(true);
+        // Handle the error as needed, e.g., set an error state, show a message, etc.
+        // For example, setError("Failed to load data. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchLibraryDate();
     console.log(data);
-  }, []);
+  }, [reload]);
 
   const filters = [
     { id: 1, name: "Filter 1" },
@@ -225,8 +234,13 @@ export default function index() {
           <>
             {data && data.data.map((item) => renderItem({ item }))}
 
-            {data?.length === 0 && (
-              <Text
+            {data?.length == 0 ||  notavailable &&  (
+             
+
+              <TouchableOpacity 
+              onPress={()=> setReload(true)}
+              >
+                 <Text
                 style={{
                   textAlign: "center",
                   paddingTop: 50,
@@ -236,6 +250,9 @@ export default function index() {
               >
                 No listings available at the moment.
               </Text>
+              </TouchableOpacity>
+
+              
             )}
           </>
         )}

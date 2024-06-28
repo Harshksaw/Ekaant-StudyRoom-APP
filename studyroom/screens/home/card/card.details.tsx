@@ -31,6 +31,10 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
   const params = useRoute();
   const data = JSON.parse(params.params.item);
+  const data2 = JSON.stringify(params.params.item);
+
+
+  console.log("======",data,"-----", data2)
 
 
 
