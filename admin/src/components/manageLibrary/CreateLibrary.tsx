@@ -26,9 +26,12 @@ const CreateLibrary = () => {
   const [images, setImages] = useState([]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    console.log(event.target.files);
     if (event.target.files) {
       setUploadedFiles(Array.from(event.target.files));
     }
+    console.log(uploadedFiles);
   };
 
   const handleSeatSelect = (seat) => {
@@ -81,12 +84,13 @@ const CreateLibrary = () => {
 
   const savePlace = async (event) => {
     event.preventDefault();
-    const files = event.target.images.files;
-  const formData = new FormData();
 
-  for (let i = 0; i < files.length; i++) {
-    formData.append("images", files[i]);
-  }
+    console.log(uploadedFiles);
+    const formData = new FormData();
+
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      formData.append("images", uploadedFiles[i]);
+    }
 
     formData.append("name", JSON.stringify(title));
     formData.append("description", JSON.stringify(description));
@@ -95,7 +99,7 @@ const CreateLibrary = () => {
     formData.append("amenities", JSON.stringify(amenties));
     formData.append("seatLayout", JSON.stringify(seatLayout));
     formData.append("timeSlot", JSON.stringify(filledTimeSlots));
-
+    console.log(formData);
     try {
       const response = await axios.post(
         `${BASEURL}/api/v1/library/createLibrary`,

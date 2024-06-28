@@ -12,7 +12,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 
 import ManageSeats from "./pages/ManageSeats";
-import CreateLibrary from "./components/manageLibrary/CreateLibrary";
+import CreateLibrary from "./components/ManageLibrary/CreateLibrary";
 
 function App() {
   // const [count, setCount] = useState(0);
