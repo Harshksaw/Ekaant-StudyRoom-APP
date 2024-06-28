@@ -17,6 +17,8 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { fetchRoomData } from "@/hooks/api/library";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function index() {
   const width = Dimensions.get("window").width;
@@ -24,6 +26,17 @@ export default function index() {
   const [data, setData] = useState(null);
   const [notavailable, setNotAvailable] = useState(false);
   const [reload, setReload] = useState(false);
+
+  const getTokenAndPrintIt = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const userData = await AsyncStorage.getItem('userData');
+      console.log('Token:', token);
+      console.log('TokenData:', userData);
+    } catch (error) {
+      console.error('Error fetching token:', error);
+    }
+  };
   useEffect(() => {
     const fetchLibraryDate = async () => {
       setIsLoading(true);
@@ -40,10 +53,12 @@ export default function index() {
         setIsLoading(false);
       }
     };
+    getTokenAndPrintIt();
 
     fetchLibraryDate();
     console.log(data);
   }, [reload]);
+
 
   const filters = [
     { id: 1, name: "Filter 1" },
@@ -185,7 +200,7 @@ export default function index() {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              height: 40,
+              height: 30,
               // paddingHorizontal: 10,
               paddingHorizontal: 10,
               backgroundColor: "blue",
