@@ -1,7 +1,9 @@
 import {
   ActivityIndicator,
+  Button,
   Dimensions,
   Image,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -19,13 +21,19 @@ import axios from "axios";
 import { fetchRoomData } from "@/hooks/api/library";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import NotListedModal from "@/components/NotListedModal";
+import { LinearGradient } from "expo-linear-gradient";
+
 
 export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
   const [notavailable, setNotAvailable] = useState(false);
+  const [notListed, setNotListed] = useState(false);
   const [reload, setReload] = useState(false);
+  const toggleNotListedModal = () => setNotListed(!notListed);
+
 
   const getTokenAndPrintIt = async () => {
     try {
@@ -70,12 +78,16 @@ export default function index() {
   const renderItem = ({ item }) => (
     <TouchableOpacity
       key={item._id}
-      onPress={() =>
-        router.push({
-          pathname: "/(routes)/card-details",
-          params: { item: JSON.stringify(item) },
-        })
-      }
+      // onPress={() =>
+      //   router.push({
+      //     pathname: "/(routes)/card-details",
+      //     params: { item: JSON.stringify(item) },
+      //   })
+      // }
+      onPress={()=> {
+        setNotListed(true)
+
+      }}
     >
       <View style={styles.card}>
         <Image
@@ -192,6 +204,7 @@ export default function index() {
         />
       </View>
 
+    <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
       <View style={styles.filters}>
         {filters.map((filter, index) => (
           <TouchableOpacity
@@ -314,5 +327,30 @@ const styles = StyleSheet.create({
 
     // justifyContent: "flex-start",
     alignItems: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  imagePlaceholder: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
+    backgroundColor: '#DDD', // Adjust background color for better visibility
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  text: {
+    color:'green',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
   },
 });
