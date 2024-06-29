@@ -18,7 +18,7 @@ import { BACKEND } from "@/utils/config";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-
+import { Toast } from "react-native-toast-notifications";
 export default function ForgotPassword() {
   let [fontsLoaded, fontError] = useFonts({
     Nunito_600SemiBold,
@@ -43,31 +43,53 @@ export default function ForgotPassword() {
   const forgetPassword = async () => {
     try {
       getUserId();
-      console.log(password, "password", newPassword, "newPassword");
-      // const check = await axios.get(`${BACKEND}/ping`)
-      // console.log(check, "check")
 
-      // if(check.status === 200){
-      //   console.log("working")
-      // }
-      console.log("seeding");
-      const response = await axios.post(
-        `${BACKEND}/api/v1/auth/forgotPassword`,
-        {
-          userId: userId,
-          password: password,
-          resetPassword: newPassword,
+      if (password === confirmPassword) {
+        const response = await axios.post(
+          `${BACKEND}/api/v1/auth/forgotPassword`,
+          {
+            userId: userId,
+            password: password,
+            resetPassword: newPassword,
+          }
+        );
+        console.log(response, "==============>>>>>>>>>>");
+        if (response.status === 200) {
+          Toast.show("Password Updated", {
+            placement: "top",
+            normalColor: "green",
+            animationType:"slide-in",
+            duration: 2000
+          })
+          router.back();
+        } else {
+          Toast.show("Retry", {
+            placement: "top",
+            normalColor: "red",
+            animationType:"slide-in"
+          })
+          console.log("not working");
         }
-      );
-      console.log(response, "==============>>>>>>>>>>");
-      if (response.status === 200) {
-        router.back();
+      } else {
+        Toast.show("Not Matched", {
+          placement: "top",
+
+
+          normalColor: "red",
+          animationType:"slide-in"
+        })
+        console.log("Password and confirm password do not match");
       }
-      else{
-        console.log("not working")
-      }
+
+      console.log("seeding");
     } catch (error) {
-      console.log("--------->>>>",error);
+      Toast.show("Retry", {
+        placement: "top",
+
+        normalColor: "red",
+        animationType:"slide-in"
+      })
+      console.log("--------->>>>", error);
     }
   };
 
@@ -79,7 +101,6 @@ export default function ForgotPassword() {
       <TextInput
         style={[styles.input, { fontFamily: "Nunito_400Regular" }]}
         placeholder="Password"
-
         value={password}
         onChangeText={setPassword}
       />
@@ -93,7 +114,6 @@ export default function ForgotPassword() {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-      
 
       <Text style={[styles.headerText, { fontFamily: "Nunito_600SemiBold" }]}>
         New Password
@@ -102,7 +122,6 @@ export default function ForgotPassword() {
         style={[styles.input, { fontFamily: "Nunito_400Regular" }]}
         secureTextEntry
         placeholder="new Password"
-
         value={newPassword}
         onChangeText={setNewPassword}
       />

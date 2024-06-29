@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { View, useColorScheme } from 'react-native';
 import TabsIndex from './index';
 import CardDetailScreen from '@/screens/home/card/card.details';
-
+import { ToastProvider } from "react-native-toast-notifications";
 export default function RootLayout() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
 
@@ -31,6 +31,9 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
+    <ToastProvider>
+
+    
 
       <Stack screenOptions={{ headerShown: false }}>
          <Stack.Screen name="index"
@@ -66,6 +69,7 @@ function RootLayoutNav() {
         }} />
    
       </Stack>
+      </ToastProvider>
 
   );
 }

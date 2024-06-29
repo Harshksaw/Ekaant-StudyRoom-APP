@@ -16,7 +16,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
-
+import { Toast } from "react-native-toast-notifications";
 export default function profile() {
   const logout = async () => {
 
