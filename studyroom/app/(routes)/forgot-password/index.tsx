@@ -13,6 +13,11 @@ import {
     Nunito_400Regular,
   } from "@expo-google-fonts/nunito";
   import { router } from "expo-router";
+import axios from "axios";
+import { BACKEND } from "@/utils/config";
+import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
   
   export default function ForgotPassword() {
     let [fontsLoaded, fontError] = useFonts({
@@ -20,15 +25,48 @@ import {
       Nunito_700Bold,
       Nunito_400Regular,
     });
+    const [userId, setUserId] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
   
     if (!fontsLoaded && !fontError) {
       return null;
     }
+    const getUserId = async () => {
+      const res = await AsyncStorage.getItem("token")
+      setUserId(res);
+    }
+
+    const forgetPassword = async() => {  
+      try {
+        getUserId();
+
+        const response = await axios.post(`${BACKEND}/auth/v1/auth/forgot-password`,{
+          userId: userId,
+          password: password,
+          resetPassword : confirmPassword
+
+        })     
+      } catch (error) {
+        console.log(error)
+      }
+
+
+    }
   
     return (
       <LinearGradient colors={["#E5ECF9", "#F6F7F9"]} style={styles.container}>
+ 
         <Text style={[styles.headerText, { fontFamily: "Nunito_600SemiBold" }]}>
-          Reset Email Password
+         Password
+        </Text>
+        <TextInput
+          style={[styles.input, { fontFamily: "Nunito_400Regular" }]}
+          placeholder="Username@gmail.com"
+          keyboardType="email-address"
+        />
+        <Text style={[styles.headerText, { fontFamily: "Nunito_600SemiBold" }]}>
+          Confirm Password
         </Text>
         <TextInput
           style={[styles.input, { fontFamily: "Nunito_400Regular" }]}

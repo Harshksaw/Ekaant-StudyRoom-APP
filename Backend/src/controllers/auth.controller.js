@@ -19,6 +19,20 @@ function pingAuthController(req, res) {
   pingCounter++;
   return res.json({ message: "Auth controller is up", pingCount: pingCounter });
 }
+
+async function getUser(req, res, next) {
+
+  console.log("req.user is ", req.user);
+  try {
+    const user = await getUserById(req.user.id); // Assuming your JWTs encode the user's ID
+    if (!user) return res.status(404).send({ message: 'User not found' });
+
+    res.send({ user });
+  } catch (error) {
+    res.status(500).send({ message: 'Internal server error' });
+  }
+}
+
 // signup function--
 async function signUp(req, res, next) {
   const { success } = signupSchema.safeParse(req.body);
@@ -391,18 +405,6 @@ async function forgetPassword(req, res, next) {
 
 
 
-async function getUser(req, res, next) {
-
-  console.log("req.user is ", req.user);
-  try {
-    const user = await getUserById(req.user.id); // Assuming your JWTs encode the user's ID
-    if (!user) return res.status(404).send({ message: 'User not found' });
-
-    res.send({ user });
-  } catch (error) {
-    res.status(500).send({ message: 'Internal server error' });
-  }
-}
 
 
 
