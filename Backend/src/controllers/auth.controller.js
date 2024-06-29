@@ -1,5 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-
+const { bcrypt } = require("bcrypt");
 const zod = require("zod");
 const { User } = require("../models");
 const jwt = require("jsonwebtoken");
@@ -10,7 +10,7 @@ const signupSchema = zod.object({
   email: zod.string().email(),
   password: zod.string().min(8),
   phoneNumber: zod.number().min(9),
-  
+  // accountType: zod.string().min(3).max(255),
 });
 let pingCounter = 0;
 
@@ -21,11 +21,8 @@ function pingAuthController(req, res) {
 }
 // signup function--
 async function signUp(req, res, next) {
-
-
-
   const { success } = signupSchema.safeParse(req.body);
-  console.log("success is ", success, req.body)
+  console.log("success is ", success, req.body);
   if (!success) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
@@ -43,9 +40,7 @@ async function signUp(req, res, next) {
       error: { 411: "User already exists" },
       data: {},
     });
-
   }
-  
 
   try {
     const newUser = await User.create({
@@ -129,9 +124,7 @@ async function signIn(req, res, next) {
   }
 }
 
-
-
-let otpTest  = 0;
+let otpTest = 0;
 
 // async function sendOtp(phoneNumber) {
 //   // """Sends an OTP (One-Time Password) to the provided phone number using Fast2SMS Quick API.
@@ -154,10 +147,7 @@ let otpTest  = 0;
 
 //   otpTest = otpCode;
 
-
 //     // temporary test
-
-
 
 //   const message = `Your OTP is ${otpCode}`;
 
@@ -201,9 +191,7 @@ let otpTest  = 0;
 //   //   return { success: false, message: `Error sending OTP: ${error.message}` };
 //   // }
 
-
-//   return 
-
+//   return
 
 // }
 
@@ -230,10 +218,7 @@ let otpTest  = 0;
 
 //   otpTest = otpCode;
 
-
 //     // temporary test
-
-
 
 //   const message = `Your OTP is ${otpCode}`;
 
@@ -277,13 +262,9 @@ let otpTest  = 0;
 //   //   return { success: false, message: `Error sending OTP: ${error.message}` };
 //   // }
 
-
-//   return 
-
+//   return
 
 // }
-
-
 
 // Example usage (assuming a web framework like Express)
 async function sendOtp(phoneNumber) {
@@ -304,9 +285,9 @@ async function generateOtp(req, res, next) {
   }
   console.log("phone number is ", phoneNumber);
   // try {
-    const response = await sendOtp(phoneNumber);
+  const response = await sendOtp(phoneNumber);
 
-    res.json(response);
+  res.json(response);
   // } catch (error) {
   //   console.error(error);
   //   console.error(error.response ? error.response.data : error);
@@ -314,12 +295,12 @@ async function generateOtp(req, res, next) {
   // }
 }
 
-async function verifyOtp(req, res){
-  const {  otp } = req.body;
-  if(otp === '' || otp === null || otp === undefined){
+async function verifyOtp(req, res) {
+  const { otp } = req.body;
+  if (otp === "" || otp === null || otp === undefined) {
     return res.status(200).json({ message: "Pass it" });
   }
-  if(otp !== otpTest){
+  if (otp !== otpTest) {
     return res.status(400).json({ message: "Invalid OTP" });
   }
 
@@ -346,7 +327,67 @@ async function verifyOtp(req, res){
   // }
 }
 
+// forget password--
+const forgetPasswordSchema = zod.object({
+  userId: zod.string().min(3).max(255),
+  password: zod.string().min(8),
+  resetPassword: zod.string().min(8),
+});
 
+async function forgetPassword(req, res, next) {
+  // const { success } = forgetPasswordSchema.safeParse(req.body);
+  // console.log("success is ", success, req.body);
+  // if (!success) {
+  //   return res.status(StatusCodes.BAD_REQUEST).json({
+  //     success: false,
+  //     message: "Invalid data",
+  //     error: { 411: "Invalid data" },
+  //     data: {},
+  //   });
+  // }
+  try {
+    // const user = await User.findById(req.params._id);
+    const { userId, password, resetPassword } = req.body;
+    console.log("userId is ", userId, password, resetPassword);
+    const user = await User.findOne({ _id: userId });
+    if (user) {
+      // validate the old password
+      if (!(await user.validatePassword(password))) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          success: false,
+          message: "Invalid password",
+          error: { 411: "Invalid password" },
+          data: {},
+        });
+      }
+      console.log(
+        "validate password is ",
+        await user.validatePassword(password)
+      );
+      const hashedPassword = await user.createHash(resetPassword);
+      user.password = hashedPassword;
+      await user.save();
+      const userId = user._id;
+      const token = jwt.sign({ userId }, JWT_SECRET);
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: "Password reset successfully",
+        error: {},
+        data: user,
+        token: token,
+      });
+    } else {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: "User not found",
+        error: { 411: "User not found" },
+        data: {},
+      });
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
 
 module.exports = {
   signUp,
@@ -355,5 +396,5 @@ module.exports = {
   pingAuthController,
   generateOtp,
   verifyOtp,
-
+  forgetPassword,
 };

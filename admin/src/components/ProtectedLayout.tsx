@@ -1,7 +1,7 @@
 // ProtectedLayout.tsx
-import React from 'react';
-import Navbar from './Navbar';
-import Sidebar from './Sidebar';
+import React from "react";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 
 const ProtectedLayout: React.FC = ({ children }) => {
   return (
@@ -13,9 +13,7 @@ const ProtectedLayout: React.FC = ({ children }) => {
         <div className="basis-[15%] h-100vh">
           <Sidebar />
         </div>
-        <main className="flex-1">
-          {children} 
-        </main>
+        <main className="flex-1">{children}</main>
       </div>
     </>
   );

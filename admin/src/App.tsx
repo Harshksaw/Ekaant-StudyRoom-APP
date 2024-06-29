@@ -12,7 +12,8 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 
 import ManageSeats from "./pages/ManageSeats";
-import CreateLibrary from "./components/manageLibrary/CreateLibrary";
+import CreateLibrary from "./components/ManageLibrary/CreateLibrary";
+import ViewLibrary from "./components/ManageLibrary/ViewLibrary";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -33,6 +34,10 @@ function App() {
             <Route
               path="manage-library/create-library"
               element={<CreateLibrary />}
+            />
+            <Route
+              path="manage-library/view-library/:library_id"
+              element={<ViewLibrary />}
             />
             <Route path="/manage-seats" element={<ManageSeats />} />
           </Route>
