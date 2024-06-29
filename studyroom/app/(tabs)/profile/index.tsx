@@ -179,6 +179,7 @@ export default function profile() {
                 borderRadius: 10,
                 padding: 5,
               }}
+              onPress={() => router.push("/(routes)/forgot-password")}
             >
               <View
                 style={{

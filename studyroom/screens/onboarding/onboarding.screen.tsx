@@ -15,8 +15,15 @@ import {
 import Button from "@/components/Button";
 
 import Carousel from "react-native-intro-carousel";
+import { useEffect } from "react";
+import useUser from "@/hooks/auth/useUser";
 
 export default function OnBoardingScreen() {
+
+  const {user,error, loading } = useUser();
+  useEffect(() => {
+    console.log(user, error, loading);
+  }, []);
   // let [fontsLoaded, fontError] = useFonts({
   //   Raleway_700Bold,
   //   Nunito_400Regular,
