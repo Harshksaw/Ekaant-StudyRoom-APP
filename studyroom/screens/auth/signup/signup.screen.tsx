@@ -155,6 +155,7 @@ export default function SignUpScreen() {
           "token",
           JSON.stringify(response.data.token)
         );
+        await AsyncStorage.setItem('userData', JSON.stringify(response.data));
         setButtonSpinner(false);
         router.push("/(tabs)");
         // Toast.show("Account created successfully", {
