@@ -4,6 +4,7 @@ import {
   Dimensions,
   Image,
   Modal,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -78,16 +79,16 @@ export default function index() {
   const renderItem = ({ item }) => (
     <TouchableOpacity
       key={item._id}
-      // onPress={() =>
-      //   router.push({
-      //     pathname: "/(routes)/card-details",
-      //     params: { item: JSON.stringify(item) },
-      //   })
-      // }
-      onPress={()=> {
-        setNotListed(true)
+      onPress={() =>
+        router.push({
+          pathname: "/(routes)/card-details",
+          params: { item: JSON.stringify(item) },
+        })
+      }
+      // onPress={()=> {
+      //   setNotListed(true)
 
-      }}
+      // }}
     >
       <View style={styles.card}>
         <Image
@@ -252,6 +253,7 @@ export default function index() {
           />
         </View>
 
+
         {isLoading ? (
           <ActivityIndicator
             size="large"
@@ -315,15 +317,22 @@ const styles = StyleSheet.create({
     marginBottom: 360,
   },
   card: {
-    margin: 10,
-    backgroundColor: "white",
 
+
+    margin: 5,
+    // backgroundColor: "red",
+    // padding:10,
+    borderRadius: 5,
     flexDirection: "row",
+    justifyContent: "space-between",
 
-    marginBottom: 10,
+ 
+    ...(Platform.OS === 'ios' && {
+      marginBottom: 10,
     marginHorizontal: 10,
     borderRadius: 20,
     padding: 10,
+    }),
 
     // justifyContent: "flex-start",
     alignItems: "center",

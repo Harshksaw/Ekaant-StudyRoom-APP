@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
+  Platform,
 } from "react-native";
 
 import Carousel from "react-native-reanimated-carousel";
@@ -93,7 +94,8 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
           marginHorizontal: 0,
           flexDirection: "column",
-          marginTop: -200,
+          ...(Platform.OS ==="ios" ? {marginTop: -200} : {marginTop: -100,})
+          
         }}
       >
         <View style={styles.cardDetails}>

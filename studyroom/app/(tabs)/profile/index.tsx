@@ -65,7 +65,7 @@ export default function profile() {
           justifyContent: "flex-start",
           // borderColor: "black",
 
-          justifyContent: "center",
+          // justifyContent: "center",
         }}
       >
         <Image

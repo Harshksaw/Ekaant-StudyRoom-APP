@@ -1,9 +1,10 @@
 {
   "expo": {
+
     "name": "studyroom",
     "slug": "studyroom",
   
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
     "scheme": "myapp",
@@ -20,7 +21,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/Splash.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffff88"
       },
       "package": "com.harsh10021.studyroom"
     },
