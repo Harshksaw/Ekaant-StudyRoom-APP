@@ -32,7 +32,7 @@ export default function index() {
   const [notavailable, setNotAvailable] = useState(false);
   const [notListed, setNotListed] = useState(false);
   const [reload, setReload] = useState(false);
-
+  const toggleNotListedModal = () => setNotListed(!notListed);
 
 
   const getTokenAndPrintIt = async () => {
@@ -204,22 +204,7 @@ export default function index() {
         />
       </View>
 
-      {/* <NotListedModal isVisible={notListed} toggleModal={()=> setNotListed(false)} /> */}
-      <Modal animationType="slide" transparent visible={notListed}>
-                <LinearGradient
-                    colors={['#F0F0F0', '#EEEEEE']}
-                    style={styles.modalContainer}
-                >
-                    <View style={styles.imagePlaceholder}>
-                        {/* <Image source={require('./placeholder.png')} // Replace with your placeholder image
-                                     style={styles.image} /> */}
-                    </View>
-                    <Text style={styles.text}>Not Listed, Will Be Soon!</Text>
-                   <TouchableOpacity onPress={()=> setNotListed(false)}>
-                    <Text>Close</Text>
-                   </TouchableOpacity>
-                </LinearGradient>
-            </Modal>
+    <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
       <View style={styles.filters}>
         {filters.map((filter, index) => (
           <TouchableOpacity
@@ -363,6 +348,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   text: {
+    color:'green',
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 15,
