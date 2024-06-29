@@ -362,7 +362,8 @@ async function forgetPassword(req, res, next) {
   try {
     // const user = await User.findById(req.params._id);
     const { userId, password, resetPassword } = req.body;
-    console.log("userId is ", userId, password, resetPassword);
+    console.log("Received password:", password, "and resetPassword:", resetPassword);
+
     const user = await User.findOne({ _id: userId });
     if (user) {
       // validate the old password
