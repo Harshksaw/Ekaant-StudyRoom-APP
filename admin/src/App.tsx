@@ -36,7 +36,7 @@ function App() {
               element={<CreateLibrary />}
             />
             <Route
-              path="manage-library/view-library/:id"
+              path="manage-library/view-library/:library_id"
               element={<ViewLibrary />}
             />
             <Route path="/manage-seats" element={<ManageSeats />} />
