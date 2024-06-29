@@ -1,7 +1,9 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 
 const ViewLibrary = () => {
-  return <div>ViewLibrary</div>;
+  const { library_id } = useParams();
+  return <div>{library_id}</div>;
 };
 
 export default ViewLibrary;

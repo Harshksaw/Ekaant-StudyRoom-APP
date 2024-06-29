@@ -68,14 +68,6 @@ const createRoom = async (req, res) => {
 
       timeSlot,
     } = req.body;
-    // console.log(">>>>>>>>>>>>>------",req.body, "------", JSON.parse(req.body.seatLayout), "------")
-
-    // Upload the thumbnail image to Cloudinary
-    // const images = req.files?.images || [];
-
-    // if (!images.length) {
-    //   return res.status(400).json({ message: "No images uploaded!" });
-    // }
 
     const images = req.files.map((file) => file.path);
     // console.log(images);
@@ -84,43 +76,37 @@ const createRoom = async (req, res) => {
       return res.status(400).json({ error: "Name and location are required." });
     }
 
+    const parsedName = JSON.parse(name);
+    const parsedDescription = JSON.parse(description);
+    const parsedLocation = JSON.parse(location);
+    const parsedPrice = JSON.parse(price); // Ensure price is provided as a stringified number
+
+    const parsedAmenities = JSON.parse(amenities); // Assuming amenities is a stringified array
+
     let parsedSeatLayout;
-
-    try {
-      if (typeof seatLayout === "string") {
-        parsedSeatLayout = JSON.parse(seatLayout);
-      } else {
-        // If seatLayout is not a string, assume it's already in the correct format or undefined
-        parsedSeatLayout = seatLayout;
-      }
-    } catch (error) {
-      return res
-        .status(400)
-        .json({ error: "Invalid JSON format for seatLayout or seatbooked." });
+    if (typeof seatLayout === "string") {
+      parsedSeatLayout = JSON.parse(seatLayout);
+    } else {
+      parsedSeatLayout = seatLayout; // Assuming it's already in the correct format or undefined
     }
 
-    let parsedTimeSlot = timeSlot;
-    try {
-      if (typeof timeSlot === "string") {
-        parsedTimeSlot = JSON.parse(timeSlot);
-      }
-    } catch (error) {
-      return res
-        .status(400)
-        .json({ error: "Invalid JSON format for timeSlot." });
+    let parsedTimeSlot;
+    if (typeof timeSlot === "string") {
+      parsedTimeSlot = JSON.parse(timeSlot);
+    } else {
+      parsedTimeSlot = timeSlot; // Assuming it's already in the correct format
     }
 
-    
     const libraryData = {
-      name,
-      description,
-      location,
-      price,
-      reviews,
-      amenities,
-      seatLayout : parsedSeatLayout,
+      name: parsedName,
+      description: parsedDescription,
+      location: parsedLocation,
+      price: parsedPrice,
 
-      timeSlot : parsedTimeSlot,
+      amenities: parsedAmenities,
+      seatLayout: parsedSeatLayout,
+
+      timeSlot: parsedTimeSlot,
       images,
     };
 

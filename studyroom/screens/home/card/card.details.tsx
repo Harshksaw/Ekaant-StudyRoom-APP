@@ -1,7 +1,7 @@
 import Avatar from "@/components/AvatarComponent";
 import Header from "@/components/Header";
 import StarRating from "@/components/Ratinstar";
-import getPlaceNameFromCoordinates from "@/utils/location";
+
 import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -21,6 +21,7 @@ import Carousel from "react-native-reanimated-carousel";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router } from "expo-router";
 import Button from "@/components/Button";
+import getLocationName from "@/utils/location";
 
 interface CardDetailScreenProps {
   // Define your params here
@@ -33,9 +34,20 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const data = JSON.parse(params.params.item);
 
 
+  const [city, setCity] = useState("Delhi");  
 
   const seat = data.seatLayout;
-  console.log(seat)
+
+
+  const locationData = async () => {
+    const res = await getLocationName(data.location[0], data.location[1])
+    setCity(res)
+
+
+  }
+  locationData();
+
+
 
 
 
@@ -125,7 +137,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 fontWeight: "semi-bold",
               }}
             >
-              {data.location}
+             {city}
             </Text>
           </View>
 

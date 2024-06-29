@@ -5,7 +5,7 @@ const librarySchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   images: [{ type: String, required: false }],
-  location: { type: String, required: true },
+  location: [ ],
   price: { type: Number, required: true },
   reviews: { type: String, required: false }, // Optional field
 

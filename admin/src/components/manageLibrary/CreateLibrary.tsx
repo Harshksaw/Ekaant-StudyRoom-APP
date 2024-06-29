@@ -112,6 +112,7 @@ const CreateLibrary = () => {
         formData
       );
       console.log("Success:", response.data);
+
       if (response.data) {
         setLoading(false);
         toast.success("Library created successfully");
@@ -131,7 +132,8 @@ const CreateLibrary = () => {
         setUploadedFiles([]);
         setSeatLayout(null);
         setImages([]);
-        navigate("/manage-library/view-library");
+
+        navigate(`/manage-library/view-library/${response.data._id}`);
       }
     } catch (error) {
       setLoading(false);
