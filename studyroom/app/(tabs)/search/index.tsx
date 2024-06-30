@@ -134,7 +134,7 @@ export default function Search() {
       >
         <Text
         style={{
-          fontFamily: 'Cursive',
+
           fontSize: 30,
           fontWeight: "semibold",
           marginTop: 20,

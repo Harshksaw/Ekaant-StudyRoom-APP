@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
         fontSize: 18,
-        fontFamily: 'Nunito_700Bold',
+        fontFamily: 'Bold',
     },
 });
 

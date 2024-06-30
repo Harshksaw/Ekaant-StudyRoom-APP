@@ -131,11 +131,11 @@ export default function ForgotPassword() {
         </Text>
       </TouchableOpacity>
       <View style={styles.loginLink}>
-        <Text style={[styles.backText, { fontFamily: "Nunito_700Bold" }]}>
+        <Text style={[styles.backText, { fontFamily: "normal" }]}>
           Back To?
         </Text>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={[styles.loginText, { fontFamily: "Nunito_700Bold" }]}>
+          <Text style={[styles.loginText, { fontFamily: "normal" }]}>
             Sign In
           </Text>
         </TouchableOpacity>
