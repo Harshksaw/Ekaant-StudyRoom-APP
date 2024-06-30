@@ -27,11 +27,11 @@ export default function profile() {
   }
 
   return (
-    // <ProfileScreen />
-    <SafeAreaView style={{ flex: 1 }}>
+
+    <SafeAreaView style={{  flex:1 }}>
       <View
         style={{
-          // flex: 1,
+          flex: 1,
           height: 300,
           backgroundColor: "#0077B6",
           zIndex: 1,
@@ -226,6 +226,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
+    marginTop:10,
     // paddingTop: 16,
     paddingBottom: 8,
     backgroundColor: "#0077B6",
