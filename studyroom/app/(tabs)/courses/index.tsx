@@ -1,4 +1,5 @@
-import { fetchRoomData } from "hooks/api/library";
+
+import { fetchRoomData } from "@/hooks/api/library";
 import { useEffect, useState } from "react";
 import { View, Text, SafeAreaView, ScrollView, StyleSheet } from "react-native";
 

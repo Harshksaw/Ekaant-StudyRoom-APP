@@ -1,6 +1,6 @@
-// import useUser from "@/hooks/auth/useUser";
-import Loader from "@/components/loader";
-import useUser from "hooks/auth/useUser";
+
+
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Redirect } from "expo-router";
 // import Loader from "@/components/loader/loader";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Text } from "react-native";
 import SkeletonContent from "react-native-skeleton-content";
 import * as Location from 'expo-location';
+import useUser from "@/hooks/auth/useUser";
 export default function TabsIndex() {
 
 

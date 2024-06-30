@@ -24,9 +24,11 @@ import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NotListedModal from "@/components/NotListedModal";
 import { LinearGradient } from "expo-linear-gradient";
+import { fetchRoomData } from "../../hooks/api/library";
 
-import * as Location from 'expo-location';
-import {Picker} from '@react-native-picker/picker';
+
+// import * as Location from 'expo-location';
+// import {Picker} from '@react-native-picker/picker';
 
 
 export default function index() {
@@ -40,31 +42,31 @@ export default function index() {
 
 
 
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+  // const [location, setLocation] = useState(null);
+  // const [errorMsg, setErrorMsg] = useState(null);
  
-  useEffect(() => {
-    (async () => {
+  // useEffect(() => {
+  //   (async () => {
       
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== 'granted') {
+  //       setErrorMsg('Permission to access location was denied');
+  //       return;
+  //     }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     setLocation(location);
 
-      console.log(location)
-    })();
-  }, []);
+  //     console.log(location)
+  //   })();
+  // }, []);
 
-  let text = 'Waiting..';
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
+  // let text = 'Waiting..';
+  // if (errorMsg) {
+  //   text = errorMsg;
+  // } else if (location) {
+  //   text = JSON.stringify(location);
+  // }
 
 
 

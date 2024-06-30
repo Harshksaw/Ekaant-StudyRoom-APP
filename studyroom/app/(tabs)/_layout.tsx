@@ -1,7 +1,7 @@
 // import useUser from "@/hooks/auth/useUser";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { Image } from "react-native";
+
 
 export default function TabsLayout() {
   // const { user } = useUser();
