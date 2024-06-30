@@ -1,6 +1,5 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-// import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
-// import { Nunito_400Regular, Nunito_700Bold } from "@expo-google-fonts/nunito";
+
 
 import { router } from "expo-router";
 import { StyleSheet } from "react-native";

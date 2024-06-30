@@ -1,4 +1,5 @@
 // import useUser from "@/hooks/auth/useUser";
+import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Image } from "react-native";
 
@@ -10,29 +11,34 @@ export default function TabsLayout() {
     screenOptions={({ route }) => ({
       tabBarIcon: ({ color }) => {
         let iconName;
-  
+ 
         switch (route.name) {
           case 'index':
-            iconName = require("../../assets/images/HomeIcon.png");
+            iconName = 'home-outline'
             break;
           case 'search/index':
-            iconName = require("../../assets/images/BookingIcon.png");
+            iconName = 'albums-outline'
             break;
           case 'courses/index':
-            iconName = require("../../assets/images/BookingIcon.png");
+            iconName = 'book-outline'
             break;
           case 'profile/index':
-            iconName = require("../../assets/images/BookingIcon.png");
+            iconName = 'cog-outline';
             break;
           case '(routes)/card-details/index':
-            iconName = require("../../assets/images/BookingIcon.png");
+            iconName = ''
             break;
           default:
-            iconName = require("../../assets/images/BookingIcon.png");
+            iconName = ''
             break;
         }
   
-        return <Image style={{ width: 25, height: 25, tintColor: color }} source={iconName} />;
+        return <Ionicons
+        name={iconName}
+        size={30}
+        style={{ margin:5 , padding:0 }}
+        color={color || 'black'}
+        />;
       },
       headerShown: false,
       tabBarShowLabel: false,
@@ -42,13 +48,10 @@ export default function TabsLayout() {
     <Tabs.Screen name="search/index" />
     <Tabs.Screen name="courses/index" />
     <Tabs.Screen name="profile/index" />
-    <Tabs.Screen
+    {/* <Tabs.Screen
       name="(routes)/card-details/index"
-      options={{
-        headerShown: false,
-        tabBarShowLabel: false,
-      }}
-    />
+    
+    /> */}
   </Tabs>
   );
 }

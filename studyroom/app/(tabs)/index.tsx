@@ -46,6 +46,7 @@ export default function index() {
       console.error('Error fetching token:', error);
     }
   };
+
   useEffect(() => {
     const fetchLibraryDate = async () => {
       setIsLoading(true);
@@ -70,9 +71,10 @@ export default function index() {
 
 
   const filters = [
-    { id: 1, name: "Filter 1" },
-    { id: 2, name: "Filter 2" },
-    { id: 3, name: "Filter 3" },
+    { id: 1, name: "Filters", icon: "funnel" },
+    { id: 2, name: "Sort" , icon : "arrow-down-circle"},
+    { id: 3, name: "Locality" , icon : "location"},
+    { id: 4, name: "Price", icon : "wallet" },
   ];
 
   // return <HomeScreen />;
@@ -206,7 +208,11 @@ export default function index() {
       </View>
 
     <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
-      <View style={styles.filters}>
+
+
+      <ScrollView style={styles.filters}
+      horizontal={true}
+      >
         {filters.map((filter, index) => (
           <TouchableOpacity
             key={index}
@@ -214,19 +220,20 @@ export default function index() {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
+              marginHorizontal: 10,
               height: 30,
               // paddingHorizontal: 10,
-              paddingHorizontal: 10,
-              backgroundColor: "blue",
+              paddingHorizontal: 15,
+              backgroundColor: "lightgray",
               borderRadius: 40,
             }}
             // onPress={onPress}
           >
-            <Ionicons name={"arrow-back"} size={24} color="white" />
-            <Text style={{ color: "white", marginLeft: 5 }}>{filter.name}</Text>
+            <Ionicons name={filter.icon} size={24} color="black" />
+            <Text style={{ color: "black", marginLeft: 5 }}>{filter.name}</Text>
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
 
       <ScrollView style={styles.listings}>
         <View
@@ -310,8 +317,8 @@ const styles = StyleSheet.create({
   filters: {
     flexDirection: "row",
     height: 50,
-    marginHorizontal: 10,
-    gap: 10,
+    marginHorizontal: 20,
+    gap: 15,
   },
   listings: {
     marginBottom: 360,

@@ -27,12 +27,12 @@ export default function profile() {
   }
 
   return (
-    // <ProfileScreen />
-    <SafeAreaView style={{ flex: 1 }}>
+
+    <SafeAreaView style={{  flex:1 }}>
       <View
         style={{
-          // flex: 1,
-          height: 300,
+          flex: 1,
+          height: "40%",
           backgroundColor: "#0077B6",
           zIndex: 1,
         }}
@@ -57,10 +57,12 @@ export default function profile() {
           flex: 1,
           zIndex: 3,
           borderRadius: 20,
+          borderBottomEndRadius: 0,
+          borderBottomStartRadius: 0,
           backgroundColor: "white",
           position: "absolute",
           bottom: 0,
-          height: 450,
+          height:"60%",
           width: "100%",
           justifyContent: "flex-start",
           // borderColor: "black",
@@ -141,6 +143,7 @@ export default function profile() {
                 borderRadius: 10,
                 padding: 5,
               }}
+              onPress={() => router.push("/(tabs)/courses")}
             >
               <View
                 style={{
@@ -226,6 +229,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
+    marginTop:10,
     // paddingTop: 16,
     paddingBottom: 8,
     backgroundColor: "#0077B6",
