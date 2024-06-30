@@ -71,14 +71,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    fontFamily: "Poppins",
+
     fontWeight: "700",
     fontSize: 30,
     lineHeight: 45,
     textAlign: "center",
   },
   text2: {
-    fontFamily: "Poppins",
+
     fontSize: 16,
     lineHeight: 24,
     textAlign: "center",

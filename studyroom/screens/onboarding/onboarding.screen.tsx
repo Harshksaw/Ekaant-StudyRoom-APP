@@ -15,7 +15,7 @@ import Button from "@/components/Button";
 
 import Carousel from "react-native-intro-carousel";
 import { useEffect } from "react";
-import useUser from "@/hooks/auth/useUser";
+import useUser from "hooks/auth/useUser";
 
 export default function OnBoardingScreen() {
 

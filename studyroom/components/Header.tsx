@@ -7,8 +7,7 @@ import {
   Platform,
   PermissionsAndroid,
 } from "react-native";
-
-
+import { Picker } from "@react-native-picker/picker";
 
 const citiesData = [
   { id: 1, name: "Mumbai" },
@@ -22,31 +21,33 @@ const citiesData = [
   { id: 9, name: "Surat" },
   { id: 10, name: "Jaipur" },
 ];
-
+const [selectedLocation, setSelectedLocation] = useState();
 const Header: React.FC = () => {
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
 
-
-
   return (
     <View style={styles.header}>
-        <View style={styles.citySelector}>
+      <View style={styles.citySelector}>
+        <Text style={styles.label}>Select City:</Text>
+        <View style={styles.picker}>
+          <Picker
+            selectedValue={selectedLocation}
+            onValueChange={(itemValue, itemIndex) =>
+              setSelectedLocation(itemValue)
+            }
+          >
+            <Picker.Item label="Java" value="java" />
+            <Picker.Item label="JavaScript" value="js" />
+          </Picker>
 
-            <Text style={styles.label}>Select City:</Text>
-            <View style={styles.picker}>
-
-        
-            {/* <Text>Delhi</Text> */}
-            </View>
+          {/* <Text>Delhi</Text> */}
         </View>
-
+      </View>
 
       <View style={styles.logoContainer}>
-
         <Image
-        height={20}
-
+          height={20}
           source={require("../assets/images/logo.png")}
           style={styles.logo}
         />
