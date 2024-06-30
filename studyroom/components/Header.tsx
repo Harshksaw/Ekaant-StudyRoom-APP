@@ -21,8 +21,9 @@ const citiesData = [
   { id: 9, name: "Surat" },
   { id: 10, name: "Jaipur" },
 ];
-const [selectedLocation, setSelectedLocation] = useState();
 const Header: React.FC = () => {
+  
+  const [selectedLocation, setSelectedLocation] = useState();
   // const [cities, setCities] = useState([]);
   // const [selectedCity, setSelectedCity] = useState("");
 

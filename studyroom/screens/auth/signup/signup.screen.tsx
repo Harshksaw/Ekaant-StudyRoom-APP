@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import {
   AntDesign,
@@ -377,6 +378,8 @@ export default function SignUpScreen() {
               </TouchableOpacity>
             </View>
           </View>
+
+
         </View>
       </View>
     </LinearGradient>
@@ -412,9 +415,12 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   inputContainer: {
+    flexDirection:'column',
+    gap :10,
+
     marginHorizontal: 16,
     // marginTop: 30,`
-    rowGap: 30,
+    rowGap:10,
   },
   input: {
     height: 55,

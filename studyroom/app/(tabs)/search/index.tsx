@@ -86,6 +86,8 @@ const GradientButton: React.FC<GradientButtonProps> = ({ text, onPress }) => {
     </TouchableOpacity>
   );
 };
+
+
 export default function Search() {
   return (
     <SafeAreaView

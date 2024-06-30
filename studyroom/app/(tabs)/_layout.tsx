@@ -1,10 +1,10 @@
-// import useUser from "@/hooks/auth/useUser";
+
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
 
 export default function TabsLayout() {
-  // const { user } = useUser();
+  
   return (
     
     <Tabs
@@ -26,10 +26,10 @@ export default function TabsLayout() {
             iconName = 'cog-outline';
             break;
           case '(routes)/card-details/index':
-            iconName = ''
+            iconName = 'cog-outline'
             break;
           default:
-            iconName = ''
+            iconName = 'cog-outline'
             break;
         }
   
@@ -48,10 +48,7 @@ export default function TabsLayout() {
     <Tabs.Screen name="search/index" />
     <Tabs.Screen name="courses/index" />
     <Tabs.Screen name="profile/index" />
-    {/* <Tabs.Screen
-      name="(routes)/card-details/index"
-    
-    /> */}
+   
   </Tabs>
   );
 }
