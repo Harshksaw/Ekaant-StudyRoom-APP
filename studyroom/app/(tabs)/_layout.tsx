@@ -48,13 +48,10 @@ export default function TabsLayout() {
     <Tabs.Screen name="search/index" />
     <Tabs.Screen name="courses/index" />
     <Tabs.Screen name="profile/index" />
-    <Tabs.Screen
+    {/* <Tabs.Screen
       name="(routes)/card-details/index"
-      options={{
-        headerShown: false,
-        tabBarShowLabel: false,
-      }}
-    />
+    
+    /> */}
   </Tabs>
   );
 }
