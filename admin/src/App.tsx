@@ -47,7 +47,7 @@ function App() {
               <Route path="manage-user/permission" element={<Permission />} />
               <Route path="manage-user/search" element={<Search />} />
               <Route
-                path="manage-library/create-library"
+                path="/manage-library/create-library"
                 element={<CreateLibrary />}
               />
               <Route
@@ -61,8 +61,8 @@ function App() {
             <Route element={<OwnerRoute />}>
 
               <Route path="/admin" element={<OwnerHome />} />
-              <Route path="/admin/manage-rooms" element={<ManageRooms />} />
-              <Route path="/admin/manage-users" element={<ManageAdmin />} />
+              <Route path="/admin/manage-rooms/:lib_id" element={<ManageRooms />} />
+              <Route path="/admin/manage-admin" element={<ManageAdmin />} />
               {/* <Route path="/admin/reports" element={<Reports />} /> */}
             </Route>
           )}

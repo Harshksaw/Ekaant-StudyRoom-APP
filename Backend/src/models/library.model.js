@@ -16,6 +16,11 @@ const librarySchema = new mongoose.Schema({
       label: { type: String, required: false },
     }
   ],
+  approved:{
+    type: Boolean,
+    default: false,
+    required: false,
+},
   seatbooked: [
     {
       id: { type: String, required: false },

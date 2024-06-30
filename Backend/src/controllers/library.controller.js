@@ -147,19 +147,43 @@ const getLibrary = async (req, res) => {
 
 // get room by id
 const getLibraryById = async (req, res) => {
-  const { id } = req.params();
+  const { id } = req.body;
+  console.log(id)
   try {
     const room = await Library.findById(id);
-    res.status(200).json(room);
+    res.status(200).json({
+      success: true,
+      message: "Library data",
+      data : room,
+    });
   } catch (error) {
     console.error("Error ", error);
     res.status(500).json({ error: "cannot get room" });
   }
 };
+const updateApproveStatus = async (req, res) => {
+  console.log(req.body, "reqqq");
+  const { id, status } = req.body;
+  try {
+    const room = await Library.findByIdAndUpdate(id,{
+      approved: status
+    });
+    console.log(room?.approved)
+    res.status(200).json({
+      success: true,
+      message: "Library status ",
+      data: room,
+    });
 
+  } catch (error) {
+    console.error("Error ", error);
+    res.status(500).json({ error: "cannot get room" });
+  }
+};
 module.exports = {
   pingAdmin,
   createRoom,
   getLibrary,
   getLibraryById,
+  updateApproveStatus
 };

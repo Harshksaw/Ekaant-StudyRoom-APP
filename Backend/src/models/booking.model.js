@@ -66,6 +66,7 @@ const bookingSchema = new mongoose.Schema({
         default: false,
         required: false,
     },
+
     
 
     timeStamp: {

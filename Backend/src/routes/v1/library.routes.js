@@ -30,6 +30,7 @@ Library.post(
   LibraryController.createRoom
 );
 Library.get("/getLibrary", LibraryController.getLibrary);
-Library.get("/getLibraryById/:id", LibraryController.getLibraryById);
+Library.post("/updateStatus", LibraryController.updateApproveStatus);
+Library.post("/getLibraryById", LibraryController.getLibraryById);
 
 module.exports = Library;
