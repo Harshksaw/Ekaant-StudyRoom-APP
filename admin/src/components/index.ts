@@ -1,4 +1,4 @@
-import Sidebar from "./Sidebar";
+import Sidebar from "./sidebar";
 import View from "./View";
 import Permission from "./Permission";
 import Search from "./Search";

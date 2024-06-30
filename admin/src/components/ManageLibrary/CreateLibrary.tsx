@@ -104,6 +104,7 @@ const CreateLibrary = () => {
     formData.append("amenities", JSON.stringify(amenties));
     formData.append("seatLayout", JSON.stringify(seatLayout));
     formData.append("timeSlot", JSON.stringify(filledTimeSlots));
+
     console.log(formData);
     try {
       setLoading(true);

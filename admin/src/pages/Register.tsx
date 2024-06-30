@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Send } from "lucide-react";
+import { BASEURL } from "@/lib/utils";
 const Register = () => {
   const [verified, setVerified] = useState(false);
   const [otp, setOtp] = useState(0);
@@ -40,7 +41,7 @@ const Register = () => {
       console.log(userInfo.phone);
       setShowOtp(true);
       const response = await axios.post(
-        "http://localhost:3000/api/v1/auth/otp",
+        `${BASEURL}/api/v1/auth/otp`,
         {
           phoneNumber: userInfo.phone,
         }
@@ -54,7 +55,7 @@ const Register = () => {
   const verifyOtp = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/v1/auth/verifyOtp`,
+        `${BASEURL}/api/v1/auth/verifyOtp`,
         {
           otp: otp,
         }
@@ -73,7 +74,7 @@ const Register = () => {
   const handleSignUp = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/auth/signup",
+        `${BASEURL}/api/v1/auth/signup`,
         {
           username: userInfo.name,
           email: userInfo.email,

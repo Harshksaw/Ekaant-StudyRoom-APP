@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import Image from "./Image.jsx";
+import Image from "./Image.js";
 
 // Add a prop type definition for clarity and type safety
 interface PhotosUploaderProps {

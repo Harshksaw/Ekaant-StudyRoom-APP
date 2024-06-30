@@ -1,29 +1,39 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BASEURL } from "@/lib/utils";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const navigate = useNavigate();
-
+  
   const handleLogin = async () => {
     if (!email || !password) {
       return;
     }
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/auth/signin",
+        `${BASEURL}/api/v1/auth/signin`,
         {
           email,
           password,
         }
       );
+      
       if (response.data.success) {
+        // console.log(response.data.user.accountType)
+        console.log(response.data)
         const token = response.data.token;
+        const accountType = response.data.data.user.accountType; // Extract accountType
+        
         localStorage.setItem("token", token);
-        navigate("/dashboard");
+        localStorage.setItem("userId", response.data.data.user._id);
+        localStorage.setItem("role", accountType); // Store accountType in localStorage
+        const role = localStorage.getItem("role");
+        
+        
+        role === 'Admin' ?  navigate("/dashboard") : navigate("/admin");
       }
     } catch (error) {
       console.log(error);

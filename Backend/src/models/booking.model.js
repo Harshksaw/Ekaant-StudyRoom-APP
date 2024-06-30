@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 
 // Define the library schema
+
+//admin -> CreatRoom -> For review -> Approve/Disapprove(Admin) -> Room is live
+
+
+
 const bookingSchema = new mongoose.Schema({
 
     userId: {
@@ -56,6 +61,12 @@ const bookingSchema = new mongoose.Schema({
         default: "PENDING",
         required: false,
     },
+    approved:{
+        type: Boolean,
+        default: false,
+        required: false,
+    },
+    
 
     timeStamp: {
         type: Date,

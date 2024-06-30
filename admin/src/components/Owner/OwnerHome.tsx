@@ -1,0 +1,11 @@
+import React from 'react'
+
+const OwnerHome = () => {
+  return (
+    <div>
+        'sdsddsdsdsdsd
+    </div>
+  )
+}
+
+export default OwnerHome
