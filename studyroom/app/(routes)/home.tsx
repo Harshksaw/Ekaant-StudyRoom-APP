@@ -24,7 +24,7 @@ export default function Home() {
         </Text>
 
         {assets && <Image width={100} height={100} source={assets[1]} />}
-        {assets && <Image source={assets[0]} />}
+        {assets && <Image source={assets[1]} width={100} height={100} />}
 
         <Text style={styles.text2}>
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste,

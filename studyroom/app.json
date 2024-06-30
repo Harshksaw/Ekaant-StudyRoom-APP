@@ -1,12 +1,9 @@
 {
   "expo": {
-
     "name": "studyroom",
     "slug": "studyroom",
-  
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
-
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -23,8 +20,12 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffff88"
       },
-      "package": "com.harsh10021.studyroom",
-      "versionCode": 7
+      "versionCode": 8,
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "package": "com.harsh10021.studyroom"
     },
     "web": {
       "bundler": "metro",
@@ -46,9 +47,7 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
-
     ],
-    
     "experiments": {
       "typedRoutes": true
     },
