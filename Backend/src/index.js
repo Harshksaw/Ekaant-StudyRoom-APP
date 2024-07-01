@@ -11,8 +11,6 @@ const cloudinary = require("cloudinary").v2;
 
 const Multer = require("multer");
 
-
-
 // const PORT
 const app = express();
 app.use(
@@ -64,8 +62,6 @@ app.use(express.json());
 //   next();
 // });
 
-
-
 // If any request comes and route starts with /api, we map it to apiRouter
 app.use("/api", apiRouter);
 
@@ -84,8 +80,7 @@ app.get("/ping", (req, res) => {
 // last middleware if any error comes
 app.use(errorHandler);
 
-
-app.listen(3001, async () => {
+app.listen(3002, async () => {
   console.log(`Server started at PORT: ${PORT}`);
   await connectToDB();
   console.log("Successfully connected to db");
