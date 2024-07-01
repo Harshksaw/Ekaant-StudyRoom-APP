@@ -72,10 +72,7 @@ AuthRouter.get(
 );
 AuthRouter.post(
   "/profilepic",
-  upload.fields({
-    name: "profilepic",
-    maxCount: 1,
-  }),
+  upload.single("profilepic"),
   AuthController.changeProfilePic
 );
 

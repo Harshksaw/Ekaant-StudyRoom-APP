@@ -21,15 +21,14 @@ function pingAuthController(req, res) {
 }
 
 async function getUser(req, res, next) {
-
   console.log("req.user is ", req.user);
   try {
     const user = await getUserById(req.user.id); // Assuming your JWTs encode the user's ID
-    if (!user) return res.status(404).send({ message: 'User not found' });
+    if (!user) return res.status(404).send({ message: "User not found" });
 
     res.send({ user });
   } catch (error) {
-    res.status(500).send({ message: 'Internal server error' });
+    res.status(500).send({ message: "Internal server error" });
   }
 }
 
@@ -107,13 +106,7 @@ async function signIn(req, res, next) {
   try {
     const { email, password } = req.body;
 
- 
-
-       
-      const user = await User.findOne({ email });
-
-    
-
+    const user = await User.findOne({ email });
 
     // Find user with requested email
     if (user) {
@@ -371,7 +364,12 @@ async function forgetPassword(req, res, next) {
   try {
     // const user = await User.findById(req.params._id);
     const { userId, password, resetPassword } = req.body;
-    console.log("Received password:", password, "and resetPassword:", resetPassword);
+    console.log(
+      "Received password:",
+      password,
+      "and resetPassword:",
+      resetPassword
+    );
 
     const user = await User.findOne({ _id: userId });
     if (user) {
@@ -413,37 +411,23 @@ async function forgetPassword(req, res, next) {
   }
 }
 
+async function changeProfilePic(req, res) {
+  try {
+    // if (req.files && req.files.profilepic) {
+    const image = req.file.profilepic;
 
-async function changeProfilePic() {
-   try {
-    if (req.files && req.files.profilepic) {
-      const image = req.files.profilepic[0];
+    console.log(image, "image is ");
 
-
-      console.log(image, "image is ");
-
-
-      return res.status(StatusCodes.OK).json({
-        success: true,
-        message: "Profile picture updated successfully",
-
-
-      });
-
-
-    } else {
-      res.status(400).send('No profile picture uploaded.');
-    }
-
-    
-  
-   } catch (error) {
+    return res.status(StatusCodes.OK).json({
+      message: "Profile picture updated successfully",
+    });
+    // } else {
+    //   res.status(400).send("No profile picture uploaded.");
+    // }
+  } catch (error) {
     console.log("error is  at profilepictore uplaoder", error);
-    
-   }
+  }
 }
-
-
 
 module.exports = {
   signUp,
@@ -454,5 +438,5 @@ module.exports = {
   verifyOtp,
   forgetPassword,
   getUser,
-  changeProfilePic
+  changeProfilePic,
 };
