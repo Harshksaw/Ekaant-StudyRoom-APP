@@ -66,12 +66,13 @@ const BookingScreen: React.FC = () => {
     setSelectedTimeSlot(from);
   };
   console.log(
-    "=======",
+    "=======line69bookingscreen",
     selectedSeat,
     selectedDate,
     selectedNumber,
     selectedTimeSlot
   );
+  
   const updateBookingDetails = () => {
     const details = {
       seat: selectedSeat,

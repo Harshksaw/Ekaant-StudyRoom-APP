@@ -37,6 +37,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const [city, setCity] = useState("Delhi");
 
   const seat = data.seatLayout;
+  console.log(data, "----card.details--45", seat);
   const locationData = async () => {
     try {
       // Assuming data.location might be null or undefined, leading to issues when accessed
@@ -410,7 +411,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   cardDetails: {
-      
+
     flexDirection: "column", // Arrange children in columns
     gap: 10, // Add gap between children
     // height: 400, // Adjust height for better spacing
