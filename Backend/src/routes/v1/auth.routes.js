@@ -76,7 +76,7 @@ AuthRouter.post(
     name: "profilepic",
     maxCount: 1,
   }),
-  AuthController.forgetPassword
+  AuthController.changeProfilePic
 );
 
 module.exports = AuthRouter;

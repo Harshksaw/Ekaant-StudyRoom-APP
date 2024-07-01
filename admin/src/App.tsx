@@ -36,12 +36,13 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
+        <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
 
           {role === "Admin" && (
             <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<Home />} />
+
               <Route path="/dashboard" element={<Dashboard />} />
 
               <Route path="/manage-user/view" element={<View />} />

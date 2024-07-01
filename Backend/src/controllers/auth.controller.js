@@ -416,9 +416,29 @@ async function forgetPassword(req, res, next) {
 
 async function changeProfilePic() {
    try {
-    return null
+    if (req.files && req.files.profilepic) {
+      const image = req.files.profilepic[0];
+
+
+      console.log(image, "image is ");
+
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: "Profile picture updated successfully",
+
+
+      });
+
+
+    } else {
+      res.status(400).send('No profile picture uploaded.');
+    }
+
+    
+  
    } catch (error) {
-    console.log("error is ", error);
+    console.log("error is  at profilepictore uplaoder", error);
     
    }
 }
