@@ -25,6 +25,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import NotListedModal from "@/components/NotListedModal";
 import { LinearGradient } from "expo-linear-gradient";
 import { fetchRoomData } from "../../hooks/api/library";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserDetails } from "@/redux/userSlice";
 
 
 // import * as Location from 'expo-location';
@@ -70,6 +72,7 @@ export default function index() {
 
 
 
+  const dispatch = useDispatch();
 
 
   const getTokenAndPrintIt = async () => {
@@ -83,8 +86,28 @@ export default function index() {
     }
   };
 
+  const getUserData = async () => {
+
+  
+    const res =  await AsyncStorage.getItem("userData")
+    // const data = JSON.parse(res);
+    return res;
+  }
+
+
+   
+
+
+
+
   useEffect(() => {
     const fetchLibraryDate = async () => {
+
+
+     const res = await getUserData()
+       dispatch(setUserDetails(res));
+     
+
       setIsLoading(true);
       setReload(false)
       try {
@@ -98,11 +121,13 @@ export default function index() {
       } finally {
         setIsLoading(false);
       }
+
+
     };
     getTokenAndPrintIt();
 
     fetchLibraryDate();
-    console.log(data);
+  
   }, [reload]);
 
 
@@ -112,6 +137,11 @@ export default function index() {
     { id: 3, name: "Locality" , icon : "location"},
     { id: 4, name: "Price", icon : "wallet" },
   ];
+
+  const userDetails = useSelector((state: any) => state.user);
+
+
+  console.log("-------------->",userDetails);
 
   // return <HomeScreen />;
   const renderItem = ({ item , index}) => (

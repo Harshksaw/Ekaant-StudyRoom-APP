@@ -106,8 +106,16 @@ async function signIn(req, res, next) {
   }
   try {
     const { email, password } = req.body;
+
+ 
+
+       
+      const user = await User.findOne({ email });
+
+    
+
+
     // Find user with requested email
-    const user = await User.findOne({ email });
     if (user) {
       if (await user.validatePassword(password)) {
         const token = jwt.sign({ user_id: user._id }, JWT_SECRET);

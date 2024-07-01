@@ -1,5 +1,5 @@
 import { BACKEND } from "@/utils/config";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -14,22 +14,30 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Toast } from "react-native-toast-notifications";
 
 const LoginScreen: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("Usertest@gmail.com");
+  const [password, setPassword] = useState("Teatuser");
 
   const login = async () => {
     if (!email || !password) {
-      return alert("Please fill in all fields");
+      return Toast.show("Please fill all fields", {
+        type: "danger",
+        placement: "top",
+        duration: 2000,
+      
+      });
     }
   };
 
   const handleLogin = async () => {
     // Implement your login logic here
-    if (!email || !password) {
-      return;
-    }
+
+    //production
+    // if (!email || !password) {
+    //   return;
+    // }
 
     try {
       const response = await axios.post(`${BACKEND}/api/v1/auth/signin`, {
@@ -40,11 +48,23 @@ const LoginScreen: React.FC = () => {
       console.log(response.data);
       if (response.data.success) {
 
-        await AsyncStorage.setItem('token', JSON.stringify(response.data.token));
-        await AsyncStorage.setItem('userData', JSON.stringify(response.data));
-    
+
+        await AsyncStorage.setItem(
+          "token",
+          JSON.stringify(response.data.token)
+        );
+        await AsyncStorage.setItem("userData", JSON.stringify(response.data.data));
+        Toast.show("Login Successful", 
+
+        {
+          type: "success",
+          placement: "top",
+          duration: 2000,
+        }
+        )
+
         router.push("/(tabs)");
-        
+
         // After storing the token, proceed with routing or any other operation
       }
     } catch (error) {
@@ -54,7 +74,6 @@ const LoginScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-     
       <View
         style={{
           position: "absolute",
@@ -67,109 +86,105 @@ const LoginScreen: React.FC = () => {
           zIndex: -1,
         }}
       >
-
         <Image
           source={require("../../../assets/images/bubble 02.png")}
           style={StyleSheet.absoluteFill}
         />
         <Image source={require("../../../assets/images/bubble 01.png")} />
       </View>
-        <KeyboardAvoidingView>
 
-        
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 100,
-          width: "100%",
-          height: "100%",
-          zIndex: 1,
-        }}
-      >
-        <Text
+        <View
           style={{
-            fontSize: 40,
-            fontFamily: "Raleway_700Bold",
-            marginBottom: 30,
-            left: -100,
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 100,
+            width: "100%",
+            height: "100%",
+            zIndex: 1,
           }}
-        >
-          Login
-        </Text>
-        <Text
-          style={{
-            fontSize: 20,
-            color: "gray",
-            fontFamily: "Raleway_700Bold",
-            marginBottom: 20,
-            left: -50,
-          }}
-        >
-          Good to See You back
-        </Text>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={[styles.input, { paddingLeft: 40, marginBottom: -12 }]}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-          />
-
-          <TextInput
-            style={[styles.input, { paddingLeft: 40, marginBottom: -12 }]}
-            placeholder="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-        </View>
-
-        <TouchableOpacity
-          style={{
-            padding: 16,
-            borderRadius: 8,
-            marginHorizontal: 16,
-            backgroundColor: "#2467E2",
-            marginTop: 35,
-          }}
-          onPress={handleLogin}
         >
           <Text
             style={{
-              color: "white",
-              textAlign: "center",
-              fontSize: 16,
-
+              fontSize: 40,
               fontFamily: "Raleway_700Bold",
+              marginBottom: 30,
+              left: -100,
             }}
           >
-            Sign IN
+            Login
           </Text>
-        </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 20,
+              color: "gray",
+              fontFamily: "Raleway_700Bold",
+              marginBottom: 20,
+              left: -50,
+            }}
+          >
+            Good to See You back
+          </Text>
 
-        <View style={styles.signupRedirect}>
-          <Text style={{ fontSize: 18, fontFamily: "Raleway_600SemiBold" }}>
-            Don't have an account?
-          </Text>
-          <TouchableOpacity onPress={() => router.push("/(routes)/signup")}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={[styles.input, { paddingLeft: 40, marginBottom: -12 }]}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+            />
+
+            <TextInput
+              style={[styles.input, { paddingLeft: 40, marginBottom: -12 }]}
+              placeholder="Password"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
+          </View>
+
+          <TouchableOpacity
+            style={{
+              padding: 16,
+              borderRadius: 8,
+              marginHorizontal: 16,
+              backgroundColor: "#2467E2",
+              marginTop: 35,
+            }}
+            onPress={handleLogin}
+          >
             <Text
               style={{
-                fontSize: 18,
-                fontFamily: "Raleway_600SemiBold",
-                color: "#2467EC",
-                marginLeft: 5,
+                color: "white",
+                textAlign: "center",
+                fontSize: 16,
+
+                fontFamily: "Raleway_700Bold",
               }}
             >
-              Sign Up
+              Sign IN
             </Text>
           </TouchableOpacity>
+
+          <View style={styles.signupRedirect}>
+            <Text style={{ fontSize: 18, fontFamily: "Raleway_600SemiBold" }}>
+              Don't have an account?
+            </Text>
+            <TouchableOpacity onPress={() => router.push("/(routes)/signup")}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontFamily: "Raleway_600SemiBold",
+                  color: "#2467EC",
+                  marginLeft: 5,
+                }}
+              >
+                Sign Up
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
-      </View>
-      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

@@ -38,7 +38,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 //   import { SERVER_URI } from "@/utils/uri";
 
-
 import { Feather } from "@expo/vector-icons";
 import { BACKEND } from "@/utils/config";
 
@@ -105,7 +104,6 @@ export default function SignUpScreen() {
   const verifyOtp = async () => {
     try {
       const response = await axios.post(`${BACKEND}/api/v1/auth/verifyOtp`, {
-
         otp: otp,
       });
       if (response.data.success) {
@@ -156,7 +154,7 @@ export default function SignUpScreen() {
           "token",
           JSON.stringify(response.data.token)
         );
-        await AsyncStorage.setItem('userData', JSON.stringify(response.data));
+        await AsyncStorage.setItem("userData", JSON.stringify(response.data));
         setButtonSpinner(false);
         router.push("/(tabs)");
         // Toast.show("Account created successfully", {
@@ -172,19 +170,13 @@ export default function SignUpScreen() {
     }
   };
   return (
-
-
-
-    
     <LinearGradient
       colors={["#E5ECF9", "#F6F7F9"]}
       style={{ flex: 1, paddingTop: 0 }}
     >
       <View>
         <View style={styles.signInImage}>
-          <Text style={[styles.welcomeText, { fontFamily: "Raleway_700Bold" }]}>
-            Create an {""} Account
-          </Text>
+          <Text style={[styles.welcomeText, {}]}>Create an {""} Account</Text>
           <Image
             source={require("../../../assets/images/bubble2.png")}
             style={{
@@ -193,210 +185,204 @@ export default function SignUpScreen() {
           />
         </View>
 
-
-         <KeyboardAvoidingView style={styles.inputContainer}>
-          
-
-          <View>
-            <TextInput
-              style={[styles.input, { paddingLeft: 40, marginBottom: -12 }]}
-              keyboardType="default"
-              value={userInfo.name}
-              placeholder="harsh"
-              onChangeText={(value) =>
-                setUserInfo({ ...userInfo, name: value })
-              }
-            />
-            <AntDesign
-              style={{ position: "absolute", left: 26, top: 14 }}
-              name="user"
-              size={20}
-              color={"#A1A1A1"}
-            />
-          </View>
-
-          <View>
-            <TextInput
-              style={[styles.input, { paddingLeft: 40 }]}
-              keyboardType="email-address"
-              value={userInfo.email}
-              placeholder="support@becodemy.com"
-              onChangeText={(value) =>
-                setUserInfo({ ...userInfo, email: value })
-              }
-            />
-            <Fontisto
-              style={{ position: "absolute", left: 26, top: 17.8 }}
-              name="email"
-              size={20}
-              color={"#A1A1A1"}
-            />
-          </View>
-
-          <View
-            style={{
-              flexDirection: "column",
-              justifyContent: "center",
-              // alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <View
-              style={[
-                styles.input,
-                {
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                },
-              ]}
-            >
-              <Text>+91</Text>
+        <ScrollView>
+          <KeyboardAvoidingView style={styles.inputContainer}>
+            <View>
               <TextInput
-                style={{ paddingLeft: 40 }}
-                keyboardType="phone-pad"
-                value={userInfo.phone.toString()} // Convert phone number to string for the value prop
-                placeholder="phone"
-                onChangeText={
-                  (value) =>
-                    setUserInfo({
-                      ...userInfo,
-                      phone: parseInt(value, 10) || 0,
-                    }) // Convert input value to number; use 0 as fallback
+                style={[styles.input, { paddingLeft: 40, marginBottom: -12 }]}
+                keyboardType="default"
+                value={userInfo.name}
+                placeholder="harsh"
+                onChangeText={(value) =>
+                  setUserInfo({ ...userInfo, name: value })
                 }
               />
-
-              <Feather
-                style={{
-                  position: "absolute",
-                  right: 30,
-                  top: 15,
-                }}
-                onPress={sendOtp}
-                name="arrow-up-right"
-                size={24}
-                color="black"
+              <AntDesign
+                style={{ position: "absolute", left: 26, top: 14 }}
+                name="user"
+                size={20}
+                color={"#A1A1A1"}
               />
             </View>
-            {showOtp && Number(userInfo.phone) >= 1000000 && (
-              <View
-                style={[
-                  styles.input,
-                  {
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    paddingHorizontal: 30,
-                  },
-                ]}
-              >
 
-<TextInput
-                  style={{ paddingLeft: 10 }}
-                  keyboardType="phone-pad"
-                  // value={userInfo.phone}
-                  placeholder="Otp"
-                  // onChangeText={
-                  //   (value) =>
-                  //     setOtp({
-                  //       ...userInfo,
-                  //       value: parseInt(value, 10) || 0,
-                  //     }) // Convert input value to number; use 0 as fallback
-                  // }
-                  onChange={(e) => setOtp(e.target.value)}
-                  // onChangeText={(value) => setOtp(value)}
-                />
-                <Feather
-                  style={{
-                    position: "absolute",
-                    right: 30,
-                    top: 15,
-                  }}
-                  onPress={verifyOtp}
-                  name="send"
-                  size={24}
-                  color="black"
-                />
-              </View>
-            )}
-
-            <TextInput
-              style={[styles.input, { marginTop: 15 }]}
-              secureTextEntry
-              value={userInfo.password}
-              placeholder="password"
-              onChangeText={(value) => {
-                setUserInfo({ ...userInfo, password: value });
-              }}
-            />
-
-            {required && (
-              <View
-              //  style={commonStyles.errorContainer}
-              >
-                <Entypo name="cross" size={18} color={"red"} />
-              </View>
-            )}
+            <View>
+              <TextInput
+                style={[styles.input, { paddingLeft: 40 }]}
+                keyboardType="email-address"
+                value={userInfo.email}
+                placeholder="support@becodemy.com"
+                onChangeText={(value) =>
+                  setUserInfo({ ...userInfo, email: value })
+                }
+              />
+              <Fontisto
+                style={{ position: "absolute", left: 26, top: 17.8 }}
+                name="email"
+                size={20}
+                color={"#A1A1A1"}
+              />
+            </View>
 
             <View
               style={{
                 flexDirection: "column",
                 justifyContent: "center",
                 // alignItems: "center",
+                gap: 10,
               }}
             >
-              <TouchableOpacity
-                style={{
-                  padding: 20,
-                  borderRadius: 8,
-                  marginHorizontal: 16,
-
-                  marginTop: 15,
-                }}
-                onPress={() => handleSignUp()}
+              <View
+                style={[
+                  styles.input,
+                  {
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                  },
+                ]}
               >
-                <Text
+                <Text>+91</Text>
+                <TextInput
+                  style={{ paddingLeft: 40 }}
+                  keyboardType="phone-pad"
+                  value={userInfo.phone.toString()} // Convert phone number to string for the value prop
+                  placeholder="phone"
+                  onChangeText={
+                    (value) =>
+                      setUserInfo({
+                        ...userInfo,
+                        phone: parseInt(value, 10) || 0,
+                      }) // Convert input value to number; use 0 as fallback
+                  }
+                />
+
+                <Feather
                   style={{
-                    textAlign: "center",
-                    fontSize: 16,
-                    fontFamily: "Raleway_700Bold",
+                    position: "absolute",
+                    right: 30,
+                    top: 15,
                   }}
+                  onPress={sendOtp}
+                  name="arrow-up-right"
+                  size={24}
+                  color="black"
+                />
+              </View>
+              {showOtp && Number(userInfo.phone) >= 1000000 && (
+                <View
+                  style={[
+                    styles.input,
+                    {
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      paddingHorizontal: 30,
+                    },
+                  ]}
                 >
-                  Sign Up
-                </Text>
-              </TouchableOpacity>
+                  <TextInput
+                    style={{ paddingLeft: 10 }}
+                    keyboardType="phone-pad"
+                    // value={userInfo.phone}
+                    placeholder="Otp"
+                    // onChangeText={
+                    //   (value) =>
+                    //     setOtp({
+                    //       ...userInfo,
+                    //       value: parseInt(value, 10) || 0,
+                    //     }) // Convert input value to number; use 0 as fallback
+                    // }
+                    onChange={(e) => setOtp(e.target.value)}
+                    // onChangeText={(value) => setOtp(value)}
+                  />
+                  <Feather
+                    style={{
+                      position: "absolute",
+                      right: 30,
+                      top: 15,
+                    }}
+                    onPress={verifyOtp}
+                    name="send"
+                    size={24}
+                    color="black"
+                  />
+                </View>
+              )}
 
-              <TouchableOpacity
-                style={{
-                  padding: 16,
-                  borderRadius: 8,
-                  marginHorizontal: 16,
-                  marginBottom: 100,
-
-                  // marginTop: 15,
+              <TextInput
+                style={[styles.input, { marginTop: 15 }]}
+                secureTextEntry
+                value={userInfo.password}
+                placeholder="password"
+                onChangeText={(value) => {
+                  setUserInfo({ ...userInfo, password: value });
                 }}
-                onPress={() => router.back()}
-              >
-                <Text
-                  style={{
-                    // color: "white",
-                    textAlign: "center",
-                    fontSize: 16,
-                    fontFamily: "Raleway_700Bold",
-                  }}
+              />
+
+              {required && (
+                <View
+                //  style={commonStyles.errorContainer}
                 >
-                  Cancel
-                </Text>
-              </TouchableOpacity>
+                  <Entypo name="cross" size={18} color={"red"} />
+                </View>
+              )}
+
+              <View
+                style={{
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  // alignItems: "center",
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    padding: 20,
+                    borderRadius: 8,
+                    marginHorizontal: 16,
+
+                    marginTop: 15,
+                  }}
+                  onPress={() => handleSignUp()}
+                >
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontSize: 16,
+                      fontFamily: "Raleway_700Bold",
+                    }}
+                  >
+                    Sign Up
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    padding: 16,
+                    borderRadius: 8,
+                    marginHorizontal: 16,
+                    marginBottom: 100,
+
+                    // marginTop: 15,
+                  }}
+                  onPress={() => router.back()}
+                >
+                  <Text
+                    style={{
+                      // color: "white",
+                      textAlign: "center",
+                      fontSize: 16,
+                      fontFamily: "Raleway_700Bold",
+                    }}
+                  >
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-
-
-
-        </KeyboardAvoidingView>   
+          </KeyboardAvoidingView>
+        </ScrollView>
       </View>
     </LinearGradient>
-
   );
 }
 
@@ -428,12 +414,12 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   inputContainer: {
-    flexDirection:'column',
-    gap :10,
+    flexDirection: "column",
+    gap: 10,
 
     marginHorizontal: 16,
     // marginTop: 30,`
-    rowGap:10,
+    rowGap: 20,
   },
   input: {
     height: 55,

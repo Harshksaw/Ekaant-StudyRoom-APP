@@ -3,8 +3,9 @@
 
 
 import { Redirect } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default function TabsIndex() {
  
 
@@ -22,7 +23,7 @@ const printAllAsyncStorageData = async () => {
   }
 };
 
-// Call the function to print all AsyncStorage data
+
 printAllAsyncStorageData();
 
 
@@ -31,6 +32,9 @@ printAllAsyncStorageData();
 
 
   const [user, setUser] = useState(false);
+
+
+
 
   // const [token, setToken] = useState("");
   // const checkToken = async () => {
@@ -57,7 +61,7 @@ printAllAsyncStorageData();
 
   return (
     <>
-     <Redirect href={user ?  "/(tabs)" : "/(routes)/onboarding"} />
+     <Redirect href={!user ?  "/(tabs)" : "/(routes)/onboarding"} />
      </>
    
   

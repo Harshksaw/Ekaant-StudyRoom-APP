@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Toast } from "react-native-toast-notifications";
+import { useSelector } from "react-redux";
 export default function profile() {
   const logout = async () => {
 
@@ -25,6 +26,12 @@ export default function profile() {
 
 
   }
+
+  const userDetails = useSelector((state: any) => state.user);
+
+  // console.log("-------------->",JSON.parse(userDetails));
+  console.log("-------------->+++++++",JSON.parse(userDetails.details));
+  const userData = JSON.parse(userDetails.details).user;
 
   return (
 
@@ -94,12 +101,12 @@ export default function profile() {
           <Text
             style={{ fontSize: 20, fontWeight: "bold", alignSelf: "center" }}
           >
-            Harsh
+            {userData.username}
           </Text>
           <Text
             style={{ fontSize: 16, fontWeight: "bold", alignSelf: "center" }}
           >
-            <Text>harsh @gmail.com</Text>
+            <Text> {userData.email}</Text>
           </Text>
 
           <View
