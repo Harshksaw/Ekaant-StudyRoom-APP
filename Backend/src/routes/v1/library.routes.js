@@ -33,6 +33,6 @@ Library.post(
 Library.get("/getLibrary", LibraryController.getLibrary);
 Library.post("/updateStatus", LibraryController.updateApproveStatus);
 Library.post("/getLibraryById", LibraryController.getLibraryById);
-Library.post("/getAdminLibraries/:userId", LibraryController.getAdminLibraries);
+Library.post("/getAdminLibraries", LibraryController.getAdminLibraries);
 
 module.exports = Library;

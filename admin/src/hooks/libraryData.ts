@@ -1,12 +1,17 @@
+import { BASEURL } from "@/lib/utils";
 import axios from "axios";
 
 
 
 
 async function getLibraryDataById() {
-//   const response = await axios.get()
-//   const data = await response.json();
-//   return data;
+    const userId = localStorage.getItem("userId");
+  const response = await axios.post(`${BASEURL}/api/v1/library/getAdminLibraries`, {
+    userId : userId,
+
+  })
+  const data = await response;
+  return data;
 }
 
 
