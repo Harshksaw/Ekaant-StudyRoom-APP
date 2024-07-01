@@ -74,7 +74,9 @@ const LoginScreen: React.FC = () => {
         />
         <Image source={require("../../../assets/images/bubble 01.png")} />
       </View>
+        <KeyboardAvoidingView>
 
+        
       <View
         style={{
           flex: 1,
@@ -167,6 +169,7 @@ const LoginScreen: React.FC = () => {
         </View>
 
       </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

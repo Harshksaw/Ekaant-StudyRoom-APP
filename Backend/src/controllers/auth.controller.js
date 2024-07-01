@@ -85,7 +85,8 @@ async function signUp(req, res, next) {
       token: token,
     });
   } catch (error) {
-    next(error);
+    console.log("error is ", error);
+    // next(error);
   }
 }
 // signin schema
@@ -311,7 +312,7 @@ async function generateOtp(req, res, next) {
 
 async function verifyOtp(req, res) {
   const { otp } = req.body;
-  if (otp === "" || otp === null || otp === undefined) {
+  if (otp === "" || otp === null || otp === undefined || otp === 0) {
     return res.status(200).json({ message: "Pass it" });
   }
   if (otp !== otpTest) {

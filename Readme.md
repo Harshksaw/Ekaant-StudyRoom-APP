@@ -16,3 +16,15 @@ ADMIN CREDENTIALS-
 
 admin@gmail.com
 admin1234
+
+
+
+user -> 
+success is  true {
+  username: 'Testit',
+  email: 'Usertest@gmail.com',
+  password: 'Teatuser',
+  phoneNumber: 7991168455,
+  accountType: 'User'
+}
+hash

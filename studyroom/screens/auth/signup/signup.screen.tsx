@@ -52,7 +52,7 @@ export default function SignUpScreen() {
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
-    phone: "",
+    phone: 0,
     password: "",
   });
   const [required, setRequired] = useState(false);
@@ -193,7 +193,10 @@ export default function SignUpScreen() {
           />
         </View>
 
-        <View style={styles.inputContainer}>
+
+         <KeyboardAvoidingView style={styles.inputContainer}>
+          
+
           <View>
             <TextInput
               style={[styles.input, { paddingLeft: 40, marginBottom: -12 }]}
@@ -275,7 +278,7 @@ export default function SignUpScreen() {
                 color="black"
               />
             </View>
-            {showOtp && userInfo.phone >= 1000000 && (
+            {showOtp && Number(userInfo.phone) >= 1000000 && (
               <View
                 style={[
                   styles.input,
@@ -287,12 +290,21 @@ export default function SignUpScreen() {
                   },
                 ]}
               >
-                <TextInput
+
+<TextInput
                   style={{ paddingLeft: 10 }}
                   keyboardType="phone-pad"
                   // value={userInfo.phone}
                   placeholder="Otp"
-                  onChangeText={(value) => setOtp(value)}
+                  // onChangeText={
+                  //   (value) =>
+                  //     setOtp({
+                  //       ...userInfo,
+                  //       value: parseInt(value, 10) || 0,
+                  //     }) // Convert input value to number; use 0 as fallback
+                  // }
+                  onChange={(e) => setOtp(e.target.value)}
+                  // onChangeText={(value) => setOtp(value)}
                 />
                 <Feather
                   style={{
@@ -380,7 +392,8 @@ export default function SignUpScreen() {
           </View>
 
 
-        </View>
+
+        </KeyboardAvoidingView>   
       </View>
     </LinearGradient>
 
