@@ -7,7 +7,7 @@ const Star = ({ isFilled, onPress }) => (
   </TouchableOpacity>
 );
 
-const StarRating = ({ rating, onRatingChange }) => {
+const StarRating = ({ rating, onRatingChange }:any) => {
   const stars = Array.from({ length: 5 }, (_, index) => (
     <Star
       key={index}

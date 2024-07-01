@@ -5,7 +5,7 @@ import StarRating from "@/components/Ratinstar";
 import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -34,23 +34,37 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const params = useRoute();
   const data = JSON.parse(params.params.item);
 
-
-  const [city, setCity] = useState("Delhi");  
+  const [city, setCity] = useState("Delhi");
 
   const seat = data.seatLayout;
-
-
   const locationData = async () => {
-    const res = await getLocationName(data.location[0], data.location[1])
-    setCity(res)
+    try {
+      // Assuming data.location might be null or undefined, leading to issues when accessed
+      if (!data.location || data.location.length < 2) {
+        console.log("Invalid location data");
+        return; // Exit the function if location data is not valid
+      }
 
+      const res = await getLocationName(data.location[0], data.location[1]);
+      console.log("----card.details--45", res);
 
-  }
-  locationData();
+      // Check if res is not null before setting it
+      if (res !== null) {
+        setCity(res);
+      } else {
+        // Handle null case, maybe set a default value or handle it as needed
+        console.log("Received null response from getLocationName");
+      }
+    } catch (error) {
+      console.error("Error in locationData:", error);
+      // Additional error handling logic here
+      // For example, setting city to a default value or updating the UI to reflect the error
+    }
+  };
 
-
-
-
+  useEffect(() => {
+    locationData();
+  }, []); // Ensure locationData is called within useEffect to avoid infinite loops
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -58,17 +72,15 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     setIsModalVisible(!isModalVisible);
   };
 
-    const librarybooking = () => {
+  const librarybooking = () => {
+    router.push({
+      pathname: "/(routes)/library/library.booking",
+      params: { item: JSON.stringify(seat) },
+    });
 
-      router.push({
-        pathname: "/(routes)/library/library.booking",
-        params: { item: JSON.stringify(seat) },
-      })
-
-      // params: { params.item.seatLayout },
+    // params: { params.item.seatLayout },
     // });
-
-    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Header />
@@ -94,8 +106,9 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
           marginHorizontal: 0,
           flexDirection: "column",
-          ...(Platform.OS ==="ios" ? {marginTop: -200} : {marginTop: -100,})
-          
+          ...(Platform.OS === "ios"
+            ? { marginTop: -200 }
+            : { marginTop: -100 }),
         }}
       >
         <View style={styles.cardDetails}>
@@ -139,7 +152,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 fontWeight: "semi-bold",
               }}
             >
-             {city}
+              {city ? city : "Delhi"}
             </Text>
           </View>
 
@@ -220,30 +233,6 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             </View>
           </Modal>
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              // gap: 10,
-              marginRight: 10,
-              borderRadius: 20,
-            }}
-          >
-
-              <TouchableOpacity
-                onPress={() => librarybooking()}
-              >
-                    <View>
-                <Button text="BookNow" width={300} />
-              </View>
-
-                {/* pathname: "/(routes)/library/library.booking", */}
-              </TouchableOpacity>
-
-          
-
-          </View>
-
           {/* //ratings */}
 
           <View
@@ -285,7 +274,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               }}
             >
               {/* <Text>4.5</Text> */}
-              <StarRating rating={4.5} />
+              <StarRating rating={4} />
               <Text>10 Reviews</Text>
             </View>
 
@@ -304,8 +293,9 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                   // justifyContent: "space-between",
                 }}
               >
-                {[1, 1, 1].map((item) => (
+                {[1, 1, 1].map((item, index) => (
                   <View
+                    key={index}
                     style={{
                       flexDirection: "row",
                       justifyContent: "center",
@@ -364,6 +354,31 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
           </View>
         </View>
       </ScrollView>
+
+      <View
+        style={{
+          position: "absolute",
+          // zindex: 10,
+          marginBottom: 20,
+          bottom: 0,
+
+          // width: "100%",
+          backgroundColor: "red",
+          flexDirection: "row",
+          justifyContent: "center",
+          // gap: 10,
+          // marginRight: 10,
+          borderRadius: 20,
+        }}
+      >
+        <TouchableOpacity onPress={() => librarybooking()}>
+          <View>
+            <Button text="Book Now" width={300} />
+          </View>
+
+          {/* pathname: "/(routes)/library/library.booking", */}
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -373,7 +388,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 10,
 
+    alignItems: "center",
+
     flexDirection: "column", // Arrange children in columns
+
     // justifyContent: "space-between", // Arrange children in columns
     // alignItems: "center", // Arrange children in columns
   },
@@ -392,6 +410,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   cardDetails: {
+      
     flexDirection: "column", // Arrange children in columns
     gap: 10, // Add gap between children
     // height: 400, // Adjust height for better spacing
