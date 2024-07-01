@@ -58,6 +58,7 @@ const createRoom = async (req, res) => {
     const body = req.body;
     console.log(body);
     const {
+      libraryOwnerId,
       name,
       description,
       location,
@@ -76,6 +77,7 @@ const createRoom = async (req, res) => {
       return res.status(400).json({ error: "Name and location are required." });
     }
 
+    const parsedLibraryOwnerId = JSON.parse(libraryOwnerId);
     const parsedName = JSON.parse(name);
     const parsedDescription = JSON.parse(description);
     const parsedLocation = JSON.parse(location);
@@ -98,6 +100,8 @@ const createRoom = async (req, res) => {
     }
 
     const libraryData = {
+
+      libraryOwner: parsedLibraryOwnerId,
       name: parsedName,
       description: parsedDescription,
       location: parsedLocation,
@@ -147,14 +151,55 @@ const getLibrary = async (req, res) => {
 
 // get room by id
 const getLibraryById = async (req, res) => {
-  const { id } = req.params();
+  const { id } = req.body;
+  console.log(id)
   try {
     const room = await Library.findById(id);
-    res.status(200).json(room);
+    res.status(200).json({
+      success: true,
+      message: "Library data",
+      data : room,
+    });
   } catch (error) {
     console.error("Error ", error);
     res.status(500).json({ error: "cannot get room" });
   }
+};
+const updateApproveStatus = async (req, res) => {
+  console.log(req.body, "reqqq");
+  const { id, status } = req.body;
+  try {
+    const room = await Library.findByIdAndUpdate(id,{
+      approved: status
+    });
+    console.log(room?.approved)
+    res.status(200).json({
+      success: true,
+      message: "Library status ",
+      data: room,
+    });
+
+  } catch (error) {
+    console.error("Error ", error);
+    res.status(500).json({ error: "cannot get room" });
+  }
+};
+
+const getAdminLibraries = async (req, res) => {
+  try {
+
+
+      const {userId} = req.body; // Assuming the userId is passed as a URL parameter
+      console.log(userId, "userId"  )
+      const libraries = await Library.find({ libraryOwner: userId })
+      res.json({
+        message: "Libraries retrieved successfully",
+        data: libraries,
+      });
+    } catch (error) {
+      console.error("Error retrieving libraries by user _id:", error);
+      res.status(500).json({ error: "Cannot retrieve libraries" });
+    }
 };
 
 module.exports = {
@@ -162,4 +207,6 @@ module.exports = {
   createRoom,
   getLibrary,
   getLibraryById,
+  updateApproveStatus,
+  getAdminLibraries
 };

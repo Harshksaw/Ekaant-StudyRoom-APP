@@ -1,9 +1,37 @@
-import React from 'react'
+import React, { useState} from 'react'
+import {BASEURL} from '../../lib/utils'
+import axios from 'axios';
+import {useNavigate} from 'react-router-dom'
 
 const ManageAdmin = () => {
+    const navigate = useNavigate()
+    const [library, setLibrary] = useState([]);
+    React.useEffect(() => {
+        const func = async()=> {
+            const res =await  axios.get(`${BASEURL}/api/v1/library/getLibrary`)
+            if(res.data.success){
+                setLibrary(res?.data?.data)
+            }
+        }
+       func()
+       
+    }, []);
+    console.log(library)
+
   return (
-    <div>
-      <h1 style={{ color: 'blue' }}>MANAGE ADMIN</h1>
+    <div className='p-8 flex flex-col gap-4'>
+        {
+            library.map((lib) => (
+                <div className={'flex gap-4 py-2 px-8 bg-blue-100 w-fit'}>
+                     <p className='bg-blue-400 py-1 px-3 rounded-md'>{lib.name}</p>
+                        
+                     <button onClick={()=> navigate(`/admin/manage-rooms/${lib._id}`)}>
+                     <p className='bg-blue-400 py-1 px-3 rounded-md'>{lib._id}</p>
+                     </button>
+                </div>
+            ))
+        }
+      
     </div>
   )
 }

@@ -1,7 +1,8 @@
 const express = require("express");
 
 const { LibraryController } = require("../../controllers");
-const Library = express.Router();
+const 
+Library = express.Router();
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
@@ -30,6 +31,8 @@ Library.post(
   LibraryController.createRoom
 );
 Library.get("/getLibrary", LibraryController.getLibrary);
-Library.get("/getLibraryById/:id", LibraryController.getLibraryById);
+Library.post("/updateStatus", LibraryController.updateApproveStatus);
+Library.post("/getLibraryById", LibraryController.getLibraryById);
+Library.post("/getAdminLibraries", LibraryController.getAdminLibraries);
 
 module.exports = Library;

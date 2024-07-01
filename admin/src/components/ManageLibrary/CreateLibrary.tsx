@@ -12,7 +12,7 @@ const CreateLibrary = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [amenties, setAmenties] = useState([]);
-  const [price, setPrice] = useState(100);
+  const [price, setPrice] = useState(1000);
   const [location, setLocation] = useState(null);
   const [timeSlots, setTimeSlots] = useState([
     { from: "", to: "" },
@@ -91,6 +91,9 @@ const CreateLibrary = () => {
     event.preventDefault();
 
     console.log(uploadedFiles);
+
+    const AdminId = await  localStorage.getItem("userId");
+
     const formData = new FormData();
 
     for (let i = 0; i < uploadedFiles.length; i++) {
@@ -104,6 +107,8 @@ const CreateLibrary = () => {
     formData.append("amenities", JSON.stringify(amenties));
     formData.append("seatLayout", JSON.stringify(seatLayout));
     formData.append("timeSlot", JSON.stringify(filledTimeSlots));
+
+    formData.append("libraryOwnerId", JSON.stringify(AdminId));
 
     console.log(formData);
     try {
@@ -154,7 +159,7 @@ const CreateLibrary = () => {
   };
 
   return (
-    <div className="m-2 ">
+    <div className="m-2 relative w-full">
       {currentStep === 1 && (
         <form onSubmit={savePlace}>
           {preInput(
@@ -227,7 +232,9 @@ const CreateLibrary = () => {
                   onClick={(e) => handleAmenityClick(e, amenity)}
                   style={{
                     margin: "5px",
+                    padding: "5px",
                     borderRadius: 10,
+
                     backgroundColor: amenties.includes(amenity)
                       ? "#FFFF00"
                       : "#add8ee",
@@ -290,7 +297,7 @@ const CreateLibrary = () => {
           <button
             type="button"
             onClick={goToPreviousStep}
-            className="bg-blue-500  w-20 h-10 rounded-md absolute right-10  "
+            className="bg-blue-500  w-20 h-10 rounded-md   "
           >
             Back
           </button>
@@ -299,10 +306,10 @@ const CreateLibrary = () => {
       {title && description && description && price ? (
         <div className="flex justify-center">
           <button
-            className="bg-blue-300 w-20 h-5  rounded-md m-10 "
+            className="bg-blue-200 w-20 h-20  rounded-md m-10 text-xl "
             onClick={savePlace}
           >
-            {loading ? <Loader className="animate-spin h-4 w-4" /> : "Save"}
+            {loading ? <Loader className="animate-spin h-10 w-10" /> : "Save"}
           </button>
         </div>
       ) : (

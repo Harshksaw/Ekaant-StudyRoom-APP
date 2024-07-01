@@ -52,6 +52,7 @@ const Sidebar = () => {
           {/* todo-- */}
           {/* manage user styling theek krne hai */}
           <div className="flex items-center justify-between   cursor-pointer">
+            
             <div className="flex items-center gap-2 ">
               <FaRegSun color="black" />
               <ManageUsers />
