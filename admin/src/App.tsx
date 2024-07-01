@@ -19,6 +19,7 @@ import ManageRooms from "./pages/Owner/ManageRooms";
 import OwnerRoute from "./components/Owner/OwnerRoute";
 import { useEffect } from "react";
 import OwnerHome from "./components/Owner/OwnerHome";
+import MyLibrary from "./components/ManageLibrary/MyLibrary";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -54,15 +55,20 @@ function App() {
                 path="manage-library/view-library/:library_id"
                 element={<ViewLibrary />}
               />
+              <Route
+                path="/manage-library/my-library"
+                element={<MyLibrary />}
+              />
+
               <Route path="/manage-seats" element={<ManageSeats />} />
             </Route>
           )}
           {role === "Owner" && (
             <Route element={<OwnerRoute />}>
 
-              <Route path="/admin" element={<OwnerHome />} />
-              <Route path="/admin/manage-rooms/:lib_id" element={<ManageRooms />} />
-              <Route path="/admin/manage-admin" element={<ManageAdmin />} />
+              <Route path="admin" element={<OwnerHome />} />
+              <Route path="admin/manage-rooms/:lib_id" element={<ManageRooms />} />
+              <Route path="admin/manage-admin" element={<ManageAdmin />} />
               {/* <Route path="/admin/reports" element={<Reports />} /> */}
             </Route>
           )}

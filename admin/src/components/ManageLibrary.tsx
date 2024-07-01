@@ -20,6 +20,12 @@ const ManageLibrary = () => {
             >
               Create Library
             </Link>
+            <Link
+              to="/manage-library/my-library"
+              className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+            >
+              My Libraries
+            </Link>
           </AccordionContent>
         </AccordionItem>
       </Accordion>

@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 // Define the library schema
 const librarySchema = new mongoose.Schema({
+  libraryOwner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   name: { type: String, required: true },
   description: { type: String, required: true },
   images: [{ type: String, required: false }],

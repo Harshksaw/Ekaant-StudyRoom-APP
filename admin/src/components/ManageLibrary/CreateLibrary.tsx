@@ -91,6 +91,9 @@ const CreateLibrary = () => {
     event.preventDefault();
 
     console.log(uploadedFiles);
+
+    const AdminId = await  localStorage.getItem("userId");
+
     const formData = new FormData();
 
     for (let i = 0; i < uploadedFiles.length; i++) {
@@ -104,6 +107,8 @@ const CreateLibrary = () => {
     formData.append("amenities", JSON.stringify(amenties));
     formData.append("seatLayout", JSON.stringify(seatLayout));
     formData.append("timeSlot", JSON.stringify(filledTimeSlots));
+
+    formData.append("libraryOwnerId", JSON.stringify(AdminId));
 
     console.log(formData);
     try {
@@ -154,7 +159,7 @@ const CreateLibrary = () => {
   };
 
   return (
-    <div className="m-2 ">
+    <div className="m-2 relative w-full">
       {currentStep === 1 && (
         <form onSubmit={savePlace}>
           {preInput(

@@ -6,15 +6,18 @@ import Sidebar from "./sidebar";
 const ProtectedLayout: React.FC = ({ children }) => {
   return (
     <>
-      <div className="h-[60px] w-full border-b">
+    <main className="h-screen w-full overflow-hidden">
+    <div className="h-[8%] w-full border-b">
         <Navbar />
       </div>
-      <div className="flex">
-        <div className="basis-[15%] h-100vh">
+      <div className="flex flex h-[92%]">
+        <div className=" w-72 rounded-2xl m-2 bg-slate-100 ">
           <Sidebar />
         </div>
-        <main className="flex-1">{children}</main>
+        <main className=" overflow-scroll w-full p-4">{children}</main>
       </div>
+    </main>
+
     </>
   );
 };

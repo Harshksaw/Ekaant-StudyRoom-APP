@@ -16,20 +16,20 @@ const OwnerSidebar = () => {
         </div>
         <div className="">
           <div className="flex items-center justify-between cursor-pointer">
-            <div className="flex items-center gap-2 ">
+            {/* <div className="flex items-center gap-2 ">
               <FaRegSun color="black" />
 
               <p className="text-[16px] leading-5 font-normal text-black">
                 <Link to="admin/manage-rooms">Manage Room</Link>
               </p>
-            </div>
+            </div> */}
           </div>
 
           <div className="flex items-center justify-between cursor-pointer">
-            <div className="flex items-center gap-2 ">
+            <div className="flex items-center gap-2 bg-slate-300 p-2 rounded-xl">
               <FaRegSun color="black" />
               <p className="text-[16px] leading-5 font-normal text-black">
-                <Link to="/manage-seats">Manage Admins</Link>
+                <Link to="/admin/manage-admin">Manage Admins</Link>
               </p>
             </div>
           </div>

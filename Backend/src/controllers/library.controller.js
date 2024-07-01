@@ -58,6 +58,7 @@ const createRoom = async (req, res) => {
     const body = req.body;
     console.log(body);
     const {
+      libraryOwnerId,
       name,
       description,
       location,
@@ -76,6 +77,7 @@ const createRoom = async (req, res) => {
       return res.status(400).json({ error: "Name and location are required." });
     }
 
+    const parsedLibraryOwnerId = JSON.parse(libraryOwnerId);
     const parsedName = JSON.parse(name);
     const parsedDescription = JSON.parse(description);
     const parsedLocation = JSON.parse(location);
@@ -98,6 +100,8 @@ const createRoom = async (req, res) => {
     }
 
     const libraryData = {
+
+      libraryOwner: parsedLibraryOwnerId,
       name: parsedName,
       description: parsedDescription,
       location: parsedLocation,
