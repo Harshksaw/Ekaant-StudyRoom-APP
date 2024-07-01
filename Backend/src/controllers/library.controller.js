@@ -184,10 +184,29 @@ const updateApproveStatus = async (req, res) => {
     res.status(500).json({ error: "cannot get room" });
   }
 };
+
+const getAdminLibraries = async (req, res) => {
+  try {
+
+
+      const {userId} = req.body; // Assuming the userId is passed as a URL parameter
+      console.log(userId, "userId"  )
+      const libraries = await Library.find({ libraryOwner: userId })
+      res.json({
+        message: "Libraries retrieved successfully",
+        data: libraries,
+      });
+    } catch (error) {
+      console.error("Error retrieving libraries by user _id:", error);
+      res.status(500).json({ error: "Cannot retrieve libraries" });
+    }
+};
+
 module.exports = {
   pingAdmin,
   createRoom,
   getLibrary,
   getLibraryById,
-  updateApproveStatus
+  updateApproveStatus,
+  getAdminLibraries
 };
