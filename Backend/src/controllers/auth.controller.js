@@ -414,7 +414,14 @@ async function forgetPassword(req, res, next) {
 }
 
 
-
+async function changeProfilePic() {
+   try {
+    return null
+   } catch (error) {
+    console.log("error is ", error);
+    
+   }
+}
 
 
 
@@ -426,5 +433,6 @@ module.exports = {
   generateOtp,
   verifyOtp,
   forgetPassword,
-  getUser
+  getUser,
+  changeProfilePic
 };
