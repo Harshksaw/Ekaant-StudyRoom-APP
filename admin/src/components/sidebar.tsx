@@ -13,7 +13,7 @@ import dashboard from "../assets/images/chart-pie.png";
 import ManageUsers from "./ManageUsers";
 // import Booking from "./ManageLibrary";
 import { Link } from "react-router-dom";
-import ManageLibrary from "./ManageLibrary";
+import ManageLibrary from "./LibraryAccordion";
 const Sidebar = () => {
   return (
     <div
