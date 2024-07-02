@@ -76,7 +76,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const librarybooking = () => {
     router.push({
       pathname: "/(routes)/library/library.booking",
-      params: { item: JSON.stringify(seat) },
+      params: { item: JSON.stringify(data) },
     });
 
     // params: { params.item.seatLayout },
