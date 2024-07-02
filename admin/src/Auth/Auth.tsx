@@ -14,7 +14,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const navigate = useNavigate();
   async function sendRequest() {
     try {
-      const res = await axios.post(
+      const response = await axios.post(
         `${BASEURL}/api/v1/auth/${type === "signin" ? "signin" : "signup"}`,
         {
           email: email,
@@ -23,10 +23,22 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
           accountType: "Admin",
         }
       );
-      const jwt = res.data;
+      // const jwt = res.data;
 
-      localStorage.setItem("token", jwt);
-      navigate("/dashboard");
+      if (response.data.success) {
+        // console.log(response.data.user.accountType)
+        console.log(response.data)
+        const token = response.data.token;
+        const accountType = response.data.data.user.accountType; // Extract accountType
+        
+        localStorage.setItem("token", token);
+        localStorage.setItem("userId", response.data.data.user._id);
+        localStorage.setItem("role", accountType); // Store accountType in localStorage
+        const role = await  localStorage.getItem("role");
+        
+        
+        role === 'Admin' ?  navigate("/manage-library/create-library") : navigate("/admin");
+      }
     } catch (e) {
       alert("error while signing up");
       console.log("error is ", e);

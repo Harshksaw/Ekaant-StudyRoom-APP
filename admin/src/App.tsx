@@ -41,16 +41,19 @@ function App() {
           <Route path="/signin" element={<Auth type="signin" />} />
 
           {role === "Admin" && (
-            <Route element={<ProtectedRoute />}>
+            <Route element={<ProtectedRoute />}
+            
+            >
+               <Route
+                path="/manage-library/create-library"
+                element={<CreateLibrary />}
+              />
               <Route path="/dashboard" element={<Dashboard />} />
 
               <Route path="/manage-user/view" element={<View />} />
               <Route path="manage-user/permission" element={<Permission />} />
               <Route path="manage-user/search" element={<Search />} />
-              <Route
-                path="/manage-library/create-library"
-                element={<CreateLibrary />}
-              />
+             
               <Route
                 path="manage-library/view-library/:library_id"
                 element={<ViewLibrary />}
