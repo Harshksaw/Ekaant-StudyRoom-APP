@@ -19,16 +19,17 @@ const Seat = ({ seatData, isSelected, onSelect }) => {
     </button>
   );
 };
-
+// @ts-ignore
 const Seats = ({onSeatSelect}) => {
   const [rows, setRows] = useState(0);
   const [columns, setColumns] = useState(0);
   const [showGrid, setShowGrid] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState([]);
-
+  // @ts-ignore
   const handleSelect = (seatData) => {
     const newSelectedSeats = [...selectedSeats];
     const seatIndex = newSelectedSeats.findIndex(
+      // @ts-ignore
       (seat) => seat.id === seatData.id
     );
 

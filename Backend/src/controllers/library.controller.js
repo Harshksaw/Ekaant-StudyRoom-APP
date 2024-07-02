@@ -54,6 +54,60 @@ const pingAdmin = (req, res) => {
 
 // Assuming LibraryController.createRoom is an async function
 const createRoom = async (req, res) => {
+
+    try {
+
+      const images = req.files.map((file) => file.path);
+
+      const jsonData = JSON.parse(req.body.jsonData);
+      const {libraryOwner,
+        name,
+        description,
+
+        location,
+        price,
+        reviews,
+        amenities,
+        seatLayout,
+        approved,
+        seatbooked,
+        timeSlot } = jsonData;
+
+        console.log("------"   ,  name,
+          description,
+          images,
+          location,
+          price,
+          reviews,
+          amenities,
+          seatLayout,
+          approved,
+          seatbooked,
+          timeSlot, "-------", images)
+
+
+
+     
+
+      // Now you have jsonData as an object
+
+
+      return res.status(200).json({
+          success: true,
+          message: "Data processed",
+          data: jsonData,
+
+
+      });
+
+      // Process your data here...
+
+      res.send('Data processed');
+    } catch (error) {
+      res.status(400).send('Invalid JSON data');
+    }
+
+
   try {
     const body = req.body;
     console.log(body);
@@ -63,13 +117,11 @@ const createRoom = async (req, res) => {
       description,
       location,
       price,
-      reviews,
       amenities,
       seatLayout,
-
       timeSlot,
     } = req.body;
-
+    // console.log(seatLayout)
     const images = req.files.map((file) => file.path);
     // console.log(images);
 
@@ -98,6 +150,16 @@ const createRoom = async (req, res) => {
     } else {
       parsedTimeSlot = timeSlot; // Assuming it's already in the correct format
     }
+    console.log({
+      libraryOwnerId,
+      name,
+      description,
+      location,
+      price,
+      amenities,
+      seatLayout,
+      timeSlot,
+    } , "body")
 
     const libraryData = {
 
@@ -106,10 +168,8 @@ const createRoom = async (req, res) => {
       description: parsedDescription,
       location: parsedLocation,
       price: parsedPrice,
-
       amenities: parsedAmenities,
       seatLayout: parsedSeatLayout,
-
       timeSlot: parsedTimeSlot,
       images,
     };
