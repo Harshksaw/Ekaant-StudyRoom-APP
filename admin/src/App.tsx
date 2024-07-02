@@ -20,6 +20,7 @@ import OwnerRoute from "./components/Owner/OwnerRoute";
 import { useEffect } from "react";
 import OwnerHome from "./components/Owner/OwnerHome";
 import MyLibrary from "./components/ManageLibrary/MyLibrary";
+import Auth from "./Auth/Auth";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -36,13 +37,12 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-        <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<Auth type="signup" />} />
+          <Route path="/signin" element={<Auth type="signin" />} />
 
           {role === "Admin" && (
             <Route element={<ProtectedRoute />}>
-
               <Route path="/dashboard" element={<Dashboard />} />
 
               <Route path="/manage-user/view" element={<View />} />
@@ -66,9 +66,11 @@ function App() {
           )}
           {role === "Owner" && (
             <Route element={<OwnerRoute />}>
-
               <Route path="admin" element={<OwnerHome />} />
-              <Route path="admin/manage-rooms/:lib_id" element={<ManageRooms />} />
+              <Route
+                path="admin/manage-rooms/:lib_id"
+                element={<ManageRooms />}
+              />
               <Route path="admin/manage-admin" element={<ManageAdmin />} />
               {/* <Route path="/admin/reports" element={<Reports />} /> */}
             </Route>
