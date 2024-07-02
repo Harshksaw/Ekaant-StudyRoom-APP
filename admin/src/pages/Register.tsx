@@ -136,13 +136,10 @@ const Register = () => {
                 className="px-4 py-2 w-full rounded-[8px] border text-base bg-white text-gray-400"
                 value={userInfo?.phone.toString()} // Convert phone number to string for the value prop
                 placeholder="phone"
-                onChange={
-                  (e) =>
-                    setUserInfo({
-                      ...userInfo,
-                      phone: e.target.value || 0,
-                    }) // Convert input value to number; use 0 as fallback
-                }
+                onChange={(e) => setUserInfo({
+                  ...userInfo,
+                  phone: e.target.value ? parseInt(e.target.value, 10) : 0, // Convert input value to number; use 0 as fallback
+                })}
               />
               <Send
                 onClick={() => sendOtp()}
@@ -153,10 +150,10 @@ const Register = () => {
               <div className="flex justify-between items-center gap-2 ">
                 <input
                   className="px-4 py-2 w-full rounded-[8px] border text-base bg-white text-gray-400"
-                  type="tel"
+                  type="number"
                   value={otp} // Uncomment to use
                   placeholder="Otp"
-                  onChange={(e) => setOtp(e.target.value)}
+                  onChange={(e) => setOtp(e.target.valueAsNumber)}
                 />
                 <button
                   className="  border rounded-[8px]  p-2 bg-transparent m"

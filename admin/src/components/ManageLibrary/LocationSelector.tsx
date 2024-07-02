@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import  { useState, useEffect } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -8,7 +8,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-const LocationSelector = ({ onLocationSelect }) => {
+const LocationSelector = ({ onLocationSelect }:any) => {
   const [position, setPosition] = useState<[number, number] | null>(null);
 
   const askForLocation = () => {

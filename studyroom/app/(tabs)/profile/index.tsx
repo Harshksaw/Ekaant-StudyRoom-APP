@@ -1,7 +1,7 @@
 // import ProfileScreen from "@/screens/profile/profile.screen";
 
 import Button from "@/components/Button";
-import Header from "@/components/Header";
+
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
@@ -31,7 +31,7 @@ export default function profile() {
 
   // console.log("-------------->",JSON.parse(userDetails));
   console.log("-------------->+++++++",JSON.parse(userDetails.details));
-  const userData = JSON.parse(userDetails.details).user;
+  const userData = JSON.parse(userDetails?.details)?.user;
 
   return (
 
@@ -101,12 +101,12 @@ export default function profile() {
           <Text
             style={{ fontSize: 20, fontWeight: "bold", alignSelf: "center" }}
           >
-            {userData.username}
+            {userData?.username}
           </Text>
           <Text
             style={{ fontSize: 16, fontWeight: "bold", alignSelf: "center" }}
           >
-            <Text> {userData.email}</Text>
+            <Text> {userData?.email}</Text>
           </Text>
 
           <View

@@ -6,9 +6,8 @@ import "./App.css";
 
 import Dashboard from "./pages/Dashboard";
 import { Permission, Search, View } from "./components";
-import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Register from "./pages/Register";
+
 import Home from "./pages/Home";
 
 import ManageSeats from "./pages/ManageSeats";
@@ -17,14 +16,14 @@ import ViewLibrary from "./components/ManageLibrary/ViewLibrary";
 import ManageAdmin from "./pages/Owner/ManageAdmin";
 import ManageRooms from "./pages/Owner/ManageRooms";
 import OwnerRoute from "./components/Owner/OwnerRoute";
-import { useEffect } from "react";
+
 import OwnerHome from "./components/Owner/OwnerHome";
 import MyLibrary from "./components/ManageLibrary/MyLibrary";
 import Auth from "./Auth/Auth";
 
 function App() {
   // const [count, setCount] = useState(0);
-  const userId = localStorage.getItem("userId");
+  // const userId = localStorage.getItem("userId");
   const role = localStorage.getItem("role");
   // useEffect(() => {
 
