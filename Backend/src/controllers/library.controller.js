@@ -57,20 +57,21 @@ const createRoom = async (req, res) => {
 
     try {
 
-      const images = req.files.map((file) => file.path);
+      const images = req.files.map(file => file.path);
 
       const jsonData = JSON.parse(req.body.jsonData);
+      
       const {libraryOwner,
         name,
         description,
 
         location,
         price,
-        reviews,
+
         amenities,
         seatLayout,
-        approved,
-        seatbooked,
+
+
         timeSlot } = jsonData;
 
         console.log("------"   ,  name,
@@ -78,11 +79,10 @@ const createRoom = async (req, res) => {
           images,
           location,
           price,
-          reviews,
           amenities,
           seatLayout,
-          approved,
-          seatbooked,
+
+
           timeSlot, "-------", images)
 
 
