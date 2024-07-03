@@ -19,20 +19,34 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const navigate = useNavigate();
   async function sendRequest() {
     try {
-      const res = await axios.post(
-        `${BASEURL}/api/v1/auth/${type === "signin" ? "signin" : "signup"}`,
-        {
-          email: userInfo.email,
-          phoneNumber: parseInt(userInfo?.phone),
-          password: userInfo.password,
-          accountType: "Admin",
-        }
-      );
-      if (res.data.success) {
-        console.log("signup success");
-        const token = res.data.token;
-        sessionStorage.setItem("token", token);
-        navigate("/dashboard");
+      const response = await axios.post(`${BASEURL}/api/v1/auth/signin`, {
+        email: email,
+        phoneNumber: parseInt(phoneNumber),
+        password: password,
+        accountType: "Admin",
+      });
+      // const jwt = res.data;
+
+      if (response.data.success) {
+        // console.log(response.data.user.accountType)
+        console.log(response.data);
+        console.log(response.data.token);
+        const token = response.data.token;
+        const accountType = response.data.data.user.accountType; // Extract accountType
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("userId", response.data.data.user._id);
+        localStorage.setItem("role", accountType); // Store accountType in localStorage
+        const role = await localStorage.getItem("role");
+
+        // role === 'Admin' ?  navigate("manage-library/create-library") : navigate("/admin");
+        role === "Admin"
+          ? navigate("/dashboard", {
+              replace: true,
+            })
+          : navigate("/admin", {
+              replace: true,
+            });
       }
     } catch (e) {
       alert("error while signing up");

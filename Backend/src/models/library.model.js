@@ -14,12 +14,7 @@ const librarySchema = new mongoose.Schema({
   reviews: { type: String, required: false }, // Optional field
 
   amenities: [{ type: String }], // Not required by default
-  seatLayout: [
-    {
-      id: { type: String, required: false},
-      label: { type: String, required: false },
-    }
-  ],
+  seatLayout: {},
   approved:{
     type: Boolean,
     default: false,

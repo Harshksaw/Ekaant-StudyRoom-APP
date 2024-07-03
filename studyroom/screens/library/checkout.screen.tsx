@@ -1,11 +1,12 @@
 import Header from "@/components/Header";
 import { getDateAfterMonths } from "@/utils/date";
 import { Ionicons } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
 import { useAssets } from "expo-asset";
 import React, { useEffect } from "react";
 import {
   View,
-  Text,
+  Text, 
   SafeAreaView,
   Image,
   StyleSheet,
@@ -15,15 +16,28 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 const CheckoutScreen: React.FC = () => {
+
+    //getting data  from booking screen 
+
+    const params = useRoute();
+    const BookedData = JSON.parse(params.params.item);
+    console.log(BookedData, "_________")
+  
+  
   const data = useSelector((state: any) => state.booking);
-  console.log("ddd", data);
+  console.log("ddd-------", data);
+  const location = data?.details?.location
   console.log(data.details.date, data.details.months);
   const price = data.details.price || 6000;
   const convenienceFee = price * 0.1; // 10% of price
   const subtotal = price + convenienceFee;
 
-  const endDate = getDateAfterMonths(data.details.date, data.details.months);
+  const endDate = getDateAfterMonths(BookedData?.date, BookedData?.months);
   const totalAmount = subtotal + subtotal * 0.18; // 18% GST
+
+
+
+
   return (
     <SafeAreaView>
       {/* Header */}
@@ -67,7 +81,7 @@ const CheckoutScreen: React.FC = () => {
             }}
           >
             <Ionicons name="time" size={24} color="black" />
-            <Text>Period - {data.details.months}</Text>
+            <Text>Period - {BookedData.months}</Text>
           </View>
 
           <View
@@ -121,7 +135,7 @@ const CheckoutScreen: React.FC = () => {
               }}
             >
               {" "}
-              {data.details.date} -
+              {BookedData.date} -
             </Text>
             <Text
               style={{
@@ -216,14 +230,14 @@ const CheckoutScreen: React.FC = () => {
               }}
             >
               <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                Viecon park{" "}
+              {location.split(" ").slice(0, 2).join(" ")}{" "}
               </Text>
             </View>
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
               <Text style={{ fontSize: 15, fontWeight: "300" }}>
-                4 th floor , 5th cross{" "}
+              {location.split(" ").slice(3, 5).join(" ")}{" "}
               </Text>
             </View>
           </View>

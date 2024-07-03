@@ -146,6 +146,7 @@ export default function index() {
   // return <HomeScreen />;
   const renderItem = ({ item , index}) => (
     <TouchableOpacity
+    style={{borderRadius: 24, borderWidth:1, borderColor: 'gray', marginBottom: 4, padding: 2}}
       key={item._id}
       onPress={() =>
         router.push({
@@ -279,11 +280,14 @@ export default function index() {
 
       <ScrollView style={styles.filters}
       horizontal={true}
+      scrollEnabled={true}
+      showsHorizontalScrollIndicator={false}
       >
         {filters.map((filter, index) => (
           <TouchableOpacity
             key={index}
             style={{
+
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
@@ -302,9 +306,10 @@ export default function index() {
         ))}
       </ScrollView>
 
-      <ScrollView style={styles.listings}>
+      <ScrollView style={styles.listings} >
         <View
           style={{
+            marginHorizontal:16,
             flexDirection: "row",
             justifyContent: "space-between",
           }}
@@ -336,6 +341,8 @@ export default function index() {
           />
         ) : (
           <>
+          <View style={{paddingHorizontal: 16, marginTop: 4,}} >
+
             {data && data.data.map((item, index) => renderItem({ item , index}))}
 
             {data?.data.length == 0 ||  notavailable &&  (
@@ -358,6 +365,7 @@ export default function index() {
 
               
             )}
+          </View>
           </>
         )}
       </ScrollView>

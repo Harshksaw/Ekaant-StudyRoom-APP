@@ -1,9 +1,10 @@
 import {
+  // @ts-ignore
   Table,
   TableBody,
-  TableCaption,
+
   TableCell,
-  TableFooter,
+ 
   TableHead,
   TableHeader,
   TableRow,

@@ -1,6 +1,6 @@
 import { BASEURL } from "@/lib/utils";
 
-export default function Image({ src, ...rest }) {
+export default function Image({ src, ...rest }: any) {
   src =
     src && src.includes("https://")
       ? src

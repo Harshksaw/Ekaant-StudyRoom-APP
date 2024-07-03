@@ -10,8 +10,8 @@ import React from 'react';
 
 
 
-            <a href="/register">Register</a>
-            <a href="/login">Sign In</a>
+            <a href="/signup">Register</a>
+            <a href="/signin">Sign In</a>
             </div>
         );
     };

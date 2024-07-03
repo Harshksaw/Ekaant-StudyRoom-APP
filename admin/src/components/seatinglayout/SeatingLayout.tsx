@@ -1,4 +1,4 @@
-import React from "react";
+
 
 const SeatsLoader = () => {
   // Generate a 10x5 grid of seats

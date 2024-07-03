@@ -1,11 +1,12 @@
 // import ProfileScreen from "@/screens/profile/profile.screen";
 
 import Button from "@/components/Button";
-import Header from "@/components/Header";
+
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
+
 import {
   View,
   Text,
@@ -20,22 +21,25 @@ import { Toast } from "react-native-toast-notifications";
 import { useSelector } from "react-redux";
 export default function profile() {
   const logout = async () => {
-
     await AsyncStorage.removeItem("token");
-    router.push("(routes)/welcome")
-
-
-  }
+    router.push("(routes)/welcome");
+  };
 
   const userDetails = useSelector((state: any) => state.user);
 
   // console.log("-------------->",JSON.parse(userDetails));
-  console.log("-------------->+++++++",JSON.parse(userDetails.details));
-  const userData = JSON.parse(userDetails.details).user;
+  console.log("-------------->+++++++", JSON.parse(userDetails.details));
+  const userData = JSON.parse(userDetails?.details)?.user;
+  const getInitials = (name: string) => {
+    let initials = name.match(/\b\w/g) || [];
+    initials = (
+      (initials.shift() || "") + (initials.pop() || "")
+    ).toUpperCase();
+    return initials;
+  };
 
   return (
-
-    <SafeAreaView style={{  flex:1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View
         style={{
           flex: 1,
@@ -69,28 +73,55 @@ export default function profile() {
           backgroundColor: "white",
           position: "absolute",
           bottom: 0,
-          height:"60%",
+          height: "60%",
           width: "100%",
           justifyContent: "flex-start",
           // borderColor: "black",
 
           // justifyContent: "center",
+          // alignItems: "center",
         }}
       >
-        <Image
-          source={require("../../../assets/images/Avatar.png")}
-          style={{
-            position: "absolute",
-            top: -70,
-            height: 150,
-            width: 150,
-            alignSelf: "center",
-          }}
-        />
+        <View
+          style={
+            {
+              // position: "relative",
+              // bottom:50,
+
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              position:'relative',
+              bottom:30
+              
+            }
+          }
+        >
+          <View
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 100,
+              backgroundColor: "#007422", // Example background color
+              justifyContent: "center",
+              alignItems: "center",
+              marginRight: 10,
+            }}
+          >
+            <Text
+              style={{
+                color: "#ffffff", // Example text color
+                fontSize: 16,
+              }}
+            >
+              {getInitials("HARSH")}
+            </Text>
+          </View>
+        </View>
 
         <View
           style={{
-            marginTop: 80,
+            marginTop: -30,
             flexDirection: "column",
             gap: 10,
             marginHorizontal: 20,
@@ -101,12 +132,12 @@ export default function profile() {
           <Text
             style={{ fontSize: 20, fontWeight: "bold", alignSelf: "center" }}
           >
-            {userData.username}
+            {userData?.username || "Harsh"}
           </Text>
           <Text
             style={{ fontSize: 16, fontWeight: "bold", alignSelf: "center" }}
           >
-            <Text> {userData.email}</Text>
+            <Text> {userData?.email || "Harsh@gmail.com"}</Text>
           </Text>
 
           <View
@@ -216,14 +247,11 @@ export default function profile() {
               </View>
             </TouchableOpacity>
           </View>
-<TouchableOpacity
-onPress={()=> logout()}
->
-
-          <View style={{ marginTop: 10 }}>
-            <Button text="Logout" width={200} />
-          </View>
-</TouchableOpacity>
+          <TouchableOpacity onPress={() => logout()}>
+            <View style={{ marginTop: 10 }}>
+              <Button text="Logout" width={200} />
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
@@ -236,7 +264,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    marginTop:10,
+    marginTop: 10,
     // paddingTop: 16,
     paddingBottom: 8,
     backgroundColor: "#0077B6",
@@ -297,4 +325,26 @@ const styles = StyleSheet.create({
   errorText: {
     color: "red",
   },
+  // avatar: {
+  //   width: 40,
+  //   height: 40,
+  //   borderRadius: 20,
+  //   marginRight: 10,
+  // },
+  // initialsAvatar: {
+  //   width: 100,
+  //   height: 100,
+  //   borderRadius: 50,
+  //   backgroundColor: 'green', // Example background color
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   marginRight: 10,
+  // },
+  // initialsText: {
+  //   color: '#ffffff', // Example text color
+  //   fontSize: 16,
+  // },
+  // userName: {
+  //   fontSize: 16,
+  // },
 });
