@@ -148,7 +148,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             <Ionicons name="location" size={24} />
             <Text
               style={{
-                fontSize: 15,
+                fontSize: 14,
                 color: "black",
                 fontWeight: "semi-bold",
               }}
@@ -291,7 +291,8 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                   flexWrap: "wrap",
                   gap: 10,
                   // margin: 10,
-                  // justifyContent: "space-between",
+                  alignItems: 'center',
+                  justifyContent: "center",
                 }}
               >
                 {[1, 1, 1].map((item, index) => (
@@ -301,13 +302,14 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                       flexDirection: "row",
                       justifyContent: "center",
                       alignItems: "center",
+                      width: 'auto',
                       // margin: 20,
                       padding: 10,
-                      paddingHorizontal: 20,
+                      paddingHorizontal: 40,
                       borderRadius: 20,
                       backgroundColor: "lightgray",
 
-                      alignSelf: "flex-start",
+                      // alignSelf: "center",
                       gap: 10,
                     }}
                   >
@@ -320,7 +322,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
                         borderRadius: 20,
                         padding: 7,
-                        alignSelf: "flex-start",
+                        alignSelf: "center",
                       }}
                     >
                       <Text>Name</Text>
@@ -387,7 +389,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 10,
+    marginHorizontal: 12,
 
     alignItems: "center",
 

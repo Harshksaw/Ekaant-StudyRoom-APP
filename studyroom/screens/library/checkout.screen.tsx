@@ -6,7 +6,7 @@ import { useAssets } from "expo-asset";
 import React, { useEffect } from "react";
 import {
   View,
-  Text,
+  Text, 
   SafeAreaView,
   Image,
   StyleSheet,

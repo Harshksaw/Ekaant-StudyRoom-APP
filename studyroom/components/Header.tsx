@@ -4,10 +4,11 @@ import {
   Text,
   StyleSheet,
   Image,
-  Platform,
+  Platform, 
   PermissionsAndroid,
 } from "react-native";
-// import { Picker } from "@react-native-picker/picker";
+
+import { Picker } from "@react-native-picker/picker";
 
 const citiesData = [
   { id: 1, name: "Mumbai" },
@@ -24,6 +25,8 @@ const citiesData = [
 const Header: React.FC = () => {
   
   const [selectedLocation, setSelectedLocation] = useState();
+
+  const [Enable, setEnable] = useState(true);
   // const [cities, setCities] = useState([]);
   // const [selectedCity, setSelectedCity] = useState("");
 
@@ -42,7 +45,31 @@ const Header: React.FC = () => {
             <Picker.Item label="Mumbai" value="Mumbai" />
           </Picker> */}
 
-          <Text>Delhi</Text>
+         
+        <Picker
+                      selectedValue={Enable}
+                      style={{ height: 40, width: 200 }}
+                      mode={"dialog"}
+                      // onValueChange={(itemValue) => setEnable(itemValue)}
+
+                      onValueChange={(itemValue, itemIndex) => setEnable(false)}
+
+                    >
+
+                      {
+                        citiesData?.map((slot, index) => (
+
+                          <Picker.Item key={index} label={slot.name } value={slot.name} 
+                          style={{color: 'gray', fontSize: 14, fontStyle: 'normal', fontWeight: 400, textAlign: 'center', borderColor: 'blue',
+                            borderBottomWidth: 2,borderRadius: 10, padding: 2, margin: 6, backgroundColor: 'white'
+
+                          }}
+                          />
+
+                        ))
+                      }
+                   
+                    </Picker>
         </View>
       </View>
 
