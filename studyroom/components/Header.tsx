@@ -4,9 +4,14 @@ import {
   Text,
   StyleSheet,
   Image,
-  Platform, 
+  Platform,
   PermissionsAndroid,
+  SafeAreaView,
 } from "react-native";
+import { Dimensions } from "react-native";
+
+
+const { width, height } = Dimensions.get("window");
 
 import { Picker } from "@react-native-picker/picker";
 
@@ -23,7 +28,6 @@ const citiesData = [
   { id: 10, name: "Jaipur" },
 ];
 const Header: React.FC = () => {
-  
   const [selectedLocation, setSelectedLocation] = useState();
 
   const [Enable, setEnable] = useState(true);
@@ -35,41 +39,37 @@ const Header: React.FC = () => {
       <View style={styles.citySelector}>
         <Text style={styles.label}>Select City:</Text>
         <View style={styles.picker}>
-          {/* <Picker
-            selectedValue={selectedLocation}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedLocation(itemValue)
-            }
+          <Picker
+            selectedValue={Enable}
+            style={{ height: 40, width: 150, borderRadius: 10, borderBlockColor: "black", borderWidth: 2,}}
+            mode={"dialog"}
+          
+
+            // onValueChange={(itemValue) => setEnable(itemValue)}
+
+            onValueChange={(itemValue, itemIndex) => setEnable(false)}
           >
-            <Picker.Item label="Delhi" value="Delhi" />
-            <Picker.Item label="Mumbai" value="Mumbai" />
-          </Picker> */}
-
-         
-        <Picker
-                      selectedValue={Enable}
-                      style={{ height: 40, width: 200 }}
-                      mode={"dialog"}
-                      // onValueChange={(itemValue) => setEnable(itemValue)}
-
-                      onValueChange={(itemValue, itemIndex) => setEnable(false)}
-
-                    >
-
-                      {
-                        citiesData?.map((slot, index) => (
-
-                          <Picker.Item key={index} label={slot.name } value={slot.name} 
-                          style={{color: 'gray', fontSize: 14, fontStyle: 'normal', fontWeight: 400, textAlign: 'center', borderColor: 'blue',
-                            borderBottomWidth: 2,borderRadius: 10, padding: 2, margin: 6, backgroundColor: 'white'
-
-                          }}
-                          />
-
-                        ))
-                      }
-                   
-                    </Picker>
+            {citiesData?.map((slot, index) => (
+              <Picker.Item
+                key={index}
+                label={slot.name}
+                value={slot.name}
+                style={{
+                  color: "gray",
+                  fontSize: 14,
+                  fontStyle: "normal",
+                  fontWeight: 400,
+                  textAlign: "center",
+                  borderColor: "blue",
+                  borderBottomWidth: 2,
+                  borderRadius: 10,
+                  padding: 2,
+                  margin: 6,
+                  backgroundColor: "white",
+                }}
+              />
+            ))}
+          </Picker>
         </View>
       </View>
 
@@ -86,32 +86,33 @@ const Header: React.FC = () => {
 
 const styles = StyleSheet.create({
   header: {
+    // width: width * 0.9, // 90% of screen width
+    height: height * 0.09,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 20,
+
     paddingHorizontal: 20,
-    // paddingTop: 16,
+
     paddingBottom: 8,
-    backgroundColor: "#f2f2f2",
+    // backgroundColor: "#f2f2f2",
   },
   logoContainer: {
     flex: 1,
     alignItems: "center",
   },
   logo: {
-    width: 100,
-    height: 60,
-    resizeMode: "contain",
+    width: "50%",
+    height: "100%",
   },
   citySelector: {
-    flex: 2,
+    flex: 1,
     marginLeft: 16,
   },
   label: {
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 8,
+    marginTop: 5,
   },
   picker: {
     zIndex: 3,

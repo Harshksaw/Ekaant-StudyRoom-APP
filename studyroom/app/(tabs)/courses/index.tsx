@@ -1,4 +1,5 @@
 
+import Header from "@/components/Header";
 import { fetchRoomData } from "@/hooks/api/library";
 import { useEffect, useState } from "react";
 import { View, Text, SafeAreaView, ScrollView, StyleSheet } from "react-native";
@@ -37,6 +38,8 @@ export default function Courses() {
         // alignItems: "center",
       }}
     >
+
+      <Header/>
       <View style={{
         flexDirection: "column",
         justifyContent:"center",
