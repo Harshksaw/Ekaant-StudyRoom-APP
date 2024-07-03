@@ -33,8 +33,8 @@ const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
   const params = useRoute();
 
-  const data = JSON.parse(params.params.item);
-  console.log("Seat ----->>>>", data);
+  const data = JSON.parse(params.params.item); 
+  console.log("Seat ----->>>>", data?.location, data?.seatLayout);
 
 
 
@@ -122,7 +122,7 @@ const BookingScreen: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        <Seats onSeatSelect={handleSeatSelect} SeatLayout={data} />
+        <Seats onSeatSelect={handleSeatSelect} SeatLayout={data?.seatLayout} />
       </View>
 
       <TouchableOpacity
