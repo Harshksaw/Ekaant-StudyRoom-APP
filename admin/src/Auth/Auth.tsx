@@ -10,23 +10,30 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(0);
+  const [userInfo, setUserInfo] = useState({
+    email: "",
+    phone: 0,
+    password: "",
+  });
   const navigate = useNavigate();
   async function sendRequest() {
     try {
       const res = await axios.post(
         `${BASEURL}/api/v1/auth/${type === "signin" ? "signin" : "signup"}`,
         {
-          email: email,
-          phoneNumber: parseInt(phoneNumber),
-          password: password,
+          email: userInfo.email,
+          phoneNumber: parseInt(userInfo?.phone),
+          password: userInfo.password,
           accountType: "Admin",
         }
       );
-      const jwt = res.data;
-
-      localStorage.setItem("token", jwt);
-      navigate("/dashboard");
+      if (res.data.success) {
+        console.log("signup success");
+        const token = res.data.token;
+        sessionStorage.setItem("token", token);
+        navigate("/dashboard");
+      }
     } catch (e) {
       alert("error while signing up");
       console.log("error is ", e);
@@ -80,7 +87,9 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
                     type="Number"
                     label="Enter Phone Number"
                     placeholder="Phone Number"
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    onChange={(e) =>
+                      setUserInfo({ ...userInfo, phone: e.target.value || 0 })
+                    }
                   />
                 ) : (
                   " "
@@ -88,13 +97,17 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
                 <LabelledInput
                   label="Enter Email Id"
                   placeholder="Email"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) =>
+                    setUserInfo({ ...userInfo, email: e.target.value })
+                  }
                 />
                 <LabelledInput
                   type="password"
                   label="Enter Password"
                   placeholder="Password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) =>
+                    setUserInfo({ ...userInfo, password: e.target.value })
+                  }
                 />
                 <button className="pt-1 " type="button" onClick={sendRequest}>
                   {" "}

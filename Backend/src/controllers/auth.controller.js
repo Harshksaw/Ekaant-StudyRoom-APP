@@ -412,15 +412,21 @@ async function forgetPassword(req, res, next) {
 }
 
 async function changeProfilePic(req, res) {
+  const userId = req.body.userId;
+  console.log("userId id ", userId);
+  const user = await User.findOne({ _id: userId });
   try {
-    // if (req.files && req.files.profilepic) {
-    const image = req.file.profilepic;
-
-    console.log(image, "image is ");
-
-    return res.status(StatusCodes.OK).json({
-      message: "Profile picture updated successfully",
-    });
+    if (user) {
+      const image = req.file.path;
+      user.image = image;
+      console.log(user.image, "user image is ");
+      console.log(image, "image is ");
+      // Save the user object with the updated image path
+      await user.save();
+      return res.status(StatusCodes.OK).json({
+        message: "Profile picture updated successfully",
+      });
+    }
     // } else {
     //   res.status(400).send("No profile picture uploaded.");
     // }
