@@ -55,103 +55,40 @@ const pingAdmin = (req, res) => {
 // Assuming LibraryController.createRoom is an async function
 const createRoom = async (req, res) => {
 
-    try {
-
-      const images = req.files.map(file => file.path);
-
-      const jsonData = JSON.parse(req.body.jsonData);
-      
-      const {libraryOwner,
-        name,
-        description,
-
-        location,
-        price,
-
-        amenities,
-        seatLayout,
-
-
-        timeSlot } = jsonData;
-
-        console.log("------"   ,  name,
-          description,
-          images,
-          location,
-          price,
-          amenities,
-          seatLayout,
-
-
-          timeSlot, "-------", images)
 
 
 
      
 
-      // Now you have jsonData as an object
-
-
-      return res.status(200).json({
-          success: true,
-          message: "Data processed",
-          data: jsonData,
-
-
-      });
-
-      // Process your data here...
-
-      res.send('Data processed');
-    } catch (error) {
-      res.status(400).send('Invalid JSON data');
-    }
-
-
   try {
-    const body = req.body;
-    console.log(body);
-    const {
-      libraryOwnerId,
+    // const body = req.body;
+    // console.log(body);
+    const images = req.files.map(file => file.path);
+
+    const jsonData = JSON.parse(req.body.jsonData);
+    
+    const {libraryOwner,
       name,
       description,
+
       location,
       price,
+
       amenities,
       seatLayout,
-      timeSlot,
-    } = req.body;
+
+
+      timeSlot } = jsonData;
     // console.log(seatLayout)
-    const images = req.files.map((file) => file.path);
+
     // console.log(images);
 
     if (!name || !location) {
       return res.status(400).json({ error: "Name and location are required." });
     }
 
-    const parsedLibraryOwnerId = JSON.parse(libraryOwnerId);
-    const parsedName = JSON.parse(name);
-    const parsedDescription = JSON.parse(description);
-    const parsedLocation = JSON.parse(location);
-    const parsedPrice = JSON.parse(price); // Ensure price is provided as a stringified number
-
-    const parsedAmenities = JSON.parse(amenities); // Assuming amenities is a stringified array
-
-    let parsedSeatLayout;
-    if (typeof seatLayout === "string") {
-      parsedSeatLayout = JSON.parse(seatLayout);
-    } else {
-      parsedSeatLayout = seatLayout; // Assuming it's already in the correct format or undefined
-    }
-
-    let parsedTimeSlot;
-    if (typeof timeSlot === "string") {
-      parsedTimeSlot = JSON.parse(timeSlot);
-    } else {
-      parsedTimeSlot = timeSlot; // Assuming it's already in the correct format
-    }
     console.log({
-      libraryOwnerId,
+     libraryOwner,
       name,
       description,
       location,
@@ -163,18 +100,18 @@ const createRoom = async (req, res) => {
 
     const libraryData = {
 
-      libraryOwner: parsedLibraryOwnerId,
-      name: parsedName,
-      description: parsedDescription,
-      location: parsedLocation,
-      price: parsedPrice,
-      amenities: parsedAmenities,
-      seatLayout: parsedSeatLayout,
-      timeSlot: parsedTimeSlot,
+      libraryOwner,
+      name,
+      description,
+      location,
+      price,
+      amenities,
+      seatLayout,
+      timeSlot,
       images,
     };
 
-    console.log("-----libraryr data ", parsedSeatLayout, "------");
+    console.log("-----libraryr data-- ", libraryData, "------");
 
     const LibraryData = await Library.create(libraryData);
     await LibraryData.save();
