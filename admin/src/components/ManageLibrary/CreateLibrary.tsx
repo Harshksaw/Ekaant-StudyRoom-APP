@@ -7,11 +7,21 @@ import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+
+// libraryOwner,
+//       name,
+//       description,
+
+//       location,
+//       price,
+
+//       amenities,
+//       seatLayout,
 const CreateLibrary = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [amenties, setAmenties] = useState([]);
+  const [amenties, setAmenties] = useState([]); //wrong spelling amenities/
   const [price, setPrice] = useState(1000);
   const [location, setLocation] = useState(null);
   const [timeSlots, setTimeSlots] = useState([
@@ -24,12 +34,14 @@ const CreateLibrary = () => {
   const [seatBooked, setSeatBooked] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
-  const [seatLayout, setSeatLayout] = useState(null);
+  const [seatLayout, setSeatLayout] = useState({});
 
   const [images, setImages] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     console.log(event.target.files);
@@ -40,8 +52,11 @@ const CreateLibrary = () => {
   };
 
   const handleSeatSelect = (seat) => {
-    setSeatLayout([]);
-    setSeatLayout((prev) => [...prev, seat]);
+    // console.log(seat)
+
+    setSeatLayout(seat);
+    // console.log(seatLayout);
+    // setSeatLayout((prev) => [...prev, seat]);
   };
 
   useEffect(() => {
@@ -87,28 +102,37 @@ const CreateLibrary = () => {
     }
   };
 
+  ///api call to backend to save the place library data
   const savePlace = async (event) => {
     event.preventDefault();
 
     console.log(uploadedFiles);
 
-    const AdminId = await  localStorage.getItem("userId");
+
+    const AdminId = await localStorage.getItem("userId");
+    const LibraryDataOBJ = {
+      libraryOwner: AdminId,
+      name: title,
+      description: description,
+      location: location,
+      price: price,
+      amenities: amenties,
+      seatLayout: seatLayout,
+      timeSlot: filledTimeSlots,
+
+    }
+
 
     const formData = new FormData();
 
     for (let i = 0; i < uploadedFiles.length; i++) {
       formData.append("images", uploadedFiles[i]);
     }
+    console.log(LibraryDataOBJ, typeof LibraryDataOBJ.seatLayout, LibraryDataOBJ.seatLayout);
+    formData.append("jsonData",JSON.stringify(LibraryDataOBJ))
 
-    formData.append("name", JSON.stringify(title));
-    formData.append("description", JSON.stringify(description));
-    formData.append("location", JSON.stringify(location));
-    formData.append("price", price.toString());
-    formData.append("amenities", JSON.stringify(amenties));
-    formData.append("seatLayout", JSON.stringify(seatLayout));
-    formData.append("timeSlot", JSON.stringify(filledTimeSlots));
 
-    formData.append("libraryOwnerId", JSON.stringify(AdminId));
+
 
     console.log(formData);
     try {

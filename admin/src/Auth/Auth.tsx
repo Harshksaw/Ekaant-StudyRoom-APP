@@ -28,6 +28,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
       if (response.data.success) {
         // console.log(response.data.user.accountType)
         console.log(response.data)
+        console.log(response.data.token)
         const token = response.data.token;
         const accountType = response.data.data.user.accountType; // Extract accountType
         
@@ -37,7 +38,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
         const role = await  localStorage.getItem("role");
         
         
-        role === 'Admin' ?  navigate("/manage-library/create-library") : navigate("/admin");
+        role === 'Admin' ?  navigate("manage-library/create-library") : navigate("/admin");
       }
     } catch (e) {
       alert("error while signing up");

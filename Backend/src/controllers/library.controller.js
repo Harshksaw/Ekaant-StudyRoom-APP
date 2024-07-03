@@ -54,67 +54,64 @@ const pingAdmin = (req, res) => {
 
 // Assuming LibraryController.createRoom is an async function
 const createRoom = async (req, res) => {
+
+
+
+
+     
+
   try {
-    const body = req.body;
-    console.log(body);
-    const {
-      libraryOwnerId,
+    // const body = req.body;
+    // console.log(body);
+    const images = req.files.map(file => file.path);
+
+    const jsonData = JSON.parse(req.body.jsonData);
+    
+    const {libraryOwner,
       name,
       description,
+
       location,
       price,
-      reviews,
+
       amenities,
       seatLayout,
 
-      timeSlot,
-    } = req.body;
 
-    const images = req.files.map((file) => file.path);
+      timeSlot } = jsonData;
+    // console.log(seatLayout)
+
     // console.log(images);
 
     if (!name || !location) {
       return res.status(400).json({ error: "Name and location are required." });
     }
 
-    const parsedLibraryOwnerId = JSON.parse(libraryOwnerId);
-    const parsedName = JSON.parse(name);
-    const parsedDescription = JSON.parse(description);
-    const parsedLocation = JSON.parse(location);
-    const parsedPrice = JSON.parse(price); // Ensure price is provided as a stringified number
-
-    const parsedAmenities = JSON.parse(amenities); // Assuming amenities is a stringified array
-
-    let parsedSeatLayout;
-    if (typeof seatLayout === "string") {
-      parsedSeatLayout = JSON.parse(seatLayout);
-    } else {
-      parsedSeatLayout = seatLayout; // Assuming it's already in the correct format or undefined
-    }
-
-    let parsedTimeSlot;
-    if (typeof timeSlot === "string") {
-      parsedTimeSlot = JSON.parse(timeSlot);
-    } else {
-      parsedTimeSlot = timeSlot; // Assuming it's already in the correct format
-    }
+    console.log({
+     libraryOwner,
+      name,
+      description,
+      location,
+      price,
+      amenities,
+      seatLayout,
+      timeSlot,
+    } , "body")
 
     const libraryData = {
 
-      libraryOwner: parsedLibraryOwnerId,
-      name: parsedName,
-      description: parsedDescription,
-      location: parsedLocation,
-      price: parsedPrice,
-
-      amenities: parsedAmenities,
-      seatLayout: parsedSeatLayout,
-
-      timeSlot: parsedTimeSlot,
+      libraryOwner,
+      name,
+      description,
+      location,
+      price,
+      amenities,
+      seatLayout,
+      timeSlot,
       images,
     };
 
-    console.log("-----libraryr data ", parsedSeatLayout, "------");
+    console.log("-----libraryr data-- ", libraryData, "------");
 
     const LibraryData = await Library.create(libraryData);
     await LibraryData.save();
