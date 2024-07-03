@@ -13,10 +13,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: any = {
   details: {
-    seat: null,
-    date: null,
-    months: null,
-    slot: null,
+    amenities: [],
+    images: [],
+    location: "",
+    name: '',
+    price: 0,
   },
 };
 

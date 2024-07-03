@@ -34,7 +34,8 @@ const BookingScreen: React.FC = () => {
   const params = useRoute();
 
   const data = JSON.parse(params.params.item);
-  console.log("Seat ----->>>>", data?.location, data.timeSlot);
+  const city = JSON.parse(params.params.location);
+  console.log("Seat ----->>>>", city);
 
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -70,21 +71,38 @@ const BookingScreen: React.FC = () => {
     selectedTimeSlot
   );
 
-  const updateBookingDetails = () => {
+  const updateRoomDetails = () => {
     const details = {
-      seat: selectedSeat,
-      date: selectedDate,
-      months: selectedNumber,
-      slot: selectedTimeSlot,
+      amenities: data?.amenities,
+      images: data?.images,
+      location: city,
+      name: data?.name,
+      price: data?.price,
+   
     };
     dispatch(setBookingDetails(details));
   };
 
+
+  const BookedData ={
+    seat: selectedSeat,
+    date: selectedDate,
+    months: selectedNumber,
+    slot: selectedTimeSlot, ///stll null ,need to be fixed
+  }
+
   const confirmBooking = () => {
-    updateBookingDetails();
+    console.log("Booking Confirmed", BookedData);
+    updateRoomDetails();
     setIsModalVisible(false);
 
-    router.push("/library/checkout.screen");
+    router.push({
+      pathname: "/library/checkout.screen",
+      params: { item: JSON.stringify(BookedData) },
+    });
+
+
+
     console.log("Booking Confirmed");
     // Perform further actions like API calls, etc.
   };
@@ -200,6 +218,7 @@ const BookingScreen: React.FC = () => {
                   </View>
                 </View>
 
+
                 <View
                   style={{
                     padding: 10,
@@ -230,14 +249,26 @@ const BookingScreen: React.FC = () => {
                       selectedValue={Enable}
                       style={{ height: 40, width: 200 }}
                       mode={"dialog"}
-                      onValueChange={(itemValue) => setEnable(itemValue)}
+                      // onValueChange={(itemValue) => setEnable(itemValue)}
+
+                      onValueChange={(itemValue, itemIndex) => setEnable(data.timeSlot[itemIndex])}
+
                     >
-                      <Picker.Item label="AM" value="courses" />
-                      <Picker.Item label="Data-Structures" value="DSA" />
-                      <Picker.Item label="ReactJs" value="react" />
-                      <Picker.Item label="C++" value="cpp" />
-                      <Picker.Item label="Python" value="py" />
-                      <Picker.Item label="Java" value="java" />
+
+                      {
+                        data?.timeSlot.map((slot, index) => (
+
+                          <Picker.Item key={index} label={`${slot.from}PM - ${slot.to}PM` } value={slot} 
+                          style={{color: 'gray', fontSize: 20, fontStyle: 'normal', fontWeight: 400, textAlign: 'center', borderColor: 'blue',
+                            borderWidth: 1, borderRadius: 10, padding: 10, margin: 10, backgroundColor: 'white'
+
+
+                          }}
+                          />
+
+                        ))
+                      }
+                   
                     </Picker>
 
                     {/* {timeSlots.map((slot) => (
@@ -263,10 +294,10 @@ const BookingScreen: React.FC = () => {
                     // marginTop: 20,
                   }}
                 >
-                  {selectedSeat?.length > 0 &&
+                  {
                     selectedDate &&
                     selectedNumber &&
-                    selectedTimeSlot && (
+                   (
                       <TouchableOpacity
                         style={{ backgroundColor: "green" }}
                         onPress={confirmBooking}
@@ -291,6 +322,7 @@ const BookingScreen: React.FC = () => {
                     <Ionicons name="close" size={30} color="#000" />
                   </TouchableOpacity>
                 </View>
+
               </View>
             </View>
           </Modal>
@@ -317,7 +349,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     borderRadius: 20,
     padding: 10,
-    gap: 20,
+    gap: 10,
     width: 300,
     height: 450,
     alignItems: "center",
