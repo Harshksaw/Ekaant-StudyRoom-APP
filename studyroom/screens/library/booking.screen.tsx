@@ -10,7 +10,7 @@ import {
   useLocalSearchParams,
   useRouter,
 } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   View,
@@ -23,7 +23,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { setBookingDetails } from "@/redux/bookingSlice";
 import { useRoute } from "@react-navigation/native";
-
+import { Picker } from "@react-native-picker/picker";
 const timeSlots = [
   { from: "09:00", to: "10:00" },
   { from: "10:00", to: "11:00" },
@@ -33,11 +33,8 @@ const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
   const params = useRoute();
 
-  const data = JSON.parse(params.params.item); 
-  console.log("Seat ----->>>>", data?.location, data?.seatLayout);
-
-
-
+  const data = JSON.parse(params.params.item);
+  console.log("Seat ----->>>>", data?.location, data.timeSlot);
 
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -72,7 +69,7 @@ const BookingScreen: React.FC = () => {
     selectedNumber,
     selectedTimeSlot
   );
-  
+
   const updateBookingDetails = () => {
     const details = {
       seat: selectedSeat,
@@ -92,6 +89,7 @@ const BookingScreen: React.FC = () => {
     // Perform further actions like API calls, etc.
   };
 
+  const [Enable, setEnable] = useState("AM-PM");
   return (
     <SafeAreaView
       style={{
@@ -100,7 +98,6 @@ const BookingScreen: React.FC = () => {
         // marginBottom: 20,
       }}
     >
-
       <View>
         <Header />
       </View>
@@ -229,7 +226,21 @@ const BookingScreen: React.FC = () => {
                       gap: 10,
                     }}
                   >
-                    {timeSlots.map((slot) => (
+                    <Picker
+                      selectedValue={Enable}
+                      style={{ height: 40, width: 200 }}
+                      mode={"dialog"}
+                      onValueChange={(itemValue) => setEnable(itemValue)}
+                    >
+                      <Picker.Item label="AM" value="courses" />
+                      <Picker.Item label="Data-Structures" value="DSA" />
+                      <Picker.Item label="ReactJs" value="react" />
+                      <Picker.Item label="C++" value="cpp" />
+                      <Picker.Item label="Python" value="py" />
+                      <Picker.Item label="Java" value="java" />
+                    </Picker>
+
+                    {/* {timeSlots.map((slot) => (
                       <TimeSlot
                         key={slot.from}
                         from={slot.from}
@@ -237,7 +248,7 @@ const BookingScreen: React.FC = () => {
                         isSelected={selectedTimeSlot === slot.from}
                         onSelect={() => handleSelectTimeSlot(slot.from)}
                       />
-                    ))}
+                    ))} */}
                   </View>
                 </View>
 
@@ -297,7 +308,7 @@ const styles = StyleSheet.create({
 
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)", // This will give a semi-transparent background
+    backgroundColor: "rgba(0,0,3,0.7)", // This will give a semi-transparent background
   },
   modalView: {
     backgroundColor: "white",

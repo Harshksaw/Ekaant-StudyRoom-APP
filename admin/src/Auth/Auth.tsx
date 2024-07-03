@@ -15,7 +15,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
   async function sendRequest() {
     try {
       const response = await axios.post(
-        `${BASEURL}/api/v1/auth/${type === "signin" ? "signin" : "signup"}`,
+        `${BASEURL}/api/v1/auth/signin`,
         {
           email: email,
           phoneNumber: parseInt(phoneNumber),
@@ -38,7 +38,12 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
         const role = await  localStorage.getItem("role");
         
         
-        role === 'Admin' ?  navigate("manage-library/create-library") : navigate("/admin");
+        // role === 'Admin' ?  navigate("manage-library/create-library") : navigate("/admin");
+        role === 'Admin' ? navigate("/dashboard", {
+          replace: true
+        }) : navigate("/admin" ,{
+          replace: true
+        });
       }
     } catch (e) {
       alert("error while signing up");
