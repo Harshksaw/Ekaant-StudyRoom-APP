@@ -2,7 +2,6 @@ import {
   ActivityIndicator,
   Button,
   Dimensions,
-  Image,
   Modal,
   Platform,
   ScrollView,
@@ -28,10 +27,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { fetchRoomData } from "../../hooks/api/library";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserDetails } from "@/redux/userSlice";
+import { useAssets } from "expo-asset";
 
 // import * as Location from 'expo-location';
 // import {Picker} from '@react-native-picker/picker';
-
+import { Image } from "expo-image";
+import StarRating from "@/components/Ratinstar";
 export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
@@ -110,11 +111,19 @@ export default function index() {
     fetchLibraryDate();
   }, [reload]);
 
+  const [assets, error] = useAssets([
+    require("../../assets/icons/setting-5.svg"),
+    require("../../assets/icons/arrow-3.svg"),
+    require("../../assets/icons/arrow-down.svg"),
+    require("../../assets/icons/arrow-down.svg"),
+    require("../../assets/images/slider1.png"),
+  ]);
+
   const filters = [
-    { id: 1, name: "Filters", icon: require('../../assets/icons/arrow-3.png') },
-    { id: 2, name: "Sort", icon: require('../../assets/icons/setting.png') },
-    { id: 3, name: "Locality", icon: require('../../assets/icons/arrow-down.png') },
-    { id: 4, name: "Price", icon: require('../../assets/icons/arrow-down.png') },
+    { id: 0, name: "Filters" },
+    { id: 1, name: "Sort" },
+    { id: 2, name: "Locality" },
+    { id: 3, name: "Price" },
   ];
 
   const userDetails = useSelector((state: any) => state.user);
@@ -127,7 +136,7 @@ export default function index() {
       style={{
         borderRadius: 24,
         borderWidth: 1,
-        borderColor: "gray",
+        borderColor: "lightgray",
         marginBottom: 4,
         padding: 2,
       }}
@@ -155,10 +164,10 @@ export default function index() {
         <View
           style={{
             flex: 1,
-
+            // backgroundColor: "lightblue",
             flexDirection: "column",
-            width: 200,
-            marginLeft: 20,
+            // width: 200,
+            marginLeft: 0,
             // justifyContent: "space-between",
             alignItems: "center",
           }}
@@ -166,9 +175,9 @@ export default function index() {
           <View
             style={{
               flex: 1,
-              width: 250,
+              // width: 250,
 
-              marginHorizontal: 10,
+              // marginHorizontal: 10,
               flexDirection: "column",
               justifyContent: "space-evenly",
 
@@ -176,18 +185,37 @@ export default function index() {
               alignItems: "flex-start",
             }}
           >
-            <Text>{item.name}</Text>
-            <Text>
-              {item.description.split(" ").slice(0, 5).join(" ") +
+            <Text
+              style={{
+
+                fontSize: 17.34,
+                fontWeight: '400',
+                lineHeight: 26.01,
+                textAlign: 'left',
+              }}
+            >{item.name.split(" ").slice(0, 3).join(" ") }
+            
+            </Text>
+            <Text
+            style={{
+              fontSize: 12.14,
+              fontWeight: '300',
+              lineHeight: 18.21,
+              textAlign: 'left',
+
+            }}
+            >
+              {item.description.split(" ").slice(0, 8).join(" ") +
                 (item.description.split(" ").length > 5 ? "..." : "")}
             </Text>
           </View>
 
           <View
             style={{
-              // flex:1,
-              height: 20,
-              width: 250,
+              flex: 1,
+
+              height: 10,
+              width: 200,
               flexDirection: "row",
               paddingRight: 20,
 
@@ -195,11 +223,32 @@ export default function index() {
               alignItems: "space-between",
             }}
           >
-            {item?.ratings ? <Text> ********{item?.ratings}</Text> : ""}
+            {item?.ratings ? (
+              <View style={{ flexDirection: "row", alignItems: "center", gap:5 }}>
+                <StarRating rating={item?.ratings} />
+                <Text>{item?.ratings}</Text>
+              </View>
+            ) : (
+              <View style={{ flexDirection: "row", alignItems: "center", gap:5 }}>
+                <StarRating rating={3} />
+                <Text>3.0</Text>
+              </View>
+            )}
 
-            <Text>{item.distance}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 3,
+              }}
+            >
+              <Ionicons name="location" size={16} color="black" />
+
+              <Text>{item.distance || "2 KMs"}</Text>
+            </View>
           </View>
+
         </View>
+
       </View>
     </TouchableOpacity>
   );
@@ -210,13 +259,12 @@ export default function index() {
     setStickyHeight(event.nativeEvent.layout.height);
   };
 
-
   return (
     <SafeAreaView
       style={{
         flex: 1,
         flexDirection: "column",
-        gap: 10,  
+        gap: 10,
         // justifyContent: "center",
         // alignItems: "flex-start",
         backgroundColor: "white",
@@ -224,7 +272,17 @@ export default function index() {
     >
       {/* <View style={styles.header}></View> */}
       <Header />
-      <View style={styles.welcome}>
+      
+      <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
+
+      {/* ///carousel -> Listings -> Filters */}
+
+      <ScrollView style={{ flex: 1, gap: 40 }} stickyHeaderIndices={[1]}>
+     
+
+        {/* Carousel */}
+        <View style={styles.carousel}>
+        <View style={styles.welcome}>
         {/* <View></View> */}
 
         <Text
@@ -246,115 +304,115 @@ export default function index() {
           </Text>
         </Text>
       </View>
-      <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
 
-      {/* ///carousel -> Listings -> Filters */}
-    
+          <Carousel
+            loop
+            width={width}
+            height={width / 2.2}
+            autoPlay={true}
+            data={[...new Array(6).keys()]}
+            scrollAnimationDuration={2500}
+            // onSnapToItem={(index) => console.log("current index:", index)}
+            renderItem={({ index }) => (
+              <View
+                style={{
+                  flex: 1,
+                  // borderWidth: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                padding:30
+                }}
+              >
+                 {assets && assets[4] && (
+                  <Image
+                    source={assets[4]}
+                    style={{ width: width * 0.95, height: '200%' , borderRadius: 40, borderTopLeftRadius: 40, borderTopRightRadius: 40 }}
+                  />
+                )}
+              </View>
+            )}
+          />
+        </View>
+        {/* Filter buttons */}
+        <View style={{ backgroundColor: "white" }}>
+          <ScrollView
+            style={styles.filters}
+            horizontal={true}
+            scrollEnabled={true}
+            showsHorizontalScrollIndicator={false}
+          >
+            {filters.map((filter, index) => (
+              <TouchableOpacity
+                key={index}
+                style={{
+                  flexDirection: filter.id <= 1 ? "row" : "row-reverse",
 
-      <ScrollView style={{flex: 1, gap: 40}} stickyHeaderIndices={[1]} >
-        {/* Carousel */}
-      <View style={styles.carousel}>
-        <Carousel
-          loop
-          width={width}
-          height={width / 2.2}
-          autoPlay={true}
-          data={[...new Array(6).keys()]}
-          scrollAnimationDuration={2500}
-          // onSnapToItem={(index) => console.log("current index:", index)}
-          renderItem={({ index }) => (
-            <View
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                  borderColor: "lightgray",
+                  marginHorizontal: 10,
+                  height: 30,
+                  gap: 5,
+                  // paddingHorizontal: 10,
+                  paddingHorizontal: 15,
+                  backgroundColor: "#ffff",
+                  borderRadius: 40,
+                }}
+                // onPress={onPress}
+              >
+                {assets && assets[filter?.id] && (
+                  <Image
+                    source={assets[filter?.id]}
+                    style={{ width: 20, height: 18 }}
+                  />
+                )}
+                {/* <Image source={assets[{filter.id}]} style={{ width: 20, height: 18 }} /> */}
+                <Text style={{ color: "black", marginLeft: 5 }}>
+                  {filter.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          <View
+            style={{
+              marginHorizontal: 16,
+              marginBottom: 8,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text
               style={{
-                flex: 1,
-                // borderWidth: 1,
-                justifyContent: "center",
-                alignItems: "center",
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "black",
+                marginHorizontal: 10,
               }}
             >
-              <Image
-                source={require("../../assets/images/slider1.png")}
-                width={width}
-              />
-            </View>
-          )}
-        />
-      </View>
-          {/* Filter buttons */}
-         <View style={{backgroundColor:'white'}}>
+              Near By
+            </Text>
+            <Ionicons
+              name={"arrow-forward"}
+              size={16}
+              color="black"
+              style={{ marginHorizontal: 10 }}
+            />
+          </View>
+        </View>
 
-        <ScrollView
-
-                style={styles.filters}
-                horizontal={true}
-                scrollEnabled={true}
-                showsHorizontalScrollIndicator={false}
-              >
-                {filters.map((filter, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={{
-                      flexDirection: filter.name === "Locality" || "Price"  ? "row-reverse" : "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderWidth: 1,
-                      borderColor: "lightgray",
-                      marginHorizontal: 10,
-                      height: 30,
-                      gap:5,
-                      // paddingHorizontal: 10,
-                      paddingHorizontal: 15,
-                      backgroundColor: "#ffff",
-                      borderRadius: 40,
-                    }}
-                    // onPress={onPress}
-                  >
-                    {/* <Ionicons name={filter.icon} size={24} color="black" /> */}
-                    <Image source={filter.icon} style={{ width: 20, height: 18 }} />
-                    <Text style={{ color: "black", marginLeft: 5 }}>{filter.name}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-              <View
-        style={{
-          marginHorizontal: 16,
-          marginBottom: 8,
-          flexDirection: "row",
-          alignItems: 'center',
-          justifyContent: "space-between",
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 16,
-            fontWeight: "bold",
-            color: "black",
-            marginHorizontal: 10,
-          }}
-        >
-          Near By
-        </Text>
-        <Ionicons
-          name={"arrow-forward"}
-          size={16}
-          color="black"
-          style={{ marginHorizontal: 10 }}
-        />
-      </View>
-         </View>
-      
         {/* Lib Cards */}
-     
-   
+
         {isLoading ? (
           <ActivityIndicator
             size="large"
             color="#0000ff"
-            style={{ paddingTop: 50 , zIndex:9999} }
+            style={{ paddingTop: 50, zIndex: 9999 }}
           />
         ) : (
           <>
             <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
-              
               {data &&
                 data.data.map((item, index) => renderItem({ item, index }))}
 
@@ -374,9 +432,7 @@ export default function index() {
                   </TouchableOpacity>
                 ))}
             </View>
-            <View style={{height: 900, width: 45}}>
-
-            </View>
+            <View style={{ height: 900, width: 45 }}></View>
           </>
         )}
       </ScrollView>
@@ -402,14 +458,12 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     height: height * 0.24,
     // backgroundColor: "yellow",
- 
   },
   filters: {
     flexDirection: "row",
     // backgroundColor: "red",
     marginBottom: 8,
-    zIndex: -1
-
+    zIndex: -1,
 
     // height: 13,
     // gap: 15,
@@ -420,15 +474,16 @@ const styles = StyleSheet.create({
     margin: 5,
     // backgroundColor: "red",
     // padding:10,
+    gap:10,
     borderRadius: 5,
     flexDirection: "row",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
 
     ...(Platform.OS === "ios" && {
       marginBottom: 10,
-      marginHorizontal: 10,
+      marginHorizontal: 5,
       borderRadius: 20,
-      padding: 10,
+      padding: 5,
     }),
 
     // justifyContent: "flex-start",

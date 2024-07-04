@@ -15,7 +15,7 @@ import { Image } from 'expo-image'
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
 
-// import Headerlogo from '../assets/icons/headerlogo.svg'
+
 import { useAssets } from "expo-asset";
 
 const citiesData = [
@@ -39,6 +39,7 @@ const Header: React.FC = () => {
   const [assets, error] = useAssets([
     require('../assets/icons/headerlogo.svg'),
 
+
   ]);
 
   return (
@@ -48,7 +49,7 @@ const Header: React.FC = () => {
           <Text
             style={{
 
-              fontFamily: "Poppins",
+
               fontSize: 16,
               fontWeight: "500",
               lineHeight: 24,
