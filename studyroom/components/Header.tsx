@@ -37,12 +37,15 @@ const Header: React.FC = () => {
   return (
     <View style={styles.header}>
       <View style={styles.citySelector}>
-        <Text style={styles.label}>Select City:</Text>
+        
+        <Text style={styles.label}>Select City</Text>
         <View style={styles.picker}>
           <Picker
+          
             selectedValue={Enable}
-            style={{ height: 40, width: 150, borderRadius: 10, borderBlockColor: "black", borderWidth: 2,}}
-            mode={"dialog"}
+            style={{ height: 0, width: 175, borderRadius: 150,color:'black',
+  borderBlockColor: "black", borderWidth: 1,}}
+            mode={"dropdown"}
           
 
             // onValueChange={(itemValue) => setEnable(itemValue)}
@@ -51,21 +54,24 @@ const Header: React.FC = () => {
           >
             {citiesData?.map((slot, index) => (
               <Picker.Item
+
                 key={index}
                 label={slot.name}
                 value={slot.name}
                 style={{
                   color: "gray",
-                  fontSize: 14,
+                  fontSize: 15,
                   fontStyle: "normal",
-                  fontWeight: 400,
+                  fontWeight: 800,
+
                   textAlign: "center",
-                  borderColor: "blue",
-                  borderBottomWidth: 2,
-                  borderRadius: 10,
-                  padding: 2,
-                  margin: 6,
-                  backgroundColor: "white",
+                  // backgroundColor: "blue",
+
+
+                  borderRadius: 20,
+
+                  // padding: 2,
+                  // margin: 4,
                 }}
               />
             ))}
@@ -117,8 +123,9 @@ const styles = StyleSheet.create({
   picker: {
     zIndex: 3,
     height: 40,
+    // backgroundColor: "red",
 
-    borderRadius: 4,
+    borderRadius: 40,
   },
   selectedCity: {
     flex: 1,
