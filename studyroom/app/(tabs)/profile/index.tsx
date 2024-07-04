@@ -44,7 +44,7 @@ export default function profile() {
          <View
         style={{
           marginTop: 40,
-          backgroundColor:'#007753'
+
      
         }}
       >

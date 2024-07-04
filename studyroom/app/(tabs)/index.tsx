@@ -117,6 +117,8 @@ export default function index() {
     require("../../assets/icons/arrow-down.svg"),
     require("../../assets/icons/arrow-down.svg"),
     require("../../assets/images/slider1.png"),
+    require("../../assets/icons/hello.svg"),
+    
   ]);
 
   const filters = [
@@ -164,7 +166,7 @@ export default function index() {
         <View
           style={{
             flex: 1,
-            // backgroundColor: "lightblue",
+
             flexDirection: "column",
             // width: 200,
             marginLeft: 0,
@@ -271,7 +273,7 @@ export default function index() {
       }}
     >
       {/* <View style={styles.header}></View> */}
-      <Header />
+      <Header color="black" />
 
       <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
 
@@ -295,18 +297,31 @@ export default function index() {
                 style={{
                   fontSize: 25,
                   fontWeight: "bold",
-                  color: "green",
+                  color: "#0077B6",
                 }}
               >
                 Harsh
               </Text>
-            </Text>
-          </View>
 
+            </Text>
+            {/* {
+
+              assets && assets[5] &&   <Image
+              source={assets[5]}
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                marginLeft: 10,
+              }}/>
+            } */}
+          
+          </View>
           <Carousel
+
             loop
             width={width}
-            height={width / 2.2}
+            height={height / 3}
             autoPlay={true}
             data={[...new Array(6).keys()]}
             scrollAnimationDuration={2500}
@@ -316,8 +331,11 @@ export default function index() {
                 style={{
                   flex: 1,
                   // borderWidth: 1,
+
                   justifyContent: "center",
                   alignItems: "center",
+                  
+
                   padding: 30,
                 }}
               >
@@ -325,8 +343,9 @@ export default function index() {
                   <Image
                     source={assets[4]}
                     style={{
+                      marginTop: -50,
                       width: width * 0.95,
-                      height: "200%",
+                      height: height * 0.25,
                       borderRadius: 40,
                       borderTopLeftRadius: 40,
                       borderTopRightRadius: 40,
@@ -436,7 +455,7 @@ export default function index() {
                   </TouchableOpacity>
                 ))}
             </View>
-            <View style={{ height: 900, width: 45 }}></View>
+            {/* <View style={{ height: 900, width: 45 }}></View> */}
           </>
         )}
       </ScrollView>
@@ -451,6 +470,7 @@ const styles = StyleSheet.create({
   welcome: {
     height: 50,
     marginLeft: 20,
+    // flexDirection: "row",
 
     justifyContent: "center",
 
@@ -460,7 +480,7 @@ const styles = StyleSheet.create({
     // height: 210,
     // width: width * 0.9, // 90% of screen width
     marginTop:-5,
-    height: height * 0.3,
+    height: height * 0.32,
     // backgroundColor: "yellow",
     marginBottom: 10,
   },

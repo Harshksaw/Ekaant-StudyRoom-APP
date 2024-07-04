@@ -36,7 +36,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
   const [assets, error] = useAssets([
     require("../assets/icons/headerlogo.svg"),
     require("../assets/icons/Headerwhite.png"),
-    require("../assets/icons/HeaderEkant.svg"),
+    require("../assets/icons/Ekaant.svg"),
   ]);
 
   return (
@@ -113,20 +113,19 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
               />
             )}
 
-            {assets && assets[2] && (
-              <Image
-                source={assets[2]}
-                style={{
-                  width: 40,
-                  height: 40,
-                  tintColor: color,
-                }}
-              />
-            )}
+            <Text
+              style={{
+                fontSize: 10,
+                fontWeight: "bold",
+                color: color,
+              }}
+            >
+              EKAANT
+            </Text>
           </View>
         )}
 
-        {color === "" && assets && assets[0] && (
+        {color == "black" && assets && assets[0] && (
           <Image
             source={assets[0]}
             style={{
