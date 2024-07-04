@@ -7,7 +7,6 @@ import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-
 // libraryOwner,
 //       name,
 //       description,
@@ -20,8 +19,9 @@ import { useNavigate } from "react-router-dom";
 const CreateLibrary = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [amenties, setAmenties] = useState<string>(""); //wrong spelling amenities/
+  const [shortDescription, setshortDescription] = useState("");
+  const [longDescription, setlongDescription] = useState("");
+  const [Amenities, setAmenities] = useState<string[]>([]); //wrong spelling amenities/
   const [price, setPrice] = useState(1000);
   const [location, setLocation] = useState(null);
   const [timeSlots, setTimeSlots] = useState([
@@ -31,16 +31,15 @@ const CreateLibrary = () => {
     { from: "", to: "" },
   ]);
   const filledTimeSlots = timeSlots.filter((slot) => slot.from && slot.to);
-  const [seatBooked, setSeatBooked] = useState(null);
+  // const [seatBooked, setSeatBooked] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const [seatLayout, setSeatLayout] = useState({});
 
-  const [images, setImages] = useState([]);
+  // const [images, setImages] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -51,6 +50,7 @@ const CreateLibrary = () => {
     console.log(uploadedFiles);
   };
 
+  //@ts-ignore
   const handleSeatSelect = (seat) => {
     // console.log(seat)
 
@@ -63,15 +63,15 @@ const CreateLibrary = () => {
     console.log(seatLayout);
   }, [seatLayout]);
 
-  function inputHeader(text:string) {
+  function inputHeader(text: string) {
     return <h2 className="text-2xl mt-4">{text}</h2>;
   }
 
-  function inputDescription(text:string) {
+  function inputDescription(text: string) {
     return <p className="text-gray-500 text-sm">{text}</p>;
   }
 
-  function preInput(header:string, description:string) {
+  function preInput(header: string, description: string) {
     return (
       <>
         {inputHeader(header)}
@@ -80,7 +80,7 @@ const CreateLibrary = () => {
     );
   }
 
-  const handleLocationSelect = (location:any) => {
+  const handleLocationSelect = (location: any) => {
     console.log("Selected Location:", location);
     setLocation(location);
   };
@@ -93,46 +93,45 @@ const CreateLibrary = () => {
     "Printing Services",
   ];
 
-  const handleAmenityClick = (event, amenity:string) => {
+  const handleAmenityClick = (event: React.MouseEvent, amenity: string) => {
     event.preventDefault();
-    if (amenties.includes(amenity)) {
-      setAmenties(amenties.filter((a) => a !== amenity));
+    if (Amenities.includes(amenity)) {
+      setAmenities(Amenities?.filter((a) => a !== amenity));
     } else {
-      setAmenties([...amenties, amenity]);
+      setAmenities([...Amenities, amenity]);
     }
   };
 
   ///api call to backend to save the place library data
-  const savePlace = async (event) => {
+  const savePlace = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     console.log(uploadedFiles);
-
 
     const AdminId = await localStorage.getItem("userId");
     const LibraryDataOBJ = {
       libraryOwner: AdminId,
       name: title,
-      description: description,
+      shortDescription: shortDescription,
+      longDescription: longDescription,
       location: location,
       price: price,
-      amenities: amenties,
+      amenities: Amenities,
       seatLayout: seatLayout,
       timeSlot: filledTimeSlots,
-
-    }
-
+    };
 
     const formData = new FormData();
 
     for (let i = 0; i < uploadedFiles.length; i++) {
       formData.append("images", uploadedFiles[i]);
     }
-    console.log(LibraryDataOBJ, typeof LibraryDataOBJ.seatLayout, LibraryDataOBJ.seatLayout);
-    formData.append("jsonData",JSON.stringify(LibraryDataOBJ))
-
-
-
+    console.log(
+      LibraryDataOBJ,
+      typeof LibraryDataOBJ.seatLayout,
+      LibraryDataOBJ.seatLayout
+    );
+    formData.append("jsonData", JSON.stringify(LibraryDataOBJ));
 
     console.log(formData);
     try {
@@ -148,8 +147,9 @@ const CreateLibrary = () => {
         toast.success("Library created successfully");
         setCurrentStep(0);
         setTitle("");
-        setDescription("");
-        setAmenties([]);
+        setshortDescription("");
+        setlongDescription("");
+        setAmenities([]);
         setPrice(0);
         setLocation(null);
         setTimeSlots([
@@ -158,18 +158,18 @@ const CreateLibrary = () => {
           { from: "", to: "" },
           { from: "", to: "" },
         ]);
-        setSeatBooked(null);
+        // setSeatBooked(null);
         setUploadedFiles([]);
-        setSeatLayout(null);
-        setImages([]);
+        setSeatLayout({});
+        // setImages([]);
 
-        navigate(`/manage-library/view-library/${response.data._id}`);
+        navigate(`/manage-library/my-library}`);
       }
     } catch (error) {
       setLoading(false);
       console.error(
-        "Error:",
-        error.response ? error.response.data : error.message
+        "Error:"
+
       );
     }
   };
@@ -192,17 +192,50 @@ const CreateLibrary = () => {
           )}
           <input
             type="text"
+            maxLength={15}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="title, for example: My lovely apt"
           />
-          {preInput("description", "description to this place")}
+          {title.length > 5 && (
+            <div style={{ color: "red" }} className="flex flex-row  gap-20">
+              {title.length}
+              Your Title is too long. Only 15 words allowed.
+            </div>
+          )}
+          {preInput(
+            "Short Description",
+            "Description that will be displayed on Card Listed"
+          )}
           <input
             type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            maxLength={50}
+            value={shortDescription}
+            onChange={(e) => setshortDescription(e.target.value)}
             placeholder="description"
           />
+          {shortDescription.length > 30 && (
+            <div style={{ color: "red" }} className="flex flex-row  gap-20">
+              {shortDescription.length}
+              Your description is too long. Only 50 words allowed.
+            </div>
+          )}
+          {preInput(
+            "long Description",
+            "Description that will be displayed on the detail page of the library"
+          )}
+          <textarea
+            minLength={50}
+            maxLength={200}
+            value={longDescription}
+            onChange={(e) => setlongDescription(e.target.value)}
+            placeholder="description of the library in detail "
+          />
+          {longDescription.length < 50 && (
+            <div style={{ color: "red" }}>
+              Your description is too short. Please provide more details.
+            </div>
+          )}
 
           <div className="">
             <h2>Select Time Slots</h2>
@@ -259,7 +292,7 @@ const CreateLibrary = () => {
                     padding: "5px",
                     borderRadius: 10,
 
-                    backgroundColor: amenties.includes(amenity)
+                    backgroundColor: Amenities.includes(amenity)
                       ? "#FFFF00"
                       : "#add8ee",
                   }}
@@ -274,7 +307,7 @@ const CreateLibrary = () => {
             <input
               type="number"
               value={price}
-              onChange={(e) => setPrice(e.target.value)}
+              onChange={(e) => setPrice(Number(e.target.value))}
             />
           </div>
           <button
@@ -327,11 +360,18 @@ const CreateLibrary = () => {
           </button>
         </>
       )}
-      {title && description && description && price ? (
+      {title && shortDescription && longDescription && price ? (
         <div className="flex justify-center">
           <button
-            className="bg-blue-200 w-20 h-20  rounded-md m-10 text-xl "
-            onClick={savePlace}
+            className="rounded-lg  w-32   text-white bg-gradient-to-br  from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium  text-3xl py-5 text-center "
+            onClick={() =>
+              !loading &&
+              savePlace({
+                preventDefault: () => {},
+              } as React.FormEvent<HTMLFormElement>)
+            }
+            disabled={loading}
+            aria-label="Save library information"
           >
             {loading ? <Loader className="animate-spin h-10 w-10" /> : "Save"}
           </button>

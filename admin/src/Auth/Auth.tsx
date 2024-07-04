@@ -230,7 +230,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
               onChange={(e) =>
                 setUserInfo({ ...userInfo, email: e.target.value })
               }
-              className="mb-4"
+
             />
             <LabelledInput
               type="password"
