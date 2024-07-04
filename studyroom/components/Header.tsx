@@ -3,17 +3,20 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
+
   Platform,
   PermissionsAndroid,
   SafeAreaView,
 } from "react-native";
 import { Dimensions } from "react-native";
 
-
 const { width, height } = Dimensions.get("window");
-
+import { Image } from 'expo-image'
 import { Picker } from "@react-native-picker/picker";
+import { Ionicons } from "@expo/vector-icons";
+
+// import Headerlogo from '../assets/icons/headerlogo.svg'
+import { useAssets } from "expo-asset";
 
 const citiesData = [
   { id: 1, name: "Mumbai" },
@@ -33,28 +36,49 @@ const Header: React.FC = () => {
   const [Enable, setEnable] = useState(true);
   // const [cities, setCities] = useState([]);
   // const [selectedCity, setSelectedCity] = useState("");
+  const [assets, error] = useAssets([
+    require('../assets/icons/headerlogo.svg'),
+
+  ]);
 
   return (
     <View style={styles.header}>
       <View style={styles.citySelector}>
-        
-        <Text style={styles.label}>Select City</Text>
-        <View style={styles.picker}>
-          <Picker
-          
-            selectedValue={Enable}
-            style={{ height: 0, width: 175, borderRadius: 150,color:'black',
-  borderBlockColor: "black", borderWidth: 1,}}
-            mode={"dropdown"}
-          
+        <View style={styles.label}>
+          <Text
+            style={{
 
+              fontFamily: "Poppins",
+              fontSize: 16,
+              fontWeight: "500",
+              lineHeight: 24,
+              textAlign: "center",
+            }}
+          >
+            Location
+          </Text>
+          <Ionicons name="chevron-down-outline" size={20} color="blue" />
+        </View>
+
+        <View style={styles.picker}>
+          <Ionicons name="location" size={24} color="black" />
+          <Picker
+            selectedValue={Enable}
+            style={{
+              height: 0,
+              width: 175,
+              borderRadius: 150,
+              color: "black",
+              borderBlockColor: "black",
+              borderWidth: 1,
+            }}
+            mode={"dropdown"}
             // onValueChange={(itemValue) => setEnable(itemValue)}
 
             onValueChange={(itemValue, itemIndex) => setEnable(false)}
           >
             {citiesData?.map((slot, index) => (
               <Picker.Item
-
                 key={index}
                 label={slot.name}
                 value={slot.name}
@@ -66,7 +90,6 @@ const Header: React.FC = () => {
 
                   textAlign: "center",
                   // backgroundColor: "blue",
-
 
                   borderRadius: 20,
 
@@ -80,11 +103,19 @@ const Header: React.FC = () => {
       </View>
 
       <View style={styles.logoContainer}>
-        <Image
+          {assets && assets[0] &&  <Image source={assets[0]} style={{
+
+            width: 50, height: 50,
+
+          }} />}
+            {/* <Headerlogo
+            width={120} height={40}
+            /> */}
+        {/* <Image
           height={20}
-          source={require("../assets/images/logo.png")}
+          source={require("../assets/icons/headerlogo.svg")}
           style={styles.logo}
-        />
+        /> */}
       </View>
     </View>
   );
@@ -94,6 +125,7 @@ const styles = StyleSheet.create({
   header: {
     // width: width * 0.9, // 90% of screen width
     height: height * 0.09,
+    width:'100%',
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -101,10 +133,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
 
     paddingBottom: 8,
-    // backgroundColor: "#f2f2f2",
+
   },
   logoContainer: {
-    flex: 1,
+    // flex: 1,
     alignItems: "center",
   },
   logo: {
@@ -113,14 +145,21 @@ const styles = StyleSheet.create({
   },
   citySelector: {
     flex: 1,
-    marginLeft: 16,
+    marginLeft: 10,
+    textAlign: "center",
   },
   label: {
     fontSize: 16,
+    marginLeft: 10,
     fontWeight: "bold",
+    flexDirection: "row",
+    gap:5,
+    alignItems: "center",
     marginTop: 5,
   },
   picker: {
+    flexDirection: "row",
+    alignItems: "center",
     zIndex: 3,
     height: 40,
     // backgroundColor: "red",

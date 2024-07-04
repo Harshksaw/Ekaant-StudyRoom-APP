@@ -111,10 +111,10 @@ export default function index() {
   }, [reload]);
 
   const filters = [
-    { id: 1, name: "Filters", icon: "funnel" },
-    { id: 2, name: "Sort", icon: "arrow-down-circle" },
-    { id: 3, name: "Locality", icon: "location" },
-    { id: 4, name: "Price", icon: "wallet" },
+    { id: 1, name: "Filters", icon: require('../../assets/icons/arrow-3.png') },
+    { id: 2, name: "Sort", icon: require('../../assets/icons/setting.png') },
+    { id: 3, name: "Locality", icon: require('../../assets/icons/arrow-down.png') },
+    { id: 4, name: "Price", icon: require('../../assets/icons/arrow-down.png') },
   ];
 
   const userDetails = useSelector((state: any) => state.user);
@@ -293,19 +293,23 @@ export default function index() {
                   <TouchableOpacity
                     key={index}
                     style={{
-                      flexDirection: "row",
+                      flexDirection: filter.name === "Locality" || "Price"  ? "row-reverse" : "row",
                       alignItems: "center",
                       justifyContent: "center",
+                      borderWidth: 1,
+                      borderColor: "lightgray",
                       marginHorizontal: 10,
                       height: 30,
+                      gap:5,
                       // paddingHorizontal: 10,
                       paddingHorizontal: 15,
-                      backgroundColor: "lightgray",
+                      backgroundColor: "#ffff",
                       borderRadius: 40,
                     }}
                     // onPress={onPress}
                   >
-                    <Ionicons name={filter.icon} size={24} color="black" />
+                    {/* <Ionicons name={filter.icon} size={24} color="black" /> */}
+                    <Image source={filter.icon} style={{ width: 20, height: 18 }} />
                     <Text style={{ color: "black", marginLeft: 5 }}>{filter.name}</Text>
                   </TouchableOpacity>
                 ))}
