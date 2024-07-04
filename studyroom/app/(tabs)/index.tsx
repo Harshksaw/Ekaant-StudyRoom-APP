@@ -216,7 +216,7 @@ export default function index() {
       }}
     >
       {/* <View style={styles.header}></View> */}
-      <Header />
+      <Header />Sc
       <View style={styles.welcome}>
         {/* <View></View> */}
 
