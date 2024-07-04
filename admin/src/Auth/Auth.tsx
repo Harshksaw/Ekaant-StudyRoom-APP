@@ -125,22 +125,20 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
     }
   }
   return (
-    <div className="flex h-screen bg-red-500 flex-1  w-screen ">
+    <div className="flex h-screen  bg-gradient-to-l from-orange-500 to-white  flex-1  w-screen ">
       {/* pic  */}
-      <div className="flex justify-center bg-blue-400 flex-col w-1/2">
-        <div className="flex ">
-          <img src={studyMain} alt="pic" width={158} height={138} />
-          <p className="w-[548px] h-40 font-semibold text-9xl text-white">
-            EKAANT
-          </p>
+      <div className="flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-white w-1/2">
+        <div className="flex justify-center items-center gap-10">
+          <img src={studyMain} alt="pic" width={100} height={100} />
+          <p className=" h-30 font-semibold text-7xl text-white">EKAANT</p>
         </div>
+
         <div className="flex justify-center items-center">
-          <img src={reading} alt="pic" width={411} height={411} />
+          <img src={reading} alt="pic" width={400} height={400} />
         </div>
         <div className="flex flex-col">
           <p className="font-semibold text-3xl">
-            Lorem Ipsum <br />
-            Lore Gispum sipsu
+            Welcome to Ekaant Admin Panel
           </p>
           <p className="font-normal text-base">
             Lorem ipsum dolor sit amet, conscs <br /> ectetur adipiscing elit
@@ -148,99 +146,108 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
           </p>
         </div>
       </div>
+
       {/* main inputs  */}
-      <div className="flex justify-center flex-col border w-1/2 ">
-        {/* button on top */}
-        <div className="border bg-blue-400 self-center absolute right-5 top-5">
+      <div className="flex justify-center items-center flex-col border w-1/2 p-5">
+        <div className="self-end mb-5">
           {type === "signup" ? (
-            <Link to="/signin">LOGIN</Link>
+            <Link
+              to="/signin"
+              className="bg-blue-500 text-white py-2 px-4 rounded"
+            >
+              LOGIN
+            </Link>
           ) : (
-            <Link to="/signup">REGISTER</Link>
+            <Link
+              to="/signup"
+              className="bg-blue-500 text-white py-2 px-4 rounded"
+            >
+              REGISTER
+            </Link>
           )}
         </div>
-        <div className="block"></div>
-        <div className="flex justify-center">
-          <div>
-            <div className="px-5">
-              <h1 className="text-5xl font-bold">
-                {type === "signin" ? "Login" : "Register"}
-              </h1>
-              <h6 className="text-base font-normal">Hello!Lets get Started</h6>
-              <div className="pt-1">
-                {type === "signup" ? (
-                  <LabelledInput
-                    label="Enter Name"
-                    placeholder="Name"
+        <div className="w-full max-w-md">
+          <h1 className="text-5xl font-bold mb-2">
+            {type === "signin" ? "Login" : "Register"}
+          </h1>
+          <h6 className="text-base font-normal mb-4">
+            Hello! Let's get started
+          </h6>
+          <div className="px-20">
+            {type === "signup" && (
+              <>
+                <LabelledInput
+                  label="Enter Name"
+                  placeholder="Name"
+                  onChange={(e) =>
+                    setUserInfo({ ...userInfo, name: e.target.value })
+                  }
+                 
+                />
+                <div className="flex justify-start gap-2 items-center mb-4">
+                  <p className="p-2 border rounded-lg">+91</p>
+                  <input
+                    type="number"
+                    className="px-4 py-2 w-full rounded-lg border text-base bg-white text-gray-400"
+                    value={userInfo?.phone.toString()}
+                    placeholder="Phone"
                     onChange={(e) =>
-                      setUserInfo({ ...userInfo, name: e.target.value })
+                      setUserInfo({
+                        ...userInfo,
+                        phone: e.target.value
+                          ? parseInt(e.target.value, 10)
+                          : 0,
+                      })
                     }
                   />
-                ) : (
-                  ""
-                )}
-                {type === "signup" ? (
-                  <div className="flex justify-start gap-2 items-center">
-                    <p className="p-2 border rounded-[8px]">+91</p>
-                    <input
-                      type="number"
-                      className="px-4 py-2 w-full rounded-[8px] border text-base bg-white text-gray-400"
-                      value={userInfo?.phone.toString()} // Convert phone number to string for the value prop
-                      placeholder="phone"
-                      onChange={(e) =>
-                        setUserInfo({
-                          ...userInfo,
-                          phone: e.target.value
-                            ? parseInt(e.target.value, 10)
-                            : 0, // Convert input value to number; use 0 as fallback
-                        })
-                      }
-                    />
-                    <Send
-                      onClick={() => sendOtp()}
-                      className="border rounded-[8px] p-3 h-10 w-12"
-                    />
-                  </div>
-                ) : (
-                  " "
-                )}
-                {showOtp && userInfo.phone >= 1000000 && (
-                  <div className="flex justify-between items-center gap-2 ">
-                    <input
-                      className="px-4 py-2 w-full rounded-[8px] border text-base bg-white text-gray-400"
-                      type="number"
-                      value={otp} // Uncomment to use
-                      placeholder="Otp"
-                      onChange={(e) => setOtp(e.target.valueAsNumber)}
-                    />
-                    <button
-                      className="  border rounded-[8px]  p-2 bg-transparent m"
-                      onClick={verifyOtp}
-                    >
-                      Verify
-                    </button>
-                  </div>
-                )}
-                <LabelledInput
-                  label="Enter Email Id"
-                  placeholder="Email"
-                  onChange={(e) =>
-                    setUserInfo({ ...userInfo, email: e.target.value })
-                  }
+                  <Send
+                    onClick={() => sendOtp()}
+                    className="border rounded-lg p-3 h-10 w-12"
+                  />
+                </div>
+              </>
+            )}
+            {showOtp && userInfo.phone >= 1000000 && (
+              <div className="flex justify-between items-center gap-2 mb-4">
+                <input
+                  className="px-4 py-2 w-full rounded-lg border text-base bg-white text-gray-400"
+                  type="number"
+                  value={otp}
+                  placeholder="Otp"
+                  onChange={(e) => setOtp(e.target.valueAsNumber)}
                 />
-                <LabelledInput
-                  type="password"
-                  label="Enter Password"
-                  placeholder="Password"
-                  onChange={(e) =>
-                    setUserInfo({ ...userInfo, password: e.target.value })
-                  }
-                />
-                <button className="pt-1 " type="button" onClick={sendRequest}>
-                  {" "}
-                  {type === "signup" ? "Sign Up" : "Sign In"}
+                <button
+                  className="border rounded-lg p-2 bg-blue-500 text-white"
+                  onClick={verifyOtp}
+                >
+                  Verify
                 </button>
               </div>
-            </div>
+            )}
+            <LabelledInput
+              label="Enter Email Id"
+              placeholder="Email"
+              onChange={(e) =>
+                setUserInfo({ ...userInfo, email: e.target.value })
+              }
+              className="mb-4"
+            />
+            <LabelledInput
+              type="password"
+              label="Enter Password"
+              placeholder="Password"
+              onChange={(e) =>
+                setUserInfo({ ...userInfo, password: e.target.value })
+              }
+
+            />
+            <button
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+              type="button"
+              onClick={sendRequest}
+            >
+              {type === "signup" ? "Sign Up" : "Sign In"}
+            </button>
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@ import axios from "axios";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { string } from "zod";
+
 
 // libraryOwner,
 //       name,
@@ -21,7 +21,7 @@ const CreateLibrary = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [amenties, setAmenties] = useState([]); //wrong spelling amenities/
+  const [amenties, setAmenties] = useState<string>(""); //wrong spelling amenities/
   const [price, setPrice] = useState(1000);
   const [location, setLocation] = useState(null);
   const [timeSlots, setTimeSlots] = useState([
@@ -41,6 +41,7 @@ const CreateLibrary = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     console.log(event.target.files);
@@ -50,8 +51,7 @@ const CreateLibrary = () => {
     console.log(uploadedFiles);
   };
 
-  //  TODO:ADD a interface to seatLayout this this can create an errror in future
-  const handleSeatSelect = (seat: string) => {
+  const handleSeatSelect = (seat) => {
     // console.log(seat)
 
     setSeatLayout(seat);
@@ -63,15 +63,15 @@ const CreateLibrary = () => {
     console.log(seatLayout);
   }, [seatLayout]);
 
-  function inputHeader(text: string) {
+  function inputHeader(text:string) {
     return <h2 className="text-2xl mt-4">{text}</h2>;
   }
 
-  function inputDescription(text: string) {
+  function inputDescription(text:string) {
     return <p className="text-gray-500 text-sm">{text}</p>;
   }
 
-  function preInput(header: string, description: string) {
+  function preInput(header:string, description:string) {
     return (
       <>
         {inputHeader(header)}
@@ -79,8 +79,8 @@ const CreateLibrary = () => {
       </>
     );
   }
-  // TODO:have to discuss with team about the location
-  const handleLocationSelect = (location) => {
+
+  const handleLocationSelect = (location:any) => {
     console.log("Selected Location:", location);
     setLocation(location);
   };
@@ -93,12 +93,8 @@ const CreateLibrary = () => {
     "Printing Services",
   ];
 
-  const handleAmenityClick = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    amenity: string
-  ) => {
+  const handleAmenityClick = (event, amenity:string) => {
     event.preventDefault();
-    // TODO: have to discuss with team about the amenties
     if (amenties.includes(amenity)) {
       setAmenties(amenties.filter((a) => a !== amenity));
     } else {
@@ -107,12 +103,11 @@ const CreateLibrary = () => {
   };
 
   ///api call to backend to save the place library data
-  const savePlace = async (event: React.FormEvent<HTMLButtonElement>) => {
+  const savePlace = async (event) => {
     event.preventDefault();
 
     console.log(uploadedFiles);
-    console.log(images);
-    console.log(seatBooked);
+
 
     const AdminId = await localStorage.getItem("userId");
     const LibraryDataOBJ = {
@@ -124,19 +119,20 @@ const CreateLibrary = () => {
       amenities: amenties,
       seatLayout: seatLayout,
       timeSlot: filledTimeSlots,
-    };
+
+    }
+
 
     const formData = new FormData();
 
     for (let i = 0; i < uploadedFiles.length; i++) {
       formData.append("images", uploadedFiles[i]);
     }
-    console.log(
-      LibraryDataOBJ,
-      typeof LibraryDataOBJ.seatLayout,
-      LibraryDataOBJ.seatLayout
-    );
-    formData.append("jsonData", JSON.stringify(LibraryDataOBJ));
+    console.log(LibraryDataOBJ, typeof LibraryDataOBJ.seatLayout, LibraryDataOBJ.seatLayout);
+    formData.append("jsonData",JSON.stringify(LibraryDataOBJ))
+
+
+
 
     console.log(formData);
     try {
@@ -164,7 +160,6 @@ const CreateLibrary = () => {
         ]);
         setSeatBooked(null);
         setUploadedFiles([]);
-        // TODO:have to discuss with team about the seatLayout
         setSeatLayout(null);
         setImages([]);
 
@@ -172,8 +167,10 @@ const CreateLibrary = () => {
       }
     } catch (error) {
       setLoading(false);
-      const err = error as any;
-      console.error("Error:", err.response ? err.response.data : err.message);
+      console.error(
+        "Error:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
 

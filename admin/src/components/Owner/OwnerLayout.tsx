@@ -1,10 +1,13 @@
 // ProtectedLayout.tsx
-import React from "react";
+import {ReactNode} from "react"
 import Navbar from "../Navbar";
 import OwnerSidebar from "./OwnerSidebar";
 
+interface OwnerLayoutProps {
+  children: ReactNode;
 
-const OwnerLayout: React.FC = ({ children }) => {
+}
+const OwnerLayout = ({ children }:OwnerLayoutProps) => {
   return (
     <>
     <main className="h-screen w-full">

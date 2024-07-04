@@ -1,6 +1,7 @@
 // import ProfileScreen from "@/screens/profile/profile.screen";
 
 import Button from "@/components/Button";
+import Header from "@/components/Header";
 
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -39,30 +40,17 @@ export default function profile() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View
+    <SafeAreaView style={{ flex: 1,     backgroundColor: "#0077B6", }}>
+         <View
         style={{
-          flex: 1,
-          height: "40%",
-          backgroundColor: "#0077B6",
-          zIndex: 1,
+          marginTop: 40,
+          backgroundColor:'#007753'
+     
         }}
       >
-        <View style={styles.header}>
-          <View style={styles.citySelector}>
-            <Text style={styles.label}>Select City:</Text>
-            <View style={styles.picker}>{/* <Text>Delhi</Text> */}</View>
-          </View>
-
-          <View style={styles.logoContainer}>
-            <Image
-              height={20}
-              source={require("../../../assets/images/logo.png")}
-              style={styles.logo}
-            />
-          </View>
-        </View>
+        <Header  color="white"/>
       </View>
+
       <View
         style={{
           flex: 1,
@@ -83,19 +71,16 @@ export default function profile() {
         }}
       >
         <View
-          style={
-            {
-              // position: "relative",
-              // bottom:50,
+          style={{
+            // position: "relative",
+            // bottom:50,
 
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              position:'relative',
-              bottom:30
-              
-            }
-          }
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
+            bottom: 30,
+          }}
         >
           <View
             style={{
@@ -108,14 +93,24 @@ export default function profile() {
               marginRight: 10,
             }}
           >
-            <Text
+            <Image
+              source={{
+                uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr_IULLOXJT80cLu-eRqkRGrHY23yLEx4p0w&s=10",
+              }}
+              width={100}
+              height={100}
+              style={{
+                borderRadius: 100,
+              }}
+            />
+            {/* <Text
               style={{
                 color: "#ffffff", // Example text color
                 fontSize: 16,
               }}
             >
               {getInitials("HARSH")}
-            </Text>
+            </Text> */}
           </View>
         </View>
 
@@ -248,8 +243,25 @@ export default function profile() {
             </TouchableOpacity>
           </View>
           <TouchableOpacity onPress={() => logout()}>
-            <View style={{ marginTop: 10 }}>
-              <Button text="Logout" width={200} />
+            <View
+              style={{
+                marginTop: 10,
+                flexDirection: "row",
+
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: "semibold",
+                  color: "red",
+                  alignSelf: "flex-start",
+                }}
+              >
+                Log Out
+              </Text>
             </View>
           </TouchableOpacity>
         </View>

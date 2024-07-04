@@ -1,9 +1,8 @@
-import React from "react";
+
 import { FaRegSun, FaStickyNote } from "react-icons/fa";
 import dashboard from "../../assets/images/chart-pie.png";
 
-import ManageAdmin from "@/pages/Owner/ManageAdmin";
-import ManageRooms from "@/pages/Owner/ManageRooms";
+
 import { Link } from "react-router-dom";
 
 const OwnerSidebar = () => {
