@@ -19,13 +19,13 @@ export default function TabsLayout() {
             iconName = 'home-outline'
             break;
           case 'search/index':
-            iconName = 'albums-outline'
+            iconName = 'bag-remove-outline'
             break;
           case 'courses/index':
-            iconName = 'book-outline'
+            iconName = 'browsers-sharp'
             break;
           case 'profile/index':
-            iconName = 'cog-outline';
+            iconName = 'person-circle-outline';
             break;
           case '(routes)/card-details/index':
             iconName = 'cog-outline'

@@ -187,23 +187,21 @@ export default function index() {
           >
             <Text
               style={{
-
                 fontSize: 17.34,
-                fontWeight: '400',
+                fontWeight: "400",
                 lineHeight: 26.01,
-                textAlign: 'left',
+                textAlign: "left",
               }}
-            >{item.name.split(" ").slice(0, 3).join(" ") }
-            
+            >
+              {item.name.split(" ").slice(0, 3).join(" ")}
             </Text>
             <Text
-            style={{
-              fontSize: 12.14,
-              fontWeight: '300',
-              lineHeight: 18.21,
-              textAlign: 'left',
-
-            }}
+              style={{
+                fontSize: 12.14,
+                fontWeight: "300",
+                lineHeight: 18.21,
+                textAlign: "left",
+              }}
             >
               {item.description.split(" ").slice(0, 8).join(" ") +
                 (item.description.split(" ").length > 5 ? "..." : "")}
@@ -224,12 +222,16 @@ export default function index() {
             }}
           >
             {item?.ratings ? (
-              <View style={{ flexDirection: "row", alignItems: "center", gap:5 }}>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+              >
                 <StarRating rating={item?.ratings} />
                 <Text>{item?.ratings}</Text>
               </View>
             ) : (
-              <View style={{ flexDirection: "row", alignItems: "center", gap:5 }}>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+              >
                 <StarRating rating={3} />
                 <Text>3.0</Text>
               </View>
@@ -246,9 +248,7 @@ export default function index() {
               <Text>{item.distance || "2 KMs"}</Text>
             </View>
           </View>
-
         </View>
-
       </View>
     </TouchableOpacity>
   );
@@ -272,38 +272,36 @@ export default function index() {
     >
       {/* <View style={styles.header}></View> */}
       <Header />
-      
+
       <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
 
       {/* ///carousel -> Listings -> Filters */}
 
       <ScrollView style={{ flex: 1, gap: 40 }} stickyHeaderIndices={[1]}>
-     
-
         {/* Carousel */}
         <View style={styles.carousel}>
-        <View style={styles.welcome}>
-        {/* <View></View> */}
+          <View style={styles.welcome}>
+            {/* <View></View> */}
 
-        <Text
-          style={{
-            fontSize: 25,
-            fontWeight: "bold",
-            color: "black",
-          }}
-        >
-          Welcome,
-          <Text
-            style={{
-              fontSize: 25,
-              fontWeight: "bold",
-              color: "green",
-            }}
-          >
-            Harsh
-          </Text>
-        </Text>
-      </View>
+            <Text
+              style={{
+                fontSize: 25,
+                fontWeight: "bold",
+                color: "black",
+              }}
+            >
+              Welcome,
+              <Text
+                style={{
+                  fontSize: 25,
+                  fontWeight: "bold",
+                  color: "green",
+                }}
+              >
+                Harsh
+              </Text>
+            </Text>
+          </View>
 
           <Carousel
             loop
@@ -320,13 +318,19 @@ export default function index() {
                   // borderWidth: 1,
                   justifyContent: "center",
                   alignItems: "center",
-                padding:30
+                  padding: 30,
                 }}
               >
-                 {assets && assets[4] && (
+                {assets && assets[4] && (
                   <Image
                     source={assets[4]}
-                    style={{ width: width * 0.95, height: '200%' , borderRadius: 40, borderTopLeftRadius: 40, borderTopRightRadius: 40 }}
+                    style={{
+                      width: width * 0.95,
+                      height: "200%",
+                      borderRadius: 40,
+                      borderTopLeftRadius: 40,
+                      borderTopRightRadius: 40,
+                    }}
                   />
                 )}
               </View>
@@ -455,9 +459,10 @@ const styles = StyleSheet.create({
   carousel: {
     // height: 210,
     // width: width * 0.9, // 90% of screen width
-    marginVertical: 12,
-    height: height * 0.30,
+    marginTop:-5,
+    height: height * 0.3,
     // backgroundColor: "yellow",
+    marginBottom: 10,
   },
   filters: {
     flexDirection: "row",
@@ -474,7 +479,7 @@ const styles = StyleSheet.create({
     margin: 5,
     // backgroundColor: "red",
     // padding:10,
-    gap:10,
+    gap: 10,
     borderRadius: 5,
     flexDirection: "row",
     // justifyContent: "space-between",
