@@ -456,7 +456,7 @@ const styles = StyleSheet.create({
     // height: 210,
     // width: width * 0.9, // 90% of screen width
     marginVertical: 12,
-    height: height * 0.24,
+    height: height * 0.30,
     // backgroundColor: "yellow",
   },
   filters: {
