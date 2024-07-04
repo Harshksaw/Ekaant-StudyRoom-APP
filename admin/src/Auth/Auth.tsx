@@ -15,7 +15,6 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
     password: "",
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [verified, setVerified] = useState(false);
   const [otp, setOtp] = useState(0);
   const [showOtp, setShowOtp] = useState(false);
@@ -43,6 +42,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
       });
       if (response.data.success) {
         setVerified(true);
+        console.log(verified);
       }
       console.log(response.data);
     } catch (error) {

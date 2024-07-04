@@ -1,10 +1,7 @@
 import {
-  // @ts-ignore
   Table,
   TableBody,
-
   TableCell,
- 
   TableHead,
   TableHeader,
   TableRow,
@@ -154,13 +151,12 @@ export function TableRooms() {
       <Table className="rounded-full border  border-gray-100  ">
         {/* <TableCaption>A list of your recent datas.</TableCaption> */}
         <TableHeader
-        style={{
-          backgroundColor: "red",
-          color: "#6b7280",
+          style={{
+            backgroundColor: "red",
+            color: "#6b7280",
 
-          borderBottom: "1px solid #d1d5db",
-        
-        }}
+            borderBottom: "1px solid #d1d5db",
+          }}
         >
           <TableRow>
             <TableHead className="w-[100px]">ROOM NO</TableHead>
@@ -173,32 +169,23 @@ export function TableRooms() {
           </TableRow>
         </TableHeader>
 
-
- 
-        <TableBody  >
-
-
-        {dummyData.map((data, index) => (
-          <TableRow key={data.roomNo || index}>
-            <TableCell className="font-medium">{data.roomNo}</TableCell>
-            <TableCell>{data.ac}</TableCell>
-            <TableCell>{data.seatingCapacity}</TableCell>
-            <TableCell>{data.availableSeat}</TableCell>
-            <TableCell>{data.status}</TableCell>
-            <TableCell>{data.lastUploaded}</TableCell>
-            <TableCell className="text-center align-middle rounded-md">
-              <div className="bg-black text-white p-2 inline-block rounded-full text-xs">
-                {data.manage}
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-
-
-      </TableBody>
-
-
-     
+        <TableBody>
+          {dummyData.map((data, index) => (
+            <TableRow key={data.roomNo || index}>
+              <TableCell className="font-medium">{data.roomNo}</TableCell>
+              <TableCell>{data.ac}</TableCell>
+              <TableCell>{data.seatingCapacity}</TableCell>
+              <TableCell>{data.availableSeat}</TableCell>
+              <TableCell>{data.status}</TableCell>
+              <TableCell>{data.lastUploaded}</TableCell>
+              <TableCell className="text-center align-middle rounded-md">
+                <div className="bg-black text-white p-2 inline-block rounded-full text-xs">
+                  {data.manage}
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
       </Table>
     </div>
   );
