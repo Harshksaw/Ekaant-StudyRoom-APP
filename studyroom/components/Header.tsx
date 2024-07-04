@@ -58,7 +58,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
         </View>
 
         <View style={styles.picker}>
-          <Ionicons name="location" size={24} color={color} />
+          <Ionicons name="location" size={24} color={'#0077B6'} />
           <Picker
             selectedValue={Enable}
             style={{

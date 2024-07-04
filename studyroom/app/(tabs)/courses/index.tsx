@@ -56,7 +56,7 @@ export default function Courses() {
           marginTop: 40,
         }}
       >
-        <Header />
+        <Header color="black" />
       </View>
 
       <View

@@ -84,7 +84,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <Header />
+      <Header  colr/>
       <View style={{ flex: 1 }}>
         <Carousel
           loop

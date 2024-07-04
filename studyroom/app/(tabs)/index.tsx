@@ -300,7 +300,7 @@ export default function index() {
                   color: "#0077B6",
                 }}
               >
-                Harsh
+                Harsh👋
               </Text>
 
             </Text>
