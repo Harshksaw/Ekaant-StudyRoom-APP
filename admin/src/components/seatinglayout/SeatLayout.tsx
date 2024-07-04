@@ -1,6 +1,6 @@
 import  { useState } from "react";
 
-const Seat = ({ seatData, isSelected, onSelect }) => {
+const Seat = ({ seatData, isSelected, onSelect }:any) => {
   const handleClick = () => {
     onSelect(seatData);
   };
@@ -19,17 +19,24 @@ const Seat = ({ seatData, isSelected, onSelect }) => {
     </button>
   );
 };
-// @ts-ignore
-const Seats = ({onSeatSelect}) => {
+type SeatData = {
+  id: string;
+  label: string;
+  // include other properties if there are any
+};
+interface SeatsProps {
+  onSeatSelect: (seatData: SeatData[]) => void;
+}
+const Seats = ({onSeatSelect}: SeatsProps) => {
   const [rows, setRows] = useState(0);
   const [columns, setColumns] = useState(0);
   const [showGrid, setShowGrid] = useState(false);
-  const [selectedSeats, setSelectedSeats] = useState([]);
-  // @ts-ignore
-  const handleSelect = (seatData) => {
+  const [selectedSeats, setSelectedSeats] = useState<SeatData[]>([]);
+
+  const handleSelect = (seatData : SeatData) => {
     const newSelectedSeats = [...selectedSeats];
     const seatIndex = newSelectedSeats.findIndex(
-      // @ts-ignore
+
       (seat) => seat.id === seatData.id
     );
 
@@ -48,7 +55,7 @@ const Seats = ({onSeatSelect}) => {
     const seatRow = []; // This will store each seat in the current row
     for (let col = 0; col < columns; col++) {
       const seatData = { id: `${row}-${col}`, label: `${row}-${col}` };
-      const isSelected = selectedSeats.some((seat) => seat.id === seatData.id);
+      const isSelected = selectedSeats.some((seat) => seat?.id === seatData.id);
       seatRow.push(
         <Seat
           key={`${row}-${col}`}
@@ -77,7 +84,7 @@ const Seats = ({onSeatSelect}) => {
 
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent form from refreshing the page
     setShowGrid(true); // Show the grid with the specified rows and columns
   };

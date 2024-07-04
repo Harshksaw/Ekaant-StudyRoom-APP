@@ -6,7 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import { Permission, Search, View } from "./components";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-import Home from "./pages/Home";
+
 
 import ManageSeats from "./pages/ManageSeats";
 import CreateLibrary from "./components/ManageLibrary/CreateLibrary";

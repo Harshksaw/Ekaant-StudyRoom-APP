@@ -1,8 +1,8 @@
 Frontend -
 
-https://orange-cod-74gj6xr76r6fprr4-5173.app.github.dev
+https://automatic-space-adventure-67jxqprv6gj25rrr-5173.app.github.dev
 
-https://orange-cod-74gj6xr76r6fprr4-5175.app.github.dev
+
 Backend-
 
 https://jubilant-space-disco-gwgvjp5x96wc996q-3000.app.github.dev
