@@ -21,7 +21,7 @@ const CreateLibrary = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [amenties, setAmenties] = useState([]); //wrong spelling amenities/
+  const [amenties, setAmenties] = useState<string>(""); //wrong spelling amenities/
   const [price, setPrice] = useState(1000);
   const [location, setLocation] = useState(null);
   const [timeSlots, setTimeSlots] = useState([
@@ -63,15 +63,15 @@ const CreateLibrary = () => {
     console.log(seatLayout);
   }, [seatLayout]);
 
-  function inputHeader(text) {
+  function inputHeader(text:string) {
     return <h2 className="text-2xl mt-4">{text}</h2>;
   }
 
-  function inputDescription(text) {
+  function inputDescription(text:string) {
     return <p className="text-gray-500 text-sm">{text}</p>;
   }
 
-  function preInput(header, description) {
+  function preInput(header:string, description:string) {
     return (
       <>
         {inputHeader(header)}
@@ -80,7 +80,7 @@ const CreateLibrary = () => {
     );
   }
 
-  const handleLocationSelect = (location) => {
+  const handleLocationSelect = (location:any) => {
     console.log("Selected Location:", location);
     setLocation(location);
   };
@@ -93,7 +93,7 @@ const CreateLibrary = () => {
     "Printing Services",
   ];
 
-  const handleAmenityClick = (event, amenity) => {
+  const handleAmenityClick = (event, amenity:string) => {
     event.preventDefault();
     if (amenties.includes(amenity)) {
       setAmenties(amenties.filter((a) => a !== amenity));

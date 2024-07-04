@@ -90,14 +90,29 @@ const GradientButton: React.FC<GradientButtonProps> = ({ text, onPress }) => {
 
 export default function Search() {
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         flexDirection: "column",
+
+
+
+
+
         backgroundColor: "white",
+        // backgroundColor: "lightgreen",
       }}
     >
+
+
+        <View
+        style={{
+          marginTop: 40,
+        }}
+        >
+
       <Header />
+        </View>
       <View  style={{
         marginTop:40,
         flex: 1,
@@ -195,7 +210,8 @@ export default function Search() {
 
       </View>
       </View>
-    </SafeAreaView>
+
+    </View>
   );
 }
 const styles = StyleSheet.create({

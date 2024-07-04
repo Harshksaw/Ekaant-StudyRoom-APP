@@ -1,6 +1,4 @@
-// import { useState } from "react";
-// import reactLogo from "./assets/react.svg";
-// import viteLogo from "/vite.svg";
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 
@@ -36,7 +34,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Auth type="signin" />} />
           <Route path="/signup" element={<Auth type="signup" />} />
           <Route path="/signin" element={<Auth type="signin" />} />
 

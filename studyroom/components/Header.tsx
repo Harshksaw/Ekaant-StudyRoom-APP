@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-
   Platform,
   PermissionsAndroid,
   SafeAreaView,
@@ -11,10 +10,9 @@ import {
 import { Dimensions } from "react-native";
 
 const { width, height } = Dimensions.get("window");
-import { Image } from 'expo-image'
+import { Image } from "expo-image";
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
-
 
 import { useAssets } from "expo-asset";
 
@@ -30,16 +28,15 @@ const citiesData = [
   { id: 9, name: "Surat" },
   { id: 10, name: "Jaipur" },
 ];
-const Header: React.FC = () => {
+const Header: React.FC<{ color: string }> = ({ color }) => {
   const [selectedLocation, setSelectedLocation] = useState();
 
   const [Enable, setEnable] = useState(true);
-  // const [cities, setCities] = useState([]);
-  // const [selectedCity, setSelectedCity] = useState("");
+
   const [assets, error] = useAssets([
-    require('../assets/icons/headerlogo.svg'),
-
-
+    require("../assets/icons/headerlogo.svg"),
+    require("../assets/icons/Headerwhite.png"),
+    require("../assets/icons/HeaderEkant.svg"),
   ]);
 
   return (
@@ -48,29 +45,28 @@ const Header: React.FC = () => {
         <View style={styles.label}>
           <Text
             style={{
-
-
               fontSize: 16,
               fontWeight: "500",
               lineHeight: 24,
               textAlign: "center",
+              color: color,
             }}
           >
             Location
           </Text>
-          <Ionicons name="chevron-down-outline" size={20} color="blue" />
+          <Ionicons name="chevron-down-outline" size={20} color={color} />
         </View>
 
         <View style={styles.picker}>
-          <Ionicons name="location" size={24} color="black" />
+          <Ionicons name="location" size={24} color={color} />
           <Picker
             selectedValue={Enable}
             style={{
               height: 0,
               width: 175,
               borderRadius: 150,
-              color: "black",
-              borderBlockColor: "black",
+              color: color,
+              borderBlockColor: color,
               borderWidth: 1,
             }}
             mode={"dropdown"}
@@ -84,7 +80,7 @@ const Header: React.FC = () => {
                 label={slot.name}
                 value={slot.name}
                 style={{
-                  color: "gray",
+                  color: color,
                   fontSize: 15,
                   fontStyle: "normal",
                   fontWeight: 800,
@@ -104,19 +100,42 @@ const Header: React.FC = () => {
       </View>
 
       <View style={styles.logoContainer}>
-          {assets && assets[0] &&  <Image source={assets[0]} style={{
+        {color === "white" && (
+          <View>
+            {assets && assets[1] && (
+              <Image
+                source={assets[1]}
+                style={{
+                  width: 40,
+                  height: 40,
+                  tintColor: color,
+                }}
+              />
+            )}
 
-            width: 50, height: 50,
+            {assets && assets[2] && (
+              <Image
+                source={assets[2]}
+                style={{
+                  width: 40,
+                  height: 40,
+                  tintColor: color,
+                }}
+              />
+            )}
+          </View>
+        )}
 
-          }} />}
-            {/* <Headerlogo
-            width={120} height={40}
-            /> */}
-        {/* <Image
-          height={20}
-          source={require("../assets/icons/headerlogo.svg")}
-          style={styles.logo}
-        /> */}
+        {color === "" && assets && assets[0] && (
+          <Image
+            source={assets[0]}
+            style={{
+              width: 50,
+              height: 50,
+              tintColor: color,
+            }}
+          />
+        )}
       </View>
     </View>
   );
@@ -126,7 +145,7 @@ const styles = StyleSheet.create({
   header: {
     // width: width * 0.9, // 90% of screen width
     height: height * 0.09,
-    width:'100%',
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -134,7 +153,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
 
     paddingBottom: 8,
-
   },
   logoContainer: {
     // flex: 1,
@@ -154,7 +172,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontWeight: "bold",
     flexDirection: "row",
-    gap:5,
+    gap: 5,
     alignItems: "center",
     marginTop: 5,
   },

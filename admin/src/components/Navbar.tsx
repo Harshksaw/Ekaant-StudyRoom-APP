@@ -1,4 +1,4 @@
-import React from "react";
+
 import firstPic from "../assets/images/Group 1000004651.png";
 import Avatar from "../assets/images/Avatar.png";
 import SearchInput from "./SearchInput";
