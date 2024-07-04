@@ -17,7 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
 import Header from "@/components/Header";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const { width, height } = Dimensions.get("window");
 
@@ -203,6 +203,13 @@ export default function index() {
       </View>
     </TouchableOpacity>
   );
+  const [stickyHeight, setStickyHeight] = useState(0);
+  const scrollViewRef = useRef(null);
+
+  const handleLayout = (event: any) => {
+    setStickyHeight(event.nativeEvent.layout.height);
+  };
+
 
   return (
     <SafeAreaView
@@ -212,11 +219,11 @@ export default function index() {
         gap: 10,  
         // justifyContent: "center",
         // alignItems: "flex-start",
-        backgroundColor: "lightblue",
+        backgroundColor: "white",
       }}
     >
       {/* <View style={styles.header}></View> */}
-      <Header />Sc
+      <Header />
       <View style={styles.welcome}>
         {/* <View></View> */}
 
@@ -242,6 +249,10 @@ export default function index() {
       <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
 
       {/* ///carousel -> Listings -> Filters */}
+    
+
+      <ScrollView style={{flex: 1, gap: 40}} stickyHeaderIndices={[1]} >
+        {/* Carousel */}
       <View style={styles.carousel}>
         <Carousel
           loop
@@ -268,46 +279,49 @@ export default function index() {
           )}
         />
       </View>
+          {/* Filter buttons */}
+         <View style={{backgroundColor:'white'}}>
 
-      <ScrollView
-        style={styles.filters}
-        horizontal={true}
-        scrollEnabled={true}
-        showsHorizontalScrollIndicator={false}
-      >
-        {filters.map((filter, index) => (
-          <TouchableOpacity
-            key={index}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              marginHorizontal: 10,
-              height: 30,
-              // paddingHorizontal: 10,
-              paddingHorizontal: 15,
-              backgroundColor: "lightgray",
-              borderRadius: 40,
-            }}
-            // onPress={onPress}
-          >
-            <Ionicons name={filter.icon} size={24} color="black" />
-            <Text style={{ color: "black", marginLeft: 5 }}>{filter.name}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+        <ScrollView
 
-      <View
+                style={styles.filters}
+                horizontal={true}
+                scrollEnabled={true}
+                showsHorizontalScrollIndicator={false}
+              >
+                {filters.map((filter, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginHorizontal: 10,
+                      height: 30,
+                      // paddingHorizontal: 10,
+                      paddingHorizontal: 15,
+                      backgroundColor: "lightgray",
+                      borderRadius: 40,
+                    }}
+                    // onPress={onPress}
+                  >
+                    <Ionicons name={filter.icon} size={24} color="black" />
+                    <Text style={{ color: "black", marginLeft: 5 }}>{filter.name}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+              <View
         style={{
           marginHorizontal: 16,
+          marginBottom: 8,
           flexDirection: "row",
+          alignItems: 'center',
           justifyContent: "space-between",
-          backgroundColor: "red",
         }}
       >
         <Text
           style={{
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: "bold",
             color: "black",
             marginHorizontal: 10,
@@ -317,21 +331,26 @@ export default function index() {
         </Text>
         <Ionicons
           name={"arrow-forward"}
-          size={24}
+          size={16}
           color="black"
           style={{ marginHorizontal: 10 }}
         />
       </View>
-      <ScrollView style={styles.listings}>
+         </View>
+      
+        {/* Lib Cards */}
+     
+   
         {isLoading ? (
           <ActivityIndicator
             size="large"
             color="#0000ff"
-            style={{ paddingTop: 50 }}
+            style={{ paddingTop: 50 , zIndex:9999} }
           />
         ) : (
           <>
             <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
+              
               {data &&
                 data.data.map((item, index) => renderItem({ item, index }))}
 
@@ -350,6 +369,9 @@ export default function index() {
                     </Text>
                   </TouchableOpacity>
                 ))}
+            </View>
+            <View style={{height: 900, width: 45}}>
+
             </View>
           </>
         )}
@@ -373,21 +395,23 @@ const styles = StyleSheet.create({
   carousel: {
     // height: 210,
     // width: width * 0.9, // 90% of screen width
+    marginVertical: 12,
     height: height * 0.24,
-    backgroundColor: "yellow",
+    // backgroundColor: "yellow",
+ 
   },
   filters: {
     flexDirection: "row",
-    backgroundColor: "red",
-    marginHorizontal: 20,
+    // backgroundColor: "red",
+    marginBottom: 8,
+    zIndex: -1
+
 
     // height: 13,
     // gap: 15,
     // backgroundColor:'red'
   },
-  listings: {
-    marginBottom: 450,
-  },
+
   card: {
     margin: 5,
     // backgroundColor: "red",
