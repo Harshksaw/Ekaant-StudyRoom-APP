@@ -15,7 +15,8 @@ const { db } = require("../models/user.model");
 
 const LibrarySchema = z.object({
   name: z.string(),
-  description: z.string(),
+  longDescription: z.string(),
+  shortDescription: z.string(),
   // thumbnail: z.string(),
 
   location: z.string(),
@@ -69,7 +70,8 @@ const createRoom = async (req, res) => {
     
     const {libraryOwner,
       name,
-      description,
+      longDescription,
+      shortDescription,
 
       location,
       price,
@@ -90,7 +92,8 @@ const createRoom = async (req, res) => {
     console.log({
      libraryOwner,
       name,
-      description,
+      longDescription,
+      shortDescription,
       location,
       price,
       amenities,
@@ -102,7 +105,8 @@ const createRoom = async (req, res) => {
 
       libraryOwner,
       name,
-      description,
+      longDescription,
+      shortDescription,
       location,
       price,
       amenities,

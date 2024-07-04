@@ -7,7 +7,9 @@ const librarySchema = new mongoose.Schema({
     ref: "User",
   },
   name: { type: String, required: true },
-  description: { type: String, required: true },
+  longDescription: { type: String, required: true },
+  shortDescription: { type: String, required: true },
+
   images: [{ type: String, required: false }],
   location: [ ],
   price: { type: Number, required: true },
