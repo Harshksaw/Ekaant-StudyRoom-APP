@@ -1,6 +1,5 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
-
 import { router } from "expo-router";
 import { StyleSheet } from "react-native";
 import {
@@ -17,10 +16,8 @@ import Carousel from "react-native-intro-carousel";
 import { useEffect } from "react";
 import useUser from "@/hooks/auth/useUser";
 
-
 export default function OnBoardingScreen() {
-
-  const {user,error, loading } = useUser();
+  const { user, error, loading } = useUser();
   useEffect(() => {
     console.log(user, error, loading);
   }, []);
@@ -64,7 +61,8 @@ export default function OnBoardingScreen() {
         {
           key: "1",
           title: "Welcome",
-          description: "This is a cool package lorem ipsum",
+          description:
+            "Empower your studies. Reserve the perfect library environment.",
           image: require("../../assets/images/Study.png"),
           data: {
             name: "John Doe",
@@ -73,8 +71,8 @@ export default function OnBoardingScreen() {
         },
         {
           key: "2",
-          title: "loremp ipsum lorem ipsum ",
-          description: "This is a cool package lorem ipsum 2 lorem ipsume",
+          title: "Get started and unlock your study haven.",
+          description: "Find nearby study rooms and conquer your workload.",
           image: require("../../assets/images/Study.png"),
           data: {
             name: "John Doe",
@@ -84,7 +82,8 @@ export default function OnBoardingScreen() {
         {
           key: "3",
           title: "Read",
-          description: "This is a cool package lorem ipsum 3",
+          description:
+            "Stress less, study more.Your library booking app is here",
           image: require("../../assets/images/Study.png"),
           data: {
             name: "John Doe",
@@ -101,30 +100,65 @@ export default function OnBoardingScreen() {
             flex: 1,
             alignItems: "center",
             justifyContent: "center",
+            gap: 40,
 
-            width: "90%",
+            width: "100%",
+            paddingHorizontal: 10,
           }}
         >
           <Image source={item.image} style={{ width: 200, height: 200 }} />
-
-          <Text style={{ fontSize: 36, fontWeight: "bold", margin: 20 }}>
-            {item.title}
-          </Text>
-          <Text style={{ fontSize: 16, color: "gray" }}>
-            {item.description}
-          </Text>
+          <View>
+            <Text
+              style={{
+                fontSize: 30,
+                fontWeight: "bold",
+                margin: 20,
+                textAlign: "center",
+              }}
+            >
+              {item.title}
+            </Text>
+            <Text
+              style={{
+                fontSize: 20,
+                color: "gray",
+                textAlign: "center",
+                marginVertical: 20,
+                marginHorizontal: 15,
+              }}
+            >
+              {item.description}
+            </Text>
+          </View>
 
           <View
             style={
               index === 2
                 ? {
+                    width: "100%",
                     flexDirection: "column-reverse",
                     justifyContent: "center",
                     alignItems: "center",
                   }
-                : {
+                : index === 1
+                ? {
+                    width: "90%",
                     flexDirection: "row",
                     justifyContent: "space-between",
+                    alignItems: "center",
+                  }
+                : index === 3
+                ? {
+                    // Define styles for index 3 here
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    alignItems: "flex-end",
+                    backgroundColor: "blue", // Example style for index 3
+                  }
+                : {
+                    // Default style for other indices (e.g., index 0)
+                    flexDirection: "row",
+
                     alignItems: "center",
                   }
             }
@@ -134,7 +168,14 @@ export default function OnBoardingScreen() {
                 style={{ padding: 10, borderRadius: 5 }}
                 onPress={() => router.push("/(routes)/welcome")}
               >
-                <Button text="skip" width={responsiveWidth(20)} />
+                <Text
+                  style={{
+                    color: "#0077B6",
+                    fontSize: 20,
+                  }}
+                >
+                  Skip
+                </Text>
               </TouchableOpacity>
             )}
 
@@ -154,8 +195,16 @@ export default function OnBoardingScreen() {
               }}
             >
               <Button
-                text={index === 2 ? "Get Started" : "Next"}
-                width={index === 2 ? responsiveWidth(60) : responsiveWidth(40)}
+                text={index === 2 ? "Continue" : index === 1 ? "Next" : "Next"}
+                width={
+                  index === 2
+                    ? responsiveWidth(80)
+                    : index === 1
+                    ? responsiveWidth(30)
+                    : responsiveWidth(30)
+                }
+                radius={index === 2 ? 80 : index === 1 ? 35 : 10}
+                height={index === 2 ? 60 : index === 1 ? 55 : 55}
               />
             </TouchableOpacity>
           </View>

@@ -10,7 +10,7 @@ import {
   useLocalSearchParams,
   useRouter,
 } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   View,
@@ -23,7 +23,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { setBookingDetails } from "@/redux/bookingSlice";
 import { useRoute } from "@react-navigation/native";
-
+import { Picker } from "@react-native-picker/picker";
 const timeSlots = [
   { from: "09:00", to: "10:00" },
   { from: "10:00", to: "11:00" },
@@ -34,10 +34,8 @@ const BookingScreen: React.FC = () => {
   const params = useRoute();
 
   const data = JSON.parse(params.params.item);
-  console.log("Seat ----->>>>", data);
-
-
-
+  const city = JSON.parse(params.params.location);
+  console.log("Seat ----->>>>", city);
 
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -72,26 +70,44 @@ const BookingScreen: React.FC = () => {
     selectedNumber,
     selectedTimeSlot
   );
-  
-  const updateBookingDetails = () => {
+
+  const updateRoomDetails = () => {
     const details = {
-      seat: selectedSeat,
-      date: selectedDate,
-      months: selectedNumber,
-      slot: selectedTimeSlot,
+      amenities: data?.amenities,
+      images: data?.images,
+      location: city,
+      name: data?.name,
+      price: data?.price,
+   
     };
     dispatch(setBookingDetails(details));
   };
 
+
+  const BookedData ={
+    seat: selectedSeat,
+    date: selectedDate,
+    months: selectedNumber,
+    slot: selectedTimeSlot, ///stll null ,need to be fixed
+  }
+
   const confirmBooking = () => {
-    updateBookingDetails();
+    console.log("Booking Confirmed", BookedData);
+    updateRoomDetails();
     setIsModalVisible(false);
 
-    router.push("/library/checkout.screen");
+    router.push({
+      pathname: "/library/checkout.screen",
+      params: { item: JSON.stringify(BookedData) },
+    });
+
+
+
     console.log("Booking Confirmed");
     // Perform further actions like API calls, etc.
   };
 
+  const [Enable, setEnable] = useState("AM-PM");
   return (
     <SafeAreaView
       style={{
@@ -100,7 +116,6 @@ const BookingScreen: React.FC = () => {
         // marginBottom: 20,
       }}
     >
-
       <View>
         <Header />
       </View>
@@ -122,7 +137,7 @@ const BookingScreen: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        <Seats onSeatSelect={handleSeatSelect} SeatLayout={data} />
+        <Seats onSeatSelect={handleSeatSelect} SeatLayout={data?.seatLayout} />
       </View>
 
       <TouchableOpacity
@@ -203,6 +218,7 @@ const BookingScreen: React.FC = () => {
                   </View>
                 </View>
 
+
                 <View
                   style={{
                     padding: 10,
@@ -229,7 +245,33 @@ const BookingScreen: React.FC = () => {
                       gap: 10,
                     }}
                   >
-                    {timeSlots.map((slot) => (
+                    <Picker
+                      selectedValue={Enable}
+                      style={{ height: 40, width: 200 }}
+                      mode={"dialog"}
+                      // onValueChange={(itemValue) => setEnable(itemValue)}
+
+                      onValueChange={(itemValue, itemIndex) => setEnable(data.timeSlot[itemIndex])}
+
+                    >
+
+                      {
+                        data?.timeSlot.map((slot, index) => (
+
+                          <Picker.Item key={index} label={`${slot.from}PM - ${slot.to}PM` } value={slot} 
+                          style={{color: 'gray', fontSize: 20, fontStyle: 'normal', fontWeight: 400, textAlign: 'center', borderColor: 'blue',
+                            borderWidth: 1, borderRadius: 10, padding: 10, margin: 10, backgroundColor: 'white'
+
+
+                          }}
+                          />
+
+                        ))
+                      }
+                   
+                    </Picker>
+
+                    {/* {timeSlots.map((slot) => (
                       <TimeSlot
                         key={slot.from}
                         from={slot.from}
@@ -237,7 +279,7 @@ const BookingScreen: React.FC = () => {
                         isSelected={selectedTimeSlot === slot.from}
                         onSelect={() => handleSelectTimeSlot(slot.from)}
                       />
-                    ))}
+                    ))} */}
                   </View>
                 </View>
 
@@ -252,10 +294,10 @@ const BookingScreen: React.FC = () => {
                     // marginTop: 20,
                   }}
                 >
-                  {selectedSeat?.length > 0 &&
+                  {
                     selectedDate &&
                     selectedNumber &&
-                    selectedTimeSlot && (
+                   (
                       <TouchableOpacity
                         style={{ backgroundColor: "green" }}
                         onPress={confirmBooking}
@@ -280,6 +322,7 @@ const BookingScreen: React.FC = () => {
                     <Ionicons name="close" size={30} color="#000" />
                   </TouchableOpacity>
                 </View>
+
               </View>
             </View>
           </Modal>
@@ -297,7 +340,7 @@ const styles = StyleSheet.create({
 
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)", // This will give a semi-transparent background
+    backgroundColor: "rgba(0,0,3,0.7)", // This will give a semi-transparent background
   },
   modalView: {
     backgroundColor: "white",
@@ -306,7 +349,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     borderRadius: 20,
     padding: 10,
-    gap: 20,
+    gap: 10,
     width: 300,
     height: 450,
     alignItems: "center",

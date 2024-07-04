@@ -1,40 +1,28 @@
-
-
-
-
 import { Redirect } from "expo-router";
 import { useEffect, useState } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function TabsIndex() {
- 
+  const printAllAsyncStorageData = async () => {
+    try {
+      const keys = await AsyncStorage.getAllKeys();
+      const result = await AsyncStorage.multiGet(keys);
 
-const printAllAsyncStorageData = async () => {
-  try {
-    const keys = await AsyncStorage.getAllKeys();
-    const result = await AsyncStorage.multiGet(keys);
+      console.log("All AsyncStorage data:");
+      result.forEach(([key, value]) => {
+        console.log(`${key}: ${value}`);
+      });
+    } catch (error) {
+      console.error("Error fetching AsyncStorage data", error);
+    }
+  };
 
-    console.log('All AsyncStorage data:');
-    result.forEach(([key, value]) => {
-      console.log(`${key}: ${value}`);
-    });
-  } catch (error) {
-    console.error('Error fetching AsyncStorage data', error);
-  }
-};
-
-
-printAllAsyncStorageData();
-
+  printAllAsyncStorageData();
 
   // const { loading, user } = useUser();
   // console.log(user)
 
-
   const [user, setUser] = useState(false);
-
-
-
 
   // const [token, setToken] = useState("");
   // const checkToken = async () => {
@@ -49,7 +37,6 @@ printAllAsyncStorageData();
   //   console.log(user, "user")
   // };
   // useEffect(() => {
-  
 
   //   checkToken();
   // }, []);
@@ -61,10 +48,7 @@ printAllAsyncStorageData();
 
   return (
     <>
-     <Redirect href={!user ?  "/(tabs)" : "/(routes)/onboarding"} />
-     </>
-   
-  
-  
+      <Redirect href={!user ? "/(tabs)" : "/(routes)/onboarding"} />
+    </>
   );
 }

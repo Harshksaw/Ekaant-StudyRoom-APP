@@ -93,13 +93,19 @@ export default function Search() {
     <SafeAreaView
       style={{
         flex: 1,
-        // justifyContent: "center",
-        // alignItems: "center",
         flexDirection: "column",
+        backgroundColor: "white",
       }}
     >
       <Header />
+      <View  style={{
+        marginTop:40,
+        flex: 1,
+        flexDirection: "column",
+        backgroundColor: "white",
+      }}>
 
+      
       <View>
         <ScrollView
           horizontal={true}
@@ -188,12 +194,13 @@ export default function Search() {
         </View>
 
       </View>
+      </View>
     </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     flexDirection: "column",
   },
   scrollViewStyle: {

@@ -3,11 +3,20 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
+
   Platform,
   PermissionsAndroid,
+  SafeAreaView,
 } from "react-native";
-// import { Picker } from "@react-native-picker/picker";
+import { Dimensions } from "react-native";
+
+const { width, height } = Dimensions.get("window");
+import { Image } from 'expo-image'
+import { Picker } from "@react-native-picker/picker";
+import { Ionicons } from "@expo/vector-icons";
+
+
+import { useAssets } from "expo-asset";
 
 const citiesData = [
   { id: 1, name: "Mumbai" },
@@ -22,36 +31,92 @@ const citiesData = [
   { id: 10, name: "Jaipur" },
 ];
 const Header: React.FC = () => {
-  
   const [selectedLocation, setSelectedLocation] = useState();
+
+  const [Enable, setEnable] = useState(true);
   // const [cities, setCities] = useState([]);
   // const [selectedCity, setSelectedCity] = useState("");
+  const [assets, error] = useAssets([
+    require('../assets/icons/headerlogo.svg'),
+
+
+  ]);
 
   return (
     <View style={styles.header}>
       <View style={styles.citySelector}>
-        <Text style={styles.label}>Select City:</Text>
-        <View style={styles.picker}>
-          {/* <Picker
-            selectedValue={selectedLocation}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedLocation(itemValue)
-            }
-          >
-            <Picker.Item label="Delhi" value="Delhi" />
-            <Picker.Item label="Mumbai" value="Mumbai" />
-          </Picker> */}
+        <View style={styles.label}>
+          <Text
+            style={{
 
-          <Text>Delhi</Text>
+
+              fontSize: 16,
+              fontWeight: "500",
+              lineHeight: 24,
+              textAlign: "center",
+            }}
+          >
+            Location
+          </Text>
+          <Ionicons name="chevron-down-outline" size={20} color="blue" />
+        </View>
+
+        <View style={styles.picker}>
+          <Ionicons name="location" size={24} color="black" />
+          <Picker
+            selectedValue={Enable}
+            style={{
+              height: 0,
+              width: 175,
+              borderRadius: 150,
+              color: "black",
+              borderBlockColor: "black",
+              borderWidth: 1,
+            }}
+            mode={"dropdown"}
+            // onValueChange={(itemValue) => setEnable(itemValue)}
+
+            onValueChange={(itemValue, itemIndex) => setEnable(false)}
+          >
+            {citiesData?.map((slot, index) => (
+              <Picker.Item
+                key={index}
+                label={slot.name}
+                value={slot.name}
+                style={{
+                  color: "gray",
+                  fontSize: 15,
+                  fontStyle: "normal",
+                  fontWeight: 800,
+
+                  textAlign: "center",
+                  // backgroundColor: "blue",
+
+                  borderRadius: 20,
+
+                  // padding: 2,
+                  // margin: 4,
+                }}
+              />
+            ))}
+          </Picker>
         </View>
       </View>
 
       <View style={styles.logoContainer}>
-        <Image
+          {assets && assets[0] &&  <Image source={assets[0]} style={{
+
+            width: 50, height: 50,
+
+          }} />}
+            {/* <Headerlogo
+            width={120} height={40}
+            /> */}
+        {/* <Image
           height={20}
-          source={require("../assets/images/logo.png")}
+          source={require("../assets/icons/headerlogo.svg")}
           style={styles.logo}
-        />
+        /> */}
       </View>
     </View>
   );
@@ -59,38 +124,48 @@ const Header: React.FC = () => {
 
 const styles = StyleSheet.create({
   header: {
+    // width: width * 0.9, // 90% of screen width
+    height: height * 0.09,
+    width:'100%',
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 20,
+
     paddingHorizontal: 20,
-    // paddingTop: 16,
+
     paddingBottom: 8,
-    backgroundColor: "#f2f2f2",
+
   },
   logoContainer: {
-    flex: 1,
+    // flex: 1,
     alignItems: "center",
   },
   logo: {
-    width: 100,
-    height: 60,
-    resizeMode: "contain",
+    width: "50%",
+    height: "100%",
   },
   citySelector: {
-    flex: 2,
-    marginLeft: 16,
+    flex: 1,
+    marginLeft: 10,
+    textAlign: "center",
   },
   label: {
     fontSize: 16,
+    marginLeft: 10,
     fontWeight: "bold",
-    marginBottom: 8,
+    flexDirection: "row",
+    gap:5,
+    alignItems: "center",
+    marginTop: 5,
   },
   picker: {
+    flexDirection: "row",
+    alignItems: "center",
     zIndex: 3,
     height: 40,
+    // backgroundColor: "red",
 
-    borderRadius: 4,
+    borderRadius: 40,
   },
   selectedCity: {
     flex: 1,

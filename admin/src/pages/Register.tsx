@@ -40,12 +40,9 @@ const Register = () => {
       // send otp
       console.log(userInfo.phone);
       setShowOtp(true);
-      const response = await axios.post(
-        `${BASEURL}/api/v1/auth/otp`,
-        {
-          phoneNumber: userInfo.phone,
-        }
-      );
+      const response = await axios.post(`${BASEURL}/api/v1/auth/otp`, {
+        phoneNumber: userInfo.phone,
+      });
       console.log(response.data);
     } catch (error) {
       console.log(error);
@@ -54,12 +51,9 @@ const Register = () => {
   // verfiy otp
   const verifyOtp = async () => {
     try {
-      const response = await axios.post(
-        `${BASEURL}/api/v1/auth/verifyOtp`,
-        {
-          otp: otp,
-        }
-      );
+      const response = await axios.post(`${BASEURL}/api/v1/auth/verifyOtp`, {
+        otp: otp,
+      });
       if (response.data.success) {
         setVerified(true);
       }
@@ -73,16 +67,13 @@ const Register = () => {
   // signup--
   const handleSignUp = async () => {
     try {
-      const response = await axios.post(
-        `${BASEURL}/api/v1/auth/signup`,
-        {
-          username: userInfo.name,
-          email: userInfo.email,
-          phoneNumber: parseInt(userInfo?.phone),
-          password: userInfo.password,
-          accountType: "Admin",
-        }
-      );
+      const response = await axios.post(`${BASEURL}/api/v1/auth/signup`, {
+        username: userInfo.name,
+        email: userInfo.email,
+        phoneNumber: parseInt(userInfo?.phone),
+        password: userInfo.password,
+        accountType: "Admin",
+      });
       if (response.data.success) {
         console.log("signup success");
         const token = response.data.token;
@@ -136,10 +127,12 @@ const Register = () => {
                 className="px-4 py-2 w-full rounded-[8px] border text-base bg-white text-gray-400"
                 value={userInfo?.phone.toString()} // Convert phone number to string for the value prop
                 placeholder="phone"
-                onChange={(e) => setUserInfo({
-                  ...userInfo,
-                  phone: e.target.value ? parseInt(e.target.value, 10) : 0, // Convert input value to number; use 0 as fallback
-                })}
+                onChange={(e) =>
+                  setUserInfo({
+                    ...userInfo,
+                    phone: e.target.value ? parseInt(e.target.value, 10) : 0, // Convert input value to number; use 0 as fallback
+                  })
+                }
               />
               <Send
                 onClick={() => sendOtp()}

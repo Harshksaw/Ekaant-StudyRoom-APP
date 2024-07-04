@@ -5,44 +5,123 @@ import { LabelledInput } from "./LabelledInput";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { BASEURL } from "@/lib/utils";
+import { Send } from "lucide-react";
 
 const Auth = ({ type }: { type: "signup" | "signin" }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    email: "",
+    phone: 0,
+    password: "",
+  });
 
-  const [phoneNumber, setPhoneNumber] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [verified, setVerified] = useState(false);
+  const [otp, setOtp] = useState(0);
+  const [showOtp, setShowOtp] = useState(false);
   const navigate = useNavigate();
-  async function sendRequest() {
-    try {
-      const response = await axios.post(
-        `${BASEURL}/api/v1/auth/${type === "signin" ? "signin" : "signup"}`,
-        {
-          email: email,
-          phoneNumber: parseInt(phoneNumber),
-          password: password,
-          accountType: "Admin",
-        }
-      );
-      // const jwt = res.data;
 
+  // send otp--
+  const sendOtp = async () => {
+    try {
+      // send otp
+      console.log(userInfo.phone);
+      setShowOtp(true);
+      const response = await axios.post(`${BASEURL}/api/v1/auth/otp`, {
+        phoneNumber: userInfo.phone,
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // verfiy otp
+  const verifyOtp = async () => {
+    try {
+      const response = await axios.post(`${BASEURL}/api/v1/auth/verifyOtp`, {
+        otp: otp,
+      });
       if (response.data.success) {
-        // console.log(response.data.user.accountType)
-        console.log(response.data)
-        console.log(response.data.token)
-        const token = response.data.token;
-        const accountType = response.data.data.user.accountType; // Extract accountType
-        
-        localStorage.setItem("token", token);
-        localStorage.setItem("userId", response.data.data.user._id);
-        localStorage.setItem("role", accountType); // Store accountType in localStorage
-        const role = await  localStorage.getItem("role");
-        
-        
-        role === 'Admin' ?  navigate("manage-library/create-library") : navigate("/admin");
+        setVerified(true);
       }
-    } catch (e) {
-      alert("error while signing up");
-      console.log("error is ", e);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  async function sendRequest() {
+    if (type === "signin") {
+      try {
+        const response = await axios.post(`${BASEURL}/api/v1/auth/signin`, {
+          username: userInfo.name,
+          email: userInfo.email,
+          phoneNumber: userInfo?.phone,
+          password: userInfo.password,
+          accountType: "Admin",
+        });
+        // const jwt = res.data;
+
+        if (response.data.success) {
+          // console.log(response.data.user.accountType)
+          console.log(response.data);
+          console.log(response.data.token);
+          const token = response.data.token;
+          const accountType = response.data.data.user.accountType; // Extract accountType
+
+          localStorage.setItem("token", token);
+          localStorage.setItem("userId", response.data.data.user._id);
+          localStorage.setItem("role", accountType); // Store accountType in localStorage
+          const role = await localStorage.getItem("role");
+
+          // role === 'Admin' ?  navigate("manage-library/create-library") : navigate("/admin");
+          role === "Admin"
+            ? navigate("/dashboard", {
+                replace: true,
+              })
+            : navigate("/admin", {
+                replace: true,
+              });
+        }
+      } catch (e) {
+        alert("error while signing up");
+        console.log("error is ", e);
+      }
+    }
+    if (type === "signup") {
+      try {
+        console.log(userInfo);
+        const response = await axios.post(`${BASEURL}/api/v1/auth/signup`, {
+          username: userInfo.name,
+          email: userInfo.email,
+          phoneNumber: userInfo?.phone,
+          password: userInfo.password,
+          accountType: "Admin",
+        });
+        if (response.data.success) {
+          console.log("signup success");
+          console.log(response.data);
+          // console.log(response.data.token);
+          const token = response.data.token;
+          // const accountType = response.data.data.user.accountType; // Extract accountType
+
+          localStorage.setItem("token", token);
+          navigate("/dashboard");
+          // localStorage.setItem("userId", response.data.data.user._id);
+          // localStorage.setItem("role", "admin "); // Store accountType in localStorage
+          // const role = await localStorage.getItem("role");
+
+          // role === 'Admin' ?  navigate("manage-library/create-library") : navigate("/admin");
+          // role === "Admin"
+          //   ? navigate("/dashboard", {
+          //       replace: true,
+          //     })
+          //   : navigate("/admin", {
+          //       replace: true,
+          //     });
+        }
+      } catch (e) {
+        console.log("error is ", e);
+      }
     }
   }
   return (
@@ -90,24 +169,71 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
               <div className="pt-1">
                 {type === "signup" ? (
                   <LabelledInput
-                    type="Number"
-                    label="Enter Phone Number"
-                    placeholder="Phone Number"
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    label="Enter Name"
+                    placeholder="Name"
+                    onChange={(e) =>
+                      setUserInfo({ ...userInfo, name: e.target.value })
+                    }
                   />
                 ) : (
+                  ""
+                )}
+                {type === "signup" ? (
+                  <div className="flex justify-start gap-2 items-center">
+                    <p className="p-2 border rounded-[8px]">+91</p>
+                    <input
+                      type="number"
+                      className="px-4 py-2 w-full rounded-[8px] border text-base bg-white text-gray-400"
+                      value={userInfo?.phone.toString()} // Convert phone number to string for the value prop
+                      placeholder="phone"
+                      onChange={(e) =>
+                        setUserInfo({
+                          ...userInfo,
+                          phone: e.target.value
+                            ? parseInt(e.target.value, 10)
+                            : 0, // Convert input value to number; use 0 as fallback
+                        })
+                      }
+                    />
+                    <Send
+                      onClick={() => sendOtp()}
+                      className="border rounded-[8px] p-3 h-10 w-12"
+                    />
+                  </div>
+                ) : (
                   " "
+                )}
+                {showOtp && userInfo.phone >= 1000000 && (
+                  <div className="flex justify-between items-center gap-2 ">
+                    <input
+                      className="px-4 py-2 w-full rounded-[8px] border text-base bg-white text-gray-400"
+                      type="number"
+                      value={otp} // Uncomment to use
+                      placeholder="Otp"
+                      onChange={(e) => setOtp(e.target.valueAsNumber)}
+                    />
+                    <button
+                      className="  border rounded-[8px]  p-2 bg-transparent m"
+                      onClick={verifyOtp}
+                    >
+                      Verify
+                    </button>
+                  </div>
                 )}
                 <LabelledInput
                   label="Enter Email Id"
                   placeholder="Email"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) =>
+                    setUserInfo({ ...userInfo, email: e.target.value })
+                  }
                 />
                 <LabelledInput
                   type="password"
                   label="Enter Password"
                   placeholder="Password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) =>
+                    setUserInfo({ ...userInfo, password: e.target.value })
+                  }
                 />
                 <button className="pt-1 " type="button" onClick={sendRequest}>
                   {" "}
