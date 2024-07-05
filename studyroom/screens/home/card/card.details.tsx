@@ -82,10 +82,13 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     // params: { params.item.seatLayout },
     // });
   };
+  // console.log(data)
   return (
     <SafeAreaView style={styles.container}>
       <Header  color="black"/>
-      <View style={{ flex: 1 }}>
+      <ScrollView stickyHeaderIndices={[1]} showsVerticalScrollIndicator={false}>
+
+      <View style={{ flex: 1 , marginVertical: 20}}>
         <Carousel
           loop
           width={width}
@@ -102,10 +105,10 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
       </View>
 
       <ScrollView
+      showsVerticalScrollIndicator={false}
         style={{
           flex: 1,
 
-          marginHorizontal: 0,
           flexDirection: "column",
           ...(Platform.OS === "ios"
             ? { marginTop: -200 }
@@ -120,6 +123,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               alignItems: "center",
               marginBottom: 10,
               gap: 10,
+              paddingRight: 28,
             }}
           >
             <Text style={styles.heading}>{data?.name}</Text>
@@ -131,7 +135,6 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 fontStyle: "italic",
               }}
             >
-              {" "}
               ₹{data?.price}/month
             </Text>
           </View>
@@ -142,14 +145,16 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               // justifyContent: "space-between",
               alignItems: "center",
               marginBottom: 10,
-              gap: 10,
+              gap: 4,
             }}
           >
             <Ionicons name="location" size={24} />
             <Text
+            numberOfLines={1}
               style={{
+                
                 fontSize: 14,
-                color: "black",
+                color: "#A8A8A8",
                 fontWeight: "semi-bold",
               }}
             >
@@ -160,27 +165,26 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
           <Text style={styles.amenities}>About</Text>
           <Text
             style={{
-              fontSize: 15,
-
+              marginTop: 2,
+              fontSize: 14,
+              lineHeight:18.67,
+              color: "#A8A8A8",
               borderRadius: 10,
-              padding: 10,
-              marginBottom: 10,
-              minHeight: 100,
             }}
             numberOfLines={7}
           >
-            {data?.description}
+            {data?.longDescription}
           </Text>
 
-          <View>
-            <Text>Amenities</Text>
+          <View style={{marginTop: 12}}>
+            <Text style={{fontWeight: '700', fontSize: 17, color: 'black'}}>Overview</Text>
 
             <View
               style={{
                 flexDirection: "row",
                 flexWrap: "wrap",
                 gap: 10,
-                margin: 10,
+                marginTop: 6,
                 // justifyContent: "space-between",
               }}
             >
@@ -191,7 +195,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     marginTop: 10,
-                    borderColor: "black",
+                    borderColor: "#dfdfdf",
                     borderWidth: 1,
                     borderRadius: 20,
                     padding: 7,
@@ -199,7 +203,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                   }}
                 >
                   {/* Your text here */}
-                  <Text>{amenity}</Text>
+                  <Text style={{color: '#606060'}}>{amenity}</Text>
                 </View>
               ))}
             </View>
@@ -246,10 +250,10 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             <Text
               style={{
                 margin: 20,
-                fontFamily: "Roboto",
+                // fontFamily: "Roboto",
                 fontSize: 20,
                 fontStyle: "normal",
-                fontWeight: "700",
+                fontWeight: "800",
 
                 textAlign: "center",
                 flexDirection: "column",
@@ -264,19 +268,20 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               style={{
                 marginHorizontal: "auto",
                 flexWrap: "wrap",
-                backgroundColor: "lightgray",
-
-                borderRadius: 20,
+                backgroundColor: "#F0F0F0",
+                elevation: 6,
+                borderRadius: 12,
                 flexDirection: "row",
-                padding: 20,
-                justifyContent: "space-between",
-                alignSelf: "flex-start",
+                paddingHorizontal: 38,
+                paddingVertical:8,
+                justifyContent: "center",
+                alignSelf: "",
                 gap: 10,
               }}
             >
               {/* <Text>4.5</Text> */}
               <StarRating rating={4} />
-              <Text>10 Reviews</Text>
+              <Text style={{padding:0, fontSize: 13}}>10 Reviews</Text>
             </View>
 
             {/* ///review by user */}
@@ -289,7 +294,6 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 style={{
                   flexDirection: "column",
                   flexWrap: "wrap",
-                  gap: 10,
                   // margin: 10,
                   alignItems: 'center',
                   justifyContent: "center",
@@ -303,11 +307,11 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                       justifyContent: "center",
                       alignItems: "center",
                       width: 'auto',
-                      // margin: 20,
+                      borderTopWidth: 2,
                       padding: 10,
                       paddingHorizontal: 40,
-                      borderRadius: 20,
-                      backgroundColor: "lightgray",
+                      borderColor:'#eaeaea',
+                      // backgroundColor: "#30364D",
 
                       // alignSelf: "center",
                       gap: 10,
@@ -332,6 +336,10 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                     <StarRating rating={3} />
                   </View>
                 ))}
+                <View>
+
+               <Text style={{marginVertical: 24, fontSize: 10, fontWeight: 800}}>Copyright © 2024 EKAANT . All rights reserved.</Text>
+                </View>
                 {/* {data.map((review: any, index: any) => (
                   <View
                     key={index}
@@ -358,19 +366,14 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
         </View>
       </ScrollView>
 
+      </ScrollView>
       <View
         style={{
           position: "absolute",
-          // zindex: 10,
           marginBottom: 20,
           bottom: 0,
-
-          // width: "100%",
-          backgroundColor: "red",
           flexDirection: "row",
           justifyContent: "center",
-          // gap: 10,
-          // marginRight: 10,
           borderRadius: 20,
         }}
       >
@@ -382,6 +385,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
           {/* pathname: "/(routes)/library/library.booking", */}
         </TouchableOpacity>
       </View>
+
     </SafeAreaView>
   );
 };
@@ -413,21 +417,20 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   cardDetails: {
-
     flexDirection: "column", // Arrange children in columns
-    gap: 10, // Add gap between children
+    gap: 0, // Add gap between children
     // height: 400, // Adjust height for better spacing
     // marginBottom: 120, // Add margin for better spacing
     padding: 10, // Add padding for better spacing
   },
   heading: {
     fontSize: 25,
-    fontWeight: "500",
+    fontWeight: "700",
   },
 
   amenities: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 17,
+    fontWeight: "700",
     color: "black",
   },
   centeredView: {

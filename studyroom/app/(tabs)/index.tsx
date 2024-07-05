@@ -264,7 +264,7 @@ export default function index() {
                 fontWeight: "400",
                 lineHeight: 18.21,
                 textAlign: "auto",
-                color:'#626262'
+                color:'#1E1E1E'
                 
               
               }}
