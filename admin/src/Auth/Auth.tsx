@@ -18,7 +18,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const [verified, setVerified] = useState(false);
   const [otp, setOtp] = useState(0);
   const [showOtp, setShowOtp] = useState(false);
-  const [authMethod,setAuth]
+  const [authMethod,setAuthMethod]=useState("password")
   const navigate = useNavigate();
 
   // send otp--
@@ -176,6 +176,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
           </h6>
           <div className="px-20">
 
+
             {type === "signup" && (
               <>
                 <LabelledInput
@@ -236,8 +237,47 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
             />
             {/* for login with otp or password */}
             {type==="signin "?(
-
+               <div>
+               <input
+                 type="radio"
+                 id="password"
+                 name="authMethod"
+                 value="password"
+                 checked={authMethod === 'password'}
+                 onChange={handleAuthMethodChange}
+               />
+               <label htmlFor="password">Password</label>
+       
+               <input
+                 type="radio"
+                 id="otp"
+                 name="authMethod"
+                 value="otp"
+                 checked={authMethod === 'otp'}
+                 onChange={handleAuthMethodChange}
+                 className=" text-gray-900 text-sm  block w-full p-2.5"
+               />
+               <label htmlFor="otp">OTP</label>
+             </div>
             ):("")}
+            
+                {/* Conditional rendering based on auth method */}
+        {authMethod === 'password' ? (
+        <input
+          type="password"
+          placeholder="Password"
+          value={userInfo.password}
+          onChange={(e) => setUserInfo({ ...userInfo, password: e.target.value })}
+        />
+      ) : (
+        <input
+          type="number"
+          placeholder="OTP"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+        />
+      )}
+
             <LabelledInput
               type="password"
               label="Enter Password"

@@ -1,6 +1,5 @@
 Frontend -
 
-https://laughing-umbrella-pqx546g75vj3rvj4-5173.app.github.dev
 
 
 Backend-

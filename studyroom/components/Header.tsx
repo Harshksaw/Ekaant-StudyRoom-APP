@@ -99,7 +99,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
 
 
                   textAlign: "center",
-                  backgroundColor: "blue",
+                  // backgroundColor: "blue",
                   // marginBottom: 20,
 
                   borderRadius: 20,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "pink",
+    // backgroundColor: "pink",
     marginBottom:10,
   },
   logoContainer: {
