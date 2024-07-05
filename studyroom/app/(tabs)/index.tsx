@@ -118,6 +118,7 @@ export default function index() {
     require("../../assets/icons/arrow-down.svg"),
     require("../../assets/images/slider1.png"),
     require("../../assets/icons/hello.svg"),
+    require("../../assets/icons/locationcard.svg"),
     
   ]);
 
@@ -213,37 +214,61 @@ export default function index() {
 
               height: 10,
               flexDirection: "row",
-              paddingRight: 20,
+              // paddingRight: 20,
               justifyContent: "space-between",
-              alignItems: "flex-end",
+              alignItems: "center",
             }}
           >
+            <View>
+
             {item?.ratings ? (
               <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 5,  }}
+              style={{ flexDirection: "row", alignItems: "center", gap: 5,  }}
               >
                 <StarRating rating={item?.ratings} />
                 <Text>{item?.ratings}</Text>
               </View>
             ) : (
               <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 5, }}
+              style={{ flexDirection: "row", alignItems: "center", gap: 5, }}
               >
                 <StarRating rating={3} />
                 <Text>3.0</Text>
               </View>
             )}
 
+            </View>
             <View
               style={{
                 flexDirection: "row",
                 gap: 3,
                 padding:4
+                ,justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Ionicons name="location" size={16} color="black" />
+              {assets && assets[6] && (
+                <Image source={assets[6]}
+                style={{
+                  width: 15,
+                  height: 20,
+                  
+                }}
+                />
+              )
+              }
 
-              <Text>{item.distance || "2 KMs"}</Text>
+              <Text
+              style={{
+                fontSize: 12.14,
+                fontWeight: "400",
+                lineHeight: 18.21,
+                textAlign: "auto",
+                color:'#626262'
+                
+              
+              }}
+              >{item.distance || "2KMs"}</Text>
             </View>
           </View>
         </View>
@@ -262,7 +287,7 @@ export default function index() {
       style={{
         flex: 1,
         flexDirection: "column",
-        gap: 10,
+        gap: 5,
         // justifyContent: "center",
         // alignItems: "flex-start",
         backgroundColor: "white",
@@ -279,7 +304,7 @@ export default function index() {
         {/* Carousel */}
         <View style={styles.carousel}>
           <View style={styles.welcome}>
-            {/* <View></View> */}
+
 
             <Text
               style={{
@@ -300,17 +325,7 @@ export default function index() {
               </Text>
 
             </Text>
-            {/* {
-
-              assets && assets[5] &&   <Image
-              source={assets[5]}
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 25,
-                marginLeft: 10,
-              }}/>
-            } */}
+        
           
           </View>
           <Carousel
@@ -471,7 +486,7 @@ const styles = StyleSheet.create({
     height: 80,
   },
   welcome: {
-    height: 50,
+    height: 35,
     marginLeft: 20,
     // flexDirection: "row",
 
