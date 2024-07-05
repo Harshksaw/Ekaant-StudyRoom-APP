@@ -32,18 +32,21 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Auth type="signin" />} />
+      <BrowserRouter
+      basename="/"
+
+      >
+
+        <Routes
+
+        >
+        <Route path="/" element={<Auth type="signin" />} />
           <Route path="/signup" element={<Auth type="signup" />} />
           <Route path="/signin" element={<Auth type="signin" />} />
 
           {role === "Admin" && (
             <Route element={<ProtectedRoute />}>
-              <Route
-                path="/manage-library/create-library"
-                element={<CreateLibrary />}
-              />
+              <Route path="/manage-library/create-library" element={<CreateLibrary />}/>
               <Route path="/dashboard" element={<Dashboard />} />
 
               <Route path="/manage-user/view" element={<View />} />

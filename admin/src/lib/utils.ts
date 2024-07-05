@@ -7,4 +7,3 @@ export function cn(...inputs: ClassValue[]) {
 
 
 export const BASEURL='https://studyroom-app.onrender.com'
-// export const BASEURL="http://127.0.0.1:3000"
