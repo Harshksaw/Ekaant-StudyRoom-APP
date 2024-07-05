@@ -1,7 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
+
+
 const Star = ({ isFilled, onPress }) => (
+
+
   <TouchableOpacity onPress={onPress}>
     <Text style={{ color: isFilled ? '#FFCB45' : 'gray' }}>★</Text>
   </TouchableOpacity>

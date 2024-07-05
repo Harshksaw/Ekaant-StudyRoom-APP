@@ -244,9 +244,12 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
                  name="authMethod"
                  value="password"
                  checked={authMethod === 'password'}
+                  //  className=" text-gray-900 text-sm  block w-full p-2.5"
                  onChange={handleAuthMethodChange}
                />
-               <label htmlFor="password">Password</label>
+               <label htmlFor="password"
+                  className=" block mb-2 text-sm font-bold text-black pt-4"
+               >Password</label>
        
                <input
                  type="radio"
@@ -255,9 +258,10 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
                  value="otp"
                  checked={authMethod === 'otp'}
                  onChange={handleAuthMethodChange}
-                 className=" text-gray-900 text-sm  block w-full p-2.5"
+                //  className=" text-gray-900 text-sm  block w-full p-2.5"
                />
-               <label htmlFor="otp">OTP</label>
+               <label htmlFor="otp"
+                  className=" block mb-2 text-sm font-bold text-black pt-4">OTP</label>
              </div>
             ):("")}
             
@@ -267,6 +271,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
           type="password"
           placeholder="Password"
           value={userInfo.password}
+             className=" text-gray-900 text-sm  block w-full p-2.5"
           onChange={(e) => setUserInfo({ ...userInfo, password: e.target.value })}
         />
       ) : (
@@ -274,6 +279,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
           type="number"
           placeholder="OTP"
           value={otp}
+             className=" text-gray-900 text-sm  block w-full p-2.5"
           onChange={(e) => setOtp(e.target.value)}
         />
       )}
