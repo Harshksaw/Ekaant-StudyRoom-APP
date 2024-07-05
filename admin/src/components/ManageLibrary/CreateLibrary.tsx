@@ -163,7 +163,7 @@ const CreateLibrary = () => {
         setSeatLayout({});
         // setImages([]);
 
-        navigate(`/manage-library/my-library}`);
+        navigate(`/manage-library/my-library`);
       }
     } catch (error) {
       setLoading(false);
