@@ -1,14 +1,17 @@
+import { SeatsCheckout } from "@/assets";
 import Header from "@/components/Header";
+import Seats from "@/components/Seats";
 import { getDateAfterMonths } from "@/utils/date";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { useAssets } from "expo-asset";
+import { Image } from "expo-image";
 import React, { useEffect } from "react";
 import {
   View,
   Text, 
   SafeAreaView,
-  Image,
+
   StyleSheet,
   Touchable,
   TouchableOpacity,
@@ -25,9 +28,9 @@ const CheckoutScreen: React.FC = () => {
   
   
   const data = useSelector((state: any) => state.booking);
-  console.log("ddd-------", data);
+  console.log("ddd------->>>>>>>>>>>>>>>>>>>", data);
   const location = data?.details?.location
-  console.log(data.details.date, data.details.months);
+  console.log(data.details.images[0]);
   const price = data.details.price || 6000;
   const convenienceFee = price * 0.1; // 10% of price
   const subtotal = price + convenienceFee;
@@ -41,7 +44,15 @@ const CheckoutScreen: React.FC = () => {
   return (
     <SafeAreaView>
       {/* Header */}
+      <View
+      style={{
+        marginTop:20,
+        marginBottom: 10,
+      }}
+      >
+
       <Header color="black" />
+      </View>
 
       <View
         style={{
@@ -53,7 +64,12 @@ const CheckoutScreen: React.FC = () => {
         }}
       >
         <View style={{}}>
-          <Image source={require("../../assets/images/res.png")} />
+        <Image source={{ uri: data.details.images[0] }} style={{
+          width: 140,
+          height: 200,
+          borderRadius: 10,
+        }} />
+          {/* <Image source={{uri : data.details.images[0]}} /> */}
         </View>
         <View
           style={{
@@ -70,7 +86,7 @@ const CheckoutScreen: React.FC = () => {
               fontWeight: "bold",
             }}
           >
-            Library name
+            {data?.details?.name}
           </Text>
 
           <View
@@ -80,7 +96,7 @@ const CheckoutScreen: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <Ionicons name="time" size={24} color="black" />
+            <Ionicons name="time-outline" size={24} color="black" />
             <Text>Period - {BookedData.months}</Text>
           </View>
 
@@ -91,7 +107,7 @@ const CheckoutScreen: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <Ionicons name="wifi" size={24} color="black" />
+            <Ionicons name="wifi-outline" size={24} color="black" />
 
             <Text>A/C Rooms - Yes</Text>
           </View>
@@ -118,7 +134,7 @@ const CheckoutScreen: React.FC = () => {
             width: 150,
           }}
         >
-          <Ionicons name="calendar" size={50} color="black" />
+          <Ionicons name="calendar-outline" size={50} color="black" />
           <View
             style={{
               flexDirection: "column",
@@ -155,7 +171,8 @@ const CheckoutScreen: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <Ionicons name="desktop" size={50} color="black" />
+
+          < SeatsCheckout />
 
           <Text>{data.details.seats} Seats</Text>
         </View>
@@ -179,7 +196,7 @@ const CheckoutScreen: React.FC = () => {
         }}
       >
         <View style={styles.summary}>
-          <Ionicons name="cash" size={24} color="black" />
+          <Ionicons name="cash-outline" size={24} color="black" />
           <View
             style={{
               flexDirection: "column",
@@ -215,7 +232,7 @@ const CheckoutScreen: React.FC = () => {
 
         {/* //location */}
         <View style={styles.summary}>
-          <Ionicons name="location" size={25} color="black" />
+          <Ionicons name="location-outline" size={25} color="black" />
           <View
             style={{
               flexDirection: "column",
@@ -245,7 +262,7 @@ const CheckoutScreen: React.FC = () => {
 
         {/* //slot */}
         <View style={styles.summary}>
-          <Ionicons name="paper-plane" size={25} color="black" />
+          <Ionicons name="paper-plane-outline" size={25} color="black" />
           <View
             style={{
               flexDirection: "column",

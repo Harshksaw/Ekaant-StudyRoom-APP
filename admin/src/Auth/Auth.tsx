@@ -21,6 +21,14 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const [authMethod,setAuthMethod]=useState("password")
   const navigate = useNavigate();
 
+
+  const handleAuthMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+
+
+    setAuthMethod(e.target.value);
+  }
+
   // send otp--
   const sendOtp = async () => {
     try {
@@ -236,7 +244,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 
             />
             {/* for login with otp or password */}
-            {type==="signin "?(
+            {type === "signin"?(
                <div>
                <input
                  type="radio"
@@ -280,7 +288,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
           placeholder="OTP"
           value={otp}
              className=" text-gray-900 text-sm  block w-full p-2.5"
-          onChange={(e) => setOtp(e.target.value)}
+          onChange={(e) => setOtp(e.target.valueAsNumber)}
         />
       )}
 

@@ -5,9 +5,11 @@ import { Badge } from "@/components/ui/badge";
 interface LibraryItem {
   images: string[];
   name: string;
-  description: string;
+  shortDescription: string;
+  longDescription: string;
   price: number;
   // Add other properties as needed
+
 }
 interface LibraryItem {
   // other properties

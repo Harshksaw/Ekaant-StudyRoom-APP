@@ -45,39 +45,29 @@ const BookingScreen: React.FC = () => {
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedNumber, setSelectedNumber] = useState(null);
+
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
   const handleSeatSelect = (seatDataFromChild) => {
     setSelectedSeat(seatDataFromChild); // Update selected seats in parent state
     // Optionally, perform further actions on the selected seats here
   };
   const [selectedMonth, setSelectedMonth] = useState(1); // Default to January
-
+  const [selectedmonth, setselectedmonth] = useState("1");
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
 
-  // Handler for selecting a number
-  const handleSelectNumber = (number) => {
-    console.log("Selected Number:", number);
-    setSelectedNumber(number);
-    // if (onSelect) {
-    //   onSelect(number);
-    // }
-  };
 
-  // Handler for selecting a time slot
-  const handleSelectTimeSlot = (from: string) => {
-    setSelectedTimeSlot(from);
-  };
+
+
   console.log(
     "=======line69bookingscreen",
     selectedSeat,
     selectedDate,
-    selectedNumber,
+
     selectedTimeSlot
   );
-  const [selectedmonth, setselectedmonth] = useState("1");
+ 
 
   const updateRoomDetails = () => {
     const details = {
@@ -180,7 +170,6 @@ const BookingScreen: React.FC = () => {
                     style={
                       {
                         // flexDirection:'row'
-
                         // height: 100,
                         // alignItems: "space-between",
                         // backgroundColor: "red",
@@ -190,9 +179,8 @@ const BookingScreen: React.FC = () => {
                     <View
                       style={{
                         position: "relative",
-                        right:10,
-                        top:45,
-
+                        right: 10,
+                        top: 45,
 
                         // backgroundColor: "blue",
                       }}
@@ -201,10 +189,10 @@ const BookingScreen: React.FC = () => {
                     </View>
 
                     <View
-                    style={{
-                      position: "relative",
-                      left: 20,
-                    }}
+                      style={{
+                        position: "relative",
+                        left: 20,
+                      }}
                     >
                       <Picker
                         selectedValue={selectedmonth}
@@ -242,56 +230,48 @@ const BookingScreen: React.FC = () => {
                     Select Slot
                   </Text>
 
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      padding: 10,
-                      gap: 10,
-                    }}
-                  >
-                    <Picker
-                      selectedValue={Enable}
-                      style={{ height: 40, width: 200 }}
-                      mode={"dialog"}
-                      // onValueChange={(itemValue) => setEnable(itemValue)}
-
-                      onValueChange={(itemValue, itemIndex) =>
-                        setEnable(data.timeSlot[itemIndex])
-                      }
+            
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        padding: 10,
+                        gap: 10,
+                      }}
                     >
-                      {data?.timeSlot.map((slot, index) => (
-                        <Picker.Item
-                          key={index}
-                          label={`${slot.from}PM - ${slot.to}PM`}
-                          value={slot}
-                          style={{
-                            color: "gray",
-                            fontSize: 20,
-                            fontStyle: "normal",
-                            fontWeight: 400,
-                            textAlign: "center",
-                            borderColor: "blue",
-                            borderWidth: 1,
-                            borderRadius: 10,
-                            padding: 10,
-                            margin: 10,
-                            backgroundColor: "white",
-                          }}
-                        />
-                      ))}
-                    </Picker>
+                      <Picker
+                        selectedValue={Enable}
+                        style={{ height: 40, width: 200 }}
+                        mode={"dialog"}
+                        // onValueChange={(itemValue) => setEnable(itemValue)}
 
-                    {/* {timeSlots.map((slot) => (
-                      <TimeSlot
-                        key={slot.from}
-                        from={slot.from}
-                        to={slot.to}
-                        isSelected={selectedTimeSlot === slot.from}
-                        onSelect={() => handleSelectTimeSlot(slot.from)}
-                      />
-                    ))} */}
-                  </View>
+                        onValueChange={(itemValue, itemIndex) =>
+                          setEnable(data.timeSlot[itemIndex])
+                        }
+                      >
+                        {data?.timeSlot.map((slot, index) => (
+                          <Picker.Item
+                            key={index}
+                            label={`${slot.from}PM - ${slot.to}PM`}
+                            value={slot}
+                            style={{
+                              color: "gray",
+                              fontSize: 20,
+                              fontStyle: "normal",
+                              fontWeight: 400,
+                              textAlign: "center",
+                              borderColor: "blue",
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              padding: 10,
+                              margin: 10,
+                              backgroundColor: "white",
+                            }}
+                          />
+                        ))}
+                      </Picker>
+                    </View>
+
                 </View>
 
                 <View
@@ -305,7 +285,8 @@ const BookingScreen: React.FC = () => {
                     // marginTop: 20,
                   }}
                 >
-                  {selectedDate && selectedNumber && (
+                 
+                  {selectedDate && selectedSeat && selectedMonth  && (
                     <TouchableOpacity
                       style={{ backgroundColor: "green" }}
                       onPress={confirmBooking}
