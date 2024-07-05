@@ -84,13 +84,22 @@ const Bookings = (props: SvgProps) => (
     </Defs>
   </Svg>
 )
+const StarIcon = (props: SvgProps) => (
 
+  <Svg xmlns="http://www.w3.org/2000/svg" width={18} height={13} fill="none">
+    <Path
+      fill={ props?.isFilled ? '#FFCB45' : 'gray'}
+      d="m6.972 0 2.34 3.99 4.546.978-3.099 3.444.469 4.595-4.256-1.862-4.256 1.862.469-4.595-3.1-3.444 4.546-.977L6.971 0Z"
+    />
+  </Svg>
+)
   
 
 export {
     Profile,
     Bookings,
     Home,
-    Jobs
+    Jobs,
+    StarIcon
 }
 
