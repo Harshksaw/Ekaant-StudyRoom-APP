@@ -18,6 +18,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const [verified, setVerified] = useState(false);
   const [otp, setOtp] = useState(0);
   const [showOtp, setShowOtp] = useState(false);
+  const [authMethod,setAuth]
   const navigate = useNavigate();
 
   // send otp--
@@ -125,9 +126,9 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
     }
   }
   return (
-    <div className="flex h-screen  bg-gradient-to-l from-orange-500 to-white  flex-1  w-screen ">
+    <div className="flex h-screen   flex-1  w-screen ">
       {/* pic  */}
-      <div className="flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-white w-1/2">
+      <div className="flex flex-col items-center justify-center bg-gradient-to-r from-sky-400 to-sky-700 w-1/2">
         <div className="flex justify-center items-center gap-10">
           <img src={studyMain} alt="pic" width={100} height={100} />
           <p className=" h-30 font-semibold text-7xl text-white">EKAANT</p>
@@ -153,14 +154,14 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
           {type === "signup" ? (
             <Link
               to="/signin"
-              className="bg-blue-500 text-white py-2 px-4 rounded"
+              className="absolute top-0 right-0 mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-4 rounded-full"
             >
               LOGIN
             </Link>
           ) : (
             <Link
               to="/signup"
-              className="bg-blue-500 text-white py-2 px-4 rounded"
+              className="absolute top-0 right-0 mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-4 rounded-full"
             >
               REGISTER
             </Link>
@@ -174,6 +175,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
             Hello! Let's get started
           </h6>
           <div className="px-20">
+
             {type === "signup" && (
               <>
                 <LabelledInput
@@ -217,7 +219,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
                   onChange={(e) => setOtp(e.target.valueAsNumber)}
                 />
                 <button
-                  className="border rounded-lg p-2 bg-blue-500 text-white"
+                  className="border rounded-full p-2 bg-blue-500 text-white"
                   onClick={verifyOtp}
                 >
                   Verify
@@ -232,6 +234,10 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
               }
 
             />
+            {/* for login with otp or password */}
+            {type==="signin "?(
+
+            ):("")}
             <LabelledInput
               type="password"
               label="Enter Password"
@@ -242,7 +248,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
 
             />
             <button
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+              className="w-full bg-gradient-to-r from-sky-500 to-blue-300 text-white py-2 px-4 rounded-full mt-1 hover:bg-blue-600"
               type="button"
               onClick={sendRequest}
             >

@@ -37,6 +37,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
     require("../assets/icons/headerlogo.svg"),
     require("../assets/icons/Headerwhite.png"),
     require("../assets/icons/Ekaant.svg"),
+    require("../assets/icons/Headerloc.svg"),
   ]);
 
   return (
@@ -49,7 +50,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
               fontWeight: "500",
               lineHeight: 24,
               textAlign: "center",
-              color: color,
+              color: "#263238",
             }}
           >
             Location
@@ -58,16 +59,26 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
         </View>
 
         <View style={styles.picker}>
-          <Ionicons name="location" size={18} color={'#0077B6'} />
+          {assets && assets[3] && (
+            <Image
+              source={assets[3]}
+              style={{
+                width: 20,
+                height: 20,
+              }}
+            />
+          )}
           <Picker
             selectedValue={Enable}
             style={{
-              height: 0,
-              width: 175,
+              height: 20,
+              width: 180,
               borderRadius: 150,
               color: color,
               borderBlockColor: color,
               borderWidth: 1,
+              justifyContent: "center",
+              alignItems: "center",
             }}
             mode={"dropdown"}
             // onValueChange={(itemValue) => setEnable(itemValue)}
@@ -80,13 +91,16 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
                 label={slot.name}
                 value={slot.name}
                 style={{
-                  color: color,
-                  fontSize: 15,
+                  color:"#000000",
+                  lineHeight: 24,
+                  fontSize: 20,
                   fontStyle: "normal",
-                  fontWeight: 800,
+                  fontWeight: 500,
+
 
                   textAlign: "center",
-                  // backgroundColor: "blue",
+                  backgroundColor: "blue",
+                  // marginBottom: 20,
 
                   borderRadius: 20,
 
@@ -142,16 +156,16 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
 
 const styles = StyleSheet.create({
   header: {
-    // width: width * 0.9, // 90% of screen width
-    height: height * 0.09,
+
+    height: height * 0.085,
     width: "100%",
-    // backgroundColor: 'pink',
+
+    paddingHorizontal:10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-
-
-    paddingBottom: 4,
+    backgroundColor: "pink",
+    marginBottom:10,
   },
   logoContainer: {
     alignItems: "center",
@@ -179,6 +193,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 3,
     height: 30,
+    paddingHorizontal: 5,
+
     // backgroundColor: "red",
 
     borderRadius: 40,
