@@ -18,9 +18,12 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const [verified, setVerified] = useState(false);
   const [otp, setOtp] = useState(0);
   const [showOtp, setShowOtp] = useState(false);
-  const [authMethod,setAuthMethod]=useState("password")
+  const [authMethod, setAuthMethod] = useState("password");
   const navigate = useNavigate();
 
+  const handleAuthMethodChange = (event) => {
+    setAuthMethod(event.target.value);
+  };
   // send otp--
   const sendOtp = async () => {
     try {
@@ -175,8 +178,6 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
             Hello! Let's get started
           </h6>
           <div className="px-20">
-
-
             {type === "signup" && (
               <>
                 <LabelledInput
@@ -185,7 +186,6 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
                   onChange={(e) =>
                     setUserInfo({ ...userInfo, name: e.target.value })
                   }
-                 
                 />
                 <div className="flex justify-start gap-2 items-center mb-4">
                   <p className="p-2 border rounded-lg">+91</p>
@@ -233,56 +233,67 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
               onChange={(e) =>
                 setUserInfo({ ...userInfo, email: e.target.value })
               }
-
             />
             {/* for login with otp or password */}
-            {type==="signin "?(
-               <div>
-               <input
-                 type="radio"
-                 id="password"
-                 name="authMethod"
-                 value="password"
-                 checked={authMethod === 'password'}
-                  //  className=" text-gray-900 text-sm  block w-full p-2.5"
-                 onChange={handleAuthMethodChange}
-               />
-               <label htmlFor="password"
-                  className=" block mb-2 text-sm font-bold text-black pt-4"
-               >Password</label>
-       
-               <input
-                 type="radio"
-                 id="otp"
-                 name="authMethod"
-                 value="otp"
-                 checked={authMethod === 'otp'}
-                 onChange={handleAuthMethodChange}
-                //  className=" text-gray-900 text-sm  block w-full p-2.5"
-               />
-               <label htmlFor="otp"
-                  className=" block mb-2 text-sm font-bold text-black pt-4">OTP</label>
-             </div>
-            ):("")}
-            
-                {/* Conditional rendering based on auth method */}
-        {authMethod === 'password' ? (
-        <input
-          type="password"
-          placeholder="Password"
-          value={userInfo.password}
-             className=" text-gray-900 text-sm  block w-full p-2.5"
-          onChange={(e) => setUserInfo({ ...userInfo, password: e.target.value })}
-        />
-      ) : (
-        <input
-          type="number"
-          placeholder="OTP"
-          value={otp}
-             className=" text-gray-900 text-sm  block w-full p-2.5"
-          onChange={(e) => setOtp(e.target.value)}
-        />
-      )}
+            {type === "signin" && (
+              <div className="flex justify-evenly ">
+                <div className="flex gap-1 ">
+                  <input
+                    type="radio"
+                    id="password"
+                    name="authMethod"
+                    value="password"
+                    checked={authMethod === "password"}
+                    className=" text  block "
+                    onChange={handleAuthMethodChange}
+                  />
+                  <label
+                    htmlFor="password"
+                    className=" block mb-2 text-sm font-bold text-black pt-4"
+                  >
+                    Password
+                  </label>
+                </div>
+                <div className="flex gap-1">
+                  <input
+                    type="radio"
+                    id="otp"
+                    name="authMethod"
+                    value="otp"
+                    checked={authMethod === "otp"}
+                    onChange={handleAuthMethodChange}
+                    //  className=" text-gray-900 text-sm  block w-full p-2.5"
+                  />
+                  <label
+                    htmlFor="otp"
+                    className=" block mb-2 text-sm font-bold text-black pt-4"
+                  >
+                    OTP
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {/* Conditional rendering based on auth method */}
+            {authMethod === "password" ? (
+              <input
+                type="password"
+                placeholder="Password"
+                value={userInfo.password}
+                className=" text-gray-900 text-sm  block w-full p-2.5"
+                onChange={(e) =>
+                  setUserInfo({ ...userInfo, password: e.target.value })
+                }
+              />
+            ) : (
+              <input
+                type="number"
+                placeholder="OTP"
+                value={otp}
+                className=" text-gray-900 text-sm  block w-full p-2.5"
+                onChange={(e) => setOtp(e.target.value)}
+              />
+            )}
 
             <LabelledInput
               type="password"
@@ -291,7 +302,6 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
               onChange={(e) =>
                 setUserInfo({ ...userInfo, password: e.target.value })
               }
-
             />
             <button
               className="w-full bg-gradient-to-r from-sky-500 to-blue-300 text-white py-2 px-4 rounded-full mt-1 hover:bg-blue-600"
