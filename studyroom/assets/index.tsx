@@ -94,12 +94,21 @@ const StarIcon = (props: SvgProps) => (
   </Svg>
 )
   
+const Month = () => (
+  <Svg xmlns="http://www.w3.org/2000/svg" width={34} height={34} fill="none">
+    <Path
+      fill="#263238"
+      d="M23.75 0A6.25 6.25 0 0 1 30 6.25v17.5A6.25 6.25 0 0 1 23.75 30H6.25A6.25 6.25 0 0 1 0 23.75V6.25A6.25 6.25 0 0 1 6.25 0h17.5Zm3.75 10h-25v13.75a3.75 3.75 0 0 0 3.75 3.75h17.5a3.75 3.75 0 0 0 3.75-3.75V10Zm-3.75-7.5H6.25A3.75 3.75 0 0 0 2.5 6.25V7.5h25V6.25a3.75 3.75 0 0 0-3.75-3.75Z"
+    />
+  </Svg>
+)
 
 export {
     Profile,
     Bookings,
     Home,
     Jobs,
-    StarIcon
+    StarIcon,
+    Month
 }
 

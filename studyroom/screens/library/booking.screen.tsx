@@ -4,6 +4,7 @@ import Seats from "@/components/Seats";
 import TimeSlot from "@/components/TimeSlot";
 import Calendar from "@/components/calendar/calendar";
 import { Ionicons } from "@expo/vector-icons";
+import DropDownPicker from "react-native-dropdown-picker";
 import {
   router,
   useGlobalSearchParams,
@@ -24,11 +25,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { setBookingDetails } from "@/redux/bookingSlice";
 import { useRoute } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
+import { Month } from "@/assets";
+import { useAssets } from "expo-asset";
+import { Image } from "expo-image";
 const timeSlots = [
   { from: "09:00", to: "10:00" },
   { from: "10:00", to: "11:00" },
   // Add more time slots as needed
 ];
+
 const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
   const params = useRoute();
@@ -46,6 +51,8 @@ const BookingScreen: React.FC = () => {
     setSelectedSeat(seatDataFromChild); // Update selected seats in parent state
     // Optionally, perform further actions on the selected seats here
   };
+  const [selectedMonth, setSelectedMonth] = useState(1); // Default to January
+
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
@@ -70,6 +77,7 @@ const BookingScreen: React.FC = () => {
     selectedNumber,
     selectedTimeSlot
   );
+  const [selectedmonth, setselectedmonth] = useState("1");
 
   const updateRoomDetails = () => {
     const details = {
@@ -78,18 +86,16 @@ const BookingScreen: React.FC = () => {
       location: city,
       name: data?.name,
       price: data?.price,
-   
     };
     dispatch(setBookingDetails(details));
   };
 
-
-  const BookedData ={
+  const BookedData = {
     seat: selectedSeat,
     date: selectedDate,
-    months: selectedNumber,
+    months: Number(selectedmonth),
     slot: selectedTimeSlot, ///stll null ,need to be fixed
-  }
+  };
 
   const confirmBooking = () => {
     console.log("Booking Confirmed", BookedData);
@@ -101,13 +107,12 @@ const BookingScreen: React.FC = () => {
       params: { item: JSON.stringify(BookedData) },
     });
 
-
-
     console.log("Booking Confirmed");
     // Perform further actions like API calls, etc.
   };
 
   const [Enable, setEnable] = useState("AM-PM");
+
   return (
     <SafeAreaView
       style={{
@@ -170,54 +175,54 @@ const BookingScreen: React.FC = () => {
                   >
                     Select Period
                   </Text>
+
                   <View
-                    style={{
-                      height: 100,
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
+                    style={
+                      {
+                        // flexDirection:'row'
+
+                        // height: 100,
+                        // alignItems: "space-between",
+                        // backgroundColor: "red",
+                      }
+                    }
                   >
-                    <Text
+                    <View
                       style={{
-                        margin: 10,
-                        color: "black",
-                        fontSize: 25,
-                        fontStyle: "normal",
-                        fontWeight: 500,
+                        position: "relative",
+                        right:10,
+                        top:45,
+
+
+                        // backgroundColor: "blue",
                       }}
                     >
-                      {selectedNumber}
-                    </Text>
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      style={
-                        {
-                          // alignContent: 'center',
-                        }
-                      }
+                      <Month />
+                    </View>
+
+                    <View
+                    style={{
+                      position: "relative",
+                      left: 20,
+                    }}
                     >
-                      {Array.from({ length: 12 }, (_, i) => i + 1).map(
-                        (number) => (
-                          <TouchableOpacity
-                            key={number}
-                            style={[
-                              styles.numberButton,
-                              selectedNumber === number &&
-                                styles.selectedNumber,
-                            ]}
-                            onPress={() => handleSelectNumber(number)}
-                          >
-                            <Text style={styles.numberText}>{number}</Text>
-                          </TouchableOpacity>
-                        )
-                      )}
-                    </ScrollView>
+                      <Picker
+                        selectedValue={selectedmonth}
+                        onValueChange={(itemValue, itemIndex) =>
+                          setselectedmonth(itemValue)
+                        }
+                      >
+                        {Array.from({ length: 12 }, (_, i) => (
+                          <Picker.Item
+                            key={i}
+                            label={`${i + 1} month${i === 0 ? "" : "s"}`}
+                            value={`${i + 1}`}
+                          />
+                        ))}
+                      </Picker>
+                    </View>
                   </View>
                 </View>
-
 
                 <View
                   style={{
@@ -251,24 +256,30 @@ const BookingScreen: React.FC = () => {
                       mode={"dialog"}
                       // onValueChange={(itemValue) => setEnable(itemValue)}
 
-                      onValueChange={(itemValue, itemIndex) => setEnable(data.timeSlot[itemIndex])}
-
-                    >
-
-                      {
-                        data?.timeSlot.map((slot, index) => (
-
-                          <Picker.Item key={index} label={`${slot.from}PM - ${slot.to}PM` } value={slot} 
-                          style={{color: 'gray', fontSize: 20, fontStyle: 'normal', fontWeight: 400, textAlign: 'center', borderColor: 'blue',
-                            borderWidth: 1, borderRadius: 10, padding: 10, margin: 10, backgroundColor: 'white'
-
-
-                          }}
-                          />
-
-                        ))
+                      onValueChange={(itemValue, itemIndex) =>
+                        setEnable(data.timeSlot[itemIndex])
                       }
-                   
+                    >
+                      {data?.timeSlot.map((slot, index) => (
+                        <Picker.Item
+                          key={index}
+                          label={`${slot.from}PM - ${slot.to}PM`}
+                          value={slot}
+                          style={{
+                            color: "gray",
+                            fontSize: 20,
+                            fontStyle: "normal",
+                            fontWeight: 400,
+                            textAlign: "center",
+                            borderColor: "blue",
+                            borderWidth: 1,
+                            borderRadius: 10,
+                            padding: 10,
+                            margin: 10,
+                            backgroundColor: "white",
+                          }}
+                        />
+                      ))}
                     </Picker>
 
                     {/* {timeSlots.map((slot) => (
@@ -294,19 +305,16 @@ const BookingScreen: React.FC = () => {
                     // marginTop: 20,
                   }}
                 >
-                  {
-                    selectedDate &&
-                    selectedNumber &&
-                   (
-                      <TouchableOpacity
-                        style={{ backgroundColor: "green" }}
-                        onPress={confirmBooking}
-                      >
-                        <Text style={{ alignItems: "center", padding: 10 }}>
-                          Confirm
-                        </Text>
-                      </TouchableOpacity>
-                    )}
+                  {selectedDate && selectedNumber && (
+                    <TouchableOpacity
+                      style={{ backgroundColor: "green" }}
+                      onPress={confirmBooking}
+                    >
+                      <Text style={{ alignItems: "center", padding: 10 }}>
+                        Confirm
+                      </Text>
+                    </TouchableOpacity>
+                  )}
 
                   <TouchableOpacity
                     onPress={toggleModal}
@@ -322,7 +330,6 @@ const BookingScreen: React.FC = () => {
                     <Ionicons name="close" size={30} color="#000" />
                   </TouchableOpacity>
                 </View>
-
               </View>
             </View>
           </Modal>
@@ -345,8 +352,8 @@ const styles = StyleSheet.create({
   modalView: {
     backgroundColor: "white",
     flexDirection: "column",
-    // justifyContent: "center",
-    alignContent: "center",
+    justifyContent: "center",
+
     borderRadius: 20,
     padding: 10,
     gap: 10,
