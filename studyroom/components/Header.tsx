@@ -58,7 +58,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
         </View>
 
         <View style={styles.picker}>
-          <Ionicons name="location" size={24} color={'#0077B6'} />
+          <Ionicons name="location" size={18} color={'#0077B6'} />
           <Picker
             selectedValue={Enable}
             style={{
@@ -145,16 +145,15 @@ const styles = StyleSheet.create({
     // width: width * 0.9, // 90% of screen width
     height: height * 0.09,
     width: "100%",
+    // backgroundColor: 'pink',
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
 
-    paddingHorizontal: 20,
 
-    paddingBottom: 8,
+    paddingBottom: 4,
   },
   logoContainer: {
-    // flex: 1,
     alignItems: "center",
   },
   logo: {
@@ -179,7 +178,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     zIndex: 3,
-    height: 40,
+    height: 30,
     // backgroundColor: "red",
 
     borderRadius: 40,

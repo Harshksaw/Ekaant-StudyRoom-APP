@@ -348,9 +348,9 @@ export default function index() {
                       marginTop: -50,
                       width: width * 0.95,
                       height: height * 0.25,
-                      borderRadius: 40,
-                      borderTopLeftRadius: 40,
-                      borderTopRightRadius: 40,
+                      borderRadius: 20,
+                      // borderTopLeftRadius: 40,
+                      // borderTopRightRadius: 40,
                     }}
                   />
                 )}
@@ -359,7 +359,7 @@ export default function index() {
           />
         </View>
         {/* Filter buttons */}
-        <View style={{ backgroundColor: "white" }}>
+        <View style={{ backgroundColor: "white" , marginTop: 12}}>
           <ScrollView
             style={styles.filters}
             horizontal={true}
@@ -378,7 +378,7 @@ export default function index() {
                   borderColor: "lightgray",
                   marginHorizontal: 10,
                   height: 30,
-                  gap: 5,
+                  gap: 2,
                   // paddingHorizontal: 10,
                   paddingHorizontal: 15,
                   backgroundColor: "#ffff",
@@ -389,7 +389,7 @@ export default function index() {
                 {assets && assets[filter?.id] && (
                   <Image
                     source={assets[filter?.id]}
-                    style={{ width: 20, height: 18 }}
+                    style={{ width: 12, height: 12 }}
                   />
                 )}
                 {/* <Image source={assets[{filter.id}]} style={{ width: 20, height: 18 }} /> */}
