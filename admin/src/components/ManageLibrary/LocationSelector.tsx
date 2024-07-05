@@ -81,6 +81,7 @@ const LocationSelector = ({ onLocationSelect }:any) => {
           <MapClickHandler />
           {position && (
             <Marker position={position}>
+
               <Popup>
                 You are here! {/* Customize this message as needed */}
               </Popup>
