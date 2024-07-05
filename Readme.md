@@ -1,11 +1,10 @@
 Frontend -
 
-https://automatic-space-adventure-67jxqprv6gj25rrr-5173.app.github.dev
 
 
 Backend-
 
-https://jubilant-space-disco-gwgvjp5x96wc996q-3000.app.github.dev
+
 
 
 

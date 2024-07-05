@@ -163,7 +163,7 @@ const CreateLibrary = () => {
         setSeatLayout({});
         // setImages([]);
 
-        navigate(`/manage-library/my-library}`);
+        navigate(`/manage-library/my-library`);
       }
     } catch (error) {
       setLoading(false);
@@ -192,15 +192,15 @@ const CreateLibrary = () => {
           )}
           <input
             type="text"
-            maxLength={15}
+            maxLength={42}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="title, for example: My lovely apt"
+            placeholder=" National library of kolkata"
           />
-          {title.length > 5 && (
+          {title.length >= 42 && (
             <div style={{ color: "red" }} className="flex flex-row  gap-20">
-              {title.length}
-              Your Title is too long. Only 15 words allowed.
+              {/* {title.length} */}
+              Your Title is too long. Only 42 words allowed.
             </div>
           )}
           {preInput(
@@ -209,15 +209,15 @@ const CreateLibrary = () => {
           )}
           <input
             type="text"
-            maxLength={50}
+            maxLength={80}
             value={shortDescription}
             onChange={(e) => setshortDescription(e.target.value)}
             placeholder="description"
           />
-          {shortDescription.length > 30 && (
+          {shortDescription.length >= 80 && (
             <div style={{ color: "red" }} className="flex flex-row  gap-20">
-              {shortDescription.length}
-              Your description is too long. Only 50 words allowed.
+              {/* {shortDescription.length} */}
+              Your description is too long. Only 80 words allowed.
             </div>
           )}
           {preInput(
@@ -226,12 +226,17 @@ const CreateLibrary = () => {
           )}
           <textarea
             minLength={50}
-            maxLength={200}
+            maxLength={240}
             value={longDescription}
             onChange={(e) => setlongDescription(e.target.value)}
             placeholder="description of the library in detail "
           />
-          {longDescription.length < 50 && (
+          {longDescription.length < 140 && (
+            <div style={{ color: "red" }}>
+              Your description is too short. Please provide more details.
+            </div>
+          )}
+          {longDescription.length >= 240 && (
             <div style={{ color: "red" }}>
               Your description is too short. Please provide more details.
             </div>

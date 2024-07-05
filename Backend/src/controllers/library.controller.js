@@ -195,7 +195,7 @@ const getAdminLibraries = async (req, res) => {
       const libraries = await Library.find({ libraryOwner: userId })
       res.json({
         message: "Libraries retrieved successfully",
-        data: libraries,
+        data: libraries.data,
       });
     } catch (error) {
       console.error("Error retrieving libraries by user _id:", error);

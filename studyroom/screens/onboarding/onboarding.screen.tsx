@@ -1,4 +1,10 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
 
 import { router } from "expo-router";
 import { StyleSheet } from "react-native";
@@ -15,12 +21,15 @@ import Button from "@/components/Button";
 import Carousel from "react-native-intro-carousel";
 import { useEffect } from "react";
 import useUser from "@/hooks/auth/useUser";
+import { Image, ImageBackground } from "expo-image";
+import { useAssets } from "expo-asset";
 
 export default function OnBoardingScreen() {
   const { user, error, loading } = useUser();
   useEffect(() => {
     console.log(user, error, loading);
   }, []);
+
   // let [fontsLoaded, fontError] = useFonts({
   //   Raleway_700Bold,
   //   Nunito_400Regular,
@@ -54,7 +63,12 @@ export default function OnBoardingScreen() {
   //       </View>
   //     </LinearGradient>
   //   );
-
+  const [assets] = useAssets([
+    require("../../assets/icons/Slide1.svg"),
+    require("../../assets/icons/Slide2.svg"),
+    require("../../assets/icons/Slide3.svg"),
+    require("../../assets/icons/Slide4.svg"),
+  ]);
   return (
     <Carousel
       data={[
@@ -62,8 +76,9 @@ export default function OnBoardingScreen() {
           key: "1",
           title: "Welcome",
           description:
-            "Empower your studies. Reserve the perfect library environment.",
-          image: require("../../assets/images/Study.png"),
+            "Explore and reserve library seats across India",
+
+          image: require("../../assets/images/BG.png"),
           data: {
             name: "John Doe",
             age: 25,
@@ -71,9 +86,10 @@ export default function OnBoardingScreen() {
         },
         {
           key: "2",
-          title: "Get started and unlock your study haven.",
+          title: "Easy Booking",
           description: "Find nearby study rooms and conquer your workload.",
-          image: require("../../assets/images/Study.png"),
+
+          image: require("../../assets/images/BG.png"),
           data: {
             name: "John Doe",
             age: 25,
@@ -81,10 +97,23 @@ export default function OnBoardingScreen() {
         },
         {
           key: "3",
-          title: "Read",
+          title: "Flexible Plans",
           description:
             "Stress less, study more.Your library booking app is here",
-          image: require("../../assets/images/Study.png"),
+
+          image: require("../../assets/images/BG.png"),
+          data: {
+            name: "John Doe",
+            age: 25,
+          },
+        },
+        {
+          key: "4",
+          title: "Join Now",
+          description:
+            "Sign up to unlock seamless library reservations",
+
+          image: require("../../assets/images/BG.png"),
           data: {
             name: "John Doe",
             age: 25,
@@ -94,122 +123,199 @@ export default function OnBoardingScreen() {
       buttonsConfig={{
         disabled: true,
       }}
-      renderItem={({ item, index }, goToSlide) => (
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 40,
+      renderItem={({ item, index }, goToSlide) => {
+        // Define a variable to hold custom styles or components based on item.key
+        let customStyles = {};
+        let CustomComponent = null;
 
-            width: "100%",
-            paddingHorizontal: 10,
-          }}
-        >
-          <Image source={item.image} style={{ width: 200, height: 200 }} />
-          <View>
-            <Text
-              style={{
-                fontSize: 30,
-                fontWeight: "bold",
-                margin: 20,
-                textAlign: "center",
-              }}
-            >
-              {item.title}
-            </Text>
-            <Text
-              style={{
-                fontSize: 20,
-                color: "gray",
-                textAlign: "center",
-                marginVertical: 20,
-                marginHorizontal: 15,
-              }}
-            >
-              {item.description}
-            </Text>
-          </View>
+        // Apply conditions based on item.key
+        switch (item?.key) {
+          case "1":
+            customStyles = { backgroundColor: "blue" }; // Example style for key 1
+            CustomComponent = <Text></Text>;
+            break;
+          case "2":
+            customStyles = { backgroundColor: "green" }; // Example style for key 2
+            CustomComponent = <Text></Text>;
+            break;
+          case "3":
+            customStyles = { backgroundColor: "yellow" }; // Example style for key 3
+            CustomComponent = <Text></Text>;
+            break;
+          case "4":
+            customStyles = { backgroundColor: "red" }; // Example style for key 4
+            CustomComponent = <Text></Text>;
+            break;
+          default:
+            customStyles = { backgroundColor: "white" }; // Default style
+            CustomComponent = <Text>Default Slide Feature</Text>; // Default component
+        }
 
-          <View
-            style={
-              index === 2
-                ? {
-                    width: "100%",
-                    flexDirection: "column-reverse",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }
-                : index === 1
-                ? {
-                    width: "90%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }
-                : index === 3
-                ? {
-                    // Define styles for index 3 here
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-end",
-                    backgroundColor: "blue", // Example style for index 3
-                  }
-                : {
-                    // Default style for other indices (e.g., index 0)
-                    flexDirection: "row",
+        return (
+          <SafeAreaView
+            style={{
+              flex: 1,
+              width: "100%",
+              // alignItems: "center",
+              // justifyContent: "center",
+              // gap: 40,
 
-                    alignItems: "center",
-                  }
-            }
+              // backgroundColor: "red",
+              // paddingHorizontal: 10,
+              zIndex: 1,
+            }}
           >
-            {index !== 0 && (
-              <TouchableOpacity
-                style={{ padding: 10, borderRadius: 5 }}
-                onPress={() => router.push("/(routes)/welcome")}
-              >
+            {/* //backgorudnImage */}
+            <ImageBackground
+              style={{
+                flex: 1,
+                zIndex: 1,
+              }}
+              source={item?.image}
+            />
+
+            <View
+              style={{
+                flex: 1,
+                zIndex: 2,
+                position: "absolute",
+                backgroundColor: "transparent",
+
+                alignItems: "center",
+                justifyContent: "center",
+                // gap: 40,
+
+                width: "100%",
+                height: "100%",
+
+              }}
+            >
+
+              {/* //image */}
+                <View>
+
+                {assets && assets[0] && (
+                  <ImageBackground source={assets[item?.key -1]}
+                  style={{
+                    width: 300,
+                    height: 300,
+                  }}
+                  />
+                )}
+
+                </View>
+
+              <View>
                 <Text
                   style={{
-                    color: "#0077B6",
-                    fontSize: 20,
+                    fontSize: 30,
+                    fontWeight: "bold",
+                    margin: 20,
+                    textAlign: "center",
                   }}
                 >
-                  Skip
+                  {item.title}
                 </Text>
-              </TouchableOpacity>
-            )}
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: "background: rgba(0, 0, 0, 1)",
 
-            <TouchableOpacity
-              style={{
-                padding: 10,
-                borderRadius: 5,
-                marginLeft: 10,
-              }}
-              // {index === 2 && router.push("/(routes)/welcome")  }
-              onPress={() => {
-                if (index === 2) {
-                  router.push("/(routes)/welcome");
-                } else {
-                  goToSlide(index + 1);
-                }
-              }}
-            >
-              <Button
-                text={index === 2 ? "Continue" : index === 1 ? "Next" : "Next"}
-                width={
+
+                    lineHeight:30,
+                    textAlign: "center",
+                    fontWeight:400,
+                    marginVertical: 20,
+                    marginHorizontal: 15,
+
+                  }}
+                >
+                  {item.description}
+                </Text>
+              </View>
+
+              <View
+                style={
                   index === 2
-                    ? responsiveWidth(80)
+                    ? {
+                      width: "90%",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      }
                     : index === 1
-                    ? responsiveWidth(30)
-                    : responsiveWidth(30)
+                    ? {
+                        width: "90%",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }
+                    : index === 3
+                    ? {
+                        // Define styles for index 3 here
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                        alignItems: "flex-end",
+
+                      }
+                    : {
+                        // Default style for other indices (e.g., index 0)
+                        flexDirection: "row",
+
+                        alignItems: "center",
+                      }
                 }
-                radius={index === 2 ? 80 : index === 1 ? 35 : 10}
-                height={index === 2 ? 60 : index === 1 ? 55 : 55}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+              >
+                {index !== 0  &&  index !== 3 && (
+                  <TouchableOpacity
+                    style={{ padding: 20, borderRadius: 5 }}
+                    onPress={() => router.push("/(routes)/welcome")}
+                  >
+                    <Text
+                      style={{
+                        color: "#000000",
+                        fontSize: 20,
+                      }}
+                    >
+                      Skip
+                    </Text>
+                  </TouchableOpacity>
+                )}
+
+                <TouchableOpacity
+                  style={{
+                    padding: 10,
+                    borderRadius: 5,
+                    marginLeft: 10,
+                  }}
+                  // {index === 2 && router.push("/(routes)/welcome")  }
+                  onPress={() => {
+                    if (index === 3) {
+                      router.push("/(routes)/welcome");
+                    } else {
+                      goToSlide(index + 1);
+                    }
+                  }}
+                >
+                  <Button
+                    text={
+                      index === 3 ? "Continue" : index === 1 ? "Next" : "Next"
+                    }
+                    width={
+                      index === 0 || index === 3 
+                        ? responsiveWidth(80)
+                      
+                        : responsiveWidth(30)
+                    }
+                    radius={index === 3 ? 80 : index === 0 ? 10 : 80}
+                    height={55}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </SafeAreaView>
+        );
+      }}
     />
   );
 }

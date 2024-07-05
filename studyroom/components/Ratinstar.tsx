@@ -1,13 +1,11 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 
-const Star = ({ isFilled, onPress }) => (
-  <TouchableOpacity onPress={onPress}>
-    <Text style={{ color: isFilled ? '#FFCB45' : 'gray' }}>★</Text>
-  </TouchableOpacity>
-);
+import { StarIcon } from "../assets/index";
 
-const StarRating = ({ rating, onRatingChange }:any) => {
+const Star = ({ isFilled, onPress }) => <StarIcon isFilled={isFilled} />;
+
+const StarRating = ({ rating, onRatingChange }: any) => {
   const stars = Array.from({ length: 5 }, (_, index) => (
     <Star
       key={index}
@@ -16,7 +14,7 @@ const StarRating = ({ rating, onRatingChange }:any) => {
     />
   ));
 
-  return <View style={{ flexDirection: 'row' }}>{stars}</View>;
+  return <View style={{ flexDirection: "row" }}>{stars}</View>;
 };
 
 export default StarRating;

@@ -13,7 +13,7 @@ export default function Home() {
   }, [navigation]);
   const [assets] = useAssets([
     require("../../assets/images/EKAANT.png"),
-    require("../../assets/images/react-logo.png"),
+    require("../../assets/images/EkaantWelcom.png"),
   ]);
   return (
     <SafeAreaView style={styles.container}>

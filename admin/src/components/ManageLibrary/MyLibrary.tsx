@@ -80,7 +80,7 @@ export default function MyLibrary() {
               />
               <div>
                 <h3>{item.name}</h3>
-                <p>{item.description.split("").slice(0, 50)}</p>
+                <p>{item?.longDescription.split("").slice(0, 50)}</p>
                 <p>Pricing: {item.price}/month</p>
               </div>
 
