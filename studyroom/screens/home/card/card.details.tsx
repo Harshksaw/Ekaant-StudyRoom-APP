@@ -96,20 +96,17 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
           <Carousel
             loop
             width={width}
-            height={width / 1} // Adjusted height for better aspect ratio
+            height={width / 1.5} // Adjusted height for better aspect ratio
             autoPlay={true}
             data={data.images}
             autoFillData={true}
 
-            hideIndicators={false}
-            indicatorColor="red" // Active indicator color
-            indicatorSize={20} // Indicator bullet size
-            indicatorSpace={15}
+           
 
             scrollAnimationDuration={2000}
             style={{
               zIndex: 23,
-              backgroundColor: "lightblue",
+
             }}
             renderItem={({ item, index }) => (
               <View style={styles.imageContainer}>
@@ -371,10 +368,10 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               backgroundColor: "#F0F0F0",
               padding: 10,
               borderRadius: 20,
-              marginVertical: 20,
+              marginBottom: 40,
             }}
           >
-            <Text style={{ marginVertical: 10, fontSize: 12, fontWeight: 600 }}>
+            <Text style={{ marginVertical: 20, fontSize: 12, fontWeight: 600 }}>
               Copyright © 2024 EKAANT . All rights reserved.
             </Text>
           </View>
