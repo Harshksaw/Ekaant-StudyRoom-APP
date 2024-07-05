@@ -111,7 +111,7 @@ export default function OnBoardingScreen() {
           key: "4",
           title: "Join Now",
           description:
-            "Stress less, study more.Your library booking app is here",
+            "Sign up to unlock seamless library reservations",
 
           image: require("../../assets/images/BG.png"),
           data: {
@@ -238,10 +238,10 @@ export default function OnBoardingScreen() {
                 style={
                   index === 2
                     ? {
-                        width: "100%",
-                        flexDirection: "column-reverse",
-                        justifyContent: "center",
-                        alignItems: "center",
+                      width: "90%",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                       }
                     : index === 1
                     ? {
@@ -256,7 +256,7 @@ export default function OnBoardingScreen() {
                         flexDirection: "column",
                         justifyContent: "flex-start",
                         alignItems: "flex-end",
-                        backgroundColor: "blue", // Example style for index 3
+
                       }
                     : {
                         // Default style for other indices (e.g., index 0)
@@ -268,12 +268,12 @@ export default function OnBoardingScreen() {
               >
                 {index !== 0  &&  index !== 3 && (
                   <TouchableOpacity
-                    style={{ padding: 10, borderRadius: 5 }}
+                    style={{ padding: 20, borderRadius: 5 }}
                     onPress={() => router.push("/(routes)/welcome")}
                   >
                     <Text
                       style={{
-                        color: "#0077B6",
+                        color: "#000000",
                         fontSize: 20,
                       }}
                     >
@@ -307,8 +307,8 @@ export default function OnBoardingScreen() {
                       
                         : responsiveWidth(30)
                     }
-                    radius={index === 2 ? 80 : index === 1 ? 35 : 10}
-                    height={index === 2 ? 60 : index === 1 ? 55 : 55}
+                    radius={index === 3 ? 80 : index === 0 ? 10 : 80}
+                    height={55}
                   />
                 </TouchableOpacity>
               </View>
