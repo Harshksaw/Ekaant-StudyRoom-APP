@@ -5,6 +5,7 @@ import StarRating from "@/components/Ratinstar";
 import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
+const { width, height } = Dimensions.get("window");
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -76,7 +77,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const librarybooking = () => {
     router.push({
       pathname: "/(routes)/library/library.booking",
-      params: { item: JSON.stringify(data), location :JSON.stringify(city) },
+      params: { item: JSON.stringify(data), location: JSON.stringify(city) },
     });
 
     // params: { params.item.seatLayout },
@@ -85,287 +86,293 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   // console.log(data)
   return (
     <SafeAreaView style={styles.container}>
-      <Header  color="black"/>
-      <ScrollView stickyHeaderIndices={[1]} showsVerticalScrollIndicator={false}>
-
-      <View style={{ flex: 1 , marginVertical: 20}}>
-        <Carousel
-          loop
-          width={width}
-          height={width / 1.2} // Adjusted height for better aspect ratio
-          autoPlay={true}
-          data={data.images}
-          scrollAnimationDuration={80000}
-          renderItem={({ item, index }) => (
-            <View style={styles.imageContainer}>
-              <Image source={{ uri: item }} style={styles.image} />
-            </View>
-          )}
-        />
-      </View>
-
+      <Header color="black" />
       <ScrollView
-      showsVerticalScrollIndicator={false}
-        style={{
-          flex: 1,
-
-          flexDirection: "column",
-          ...(Platform.OS === "ios"
-            ? { marginTop: -200 }
-            : { marginTop: -100 }),
-        }}
+        stickyHeaderIndices={[2]}
+        showsVerticalScrollIndicator={false}
+        style={{}}
       >
-        <View style={styles.cardDetails}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 10,
-              gap: 10,
-              paddingRight: 28,
-            }}
-          >
-            <Text style={styles.heading}>{data?.name}</Text>
-            <Text
-              style={{
-                fontSize: 15,
-                color: "blue",
-                fontWeight: "500",
-                fontStyle: "italic",
-              }}
-            >
-              ₹{data?.price}/month
-            </Text>
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              // justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 10,
-              gap: 4,
-            }}
-          >
-            <Ionicons name="location" size={24} />
-            <Text
-            numberOfLines={1}
-              style={{
-                
-                fontSize: 14,
-                color: "#A8A8A8",
-                fontWeight: "semi-bold",
-              }}
-            >
-              {city ? city : "Delhi"}
-            </Text>
-          </View>
-
-          <Text style={styles.amenities}>About</Text>
-          <Text
-            style={{
-              marginTop: 2,
-              fontSize: 14,
-              lineHeight:18.67,
-              color: "#A8A8A8",
-              borderRadius: 10,
-            }}
-            numberOfLines={7}
-          >
-            {data?.longDescription}
-          </Text>
-
-          <View style={{marginTop: 12}}>
-            <Text style={{fontWeight: '700', fontSize: 17, color: 'black'}}>Overview</Text>
-
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: 10,
-                marginTop: 6,
-                // justifyContent: "space-between",
-              }}
-            >
-              {data.amenities.map((amenity: string, index: any) => (
-                <View
-                  key={index}
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    marginTop: 10,
-                    borderColor: "#dfdfdf",
-                    borderWidth: 1,
-                    borderRadius: 20,
-                    padding: 7,
-                    alignSelf: "flex-start",
-                  }}
-                >
-                  {/* Your text here */}
-                  <Text style={{color: '#606060'}}>{amenity}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={isModalVisible}
-            onRequestClose={toggleModal}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <TouchableOpacity
-                // onPress={() => Linking.openURL('mailto:example@example.com')}
-                >
-                  <Text style={{ color: "blue" }}>
-                    Email: example@example.com
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                // onPress={() => Linking.openURL('tel:+1234567890')}
-                >
-                  <Text style={{ color: "blue" }}>Phone: +1234567890</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={toggleModal}>
-                  <Ionicons name="close" size={30} color="#000" />
-                </TouchableOpacity>
+        <View style={{ flex: 1, marginVertical: -20 }}>
+          <Carousel
+            loop
+            width={width}
+            height={width / 1.5} // Adjusted height for better aspect ratio
+            autoPlay={true}
+            data={data.images}
+            scrollAnimationDuration={2000}
+            renderItem={({ item, index }) => (
+              <View style={styles.imageContainer}>
+                <Image source={{ uri: item }} style={styles.image} />
               </View>
-            </View>
-          </Modal>
+            )}
+          />
+        </View>
 
-          {/* //ratings */}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{
+            flex: 1,
 
-          <View
-            style={{
-              flexDirection: "column",
-              justifyContent: "center",
-              alignContent: "center",
-            }}
-          >
-            <Text
-              style={{
-                margin: 20,
-                // fontFamily: "Roboto",
-                fontSize: 20,
-                fontStyle: "normal",
-                fontWeight: "800",
-
-                textAlign: "center",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              Reviews
-            </Text>
-
+            flexDirection: "column",
+            ...(Platform.OS === "ios"
+              ? { marginTop: -200 }
+              : { marginTop: 0 }),
+          }}
+        >
+          <View style={styles.cardDetails}>
             <View
               style={{
-                marginHorizontal: "auto",
-                flexWrap: "wrap",
-                backgroundColor: "#F0F0F0",
-                elevation: 6,
-                borderRadius: 12,
                 flexDirection: "row",
-                paddingHorizontal: 38,
-                paddingVertical:8,
-                justifyContent: "center",
-                alignSelf: "",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 10,
                 gap: 10,
+                paddingRight: 28,
               }}
             >
-              {/* <Text>4.5</Text> */}
-              <StarRating rating={4} />
-              <Text style={{padding:0, fontSize: 13}}>10 Reviews</Text>
-            </View>
-
-            {/* ///review by user */}
-
-            <View>
-              <Text style={{ fontWeight: "bold", fontSize: 20, margin: 10 }}>
-                User Reviews
-              </Text>
-              <View
+              <Text style={styles.heading}>{data?.name}</Text>
+              <Text
                 style={{
-                  flexDirection: "column",
-                  flexWrap: "wrap",
-                  // margin: 10,
-                  alignItems: 'center',
-                  justifyContent: "center",
+                  fontSize: 15,
+                  color: "blue",
+                  fontWeight: "500",
+                  fontStyle: "italic",
                 }}
               >
-                {[1, 1, 1].map((item, index) => (
+                ₹{data?.price}/month
+              </Text>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                // justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 10,
+                gap: 4,
+              }}
+            >
+              <Ionicons name="location" size={24} />
+              <Text
+                numberOfLines={1}
+                style={{
+                  fontSize: 14,
+                  color: "#A8A8A8",
+                  fontWeight: "semi-bold",
+                }}
+              >
+                {city ? city : "Delhi"}
+              </Text>
+            </View>
+
+            <Text style={styles.amenities}>About</Text>
+            <Text
+              style={{
+                marginTop: 2,
+                fontSize: 14,
+                lineHeight: 18.67,
+                color: "#A8A8A8",
+                borderRadius: 10,
+              }}
+              numberOfLines={7}
+            >
+              {data?.longDescription}
+            </Text>
+
+            <View style={{ marginTop: 12 }}>
+              <Text style={{ fontWeight: "700", fontSize: 17, color: "black" }}>
+                Overview
+              </Text>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  gap: 10,
+                  marginTop: 6,
+                  // justifyContent: "space-between",
+                }}
+              >
+                {data.amenities.map((amenity: string, index: any) => (
                   <View
                     key={index}
                     style={{
                       flexDirection: "row",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: 'auto',
-                      borderTopWidth: 2,
-                      padding: 10,
-                      paddingHorizontal: 40,
-                      borderColor:'#eaeaea',
-                      // backgroundColor: "#30364D",
-
-                      // alignSelf: "center",
-                      gap: 10,
-                    }}
-                  >
-                    <Avatar name="Arsh" />
-                    <View
-                      style={{
-                        flexDirection: "column",
-
-                        marginTop: 10,
-
-                        borderRadius: 20,
-                        padding: 7,
-                        alignSelf: "center",
-                      }}
-                    >
-                      <Text>Name</Text>
-                      <Text>Review revis iss dd</Text>
-                    </View>
-
-                    <StarRating rating={3} />
-                  </View>
-                ))}
-                <View>
-
-               <Text style={{marginVertical: 24, fontSize: 10, fontWeight: 800}}>Copyright © 2024 EKAANT . All rights reserved.</Text>
-                </View>
-                {/* {data.map((review: any, index: any) => (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: "column",
                       justifyContent: "space-between",
                       marginTop: 10,
-                      borderColor: "black",
+                      borderColor: "#dfdfdf",
                       borderWidth: 1,
                       borderRadius: 20,
                       padding: 7,
                       alignSelf: "flex-start",
                     }}
                   >
-
-                    <Text>{review.rating}</Text>
-
-                    <StarRating rating={review.rating} />
+                    {/* Your text here */}
+                    <Text style={{ color: "#606060" }}>{amenity}</Text>
                   </View>
-                ))} */}
+                ))}
+              </View>
+            </View>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={isModalVisible}
+              onRequestClose={toggleModal}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <TouchableOpacity
+                  // onPress={() => Linking.openURL('mailto:example@example.com')}
+                  >
+                    <Text style={{ color: "blue" }}>
+                      Email: example@example.com
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                  // onPress={() => Linking.openURL('tel:+1234567890')}
+                  >
+                    <Text style={{ color: "blue" }}>Phone: +1234567890</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={toggleModal}>
+                    <Ionicons name="close" size={30} color="#000" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+
+            {/* //ratings */}
+
+            <View
+              style={{
+                flexDirection: "column",
+                justifyContent: "center",
+                alignContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  margin: 20,
+                  // fontFamily: "Roboto",
+                  fontSize: 20,
+                  fontStyle: "normal",
+                  fontWeight: "800",
+
+                  textAlign: "center",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                Reviews
+              </Text>
+
+              <View
+                style={{
+                  marginHorizontal: "auto",
+                  flexWrap: "wrap",
+                  backgroundColor: "#F0F0F0",
+                  elevation: 6,
+                  borderRadius: 12,
+                  flexDirection: "row",
+                  paddingHorizontal: 38,
+                  paddingVertical: 8,
+                  justifyContent: "center",
+                  alignSelf: "",
+                  gap: 10,
+                }}
+              >
+                {/* <Text>4.5</Text> */}
+                <StarRating rating={4} />
+                <Text style={{ padding: 0, fontSize: 13 }}>10 Reviews</Text>
+              </View>
+
+              {/* ///review by user */}
+
+              <View
+                style={
+                  {
+                    // height:'100%',
+                    // backgroundColor:'red'
+                  }
+                }
+              >
+                <Text style={{ fontWeight: "bold", fontSize: 20, margin: 10 }}>
+                  User Reviews
+                </Text>
+                <View
+                  style={{
+                    flexDirection: "column",
+                    flexWrap: "wrap",
+                    // margin: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {[1, 1, 1].map((item, index) => (
+                    <View
+                      key={index}
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "auto",
+                        borderTopWidth: 2,
+
+                        padding: 10,
+                        paddingHorizontal: 40,
+                        borderColor: "#eaeaea",
+                        // backgroundColor: "#30364D",
+
+                        // alignSelf: "center",
+                        gap: 10,
+                      }}
+                    >
+                      <Avatar name="Arsh" />
+                      <View
+                        style={{
+                          flexDirection: "column",
+
+                          marginTop: 10,
+
+                          borderRadius: 20,
+                          padding: 10,
+
+                          alignSelf: "center",
+
+                        }}
+                      >
+                        <Text>Harsh</Text>
+                        <Text>Review revis is Good</Text>
+                      </View>
+
+                      <StarRating rating={4} />
+                    </View>
+                  ))}
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </ScrollView>
 
+          <View 
+          style={{
+
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#F0F0F0",
+            padding: 10,
+            borderRadius: 20,
+            marginVertical: 20,
+          
+          }}
+          >
+            <Text style={{ marginVertical: 10, fontSize: 12, fontWeight: 600 }}>
+              Copyright © 2024 EKAANT . All rights reserved.
+            </Text>
+          </View>
+        </ScrollView>
       </ScrollView>
       <View
         style={{
@@ -385,7 +392,6 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
           {/* pathname: "/(routes)/library/library.booking", */}
         </TouchableOpacity>
       </View>
-
     </SafeAreaView>
   );
 };
@@ -403,18 +409,33 @@ const styles = StyleSheet.create({
     // alignItems: "center", // Arrange children in columns
   },
   imageContainer: {
-    // flex: 1,
+    flex: 1,
+
+
+
+    alignItems: "center",
+    
+
+    padding: 10,
 
     borderRadius: 20,
     marginRight: 30,
-    backgroundColor: "blue",
+    // backgroundColor: "lightblue",
     justifyContent: "center",
   },
   image: {
-    width: "100%",
-    height: 250,
-    marginTop: -10,
-    borderRadius: 20,
+    // width: "100%",
+    // height: 250,
+    // marginTop: -10,
+    // borderRadius: 20,
+
+      marginTop: -0,
+      width: width * 0.90,
+      height: height * 0.25,
+      borderRadius: 20,
+      // borderTopLeftRadius: 40,
+      // borderTopRightRadius: 40,
+
   },
   cardDetails: {
     flexDirection: "column", // Arrange children in columns
