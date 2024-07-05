@@ -111,7 +111,7 @@ export default function Search() {
         }}
         >
 
-      <Header />
+      <Header  color="black"/>
         </View>
       <View  style={{
         marginTop:40,

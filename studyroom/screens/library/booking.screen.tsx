@@ -117,7 +117,7 @@ const BookingScreen: React.FC = () => {
       }}
     >
       <View>
-        <Header />
+        <Header color="black" />
       </View>
 
       <View

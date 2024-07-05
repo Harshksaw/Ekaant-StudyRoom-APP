@@ -133,8 +133,9 @@ export default function index() {
   console.log("-------------->", userDetails);
 
   // return <HomeScreen />;
-  const renderItem = ({ item, index }) => (
+  const renderItem = ({ item }) => (
     <TouchableOpacity
+
       style={{
         borderRadius: 24,
         borderWidth: 1,
@@ -154,6 +155,7 @@ export default function index() {
 
       // }}
     >
+  
       <View style={styles.card}>
         <Image
           source={{
@@ -205,8 +207,8 @@ export default function index() {
                 textAlign: "left",
               }}
             >
-              {item.description.split(" ").slice(0, 8).join(" ") +
-                (item.description.split(" ").length > 5 ? "..." : "")}
+              {item.shortDescription.split(" ").slice(0, 8).join(" ") +
+                (item.shortDescription.split(" ").length > 5 ? "..." : "")}
             </Text>
           </View>
 
@@ -436,24 +438,29 @@ export default function index() {
         ) : (
           <>
             <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
-              {data &&
-                data.data.map((item, index) => renderItem({ item, index }))}
 
-              {data?.data.length == 0 ||
-                (notavailable && (
+              {data &&
+                data?.data.map((item, index) => renderItem({ item, index }))}
+
+              {data?.data.length == 0 &&
+                ( 
                   <TouchableOpacity onPress={() => setReload(true)}>
+
+
                     <Text
                       style={{
+
+
                         textAlign: "center",
                         paddingTop: 50,
-                        fontSize: 18,
-                        color: "gray",
+                        fontSize: 25,
+                        color: "red",
                       }}
                     >
                       No listings available at the moment.
                     </Text>
                   </TouchableOpacity>
-                ))}
+                )}
             </View>
             {/* <View style={{ height: 900, width: 45 }}></View> */}
           </>
