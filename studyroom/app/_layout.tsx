@@ -6,8 +6,24 @@ import { View, useColorScheme } from 'react-native';
 import TabsIndex from './index';
 import CardDetailScreen from '@/screens/home/card/card.details';
 import { ToastProvider } from "react-native-toast-notifications";
+import * as Font from 'expo-font';
+import { Poppins_400Regular,    Poppins_500Medium, Poppins_100Thin, Poppins_100Thin_Italic,Poppins_700Bold } from '@expo-google-fonts/poppins';
+
+
+
 export default function RootLayout() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      Poppins_400Regular,
+      Poppins_500Medium,
+    });
+    setFontsLoaded(true);
+  };
+  
+
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({

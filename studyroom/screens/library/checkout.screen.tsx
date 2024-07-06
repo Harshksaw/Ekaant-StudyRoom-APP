@@ -233,6 +233,7 @@ const CheckoutScreen: React.FC = () => {
         {/* //location */}
         <View style={styles.summary}>
           <Ionicons name="location-outline" size={25} color="black" />
+          
           <View
             style={{
               flexDirection: "column",

@@ -16,10 +16,10 @@
   },
   "dependencies": {
     "@expo-google-fonts/nunito": "^0.2.3",
+    "@expo-google-fonts/poppins": "^0.2.3",
     "@expo-google-fonts/raleway": "^0.2.3",
     "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "1.23.1",
-
     "@react-native-picker/picker": "2.7.5",
     "@react-navigation/native": "^6.0.2",
     "@reduxjs/toolkit": "^2.2.5",
@@ -29,7 +29,7 @@
     "expo": "^51.0.17",
     "expo-asset": "~10.0.10",
     "expo-file-system": "^17.0.1",
-    "expo-font": "~12.0.5",
+    "expo-font": "~12.0.7",
     "expo-image": "~1.12.12",
     "expo-image-picker": "~15.0.6",
     "expo-linear-gradient": "^13.0.2",
