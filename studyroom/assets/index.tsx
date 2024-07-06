@@ -27,6 +27,7 @@ const Bookings = (props: SvgProps) => (
       width={35}
       height={35}
       fill="none"
+      viewBox="4 4 35 35"
       {...props}
     >
       <Path

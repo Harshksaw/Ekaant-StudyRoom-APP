@@ -26,13 +26,13 @@ const CheckoutScreen: React.FC = () => {
 
     const params = useRoute();
     const BookedData = JSON.parse(params.params.item);
-    console.log(BookedData, "_________")
+    // console.log(BookedData, "_________")
   
   
   const data = useSelector((state: any) => state.booking);
-  console.log("ddd------->>>>>>>>>>>>>>>>>>>", data);
+  // console.log("ddd------->>>>>>>>>>>>>>>>>>>", data);
   const location = data?.details?.location
-  console.log(data.details.images[0]);
+  // console.log(data.details.images[0]);
   const price = data.details.price || 6000;
   const convenienceFee = Number((price * 0.1).toFixed(2)); // 10% of price, limited to 2 decimals
 // Assuming price and convenienceFee are numbers and already calculated correctly

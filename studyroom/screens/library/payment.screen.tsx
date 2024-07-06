@@ -27,27 +27,35 @@ const PaymentScreen: React.FC = () => {
     try {
       // Attempt to parse the item parameter if it exists
       PaymentData = route.params?.item ? JSON.parse(route.params.item) : null;
+  
+      console.log("PaymentData in line 31 ", PaymentData);
       if (
         PaymentData &&
-        PaymentData.date != null &&
-        PaymentData.months != null &&
-        Array.isArray(PaymentData.seat) && PaymentData.seat.length > 0 &&
-        PaymentData.slot != null
+        typeof PaymentData.date === 'string' &&
+        typeof PaymentData.months === 'number' &&
+        Array.isArray(PaymentData.seat) &&
+        PaymentData.seat.every(seat => typeof seat.id === 'string' && typeof seat.label === 'string') &&
+        PaymentData.seat.length > 0 &&
+        typeof PaymentData.slot === 'object' &&
+        PaymentData.slot !== null &&
+        typeof PaymentData.slot._id === 'string' &&
+        typeof PaymentData.slot.from === 'string' &&
+        typeof PaymentData.slot.to === 'string'
       ) {
         console.log("PaymentData", PaymentData);
         // If all conditions are met, you might not want to change the state here
         // setAvailable(true);
         // setModalVisible(false);
       } else {
-        console.log("PaymentData is missing required fields", PaymentData);
-        setModalVisible(true); // Show modal when PaymentData is missing required fields
+        console.log("PaymentData is missing required fields or has incorrect types", PaymentData);
+        setModalVisible(true); // Show modal when PaymentData is missing required fields or has incorrect types
       }
     } catch (error) {
       console.error("Failed to parse PaymentData:", error);
       setModalVisible(true); // Show modal on parsing error
       // Handle the error or set a default value for PaymentData
     }
-  }, [route.params.item]); // Dependency array, re-run the effect if route.params.item changes
+  }, [route.params.item]);
 
 
   console.log("_________",PaymentData, "_________");
@@ -57,15 +65,6 @@ const PaymentScreen: React.FC = () => {
   return (
     <SafeAreaView>
       {/* Header */}
-      <View
-      style={{
-        marginTop:20,
-        marginBottom: 10,
-      }}
-      >
-
-      <Header color="black" />
-      </View>
       <Modal
         animationType="slide"
         transparent={true}
@@ -84,6 +83,27 @@ const PaymentScreen: React.FC = () => {
           </View>
         </View>
       </Modal>
+      <View
+      style={{
+        marginTop:20,
+        marginBottom: 10,
+      }}
+      >
+
+      <Header color="black" />
+      </View>
+
+      <View>
+      <View>
+
+      
+      <Text>Payment Screen</Text>
+      </View>
+
+      
+
+      </View>
+     
 
 
 
