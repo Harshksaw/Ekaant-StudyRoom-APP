@@ -78,6 +78,9 @@ function RootLayoutNav() {
         <Stack.Screen name="(routes)/library/checkout.screen" options={{
           headerShown: false
         }} />
+        <Stack.Screen name="(routes)/library/payment.screen" options={{
+          headerShown: false
+        }} />
         <Stack.Screen name="(tabs)" options={{
           headerShown: false
         }} />

@@ -4,7 +4,7 @@ import Seats from "@/components/Seats";
 import TimeSlot from "@/components/TimeSlot";
 import Calendar from "@/components/calendar/calendar";
 import { Ionicons } from "@expo/vector-icons";
-import DropDownPicker from "react-native-dropdown-picker";
+
 import {
   router,
   useGlobalSearchParams,
@@ -45,18 +45,28 @@ const BookingScreen: React.FC = () => {
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
+  const [selectedMonth, setselectedMonth] = useState(1);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(data?.timeSlot[0]);
   const handleSeatSelect = (seatDataFromChild) => {
     setSelectedSeat(seatDataFromChild); // Update selected seats in parent state
     // Optionally, perform further actions on the selected seats here
   };
-  const [selectedMonth, setSelectedMonth] = useState(1); // Default to January
-  const [selectedmonth, setselectedmonth] = useState("1");
+
+
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
 
+
+  useEffect(() => {
+    console.log("Selected Month:", selectedMonth);
+    console.log(
+      "Booking Details - Seat:", selectedSeat,
+      "\n , Date:", selectedDate,
+      ", Time Slot:", selectedTimeSlot
+    );
+
+  },[selectedMonth, selectedDate, selectedSeat, selectedTimeSlot])
 
 
 
@@ -83,7 +93,7 @@ const BookingScreen: React.FC = () => {
   const BookedData = {
     seat: selectedSeat,
     date: selectedDate,
-    months: Number(selectedmonth),
+    months: selectedMonth,
     slot: selectedTimeSlot, ///stll null ,need to be fixed
   };
 
@@ -101,7 +111,7 @@ const BookingScreen: React.FC = () => {
     // Perform further actions like API calls, etc.
   };
 
-  const [Enable, setEnable] = useState("AM-PM");
+
 
   return (
     <SafeAreaView
@@ -195,13 +205,18 @@ const BookingScreen: React.FC = () => {
                       }}
                     >
                       <Picker
-                        selectedValue={selectedmonth}
-                        onValueChange={(itemValue, itemIndex) =>
-                          setselectedmonth(itemValue)
+                        selectedValue={selectedMonth}
+                        onValueChange={(itemValue, itemIndex) =>{
+
+                          console.log(itemValue, itemIndex)
+                          setselectedMonth(itemValue)
+                        }
                         }
                       >
                         {Array.from({ length: 12 }, (_, i) => (
                           <Picker.Item
+
+
                             key={i}
                             label={`${i + 1} month${i === 0 ? "" : "s"}`}
                             value={`${i + 1}`}
@@ -240,13 +255,15 @@ const BookingScreen: React.FC = () => {
                       }}
                     >
                       <Picker
-                        selectedValue={Enable}
+                        selectedValue={selectedTimeSlot}
                         style={{ height: 40, width: 200 }}
                         mode={"dialog"}
-                        // onValueChange={(itemValue) => setEnable(itemValue)}
+
 
                         onValueChange={(itemValue, itemIndex) =>
-                          setEnable(data.timeSlot[itemIndex])
+                        
+                          setSelectedTimeSlot(itemValue)
+
                         }
                       >
                         {data?.timeSlot.map((slot, index) => (
@@ -286,7 +303,7 @@ const BookingScreen: React.FC = () => {
                   }}
                 >
                  
-                  {selectedDate && selectedSeat && selectedMonth  && (
+                  {selectedDate && selectedSeat?.length >0  && selectedMonth && selectedTimeSlot  && (
                     <TouchableOpacity
                       style={{ backgroundColor: "green" }}
                       onPress={confirmBooking}

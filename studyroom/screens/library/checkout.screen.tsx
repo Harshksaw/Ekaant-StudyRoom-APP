@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import React, { useEffect } from "react";
 import {
   View,
@@ -17,6 +18,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import PaymentScreen from "./payment.screen";
 
 const CheckoutScreen: React.FC = () => {
 
@@ -38,7 +40,14 @@ const CheckoutScreen: React.FC = () => {
   const endDate = getDateAfterMonths(BookedData?.date, BookedData?.months);
   const totalAmount = subtotal + subtotal * 0.18; // 18% GST
 
+  const PaymentScreen = () => {
 
+    router.push({
+      pathname: "/library/payment.screen",
+      params: { item: JSON.stringify(BookedData) }
+
+    });
+  }
 
 
   return (
@@ -286,7 +295,7 @@ const CheckoutScreen: React.FC = () => {
         </View>
 
         {/* //payment */}
-        <TouchableOpacity onPress={() => console.log("Payment")}>
+        <TouchableOpacity onPress={() => PaymentScreen()}>
           <View
             style={{
               flexDirection: "row",
