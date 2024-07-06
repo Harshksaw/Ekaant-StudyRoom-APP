@@ -50,24 +50,35 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
               fontWeight: "500",
               lineHeight: 24,
               textAlign: "center",
-              color: "#263238",
+              color: color,
             }}
           >
             Location
           </Text>
+
           <Ionicons name="chevron-down-outline" size={20} color={color} />
         </View>
 
         <View style={styles.picker}>
-          {assets && assets[3] && (
-            <Image
-              source={assets[3]}
-              style={{
-                width: 20,
-                height: 20,
-              }}
-            />
-          )}
+
+        {
+  color === "white" ? (
+    <Ionicons name="location-outline" size={20} color={color} />
+  ) : (
+    assets && assets[3] && (
+      <Image
+        source={assets[3]}
+        style={{
+          width: 20,
+          height: 20,
+        }}
+      />
+    )
+  )
+}
+          
+     
+
           <Picker
             selectedValue={Enable}
             style={{
