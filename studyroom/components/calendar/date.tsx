@@ -27,7 +27,7 @@ const Date = ({ date, onSelectDate, selected }) => {
       <Text
         style={[
           styles.medium,
-          selected === fullDate && { color: "#fff", fontWeight: 'bold', fontSize: 24 },
+          selected === fullDate && { color: "#fff", fontWeight: 'bold', fontSize: 20 },
         ]}
       >
         {dayNumber}
@@ -41,20 +41,24 @@ export default Date
 const styles = StyleSheet.create({
   card: {
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius: 20,
     borderColor: '#ddd',
     padding: 10,
     marginVertical: 10,
     alignItems: 'center',
     height: 60,
-    width: 45,
+    width: 48,
     marginHorizontal: 5,
   },
   big: {
-    fontWeight: 'bold',
+
     fontSize: 12,
   },
   medium: {
-    fontSize: 16,
+    fontSize: 20,
+
+    fontWeight:'600',
+    
+
   },
 })

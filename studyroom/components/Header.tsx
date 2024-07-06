@@ -99,12 +99,13 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
             {citiesData?.map((slot, index) => (
               <Picker.Item
                 key={index}
-                label={slot.name}
+                label={slot.name+ ',IN'}
                 value={slot.name}
                 style={{
                   color:"#000000",
                   lineHeight: 24,
                   fontSize: 20,
+
                   fontStyle: "normal",
                   fontWeight: 500,
 

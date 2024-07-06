@@ -1,4 +1,4 @@
-import { SeatsCheckout } from "@/assets";
+import { AC, Cash, CheckoutScreenLoc, Note, SeatsCheckout } from "@/assets";
 import Header from "@/components/Header";
 import Seats from "@/components/Seats";
 import { getDateAfterMonths } from "@/utils/date";
@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import React, { useEffect } from "react";
 import {
   View,
@@ -17,6 +18,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import PaymentScreen from "./payment.screen";
 
 const CheckoutScreen: React.FC = () => {
 
@@ -24,13 +26,13 @@ const CheckoutScreen: React.FC = () => {
 
     const params = useRoute();
     const BookedData = JSON.parse(params.params.item);
-    console.log(BookedData, "_________")
+    // console.log(BookedData, "_________")
   
   
   const data = useSelector((state: any) => state.booking);
-  console.log("ddd------->>>>>>>>>>>>>>>>>>>", data);
+  // console.log("ddd------->>>>>>>>>>>>>>>>>>>", data);
   const location = data?.details?.location
-  console.log(data.details.images[0]);
+  // console.log(data.details.images[0]);
   const price = data.details.price || 6000;
   const convenienceFee = Number((price * 0.1).toFixed(2)); // 10% of price, limited to 2 decimals
 // Assuming price and convenienceFee are numbers and already calculated correctly
@@ -39,7 +41,14 @@ const subtotal = Number((price + convenienceFee).toFixed(2));
   const endDate = getDateAfterMonths(BookedData?.date, BookedData?.months);
   const totalAmount = subtotal + subtotal * 0.18; // 18% GST
 
+  const PaymentScreen = () => {
 
+    router.push({
+      pathname: "/library/payment.screen",
+      params: { item: JSON.stringify(BookedData) }
+
+    });
+  }
 
 
   return (
@@ -98,7 +107,7 @@ const subtotal = Number((price + convenienceFee).toFixed(2));
             }}
           >
             <Ionicons name="time-outline" size={24} color="black" />
-            <Text>Period - {BookedData.months}</Text>
+            <Text>Period - {BookedData.months}{BookedData.months >1 ? "Months" : "Month"} </Text>
           </View>
 
           <View
@@ -108,7 +117,7 @@ const subtotal = Number((price + convenienceFee).toFixed(2));
               alignItems: "center",
             }}
           >
-            <Ionicons name="wifi-outline" size={24} color="black" />
+           <AC/>
 
             <Text>A/C Rooms - Yes</Text>
           </View>
@@ -197,7 +206,7 @@ const subtotal = Number((price + convenienceFee).toFixed(2));
         }}
       >
         <View style={styles.summary}>
-          <Ionicons name="cash-outline" size={24} color="black" />
+         <Cash/>
           <View
             style={{
               flexDirection: "column",
@@ -233,7 +242,8 @@ const subtotal = Number((price + convenienceFee).toFixed(2));
 
         {/* //location */}
         <View style={styles.summary}>
-          <Ionicons name="location-outline" size={25} color="black" />
+         <CheckoutScreenLoc/>
+          
           <View
             style={{
               flexDirection: "column",
@@ -263,7 +273,8 @@ const subtotal = Number((price + convenienceFee).toFixed(2));
 
         {/* //slot */}
         <View style={styles.summary}>
-          <Ionicons name="paper-plane-outline" size={25} color="black" />
+
+        <Note/>
           <View
             style={{
               flexDirection: "column",
@@ -285,11 +296,11 @@ const subtotal = Number((price + convenienceFee).toFixed(2));
         </View>
 
         {/* //payment */}
-        <TouchableOpacity onPress={() => console.log("Payment")}>
+        <TouchableOpacity onPress={() => PaymentScreen()}>
           <View
             style={{
               flexDirection: "row",
-              position: "sticky",
+              position: "relative",
               justifyContent: "space-between",
               marginHorizontal: 10,
               alignItems: "center",

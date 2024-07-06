@@ -6,8 +6,17 @@ import { View, useColorScheme } from 'react-native';
 import TabsIndex from './index';
 import CardDetailScreen from '@/screens/home/card/card.details';
 import { ToastProvider } from "react-native-toast-notifications";
+import * as Font from 'expo-font';
+
+
+
+
 export default function RootLayout() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  
+
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -30,7 +39,12 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+
+
+    
   return (
+
+
     <ToastProvider>
 
     
@@ -64,11 +78,15 @@ function RootLayoutNav() {
         <Stack.Screen name="(routes)/library/checkout.screen" options={{
           headerShown: false
         }} />
+        <Stack.Screen name="(routes)/library/payment.screen" options={{
+          headerShown: false
+        }} />
         <Stack.Screen name="(tabs)" options={{
           headerShown: false
         }} />
    
       </Stack>
+
       </ToastProvider>
 
   );

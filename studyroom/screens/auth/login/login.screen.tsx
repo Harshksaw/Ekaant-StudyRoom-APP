@@ -107,7 +107,7 @@ const LoginScreen: React.FC = () => {
           <Text
             style={{
               fontSize: 40,
-              fontFamily: "Raleway_700Bold",
+
               marginBottom: 30,
               left: -100,
             }}
@@ -118,7 +118,7 @@ const LoginScreen: React.FC = () => {
             style={{
               fontSize: 20,
               color: "gray",
-              fontFamily: "Raleway_700Bold",
+
               marginBottom: 20,
               left: -50,
             }}
@@ -167,7 +167,7 @@ const LoginScreen: React.FC = () => {
           </TouchableOpacity>
 
           <View style={styles.signupRedirect}>
-            <Text style={{ fontSize: 18, fontFamily: "Raleway_600SemiBold" }}>
+            <Text style={{ fontSize: 18, fontFamily: "normal" }}>
               Don't have an account?
             </Text>
             <TouchableOpacity onPress={() => router.push("/(routes)/signup")}>
