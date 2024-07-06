@@ -94,10 +94,21 @@ const PaymentScreen: React.FC = () => {
       </View>
 
       <View>
-      <View>
+      <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
+        margin:10,
+      }}
+      >
 
       
-      <Text>Payment Screen</Text>
+      <Text
+      style={{
+        fontStyle: "normal",
+      }}
+      >Payment Screen</Text>
       </View>
 
       

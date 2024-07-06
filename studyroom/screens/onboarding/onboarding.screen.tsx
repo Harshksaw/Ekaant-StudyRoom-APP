@@ -89,7 +89,7 @@ export default function OnBoardingScreen() {
           title: "Easy Booking",
           description: "Find nearby study rooms and conquer your workload.",
 
-          image: require("../../assets/images/BG.png"),
+          image: require("../../assets/images/Onboarding2.png"),
           data: {
             name: "John Doe",
             age: 25,
@@ -113,7 +113,7 @@ export default function OnBoardingScreen() {
           description:
             "Sign up to unlock seamless library reservations",
 
-          image: require("../../assets/images/BG.png"),
+          image: require("../../assets/images/Onboarding2.png"),
           data: {
             name: "John Doe",
             age: 25,

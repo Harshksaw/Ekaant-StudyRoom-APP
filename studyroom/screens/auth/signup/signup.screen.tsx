@@ -348,7 +348,7 @@ export default function SignUpScreen() {
                     style={{
                       textAlign: "center",
                       fontSize: 16,
-                      fontFamily: "Raleway_700Bold",
+
                     }}
                   >
                     Sign Up
@@ -371,7 +371,7 @@ export default function SignUpScreen() {
                       // color: "white",
                       textAlign: "center",
                       fontSize: 16,
-                      fontFamily: "Raleway_700Bold",
+
                     }}
                   >
                     Cancel
