@@ -99,7 +99,15 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             height={width / 1.5} // Adjusted height for better aspect ratio
             autoPlay={true}
             data={data.images}
+            autoFillData={true}
+
+           
+
             scrollAnimationDuration={2000}
+            style={{
+              zIndex: 23,
+
+            }}
             renderItem={({ item, index }) => (
               <View style={styles.imageContainer}>
                 <Image source={{ uri: item }} style={styles.image} />
@@ -114,9 +122,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             flex: 1,
 
             flexDirection: "column",
-            ...(Platform.OS === "ios"
-              ? { marginTop: -200 }
-              : { marginTop: 0 }),
+            ...(Platform.OS === "ios" ? { marginTop: -200 } : { marginTop: 0 }),
           }}
         >
           <View style={styles.cardDetails}>
@@ -134,7 +140,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               <Text
                 style={{
                   fontSize: 15,
-                  color: "blue",
+                  color: "#0077B6",
                   fontWeight: "500",
                   fontStyle: "italic",
                 }}
@@ -341,7 +347,6 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                           padding: 10,
 
                           alignSelf: "center",
-
                         }}
                       >
                         <Text>Harsh</Text>
@@ -356,19 +361,17 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             </View>
           </View>
 
-          <View 
-          style={{
-
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#F0F0F0",
-            padding: 10,
-            borderRadius: 20,
-            marginVertical: 20,
-          
-          }}
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#F0F0F0",
+              padding: 10,
+              borderRadius: 20,
+              marginBottom: 40,
+            }}
           >
-            <Text style={{ marginVertical: 10, fontSize: 12, fontWeight: 600 }}>
+            <Text style={{ marginVertical: 20, fontSize: 12, fontWeight: 600 }}>
               Copyright © 2024 EKAANT . All rights reserved.
             </Text>
           </View>
@@ -411,10 +414,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     flex: 1,
 
-
-
     alignItems: "center",
-    
 
     padding: 10,
 
@@ -429,13 +429,12 @@ const styles = StyleSheet.create({
     // marginTop: -10,
     // borderRadius: 20,
 
-      marginTop: -0,
-      width: width * 0.90,
-      height: height * 0.25,
-      borderRadius: 20,
-      // borderTopLeftRadius: 40,
-      // borderTopRightRadius: 40,
-
+    marginTop: -0,
+    width: width * 0.9,
+    height: height * 0.25,
+    borderRadius: 20,
+    // borderTopLeftRadius: 40,
+    // borderTopRightRadius: 40,
   },
   cardDetails: {
     flexDirection: "column", // Arrange children in columns

@@ -34,8 +34,9 @@ const CheckoutScreen: React.FC = () => {
   const location = data?.details?.location
   console.log(data.details.images[0]);
   const price = data.details.price || 6000;
-  const convenienceFee = price * 0.1; // 10% of price
-  const subtotal = price + convenienceFee;
+  const convenienceFee = Number((price * 0.1).toFixed(2)); // 10% of price, limited to 2 decimals
+// Assuming price and convenienceFee are numbers and already calculated correctly
+const subtotal = Number((price + convenienceFee).toFixed(2));
 
   const endDate = getDateAfterMonths(BookedData?.date, BookedData?.months);
   const totalAmount = subtotal + subtotal * 0.18; // 18% GST
