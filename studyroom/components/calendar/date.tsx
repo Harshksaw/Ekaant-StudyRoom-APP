@@ -51,12 +51,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   big: {
-    fontFamily:'Poppins-Regular',
+
     fontSize: 12,
   },
   medium: {
     fontSize: 20,
-    fontFamily:'Poppins-Regular',
+
     fontWeight:'600',
     
 

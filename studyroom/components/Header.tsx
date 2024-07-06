@@ -105,7 +105,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
                   color:"#000000",
                   lineHeight: 24,
                   fontSize: 20,
-                  fontFamily:'Poppins',
+
                   fontStyle: "normal",
                   fontWeight: 500,
 

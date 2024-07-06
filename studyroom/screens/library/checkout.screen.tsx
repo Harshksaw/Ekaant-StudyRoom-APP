@@ -1,4 +1,4 @@
-import { SeatsCheckout } from "@/assets";
+import { AC, Cash, CheckoutScreenLoc, Note, SeatsCheckout } from "@/assets";
 import Header from "@/components/Header";
 import Seats from "@/components/Seats";
 import { getDateAfterMonths } from "@/utils/date";
@@ -97,7 +97,7 @@ const CheckoutScreen: React.FC = () => {
             }}
           >
             <Ionicons name="time-outline" size={24} color="black" />
-            <Text>Period - {BookedData.months}</Text>
+            <Text>Period - {BookedData.months}{BookedData.months >1 ? "Months" : "Month"} </Text>
           </View>
 
           <View
@@ -107,7 +107,7 @@ const CheckoutScreen: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <Ionicons name="wifi-outline" size={24} color="black" />
+           <AC/>
 
             <Text>A/C Rooms - Yes</Text>
           </View>
@@ -196,7 +196,7 @@ const CheckoutScreen: React.FC = () => {
         }}
       >
         <View style={styles.summary}>
-          <Ionicons name="cash-outline" size={24} color="black" />
+         <Cash/>
           <View
             style={{
               flexDirection: "column",
@@ -232,7 +232,7 @@ const CheckoutScreen: React.FC = () => {
 
         {/* //location */}
         <View style={styles.summary}>
-          <Ionicons name="location-outline" size={25} color="black" />
+         <CheckoutScreenLoc/>
           
           <View
             style={{
@@ -263,7 +263,8 @@ const CheckoutScreen: React.FC = () => {
 
         {/* //slot */}
         <View style={styles.summary}>
-          <Ionicons name="paper-plane-outline" size={25} color="black" />
+
+        <Note/>
           <View
             style={{
               flexDirection: "column",
@@ -289,7 +290,7 @@ const CheckoutScreen: React.FC = () => {
           <View
             style={{
               flexDirection: "row",
-              position: "sticky",
+              position: "relative",
               justifyContent: "space-between",
               marginHorizontal: 10,
               alignItems: "center",
