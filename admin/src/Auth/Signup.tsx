@@ -62,144 +62,69 @@ const StepOne = ({ nextStep, userInfo, setUserInfo }) => (
     </button>
   </div>
 );
-
-const StepTwo = ({ nextStep, prevStep, userOTP, setUserOTP }) => (
+const StepTwo = ({
+  nextStep,
+  prevStep,
+  userOTP,
+  userEmailOTP,
+  handleInputChange,
+  handleEmailInputChange,
+}) => (
   <div>
-    <h2>Step 2</h2>
-    {/* Form fields for step 2 */}
-    {/* phone otp- */}
     <div>
       <label>Enter Phone's OTP</label>
       <div className="flex flex-row items-center justify-between mx-auto w-full max-w-xs">
-        <div className="w-16 h-16 ">
-          <input
-            className="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
-            type="text"
-            name=""
-            id=""
-            value={userOTP.phoneOTP}
-            onChange={(e) =>
-              setUserOTP({ ...userOTP, phoneOTP: e.target.value })
-            }
-            placeholder="0"
-          />
-        </div>
-        <div className="w-16 h-16 ">
-          <input
-            className="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
-            type="text"
-            name=""
-            id=""
-            value={userOTP.phoneOTP}
-            onChange={(e) =>
-              setUserOTP({ ...userOTP, phoneOTP: e.target.value })
-            }
-            placeholder="0"
-          />
-        </div>
-        <div className="w-16 h-16 ">
-          <input
-            className="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
-            type="text"
-            name=""
-            id=""
-            value={userOTP.phoneOTP}
-            onChange={(e) =>
-              setUserOTP({ ...userOTP, phoneOTP: e.target.value })
-            }
-            placeholder="0"
-          />
-        </div>
-        <div className="w-16 h-16 ">
-          <input
-            className="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
-            type="text"
-            name=""
-            id=""
-            value={userOTP.phoneOTP}
-            onChange={(e) =>
-              setUserOTP({ ...userOTP, phoneOTP: e.target.value })
-            }
-            placeholder="0"
-          />
-        </div>
+        {[1, 2, 3, 4].map((index) => (
+          <div key={index} className="w-16 h-16">
+            <input
+              type="number"
+              name={`otp${index}`}
+              className="w-full h-full text-center outline-none rounded-xl border border-gray-200 bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
+              maxLength={1}
+              value={userOTP[`otp${index}`]}
+              onChange={handleInputChange}
+              placeholder="0"
+            />
+          </div>
+        ))}
       </div>
     </div>
 
-    {/* email otp- */}
+    {/* Email OTP */}
     <div>
       <label>Enter Email's OTP</label>
       <div className="flex flex-row items-center justify-between mx-auto w-full max-w-xs">
-        <div className="w-16 h-16 ">
-          <input
-            className="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
-            type="text"
-            name=""
-            id=""
-            value={userOTP.emailOTP}
-            onChange={(e) =>
-              setUserOTP({ ...userOTP, emailOTP: e.target.value })
-            }
-            placeholder="0"
-          />
-        </div>
-        <div className="w-16 h-16 ">
-          <input
-            className="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
-            type="text"
-            name=""
-            id=""
-            value={userOTP.emailOTP}
-            onChange={(e) =>
-              setUserOTP({ ...userOTP, emailOTP: e.target.value })
-            }
-            placeholder="0"
-          />
-        </div>
-        <div className="w-16 h-16 ">
-          <input
-            className="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
-            type="text"
-            name=""
-            id=""
-            value={userOTP.emailOTP}
-            onChange={(e) =>
-              setUserOTP({ ...userOTP, emailOTP: e.target.value })
-            }
-            placeholder="0"
-          />
-        </div>
-        <div className="w-16 h-16 ">
-          <input
-            className="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
-            type="text"
-            name=""
-            id=""
-            value={userOTP.emailOTP}
-            onChange={(e) =>
-              setUserOTP({ ...userOTP, emailOTP: e.target.value })
-            }
-            placeholder="0"
-          />
-        </div>
+        {[1, 2, 3, 4].map((index) => (
+          <div key={index} className="w-16 h-16">
+            <input
+              type="number"
+              name={`emailOtp${index}`}
+              className="w-full h-full text-center outline-none rounded-xl border border-gray-200 bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
+              maxLength={1}
+              value={userEmailOTP[`emailOtp${index}`]}
+              onChange={handleEmailInputChange}
+              placeholder="0"
+            />
+          </div>
+        ))}
       </div>
     </div>
 
-    <button onClick={prevStep}>Back</button>
-    <div
-          className="flex flex-row gap-40  absolute bottom-10 right-20  items-center justify-between"
-          >
 
-    <button
-    className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
-    onClick={prevStep}>Back</button>
-    <button
-      className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
-      onClick={nextStep}
+    <div className="flex flex-row gap-40  absolute bottom-10 right-20  items-center justify-between">
+      <button
+        className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
+        onClick={prevStep}
       >
-      Next
-    </button>
-      </div>
+        Back
+      </button>
+      <button
+        className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
+        onClick={nextStep}
+      >
+        Next
+      </button>
+    </div>
   </div>
 );
 const StepThree = ({ nextStep, prevStep, userDetails, setUserDetails }) => (
@@ -353,20 +278,20 @@ const StepThree = ({ nextStep, prevStep, userDetails, setUserDetails }) => (
     </div>
 
     <button onClick={prevStep}>Back</button>
-    <div
-          className="flex flex-row gap-40  absolute bottom-10 right-20  items-center justify-between"
-          >
-
-    <button
-    className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
-    onClick={prevStep}>Back</button>
-    <button
-      className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
-      onClick={nextStep}
+    <div className="flex flex-row gap-40  absolute bottom-10 right-20  items-center justify-between">
+      <button
+        className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
+        onClick={prevStep}
       >
-      Next
-    </button>
-      </div>
+        Back
+      </button>
+      <button
+        className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
+        onClick={nextStep}
+      >
+        Next
+      </button>
+    </div>
   </div>
 );
 const StepFour = ({
@@ -374,7 +299,7 @@ const StepFour = ({
   prevStep,
   libraryDetails,
   setLibraryDetails,
-}:any) => (
+}: any) => (
   //images  - Register 4
   <div>
     <h2>Step 4</h2>
@@ -781,20 +706,20 @@ const StepFour = ({
       <label>Library Details</label>
     </div>
 
-          <div
-          className="flex flex-row gap-40  absolute bottom-10 right-20  items-center justify-between"
-          >
-
-    <button
-    className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
-    onClick={prevStep}>Back</button>
-    <button
-      className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
-      onClick={nextStep}
+    <div className="flex flex-row gap-40  absolute bottom-10 right-20  items-center justify-between">
+      <button
+        className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
+        onClick={prevStep}
       >
-      Next
-    </button>
-      </div>
+        Back
+      </button>
+      <button
+        className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
+        onClick={nextStep}
+      >
+        Next
+      </button>
+    </div>
   </div>
 );
 const StepFive = ({ nextStep, prevStep }) => (
@@ -834,10 +759,69 @@ function Signup() {
     email: "",
     password: "",
   });
-  const [userOTP, setUserOTP] = useState({
-    phoneOTP: 0,
-    emailOTP: "",
+
+  const [userOTP, setOtpInputs] = useState({
+    otp1: "",
+    otp2: "",
+    otp3: "",
+    otp4: "",
   });
+
+  const verifyOTP = () => {
+    const { otp1, otp2, otp3, otp4 } = userOTP;
+    // Assuming verifyUserOTP is the function you want to call
+    verifyUserOTP(otp1 + otp2 + otp3 + otp4);
+  };
+
+  // Handle OTP input change
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    const updatedOtpInputs = {
+      ...userOTP,
+      [name]: value,
+    };
+    setOtpInputs(updatedOtpInputs);
+
+    // Check if all inputs are filled after the state update
+    const allFilled = Object.values(updatedOtpInputs).every(
+      (input) => input.trim() !== ""
+    );
+    if (allFilled) {
+      console.log("All inputs are filled phone otp");
+      // verifyOTP(); // Call verifyOTP function if all inputs are filled
+    }
+  };
+
+  const [emailOtpInputs, setEmailOtpInputs] = useState({
+    emailOtp1: "",
+    emailOtp2: "",
+    emailOtp3: "",
+    emailOtp4: "",
+  });
+
+  const handleEmailOtpInputChange = (e) => {
+    const { name, value } = e.target;
+    const updatedEmailOtpInputs = {
+      ...emailOtpInputs,
+      [name]: value,
+    };
+    setEmailOtpInputs(updatedEmailOtpInputs);
+
+    // Check if all email OTP inputs are filled after the state update
+    const allFilled = Object.values(updatedEmailOtpInputs).every(
+      (input) => input.trim() !== ""
+    );
+    if (allFilled) {
+      console.log("All inputs are filled email otp");
+      // verifyEmailOTP(); // Call verifyEmailOTP function if all inputs are filled
+    }
+  };
+
+  // Function to call after all OTP inputs are filled
+
+  // Check if all OTP inputs are filled
+
   const [userDetails, setUserDetails] = useState({
     fullName: "",
     dob: "",
@@ -904,7 +888,6 @@ function Signup() {
 
   useEffect(() => {
     console.log(userInfo);
-    console.log(userOTP);
   }, [userInfo, userOTP]);
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -925,13 +908,15 @@ function Signup() {
       case 2:
         return (
           <StepTwo
-            nextStep={nextStep}
             userOTP={userOTP}
-            setUserOTP={setUserOTP}
+            userEmailOTP={emailOtpInputs}
+            handleInputChange={handleInputChange}
+            handleEmailInputChange={handleEmailOtpInputChange}
+            nextStep={nextStep}
             prevStep={prevStep}
           />
         );
-      // Add cases for additional steps
+
       case 3:
         return (
           <StepThree
@@ -958,7 +943,7 @@ function Signup() {
   };
 
   return (
-    <div className="flex  flex-1 h-screen    flex-1  w-screen ">
+    <div className="flex  flex-1 h-screen   w-screen ">
       {/* pic  */}
       <div className="flex flex-col items-center justify-center bg-gradient-to-r from-sky-400 to-sky-700 w-[40%]">
         <div className="flex justify-center items-center gap-10">
