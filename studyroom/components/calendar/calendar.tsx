@@ -24,9 +24,7 @@ const Calendar = ({ onSelectDate , selected }) => {
 
   return (
     <>
-      {/* <View style={styles.centered}>
-        <Text style={styles.title}>Current month</Text>
-      </View> */}
+   
       <View style={styles.dateSection}>
         <View style={styles.scroll}>
           <ScrollView

@@ -12,3 +12,5 @@ ios/
 # React
 build/
 dist/
+# Local Netlify folder
+.netlify

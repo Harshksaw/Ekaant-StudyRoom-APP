@@ -1,19 +1,24 @@
+import { AC, Cash, CheckoutScreenLoc, Note, SeatsCheckout } from "@/assets";
 import Header from "@/components/Header";
+import Seats from "@/components/Seats";
 import { getDateAfterMonths } from "@/utils/date";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { useAssets } from "expo-asset";
+import { Image } from "expo-image";
+import { router } from "expo-router";
 import React, { useEffect } from "react";
 import {
   View,
   Text, 
   SafeAreaView,
-  Image,
+
   StyleSheet,
   Touchable,
   TouchableOpacity,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import PaymentScreen from "./payment.screen";
 
 const CheckoutScreen: React.FC = () => {
 
@@ -21,27 +26,43 @@ const CheckoutScreen: React.FC = () => {
 
     const params = useRoute();
     const BookedData = JSON.parse(params.params.item);
-    console.log(BookedData, "_________")
+    // console.log(BookedData, "_________")
   
   
   const data = useSelector((state: any) => state.booking);
-  console.log("ddd-------", data);
+  // console.log("ddd------->>>>>>>>>>>>>>>>>>>", data);
   const location = data?.details?.location
-  console.log(data.details.date, data.details.months);
+  // console.log(data.details.images[0]);
   const price = data.details.price || 6000;
-  const convenienceFee = price * 0.1; // 10% of price
-  const subtotal = price + convenienceFee;
+  const convenienceFee = Number((price * 0.1).toFixed(2)); // 10% of price, limited to 2 decimals
+// Assuming price and convenienceFee are numbers and already calculated correctly
+const subtotal = Number((price + convenienceFee).toFixed(2));
 
   const endDate = getDateAfterMonths(BookedData?.date, BookedData?.months);
   const totalAmount = subtotal + subtotal * 0.18; // 18% GST
 
+  const PaymentScreen = () => {
 
+    router.push({
+      pathname: "/library/payment.screen",
+      params: { item: JSON.stringify(BookedData), price: JSON.stringify(totalAmount) }
+
+    });
+  }
 
 
   return (
     <SafeAreaView>
       {/* Header */}
+      <View
+      style={{
+        marginTop:20,
+        marginBottom: 10,
+      }}
+      >
+
       <Header color="black" />
+      </View>
 
       <View
         style={{
@@ -53,7 +74,12 @@ const CheckoutScreen: React.FC = () => {
         }}
       >
         <View style={{}}>
-          <Image source={require("../../assets/images/res.png")} />
+        <Image source={{ uri: data.details.images[0] }} style={{
+          width: 140,
+          height: 200,
+          borderRadius: 10,
+        }} />
+          {/* <Image source={{uri : data.details.images[0]}} /> */}
         </View>
         <View
           style={{
@@ -70,7 +96,7 @@ const CheckoutScreen: React.FC = () => {
               fontWeight: "bold",
             }}
           >
-            Library name
+            {data?.details?.name}
           </Text>
 
           <View
@@ -80,8 +106,8 @@ const CheckoutScreen: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <Ionicons name="time" size={24} color="black" />
-            <Text>Period - {BookedData.months}</Text>
+            <Ionicons name="time-outline" size={24} color="black" />
+            <Text>Period - {BookedData.months}{BookedData.months >1 ? "Months" : "Month"} </Text>
           </View>
 
           <View
@@ -91,7 +117,7 @@ const CheckoutScreen: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <Ionicons name="wifi" size={24} color="black" />
+           <AC/>
 
             <Text>A/C Rooms - Yes</Text>
           </View>
@@ -118,7 +144,7 @@ const CheckoutScreen: React.FC = () => {
             width: 150,
           }}
         >
-          <Ionicons name="calendar" size={50} color="black" />
+          <Ionicons name="calendar-outline" size={50} color="black" />
           <View
             style={{
               flexDirection: "column",
@@ -155,7 +181,8 @@ const CheckoutScreen: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <Ionicons name="desktop" size={50} color="black" />
+
+          < SeatsCheckout />
 
           <Text>{data.details.seats} Seats</Text>
         </View>
@@ -179,7 +206,7 @@ const CheckoutScreen: React.FC = () => {
         }}
       >
         <View style={styles.summary}>
-          <Ionicons name="cash" size={24} color="black" />
+         <Cash/>
           <View
             style={{
               flexDirection: "column",
@@ -215,7 +242,8 @@ const CheckoutScreen: React.FC = () => {
 
         {/* //location */}
         <View style={styles.summary}>
-          <Ionicons name="location" size={25} color="black" />
+         <CheckoutScreenLoc/>
+          
           <View
             style={{
               flexDirection: "column",
@@ -245,7 +273,8 @@ const CheckoutScreen: React.FC = () => {
 
         {/* //slot */}
         <View style={styles.summary}>
-          <Ionicons name="paper-plane" size={25} color="black" />
+
+        <Note/>
           <View
             style={{
               flexDirection: "column",
@@ -267,11 +296,11 @@ const CheckoutScreen: React.FC = () => {
         </View>
 
         {/* //payment */}
-        <TouchableOpacity onPress={() => console.log("Payment")}>
+        <TouchableOpacity onPress={() => PaymentScreen()}>
           <View
             style={{
               flexDirection: "row",
-              position: "sticky",
+              position: "relative",
               justifyContent: "space-between",
               marginHorizontal: 10,
               alignItems: "center",
