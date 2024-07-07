@@ -186,12 +186,20 @@ const StepTwo = ({ nextStep, prevStep, userOTP, setUserOTP }) => (
     </div>
 
     <button onClick={prevStep}>Back</button>
+    <div
+          className="flex flex-row gap-40  absolute bottom-10 right-20  items-center justify-between"
+          >
+
     <button
-      className="absolute bottom-10 center mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
+    className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
+    onClick={prevStep}>Back</button>
+    <button
+      className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
       onClick={nextStep}
-    >
+      >
       Next
     </button>
+      </div>
   </div>
 );
 const StepThree = ({ nextStep, prevStep, userDetails, setUserDetails }) => (
@@ -345,12 +353,20 @@ const StepThree = ({ nextStep, prevStep, userDetails, setUserDetails }) => (
     </div>
 
     <button onClick={prevStep}>Back</button>
+    <div
+          className="flex flex-row gap-40  absolute bottom-10 right-20  items-center justify-between"
+          >
+
     <button
-      className="absolute bottom-10 center mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
+    className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
+    onClick={prevStep}>Back</button>
+    <button
+      className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
       onClick={nextStep}
-    >
+      >
       Next
     </button>
+      </div>
   </div>
 );
 const StepFour = ({
@@ -358,7 +374,7 @@ const StepFour = ({
   prevStep,
   libraryDetails,
   setLibraryDetails,
-}) => (
+}:any) => (
   //images  - Register 4
   <div>
     <h2>Step 4</h2>
@@ -765,13 +781,20 @@ const StepFour = ({
       <label>Library Details</label>
     </div>
 
-    <button onClick={prevStep}>Back</button>
+          <div
+          className="flex flex-row gap-40  absolute bottom-10 right-20  items-center justify-between"
+          >
+
     <button
-      className="absolute bottom-10 center mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
+    className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
+    onClick={prevStep}>Back</button>
+    <button
+      className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
       onClick={nextStep}
-    >
+      >
       Next
     </button>
+      </div>
   </div>
 );
 const StepFive = ({ nextStep, prevStep }) => (
