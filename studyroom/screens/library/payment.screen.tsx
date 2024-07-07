@@ -20,6 +20,7 @@ import { Image, ImageBackground } from "expo-image";
 import { useAssets } from "expo-asset";
 import { Card1, Credit1, Credit2, Credit3 } from "@/assets";
 import { Ionicons } from "@expo/vector-icons";
+import InvoiceScreen from "./invoice.screen";
 const PaymentScreen: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const cardWidth = Dimensions.get("window").width; // Assuming full width for simplicity, adjust as needed
@@ -36,13 +37,15 @@ const PaymentScreen: React.FC = () => {
 
   const route = useRoute();
   let PaymentData;
-  let    PaymentPrice = route?.params.price ? JSON.parse(route.params.price) : null;
+  let PaymentPrice = route?.params.price
+    ? JSON.parse(route.params.price)
+    : null;
   useEffect(() => {
     let PaymentData;
     try {
       // Attempt to parse the item parameter if it exists
       PaymentData = route.params?.item ? JSON.parse(route.params.item) : null;
-   
+
       console.log("PaymentData in line 31 ", PaymentData, PaymentPrice);
       if (
         PaymentData &&
@@ -80,12 +83,18 @@ const PaymentScreen: React.FC = () => {
 
   console.log("_________", PaymentData, "_________");
 
+const InvoiceScreen = () => {
+  router.push({
+    pathname:'library/invoice.screen',
+    params: {item: JSON.stringify(PaymentData), price: JSON.stringify(PaymentPrice)}
+  })
+}
+
   return (
     <SafeAreaView
-    style={{
-      flex:1,
-
-    }}
+      style={{
+        flex: 1,
+      }}
     >
       {/* Header */}
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -112,11 +121,7 @@ const PaymentScreen: React.FC = () => {
         <Header color="black" />
       </View>
 
-      <View
-      style={{
-
-      }}
-      >
+      <View style={{}}>
         <View
           style={{
             flexDirection: "column",
@@ -124,7 +129,7 @@ const PaymentScreen: React.FC = () => {
             alignItems: "flex-start",
             margin: 1,
             gap: 20,
-            marginHorizontal: 20,
+            marginHorizontal: 0,
           }}
         >
           <Text
@@ -133,6 +138,7 @@ const PaymentScreen: React.FC = () => {
               fontSize: 24,
               fontWeight: "500",
               lineHeight: 48,
+              marginHorizontal:20,
             }}
           >
             Payment Screen
@@ -144,6 +150,7 @@ const PaymentScreen: React.FC = () => {
               fontSize: 20,
               fontWeight: "600",
               lineHeight: 30,
+              marginHorizontal:20,
             }}
           >
             Select Payment method
@@ -153,6 +160,7 @@ const PaymentScreen: React.FC = () => {
               flexDirection: "row",
               justifyContent: "center",
               // alignItems:'center',
+              marginHorizontal:20,
               gap: 10,
             }}
           >
@@ -167,6 +175,7 @@ const PaymentScreen: React.FC = () => {
                 // alignItems: "center",
                 paddingLeft: 30,
                 paddingTop: 20,
+
               }}
             >
               <Credit1 />
@@ -180,6 +189,7 @@ const PaymentScreen: React.FC = () => {
             style={{
               flexDirection: "column",
               gap: 20,
+
             }}
           >
             <Text
@@ -187,17 +197,18 @@ const PaymentScreen: React.FC = () => {
                 fontSize: 20,
                 lineHeight: 30,
                 fontWeight: "600",
+                marginHorizontal:20,
               }}
             >
               Select your card
             </Text>
 
             <View
-            style={{
-              
-
-             maxHeight:220
-            }}
+              style={{
+                maxHeight: 220,
+                marginLeft: 20,
+                marginRight:5,
+              }}
             >
               <ScrollView
                 horizontal={true}
@@ -214,7 +225,6 @@ const PaymentScreen: React.FC = () => {
                   flexDirection: "row",
                   justifyContent: "center",
                   marginTop: 10,
-
                 }}
               >
                 {[...Array(3)].map((_, index) => (
@@ -222,9 +232,9 @@ const PaymentScreen: React.FC = () => {
                     key={index}
                     style={{
                       height: 10,
-                      width: 10,
+                      width: activeIndex === index ? 30 : 20,
                       borderRadius: 5,
-                      backgroundColor: activeIndex === index ? "blue" : "gray",
+                      backgroundColor: activeIndex === index ? "#0077B6" : "gray",
                       marginHorizontal: 5,
                     }}
                   />
@@ -233,40 +243,38 @@ const PaymentScreen: React.FC = () => {
             </View>
           </View>
 
-          
-            <TouchableOpacity
-            // onPress={() => PaymentScreen()}
+          <TouchableOpacity
+          onPress={() => InvoiceScreen()}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                position: "relative",
+                width: "95%",
+                justifyContent: "space-between",
+                marginHorizontal: 10,
+                alignItems: "center",
+                padding: 15,
+                backgroundColor: "#0077B6",
+                borderRadius: 10,
+                marginTop: 20,
+                bottom: 0,
+              }}
             >
-              <View
+              <Text
                 style={{
-                  flexDirection: "row",
-                  position: "relative",
-                  width:'95%',
-                  justifyContent: "space-between",
-                  marginHorizontal: 10,
-                  alignItems: "center",
-                  padding: 15,
-                  backgroundColor: "#0077B6",
-                  borderRadius: 10,
-                  marginTop: 20,
-                  bottom: 0,
+                  color: "#FFFFFF",
+                  fontSize: 16,
+                  fontWeight: "700",
+                  letterSpacing: 2,
                 }}
               >
-                <Text
-                  style={{
-                    color: "#FFFFFF",
-                    fontSize: 16,
-                    fontWeight: "700",
-                    letterSpacing: 2,
-                  }}
-                >
-                  Total Amount : ₹{PaymentPrice}
-                </Text>
+                Total Amount : ₹{PaymentPrice}
+              </Text>
 
-                <Ionicons name="arrow-forward" size={25} color="white" />
-              </View>
-            </TouchableOpacity>
-
+              <Ionicons name="arrow-forward" size={25} color="white" />
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
