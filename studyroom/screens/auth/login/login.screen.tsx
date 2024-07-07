@@ -1,13 +1,14 @@
+import Button from "@/components/Button";
 import { BACKEND } from "@/utils/config";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { createRef, useState } from "react";
 import {
   Text,
   TextInput,
-  Button,
+
   StyleSheet,
   TouchableOpacity,
   View,
@@ -21,7 +22,17 @@ const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState("Usertest@gmail.com");
   const [password, setPassword] = useState("Teatuser");
 
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const inputRefs = [createRef(), createRef(), createRef(), createRef()];
+
+  const handleOtpChange = (text, index) => {
+    const newOtp = [...otp];
+    newOtp[index] = text;
+    setOtp(newOtp);
+    if (text && index < 3) {
+      inputRefs[index + 1].current.focus();
+    }
+  };
   const [loginOption, setLoginOption] = useState("password"); // 'password' or 'otp'
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const login = async () => {
@@ -227,6 +238,7 @@ const LoginScreen: React.FC = () => {
               >
                 OTP
               </Text>
+              
             </TouchableOpacity>
           </View>
 
@@ -236,6 +248,8 @@ const LoginScreen: React.FC = () => {
               flexDirection: 'row',
               alignItems: 'center',
             }}>
+
+
               <TextInput
                 style={[styles.input, { width:'100%' }]} // Adjust padding as needed
                 placeholder="Password"
@@ -269,13 +283,31 @@ const LoginScreen: React.FC = () => {
               </TouchableOpacity>
             </View>
           ) : (
-            <TextInput
-              style={[styles.input, { paddingLeft: 40, marginBottom: -12 }]}
-              placeholder="OTP"
-              keyboardType="numeric"
-              value={otp}
-              onChangeText={setOtp}
-            />
+            <View style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingHorizontal: 50,
+            }}>
+             {otp.map((value, index) => (
+               <TextInput
+                 key={index}
+                 ref={inputRefs[index]}
+                 style={{
+                  width: 40,
+                  height: 40,
+                  borderWidth: 1,
+                  borderColor: 'lightgray',
+                  borderRadius:10,
+                  backgroundColor: 'white',
+                  textAlign: 'center',
+                }}
+                 maxLength={1}
+                 keyboardType="numeric"
+                 onChangeText={(text) => handleOtpChange(text, index)}
+                 value={value}
+               />
+             ))}
+           </View>
           )}
         </View>
 
@@ -284,22 +316,12 @@ const LoginScreen: React.FC = () => {
             padding: 16,
             borderRadius: 8,
             marginHorizontal: 16,
-            backgroundColor: "#2467E2",
+
             marginTop: 35,
           }}
           onPress={handleLogin}
         >
-          <Text
-            style={{
-              color: "white",
-              textAlign: "center",
-              fontSize: 16,
-
-              fontFamily: "Raleway_700Bold",
-            }}
-          >
-            Sign IN
-          </Text>
+         <Button text="Login" width={300} height={60} onPress={handleLogin} />
         </TouchableOpacity>
 
         <View style={styles.signupRedirect}>
