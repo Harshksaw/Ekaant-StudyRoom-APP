@@ -18,6 +18,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 
 interface ApprovalStatusProps {
@@ -46,7 +47,7 @@ export default function Courses() {
   };
 
 
-  
+
 
 
   const getBookings = async () => {
@@ -87,7 +88,7 @@ export default function Courses() {
 
 
       }}
-        >
+    >
 
 
       <View
@@ -137,6 +138,31 @@ export default function Courses() {
             // backgroundColor: "yellow",
           }}
         >
+
+          {data === null && (
+            <TouchableOpacity
+            onPress={() => getBookings()}
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 200,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  color: "blue",
+                  textAlign: "center",
+                }}
+              >
+                No Bookings Found
+              </Text>
+              <ActivityIndicator size="large" color="black" />
+            </TouchableOpacity>
+          
+          )}
           {data &&
             data.map((item, index) => (
               <TouchableOpacity
@@ -154,17 +180,17 @@ export default function Courses() {
                     params: { item: JSON.stringify(item) },
                   })
                 }
-                // onPress={()=> {
-                //   setNotListed(true)
+              // onPress={()=> {
+              //   setNotListed(true)
 
-                // }}
+              // }}
               >
                 <View style={styles.card}>
                   <Image
                     source={{
                       uri:
-                      item.libraryId?.images[0] ||
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr_IULLOXJT80cLu-eRqkRGrHY23yLEx4p0w&s=10",
+                        item.libraryId?.images[0] ||
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr_IULLOXJT80cLu-eRqkRGrHY23yLEx4p0w&s=10",
                     }}
                     style={{ width: 100, height: 100, borderRadius: 20 }}
                   />
