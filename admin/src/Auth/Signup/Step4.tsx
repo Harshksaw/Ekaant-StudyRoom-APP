@@ -1,3 +1,5 @@
+import { InfoIcon } from "lucide-react";
+
 export const StepFour = ({
   nextStep,
   prevStep,
@@ -23,37 +25,61 @@ export const StepFour = ({
       {/* App name */}
       <label>App</label>
       {/* Short description */}
-      <input
-        className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        type="text"
-        placeholder="shortDescription"
-        value={libraryDetails.libraryApp.shortDescription}
-        onChange={(e) => {
-          setLibraryDetails({
-            ...libraryDetails,
-            libraryApp: {
-              ...libraryDetails.libraryApp,
-              shortDescription: e.target.value,
-            },
-          });
-        }}
-      />
+      <div className="relative bg-blue-500">
+        <input
+          className="w-full pl-3 py-2 pr-40  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          type="text"
+          placeholder="shortDescription"
+          value={libraryDetails.libraryApp.shortDescription}
+          onChange={(e) => {
+            setLibraryDetails({
+              ...libraryDetails,
+              libraryApp: {
+                ...libraryDetails.libraryApp,
+                shortDescription: e.target.value,
+              },
+            });
+          }}
+        />
+        <section className="absolute right-2 top-1/4 flex justify-center items-center">
+          <div className="group flex justify-center transition-all rounded-full bg-gray-200 p-1">
+            <svg viewBox="0 0 320 512" className="w-4 h-4">
+              <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"></path>
+            </svg>
+            <span className="absolute bg-blue-400 w-40 h-12  -top-8 text-white rounded-xl  p-2 opacity-0 group-hover:opacity-100 group-hover:-translate-y-7 duration-700 text-xs">
+              Information from thids buicdiocd
+            </span>
+          </div>
+        </section>
+      </div>
       {/* Long description */}
-      <input
-        className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        type="text"
-        placeholder="LongDescription"
-        value={libraryDetails.libraryApp.LongDescription}
-        onChange={(e) => {
-          setLibraryDetails({
-            ...libraryDetails,
-            libraryApp: {
-              ...libraryDetails.libraryApp,
-              LongDescription: e.target.value,
-            },
-          });
-        }}
-      />
+      <div className="relative bg-blue-500">
+        <input
+          className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          type="text"
+          placeholder="LongDescription"
+          value={libraryDetails.libraryApp.LongDescription}
+          onChange={(e) => {
+            setLibraryDetails({
+              ...libraryDetails,
+              libraryApp: {
+                ...libraryDetails.libraryApp,
+                LongDescription: e.target.value,
+              },
+            });
+          }}
+        />
+        <section className="absolute right-2 top-1/4 flex justify-center items-center">
+          <div className="group flex justify-center transition-all rounded-full bg-gray-200 p-1">
+            <svg viewBox="0 0 320 512" className="w-4 h-4">
+              <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"></path>
+            </svg>
+            <span className="absolute bg-blue-400 w-40 h-12  -top-8 text-white rounded-xl  p-2 opacity-0 group-hover:opacity-100 group-hover:-translate-y-7 duration-700 text-xs">
+              Information from thids buicdiocd
+            </span>
+          </div>
+        </section>
+      </div>
       {/* Library address */}
       <label>Library Address</label>
       {/* Line 1 */}
@@ -416,8 +442,6 @@ export const StepFour = ({
           />
           <h1>Select files</h1>
         </div>
-
-
       </div>
     </div>
     <div className="flex flex-row gap-40  mt-20   items-center justify-between">
@@ -428,7 +452,7 @@ export const StepFour = ({
         Back
       </button>
       <button
-        className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
+        className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
         onClick={nextStep}
       >
         Next

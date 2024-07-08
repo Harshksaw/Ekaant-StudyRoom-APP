@@ -16,7 +16,10 @@ export const StepThree = ({
         >
           Full Name
         </label>
-        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input
+          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="fullName"
           value={userDetails.fullName}
@@ -24,7 +27,6 @@ export const StepThree = ({
             setUserDetails({ ...userDetails, fullName: e.target.value })
           }
           placeholder="Full Name"
-
         />
       </div>
       {/* DOB */}
@@ -35,7 +37,10 @@ export const StepThree = ({
         >
           DOB
         </label>
-        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input
+          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="dob"
           value={userDetails.dob}
@@ -43,7 +48,6 @@ export const StepThree = ({
             setUserDetails({ ...userDetails, dob: e.target.value })
           }
           placeholder="DOB"
-
         />
       </div>
       {/* Aadhar Card */}
@@ -55,7 +59,10 @@ export const StepThree = ({
         >
           Aadhar Card
         </label>
-        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input
+          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="aadharCard"
           value={userDetails.aadharCard}
@@ -63,7 +70,6 @@ export const StepThree = ({
             setUserDetails({ ...userDetails, aadharCard: e.target.value })
           }
           placeholder="Aadhar Card"
-
         />
       </div>
       {/* Upload Aadhar */}
@@ -76,13 +82,17 @@ export const StepThree = ({
           Addhar Card
         </label>
 
-        <label htmlFor="uploadAadharCard" className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
-        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
-          Select File 
+        <label
+          htmlFor="uploadAadharCard"
+          className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
+        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+        >
+          Select File
           <input
             type="file"
             id="uploadAadharCard"
             accept="image/*"
+            name="uploadAadharCard"
             onChange={(e) => {
               const file = e.target.files ? e.target.files[0] : null;
               if (file) {
@@ -92,7 +102,7 @@ export const StepThree = ({
                 });
               }
             }}
-            style={{ display: 'none' , justifyContent:'center' }} // Hide the actual input
+            style={{ display: "none", justifyContent: "center" }} // Hide the actual input
           />
         </label>
       </div>
@@ -104,7 +114,8 @@ export const StepThree = ({
         >
           PAN Card
         </label>
-        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input
+          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="PanCard"
           value={userDetails.aadharCard}
@@ -112,22 +123,23 @@ export const StepThree = ({
             setUserDetails({ ...userDetails, aadharCard: e.target.value })
           }
           placeholder="Aadhar Card"
-
         />
       </div>
 
       <div className="flex flex-row   items-center justify-start">
-      <label
+        <label
           htmlFor="uploadPanCard"
           className="w-60 h-[50px] text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight border border-2"
         >
           Upload Pan Card
         </label>
 
-      
-        <label htmlFor="uploadAadharCard" className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
-        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
-          Select File 
+        <label
+          htmlFor="uploadAadharCard"
+          className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
+        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+        >
+          Select File
           <input
             type="file"
             id="uploadAadharCard"
@@ -141,7 +153,7 @@ export const StepThree = ({
                 });
               }
             }}
-            style={{ display: 'none' , justifyContent:'center' }} // Hide the actual input
+            style={{ display: "none", justifyContent: "center" }} // Hide the actual input
           />
         </label>
       </div>
@@ -151,9 +163,9 @@ export const StepThree = ({
       <div className="flex flex-col gap-6 ">
         <label className="text-xl">Address</label>
         {/* line 1 */}
-        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input
+          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
-
           value={userDetails.address.line1}
           onChange={(e) => {
             setUserDetails({
@@ -167,7 +179,8 @@ export const StepThree = ({
           placeholder="Address Line 1"
         />
         {/* line 2 */}
-        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input
+          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           value={userDetails.address.line2}
           onChange={(e) => {
@@ -183,7 +196,8 @@ export const StepThree = ({
         />
 
         {/* city */}
-        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input
+          className="w-2/3 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           value={userDetails.address.city}
           onChange={(e) => {
@@ -198,8 +212,8 @@ export const StepThree = ({
           placeholder="City"
         />
         {/* pinCode */}
-        <input 
-        className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input
+          className="w-1/2 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           value={userDetails.address.pincode}
           onChange={(e) => {
@@ -214,7 +228,7 @@ export const StepThree = ({
           placeholder="pincode"
         />
       </div>
-      <div className="flex flex-row gap-40   -col items-center justify-between">
+      <div className="flex flex-row gap-30   -col items-center justify-between">
         <button
           className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
           onClick={prevStep}
@@ -222,7 +236,7 @@ export const StepThree = ({
           Back
         </button>
         <button
-          className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
+          className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
           onClick={nextStep}
         >
           Next
