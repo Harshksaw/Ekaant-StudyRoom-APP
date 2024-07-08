@@ -81,7 +81,7 @@ export const StepFour = ({
         </section>
       </div>
       {/* Library address */}
-      <label>Library Address</label>
+      <label> Address</label>
       {/* Line 1 */}
       <input
         className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -115,60 +115,68 @@ export const StepFour = ({
         }}
       />
       {/* City */}
-      <input
-        className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        type="text"
-        placeholder="City"
-        value={libraryDetails.libraryAddress.city}
-        onChange={(e) => {
-          setLibraryDetails({
-            ...libraryDetails,
-            libraryAddress: {
-              ...libraryDetails.libraryAddress,
-              city: e.target.value,
-            },
-          });
-        }}
-      />
-      {/* State */}
-      <input
-        className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        type="text"
-        placeholder="State"
-        value={libraryDetails.libraryAddress.state}
-        onChange={(e) => {
-          setLibraryDetails({
-            ...libraryDetails,
-            libraryAddress: {
-              ...libraryDetails.libraryAddress,
-              state: e.target.value,
-            },
-          });
-        }}
-      />
+      <div className="flex w-full justify-between gap-2">
+        <div className="w-2/4">
+          <input
+            className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            type="text"
+            placeholder="City"
+            value={libraryDetails.libraryAddress.city}
+            onChange={(e) => {
+              setLibraryDetails({
+                ...libraryDetails,
+                libraryAddress: {
+                  ...libraryDetails.libraryAddress,
+                  city: e.target.value,
+                },
+              });
+            }}
+          />
+        </div>
+        {/* State */}
+        <div className="w-2/5">
+          <input
+            className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            type="text"
+            placeholder="State"
+            value={libraryDetails.libraryAddress.state}
+            onChange={(e) => {
+              setLibraryDetails({
+                ...libraryDetails,
+                libraryAddress: {
+                  ...libraryDetails.libraryAddress,
+                  state: e.target.value,
+                },
+              });
+            }}
+          />
+        </div>
+      </div>
       {/* Pincode */}
-      <input
-        className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        type="text"
-        placeholder="pincode"
-        value={libraryDetails.libraryAddress.pincode}
-        onChange={(e) => {
-          setLibraryDetails({
-            ...libraryDetails,
-            libraryAddress: {
-              ...libraryDetails.libraryAddress,
-              pincode: e.target.value,
-            },
-          });
-        }}
-      />
+      <div className="w-1/3">
+        <input
+          className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          type="text"
+          placeholder="pincode"
+          value={libraryDetails.libraryAddress.pincode}
+          onChange={(e) => {
+            setLibraryDetails({
+              ...libraryDetails,
+              libraryAddress: {
+                ...libraryDetails.libraryAddress,
+                pincode: e.target.value,
+              },
+            });
+          }}
+        />
+      </div>
       {/* Legal */}
       <label>Legal</label>
       {/* Registration */}
       <input
         className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
         type="text"
-        placeholder="Registration"
+        placeholder="Registration Type"
         value={libraryDetails.libraryLegal.registration}
         onChange={(e) => {
           setLibraryDetails({
@@ -188,16 +196,17 @@ export const StepFour = ({
             type="radio"
             name="gst"
             value="true"
-            checked={libraryDetails.libraryLegal.gst === true}
-            onChange={(e) => {
-              setLibraryDetails({
-                ...libraryDetails,
-                libraryLegal: {
-                  ...libraryDetails.libraryLegal,
-                  gst: e.target.value === "true",
-                },
-              });
-            }}
+            // checked={libraryDetails.libraryLegal.gst === true}
+            //  TODO:DISCUSS WITH TEAM
+            // onChange={(e) => {
+            //   setLibraryDetails({
+            //     ...libraryDetails,
+            //     libraryLegal: {
+            //       ...libraryDetails.libraryLegal,
+            //       gst: e.target.value === "true",
+            //     },
+            //   });
+            // }}
           />
           <label>Yes</label>
         </div>
@@ -206,40 +215,72 @@ export const StepFour = ({
             type="radio"
             name="gst"
             value="false"
-            checked={libraryDetails.libraryLegal.gst === false}
-            onChange={(e) => {
-              setLibraryDetails({
-                ...libraryDetails,
-                libraryLegal: {
-                  ...libraryDetails.libraryLegal,
-                  gst: e.target.value === "false",
-                },
-              });
-            }}
+            // checked={libraryDetails.libraryLegal.gst === false}
+            // onChange={(e) => {
+            //   setLibraryDetails({
+            //     ...libraryDetails,
+            //     libraryLegal: {
+            //       ...libraryDetails.libraryLegal,
+            //       gst: e.target.value === "false",
+            //     },
+            //   });
+            // }}
           />
           <label>No</label>
         </div>
       </div>
-
       <div>
-        <div>
-          <input
-            type="file"
-            placeholder="GST certificate"
-            onChange={(e) => {
-              const file = e.target.files ? e.target.files[0] : null;
-              if (file) {
+        <div className="">
+          {/* gst input */}
+          <div className="">
+            <input
+              type="text"
+              placeholder="Gst Number"
+              value={libraryDetails.libraryLegal.gst}
+              onChange={(e) => {
                 setLibraryDetails({
                   ...libraryDetails,
                   libraryLegal: {
                     ...libraryDetails.libraryLegal,
-                    uploadGst: file,
+                    gst: e.target.value,
                   },
                 });
-              }
-            }}
-          />
-          <h1>Select files</h1>
+              }}
+            />
+          </div>
+          {/* UPLOAD GST  */}
+          <div className="flex justify-start mt-1 border-black items-center">
+            <label
+              htmlFor="uploadAadharCard"
+              className="w-60 h-[50px] text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
+            >
+              Upload Gst Certificate
+            </label>
+
+            <label
+              className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
+        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+            >
+              Select file
+              <input
+                type="file"
+                placeholder="GST certificate"
+                onChange={(e) => {
+                  const file = e.target.files ? e.target.files[0] : null;
+                  if (file) {
+                    setLibraryDetails({
+                      ...libraryDetails,
+                      libraryLegal: {
+                        ...libraryDetails.libraryLegal,
+                        uploadGst: file,
+                      },
+                    });
+                  }
+                }}
+                style={{ display: "none", justifyContent: "center" }} // Hide the actual input
+              />
+            </label>
+          </div>
         </div>
 
         {/* CIN */}
@@ -250,16 +291,16 @@ export const StepFour = ({
               type="radio"
               name="cin"
               value="true"
-              checked={libraryDetails.libraryLegal.cin === true}
-              onChange={(e) => {
-                setLibraryDetails({
-                  ...libraryDetails,
-                  libraryLegal: {
-                    ...libraryDetails.libraryLegal,
-                    cin: e.target.value === "true",
-                  },
-                });
-              }}
+              // checked={libraryDetails.libraryLegal.cin === true}
+              // onChange={(e) => {
+              //   setLibraryDetails({
+              //     ...libraryDetails,
+              //     libraryLegal: {
+              //       ...libraryDetails.libraryLegal,
+              //       cin: e.target.value === "true",
+              //     },
+              //   });
+              // }}
             />
             <label>Yes</label>
           </div>
@@ -268,20 +309,21 @@ export const StepFour = ({
               type="radio"
               name="cin"
               value="false"
-              checked={libraryDetails.libraryLegal.cin === false}
-              onChange={(e) => {
-                setLibraryDetails({
-                  ...libraryDetails,
-                  libraryLegal: {
-                    ...libraryDetails.libraryLegal,
-                    cin: e.target.value === "false",
-                  },
-                });
-              }}
+              // checked={libraryDetails.libraryLegal.cin === false}
+              // onChange={(e) => {
+              //   setLibraryDetails({
+              //     ...libraryDetails,
+              //     libraryLegal: {
+              //       ...libraryDetails.libraryLegal,
+              //       cin: e.target.value === "false",
+              //     },
+              //   });
+              // }}
             />
             <label>No</label>
           </div>
         </div>
+
         <input
           type="text"
           value={libraryDetails.libraryLegal.cin}
@@ -299,24 +341,36 @@ export const StepFour = ({
         />
 
         {/* Upload CIN */}
-        <div>
-          <input
-            type="file"
-            placeholder="CIN certificate"
-            onChange={(e) => {
-              const file = e.target.files ? e.target.files[0] : null;
-              if (file) {
-                setLibraryDetails({
-                  ...libraryDetails,
-                  libraryLegal: {
-                    ...libraryDetails.libraryLegal,
-                    uploadCin: file,
-                  },
-                });
-              }
-            }}
-          />
-          <h1>Select files</h1>
+        <div className="flex justify-start mt-1 border-black items-center">
+          <label
+            htmlFor="uploadCinCard"
+            className="w-60 h-[50px] text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
+          >
+            CIN Certificate
+          </label>
+          <label
+            className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
+        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+          >
+            Select file
+            <input
+              type="file"
+              placeholder="CIN certificate"
+              onChange={(e) => {
+                const file = e.target.files ? e.target.files[0] : null;
+                if (file) {
+                  setLibraryDetails({
+                    ...libraryDetails,
+                    libraryLegal: {
+                      ...libraryDetails.libraryLegal,
+                      uploadCin: file,
+                    },
+                  });
+                }
+              }}
+              style={{ display: "none", justifyContent: "center" }}
+            />
+          </label>
         </div>
 
         {/* TAN */}
@@ -359,26 +413,55 @@ export const StepFour = ({
             <label>No</label>
           </div>
         </div>
-
-        {/* Upload TAN */}
-        <div>
+        {/* TAN input */}
+        <div className=" ">
           <input
-            type="file"
-            placeholder="TAN certificate"
+            type="text"
+            placeholder="Tan Number"
+            value={libraryDetails.libraryLegal.tan}
             onChange={(e) => {
-              const file = e.target.files ? e.target.files[0] : null;
-              if (file) {
-                setLibraryDetails({
-                  ...libraryDetails,
-                  libraryLegal: {
-                    ...libraryDetails.libraryLegal,
-                    uploadTan: file,
-                  },
-                });
-              }
+              setLibraryDetails({
+                ...libraryDetails,
+                libraryLegal: {
+                  ...libraryDetails.libraryLegal,
+                  tan: e.target.value,
+                },
+              });
             }}
           />
-          <h1>Select files</h1>
+        </div>
+
+        {/* Upload TAN */}
+        <div className="flex justify-start mt-1 border-black items-center">
+          <label
+            htmlFor="uploadTAN"
+            className="w-60 h-[50px] text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
+          >
+            TAN Certificate
+          </label>
+          <label
+            className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
+        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+          >
+            Select file
+            <input
+              type="file"
+              placeholder="CIN certificate"
+              onChange={(e) => {
+                const file = e.target.files ? e.target.files[0] : null;
+                if (file) {
+                  setLibraryDetails({
+                    ...libraryDetails,
+                    libraryLegal: {
+                      ...libraryDetails.libraryLegal,
+                      uploadTan: file,
+                    },
+                  });
+                }
+              }}
+              style={{ display: "none", justifyContent: "center" }}
+            />
+          </label>
         </div>
 
         {/* Misme */}
@@ -422,25 +505,55 @@ export const StepFour = ({
           </div>
         </div>
 
-        {/* Upload Misme */}
-        <div>
+        {/* Misme input */}
+        <div className=" ">
           <input
-            type="file"
-            placeholder="Misme certificate"
+            type="text"
+            placeholder="Misme Number"
+            value={libraryDetails.libraryLegal.misme}
             onChange={(e) => {
-              const file = e.target.files ? e.target.files[0] : null;
-              if (file) {
-                setLibraryDetails({
-                  ...libraryDetails,
-                  libraryLegal: {
-                    ...libraryDetails.libraryLegal,
-                    uploadMisme: file,
-                  },
-                });
-              }
+              setLibraryDetails({
+                ...libraryDetails,
+                libraryLegal: {
+                  ...libraryDetails.libraryLegal,
+                  misme: e.target.value,
+                },
+              });
             }}
           />
-          <h1>Select files</h1>
+        </div>
+
+        {/* Upload Misme */}
+        <div className="flex justify-start mt-1 border-black items-center">
+          <label
+            htmlFor="uploadCinCard"
+            className="w-60 h-[50px] text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
+          >
+            Misme Certificate
+          </label>
+          <label
+            className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
+        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+          >
+            Select file
+            <input
+              type="file"
+              placeholder="Misme certificate"
+              onChange={(e) => {
+                const file = e.target.files ? e.target.files[0] : null;
+                if (file) {
+                  setLibraryDetails({
+                    ...libraryDetails,
+                    libraryLegal: {
+                      ...libraryDetails.libraryLegal,
+                      uploadMisme: file,
+                    },
+                  });
+                }
+              }}
+              style={{ display: "none", justifyContent: "center" }}
+            />
+          </label>
         </div>
       </div>
     </div>
