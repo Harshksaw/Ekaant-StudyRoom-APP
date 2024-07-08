@@ -135,15 +135,59 @@ const BookingScreen: React.FC = () => {
       </View>
 
       <View
+      style={{
+        marginTop:-40,
+        // backgroundColor:'red',
+        height: 55,
+        width:'50%',
+        paddingHorizontal:10,
+        marginHorizontal:10
+
+      }}
+      >
+                 <Picker
+                        selectedValue={selectedMonth}
+                        onValueChange={(itemValue, itemIndex) =>{
+
+                          console.log(itemValue, itemIndex)
+                          setselectedMonth(itemValue)
+                        }
+                        }
+                        style={{
+                          borderRadius: 50,
+
+                        }}
+                        mode="dropdown"
+                      >
+                        {Array.from({ length: 3 }, (_, i) => (
+                          <Picker.Item
+                          style={{
+                            fontSize: 20,
+                            borderRadius:50,
+                          }}
+
+
+                            key={i}
+                            label={` Room ${i + 1}`}
+                            value={`${i + 1}`}
+                          />
+                        ))}
+                      </Picker>
+
+      </View>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        // horizontal={true}
         style={{
           flex: 1,
 
           marginBottom: 10,
-          justifyContent: "center",
+          // justifyContent: "center",
         }}
       >
         <Seats onSeatSelect={handleSeatSelect} SeatLayout={data?.seatLayout} />
-      </View>
+      </ScrollView>
 
       <TouchableOpacity
         style={{

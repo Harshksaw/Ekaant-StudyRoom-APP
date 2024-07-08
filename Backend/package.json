@@ -1,24 +1,17 @@
 {
-  "name": "algocode-problem-service",
+  "name": "docker-learn",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
-    "dev": "npx nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
   },
-  "jest": {
-    "testEnvironment": "node",
-    "roots": [
-      "src/"
-    ]
-  },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@azure/cosmos": "^4.0.0",
+    "body-parser": "^1.20.2",
+    "mongodb": "^5.7.0",
     "bcrypt": "^5.1.1",
     "cloudinary": "^1.41.3",
     "cors": "^2.8.5",

@@ -1,8 +1,10 @@
 const { StatusCodes } = require("http-status-codes");
 
 const zod = require("zod");
-const { User, Booking } = require("../models");
 const jwt = require("jsonwebtoken");
+const { User} = require("../models");
+const { Booking } = require("../models/booking.model");
+const bookingModel = require("../models/booking.model");
 const JWT_SECRET = "MY_SECRET_KEY";
 const BookingSchema = zod.object({
   userId: zod.string(),
@@ -27,60 +29,78 @@ const BookingSchema = zod.object({
   bookingStatus: zod.enum(["PENDING", "CONFIRMED", "CANCELLED"]).optional(),
   transactionDetails: zod.object().optional(),
 });
+function pingBookingController(req, res) {
+  // logger.error("ping error logs for ping controller");
 
+  return res.json({ message: "Booking controller is up" });
+}
 async function createBooking(req, res) {
   try {
-
-
-
     const {
       userId,
       libraryId,
       initialPrice,
       finalPrice,
       timeSlot,
+      roomNo,
       bookedSeat,
       bookingDate,
       bookingPeriod,
-      bookingStatus,
-    } = BookingSchema.safeParse(req.body);
-
-
-
-
-
-
-
+    } = req.body;
 
     const user = await User.findOne({ _id: userId });
+    console.log(user);
 
     if (!user) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ message: "User not found" });
     }
-
-    const booking = await Booking.create({
+    const bookingData = {
       userId,
+      libraryId,
+      initialPrice,
+      finalPrice,
+      roomNo,
+      timeSlot,
+      bookedSeat,
       bookingDate,
-      bookingTime,
-      bookingDuration,
-      bookingPurpose,
-      bookingStatus,
-    });
+      bookingPeriod,
+    };
 
-    return res.status(StatusCodes.CREATED).json({ booking });
+    const newBooking = await Booking.create(bookingData);
+
+  // Now retrieve the booking with populate
+  // const populatedBooking = await 
+  //   .populate("userId")
+  //   .populate("libraryId");
+   
+    // await newBooking.save();
+
+    return res.status(StatusCodes.CREATED).json({
+      message: "Booking created successfully",
+      Booking: newBooking,
+    });
   } catch (error) {
     console.error(error);
   }
 }
-function pingBookingController(req, res) {
-  // logger.error("ping error logs for ping controller");
 
-  return res.json({ message: "Booking controller is up" });
+
+async function getUserBookings(req, res) {
+  try {
+
+    const { id } = req.params;
+
+    const bookings = await Booking.find({userId: id}).populate("libraryId").exec();
+    return res.status(StatusCodes.OK).json({ bookings });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 module.exports = {
   createBooking,
   pingBookingController,
+  getUserBookings,
 };
