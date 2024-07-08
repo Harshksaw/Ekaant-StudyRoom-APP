@@ -1,7 +1,11 @@
 import Header from "@/components/Header";
 import StarRating from "@/components/Ratinstar";
 import { fetchRoomData } from "@/hooks/api/library";
+import { BACKEND } from "@/utils/config";
+import { calculatePeriod } from "@/utils/date";
+import { getUserId } from "@/utils/keys";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -33,12 +37,38 @@ const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
 export default function Courses() {
   const [data, setData] = useState(null);
 
+
+  const getUserId = async () => {
+    const res = await AsyncStorage.getItem("userData");
+    const data = JSON.parse(res);
+    console.log(",,,", data.user._id);
+    return data.user._id; // Return userId directly
+  };
+
+
+  
+
+
+  const getBookings = async () => {
+    const userId = await getUserId(); // Wait for getUserId to complete
+
+    if (userId) { // Check if userId is not null
+      const res = await axios.get(`${BACKEND}/api/v1/booking/getUserBookings/${userId}`)
+      console.log("userID---->", res.data.bookings);
+      setData(res?.data?.bookings);
+    } else {
+      console.log("UserId is null");
+    }
+  }
+
+
   useEffect(() => {
     const getBookingData = async () => {
-      const fetchedData = await axios.post();
+      await getBookings();
+      // const fetchedData = await axios.post();
 
-      console.log("-------------", fetchedData.data);
-      setData(fetchedData.data || []);
+      // console.log("-------------", fetchedData.data);
+      // setData(fetchedData.data || []);
     };
     getBookingData();
   }, []);
@@ -56,7 +86,7 @@ export default function Courses() {
         // alignItems: "center",
 
 
-
+      }}
         >
 
 
@@ -133,8 +163,8 @@ export default function Courses() {
                   <Image
                     source={{
                       uri:
-                        item.images[0] ||
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr_IULLOXJT80cLu-eRqkRGrHY23yLEx4p0w&s=10",
+                      item.libraryId?.images[0] ||
+                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr_IULLOXJT80cLu-eRqkRGrHY23yLEx4p0w&s=10",
                     }}
                     style={{ width: 100, height: 100, borderRadius: 20 }}
                   />
@@ -180,7 +210,7 @@ export default function Courses() {
                             textAlign: "left",
                           }}
                         >
-                          {item.name.split(" ").slice(0, 2).join(" ")}
+                          {item?.libraryId.name.split(" ").slice(0, 2).join(" ")}
                         </Text>
 
                         <ApprovalStatus isApproved={item.approved} />
@@ -222,7 +252,7 @@ export default function Courses() {
                             textAlign: "left",
                           }}
                         >
-                          Period - July 4 - Sept 4
+                          Period {calculatePeriod(item?.bookingDate, item?.bookingPeriod) || "2 Months"}
                         </Text>
                       </View>
                     </View>
@@ -237,7 +267,7 @@ export default function Courses() {
                         paddingRight: 20,
 
                         justifyContent: "space-between",
-                        alignItems: "space-between",
+                        // alignItems: "space-between",
                       }}
                     >
                       <View

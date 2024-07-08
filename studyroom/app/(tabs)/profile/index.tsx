@@ -29,7 +29,7 @@ export default function profile() {
   const userDetails = useSelector((state: any) => state.user);
 
   // console.log("-------------->",JSON.parse(userDetails));
-  console.log("-------------->+++++++", JSON.parse(userDetails.details));
+  // console.log("-------------->+++++++", JSON.parse(userDetails.details));
   const userData = JSON.parse(userDetails?.details)?.user;
   const getInitials = (name: string) => {
     let initials = name.match(/\b\w/g) || [];
