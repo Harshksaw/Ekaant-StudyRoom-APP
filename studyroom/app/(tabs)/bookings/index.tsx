@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import StarRating from "@/components/Ratinstar";
 import { fetchRoomData } from "@/hooks/api/library";
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -34,10 +35,10 @@ export default function Courses() {
 
   useEffect(() => {
     const getBookingData = async () => {
-      const fetchedData = await fetchRoomData();
+      const fetchedData = await axios.post();
 
       console.log("-------------", fetchedData.data);
-      setData(fetchedData.data);
+      setData(fetchedData.data || []);
     };
     getBookingData();
   }, []);
@@ -46,13 +47,19 @@ export default function Courses() {
     <SafeAreaView
       style={{
         flex: 1,
+
+
         padding: 0,
         // marginBottom: 50,
 
         // justifyContent: "center",
         // alignItems: "center",
-      }}
-    >
+
+
+
+        >
+
+
       <View
         style={{
           marginTop: 40,

@@ -176,7 +176,7 @@ export default function profile() {
                 borderRadius: 10,
                 padding: 5,
               }}
-              onPress={() => router.push("/(tabs)/courses")}
+              onPress={() => router.push("/(tabs)/bookings")}
             >
               <View
                 style={{

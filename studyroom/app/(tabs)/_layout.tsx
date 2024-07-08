@@ -33,7 +33,7 @@ export default function TabsLayout() {
           }}
         />
         <Tabs.Screen
-          name="courses/index"
+          name="bookings/index"
           options={{
             title: "Profile",
             tabBarIcon: ({ focused }) => <Bookings focused={focused} />,
