@@ -11,11 +11,7 @@ import { StepTwo } from "./Signup/Step2";
 import { StepThree } from "./Signup/Step3";
 import { StepFour } from "./Signup/Step4";
 import { StepOne } from "./Signup/Step1";
-
-
-
-
-
+import { StepFive } from "./Signup/Step5";
 
 // Add similar components for StepThree, StepFour, and StepFive
 
@@ -166,7 +162,6 @@ function Signup() {
   useEffect(() => {
     console.log(userInfo);
     console.log(libraryDetails);
-
   }, [userInfo, userOTP, libraryDetails, userDetails]);
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -215,10 +210,14 @@ function Signup() {
           />
         ); //library ->
       case 5:
-        return <StepFive nextStep={nextStep} prevStep={prevStep}
-          libraryDetails={libraryDetails}
-          setLibraryDetails={setLibraryDetails}
-        />;
+        return (
+          <StepFive
+            nextStep={nextStep}
+            prevStep={prevStep}
+            libraryDetails={libraryDetails}
+            setLibraryDetails={setLibraryDetails}
+          />
+        );
       default:
         return <h2>Final Step</h2>;
     }
@@ -227,7 +226,7 @@ function Signup() {
   return (
     <div className="flex h-screen w-screen ">
       {/* pic  */}
-      <div className="flex flex-col   items-center justify-center bg-gradient-to-r from-sky-400 to-sky-700 w-[40%]">
+      <div className="flex flex-col   items-center justify-center bg-gradient-to-r from-sky-400 to-sky-700 w-[50%]">
         <div className="flex justify-center items-center gap-10">
           <img src={studyMain} alt="pic" width={100} height={100} />
           <p className=" h-30 font-semibold text-7xl text-white">EKAANT</p>

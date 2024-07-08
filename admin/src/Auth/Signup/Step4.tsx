@@ -416,8 +416,6 @@ export const StepFour = ({
           />
           <h1>Select files</h1>
         </div>
-
-
       </div>
     </div>
     <div className="flex flex-row gap-40  mt-20   items-center justify-between">
@@ -428,7 +426,7 @@ export const StepFour = ({
         Back
       </button>
       <button
-        className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
+        className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
         onClick={nextStep}
       >
         Next
