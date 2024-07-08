@@ -10,6 +10,7 @@ const librarySchema = new mongoose.Schema({
   longDescription: { type: String, required: true },
   shortDescription: { type: String, required: true },
 
+  thumbnail: [{ type: String, required: false }],
   images: [{ type: String, required: false }],
   location: [ ],
   price: { type: Number, required: true },
