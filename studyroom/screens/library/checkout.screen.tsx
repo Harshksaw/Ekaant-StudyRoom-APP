@@ -45,7 +45,7 @@ const subtotal = Number((price + convenienceFee).toFixed(2));
 
     router.push({
       pathname: "/library/payment.screen",
-      params: { item: JSON.stringify(BookedData) }
+      params: { item: JSON.stringify(BookedData), price: JSON.stringify(totalAmount) }
 
     });
   }

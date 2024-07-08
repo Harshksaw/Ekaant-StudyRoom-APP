@@ -18,6 +18,7 @@ import OwnerRoute from "./components/Owner/OwnerRoute";
 import OwnerHome from "./components/Owner/OwnerHome";
 import MyLibrary from "./components/ManageLibrary/MyLibrary";
 import Auth from "./Auth/Auth";
+import Signup from "./Auth/Signup";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -41,7 +42,7 @@ function App() {
 
         >
         <Route path="/" element={<Auth type="signin" />} />
-          <Route path="/signup" element={<Auth type="signup" />} />
+          <Route path="/signup" element={<Signup/>} />
           <Route path="/signin" element={<Auth type="signin" />} />
 
           {role === "Admin" && (

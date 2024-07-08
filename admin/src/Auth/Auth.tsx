@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import studyMain from "../assets/images/studyMain.png";
 import reading from "../assets/images/reading 1.png";
@@ -7,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BASEURL } from "@/lib/utils";
 import { Send } from "lucide-react";
 
-const Auth = ({ type }: { type: "signup" | "signin" }) => {
+const Auth = ({ type }: { type: "signin" }) => {
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
@@ -18,16 +19,12 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const [verified, setVerified] = useState(false);
   const [otp, setOtp] = useState(0);
   const [showOtp, setShowOtp] = useState(false);
-  const [authMethod,setAuthMethod]=useState("password")
+  const [authMethod, setAuthMethod] = useState("password");
   const navigate = useNavigate();
 
-
   const handleAuthMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
-
-
     setAuthMethod(e.target.value);
-  }
+  };
 
   // send otp--
   const sendOtp = async () => {
@@ -43,6 +40,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
       console.log(error);
     }
   };
+
   // verfiy otp
   const verifyOtp = async () => {
     try {
@@ -58,6 +56,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
       console.log(error);
     }
   };
+
   async function sendRequest() {
     if (type === "signin") {
       try {
@@ -68,21 +67,18 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
           password: userInfo.password,
           accountType: "Admin",
         });
-        // const jwt = res.data;
 
         if (response.data.success) {
-          // console.log(response.data.user.accountType)
           console.log(response.data);
           console.log(response.data.token);
           const token = response.data.token;
-          const accountType = response.data.data.user.accountType; // Extract accountType
+          const accountType = response.data.data.user.accountType;
 
           localStorage.setItem("token", token);
           localStorage.setItem("userId", response.data.data.user._id);
-          localStorage.setItem("role", accountType); // Store accountType in localStorage
+          localStorage.setItem("role", accountType);
           const role = await localStorage.getItem("role");
 
-          // role === 'Admin' ?  navigate("manage-library/create-library") : navigate("/admin");
           role === "Admin"
             ? navigate("/dashboard", {
                 replace: true,
@@ -96,43 +92,8 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
         console.log("error is ", e);
       }
     }
-    if (type === "signup") {
-      try {
-        console.log(userInfo);
-        const response = await axios.post(`${BASEURL}/api/v1/auth/signup`, {
-          username: userInfo.name,
-          email: userInfo.email,
-          phoneNumber: userInfo?.phone,
-          password: userInfo.password,
-          accountType: "Admin",
-        });
-        if (response.data.success) {
-          console.log("signup success");
-          console.log(response.data);
-          // console.log(response.data.token);
-          const token = response.data.token;
-          // const accountType = response.data.data.user.accountType; // Extract accountType
-
-          localStorage.setItem("token", token);
-          navigate("/dashboard");
-          // localStorage.setItem("userId", response.data.data.user._id);
-          // localStorage.setItem("role", "admin "); // Store accountType in localStorage
-          // const role = await localStorage.getItem("role");
-
-          // role === 'Admin' ?  navigate("manage-library/create-library") : navigate("/admin");
-          // role === "Admin"
-          //   ? navigate("/dashboard", {
-          //       replace: true,
-          //     })
-          //   : navigate("/admin", {
-          //       replace: true,
-          //     });
-        }
-      } catch (e) {
-        console.log("error is ", e);
-      }
-    }
   }
+
   return (
     <div className="flex h-screen   flex-1  w-screen ">
       {/* pic  */}
@@ -156,22 +117,21 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
         </div>
       </div>
 
-      {/* main inputs  */}
       <div className="flex justify-center items-center flex-col border w-1/2 p-5">
         <div className="self-end mb-5">
-          {type === "signup" ? (
-            <Link
-              to="/signin"
-              className="absolute top-0 right-0 mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-4 rounded-full"
-            >
-              LOGIN
-            </Link>
-          ) : (
+          {type === "signin" ? (
             <Link
               to="/signup"
               className="absolute top-0 right-0 mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-4 rounded-full"
             >
               REGISTER
+            </Link>
+          ) : (
+            <Link
+              to="/signin"
+              className="absolute top-0 right-0 mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-4 rounded-full"
+            >
+              LOGIN
             </Link>
           )}
         </div>
@@ -183,41 +143,25 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
             Hello! Let's get started
           </h6>
           <div className="px-20">
-
-
-            {type === "signup" && (
-              <>
-                <LabelledInput
-                  label="Enter Name"
-                  placeholder="Name"
-                  onChange={(e) =>
-                    setUserInfo({ ...userInfo, name: e.target.value })
-                  }
-                 
-                />
-                <div className="flex justify-start gap-2 items-center mb-4">
-                  <p className="p-2 border rounded-lg">+91</p>
-                  <input
-                    type="number"
-                    className="px-4 py-2 w-full rounded-lg border text-base bg-white text-gray-400"
-                    value={userInfo?.phone.toString()}
-                    placeholder="Phone"
-                    onChange={(e) =>
-                      setUserInfo({
-                        ...userInfo,
-                        phone: e.target.value
-                          ? parseInt(e.target.value, 10)
-                          : 0,
-                      })
-                    }
-                  />
-                  <Send
-                    onClick={() => sendOtp()}
-                    className="border rounded-lg p-3 h-10 w-12"
-                  />
-                </div>
-              </>
-            )}
+            <div className="flex justify-start gap-2 items-center mb-4">
+              <p className="p-2 border rounded-lg">+91</p>
+              <input
+                type="number"
+                className="px-4 py-2 w-full rounded-lg border text-base bg-white text-gray-400"
+                value={userInfo?.phone.toString()}
+                placeholder="Phone"
+                onChange={(e) =>
+                  setUserInfo({
+                    ...userInfo,
+                    phone: e.target.value ? parseInt(e.target.value, 10) : 0,
+                  })
+                }
+              />
+              <Send
+                onClick={() => sendOtp()}
+                className="border rounded-lg p-3 h-10 w-12"
+              />
+            </div>
             {showOtp && userInfo.phone >= 1000000 && (
               <div className="flex justify-between items-center gap-2 mb-4">
                 <input
@@ -241,72 +185,22 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
               onChange={(e) =>
                 setUserInfo({ ...userInfo, email: e.target.value })
               }
-
             />
-            {/* for login with otp or password */}
-            {type === "signin"?(
-               <div>
-               <input
-                 type="radio"
-                 id="password"
-                 name="authMethod"
-                 value="password"
-                 checked={authMethod === 'password'}
-                  //  className=" text-gray-900 text-sm  block w-full p-2.5"
-                 onChange={handleAuthMethodChange}
-               />
-               <label htmlFor="password"
-                  className=" block mb-2 text-sm font-bold text-black pt-4"
-               >Password</label>
-       
-               <input
-                 type="radio"
-                 id="otp"
-                 name="authMethod"
-                 value="otp"
-                 checked={authMethod === 'otp'}
-                 onChange={handleAuthMethodChange}
-                //  className=" text-gray-900 text-sm  block w-full p-2.5"
-               />
-               <label htmlFor="otp"
-                  className=" block mb-2 text-sm font-bold text-black pt-4">OTP</label>
-             </div>
-            ):("")}
-            
-                {/* Conditional rendering based on auth method */}
-        {authMethod === 'password' ? (
-        <input
-          type="password"
-          placeholder="Password"
-          value={userInfo.password}
-             className=" text-gray-900 text-sm  block w-full p-2.5"
-          onChange={(e) => setUserInfo({ ...userInfo, password: e.target.value })}
-        />
-      ) : (
-        <input
-          type="number"
-          placeholder="OTP"
-          value={otp}
-             className=" text-gray-900 text-sm  block w-full p-2.5"
-          onChange={(e) => setOtp(e.target.valueAsNumber)}
-        />
-      )}
-
-            <LabelledInput
+            <input
               type="password"
-              label="Enter Password"
               placeholder="Password"
+              value={userInfo.password}
+              className=" text-gray-900 text-sm  block w-full p-2.5"
               onChange={(e) =>
                 setUserInfo({ ...userInfo, password: e.target.value })
               }
-
             />
             <button
               className="w-full bg-gradient-to-r from-sky-500 to-blue-300 text-white py-2 px-4 rounded-full mt-1 hover:bg-blue-600"
               type="button"
               onClick={sendRequest}
             >
-              {type === "signup" ? "Sign Up" : "Sign In"}
+              {type === "signin" ? "Sign In" : "Sign Up"}
             </button>
           </div>
         </div>

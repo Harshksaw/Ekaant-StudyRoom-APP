@@ -30,7 +30,7 @@ import {
   Nunito_700Bold,
   Nunito_600SemiBold,
 } from "@expo-google-fonts/nunito";
-import { useState } from "react";
+import { createRef, useState } from "react";
 //   import { commonStyles } from "@/styles/common/common.styles";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -40,11 +40,13 @@ import axios from "axios";
 
 import { Feather } from "@expo/vector-icons";
 import { BACKEND } from "@/utils/config";
+import Button from "@/components/Button";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SignUpScreen() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [buttonSpinner, setButtonSpinner] = useState(false);
-  const [otp, setOtp] = useState(0);
+
   const [showOtp, setShowOtp] = useState(false);
 
   const [verified, setVerified] = useState(false);
@@ -59,6 +61,17 @@ export default function SignUpScreen() {
     password: "",
   });
 
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const inputRefs = [createRef(), createRef(), createRef(), createRef()];
+
+  const handleOtpChange = (text, index) => {
+    const newOtp = [...otp];
+    newOtp[index] = text;
+    setOtp(newOtp);
+    // if (text && index < 3) {
+    //   inputRefs[index + 1].current.focus();
+    // }
+  };
   let [fontsLoaded, fontError] = useFonts({
     Raleway_600SemiBold,
     Raleway_700Bold,
@@ -169,14 +182,52 @@ export default function SignUpScreen() {
       // });
     }
   };
+
   return (
-    <LinearGradient
-      colors={["#E5ECF9", "#F6F7F9"]}
-      style={{ flex: 1, paddingTop: 0 }}
+    <SafeAreaView
+      style={{
+        flex: 1,
+      }}
     >
-      <View>
+      <View
+        style={{
+          flex: 1,
+        }}
+      >
         <View style={styles.signInImage}>
-          <Text style={[styles.welcomeText, {}]}>Create an {""} Account</Text>
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 10,
+              marginLeft: -20,
+
+              // marginTop: 100,
+              // marginLeft: 20,
+              // backgroundColor: "red",
+            }}
+          >
+            <Text style={[styles.welcomeText, {}]}>
+              Create {"     "} Account
+            </Text>
+            <View
+              style={{
+                width: 100,
+                height: 100,
+                marginLeft: -40,
+                borderRadius: 50, // This makes the border rounded
+                borderWidth: 2, // This sets the width of the border
+                borderColor: "#0077B6", // This sets the color of the border
+                borderStyle: "dashed", // This makes the border dotted
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Ionicons name="camera-outline" size={40} color={"#0077B6"} />
+            </View>
+          </View>
+
           <Image
             source={require("../../../assets/images/bubble2.png")}
             style={{
@@ -185,32 +236,14 @@ export default function SignUpScreen() {
           />
         </View>
 
-        <ScrollView>
+        <ScrollView style={{}}>
           <KeyboardAvoidingView style={styles.inputContainer}>
             <View>
               <TextInput
-                style={[styles.input, { paddingLeft: 40, marginBottom: -12 }]}
-                keyboardType="default"
-                value={userInfo.name}
-                placeholder="harsh"
-                onChangeText={(value) =>
-                  setUserInfo({ ...userInfo, name: value })
-                }
-              />
-              <AntDesign
-                style={{ position: "absolute", left: 26, top: 14 }}
-                name="user"
-                size={20}
-                color={"#A1A1A1"}
-              />
-            </View>
-
-            <View>
-              <TextInput
-                style={[styles.input, { paddingLeft: 40 }]}
+                style={[styles.input, { paddingLeft: 40,backgroundColor:"#F8F8F8" , borderRadius:50}]}
                 keyboardType="email-address"
                 value={userInfo.email}
-                placeholder="support@becodemy.com"
+                placeholder="Email"
                 onChangeText={(value) =>
                   setUserInfo({ ...userInfo, email: value })
                 }
@@ -222,6 +255,25 @@ export default function SignUpScreen() {
                 color={"#A1A1A1"}
               />
             </View>
+            <View 
+            style={{borderRadius:50}}
+            >
+              <TextInput
+                style={[styles.input, { paddingLeft: 40, marginBottom: -12, borderRadius:50 , backgroundColor:"#F8F8F8"}]}
+                keyboardType="default"
+                value={userInfo.name}
+                placeholder="Full Name"
+                onChangeText={(value) =>
+                  setUserInfo({ ...userInfo, name: value })
+                }
+              />
+              <AntDesign
+                style={{ position: "absolute", left: 26, top: 14, }}
+                name="user"
+                size={20}
+                color={"#A1A1A1"}
+              />
+            </View>
 
             <View
               style={{
@@ -229,6 +281,8 @@ export default function SignUpScreen() {
                 justifyContent: "center",
                 // alignItems: "center",
                 gap: 10,
+                marginTop: 10,
+
               }}
             >
               <View
@@ -238,12 +292,24 @@ export default function SignUpScreen() {
                     flexDirection: "row",
                     justifyContent: "flex-start",
                     alignItems: "center",
+                              borderRadius: 50,
+                    backgroundColor:"#F8F8F8"
                   },
                 ]}
               >
-                <Text>+91</Text>
+                <Text style={{ fontSize: 20 }}>🇮🇳</Text>
+                <View
+                  style={{
+                    height: 30,
+                    borderWidth: 1,
+                    width: 1,
+                    borderColor: "black",
+                    marginLeft: 10,
+          
+                  }}
+                ></View>
                 <TextInput
-                  style={{ paddingLeft: 40 }}
+                  style={{ paddingLeft: 20 , }}
                   keyboardType="phone-pad"
                   value={userInfo.phone.toString()} // Convert phone number to string for the value prop
                   placeholder="phone"
@@ -267,50 +333,63 @@ export default function SignUpScreen() {
                   size={24}
                   color="black"
                 />
+                      
               </View>
-              {showOtp && Number(userInfo.phone) >= 1000000 && (
+              {showOtp && Number(userInfo.phone) >= 1000000000 && (
+
                 <View
-                  style={[
-                    styles.input,
-                    {
+                style={{
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  gap: 5,
+                  marginTop: 10,
+                
+                }}
+                >
+                     <Text style={{
+                  fontSize: 18,
+                  fontWeight: "400",
+                     }}>Enter OTP</Text>
+           
+            
+                  <View
+                    style={{
                       flexDirection: "row",
                       justifyContent: "space-between",
-                      alignItems: "center",
-                      paddingHorizontal: 30,
-                    },
-                  ]}
-                >
-                  <TextInput
-                    style={{ paddingLeft: 10 }}
-                    keyboardType="phone-pad"
-                    // value={userInfo.phone}
-                    placeholder="Otp"
-                    // onChangeText={
-                    //   (value) =>
-                    //     setOtp({
-                    //       ...userInfo,
-                    //       value: parseInt(value, 10) || 0,
-                    //     }) // Convert input value to number; use 0 as fallback
-                    // }
-                    onChange={(e) => setOtp(e.target.value)}
-                    // onChangeText={(value) => setOtp(value)}
-                  />
-                  <Feather
-                    style={{
-                      position: "absolute",
-                      right: 30,
-                      top: 15,
+                      paddingHorizontal: 50,
                     }}
-                    onPress={verifyOtp}
-                    name="send"
-                    size={24}
-                    color="black"
-                  />
+                  >
+                   
+                    {otp.map((value, index) => (
+                      <TextInput
+                        key={index}
+                        ref={inputRefs[index]}
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderWidth: 1,
+                          // marginHorizontal:20,
+                          borderColor: "lightgray",
+                          borderRadius: 10,
+                          backgroundColor: "white",
+                          textAlign: "center",
+                        }}
+                        maxLength={1}
+                        keyboardType="numeric"
+                        onChangeText={(text) => handleOtpChange(text, index)}
+                        value={value}
+                      />
+                    ))}
+
                 </View>
+                </View>
+
               )}
 
               <TextInput
-                style={[styles.input, { marginTop: 15 }]}
+                style={[styles.input, { marginTop: 15 , borderRadius:50,           borderRadius: 50,
+                  backgroundColor:"#F8F8F8"}]}
                 secureTextEntry
                 value={userInfo.password}
                 placeholder="password"
@@ -331,7 +410,8 @@ export default function SignUpScreen() {
                 style={{
                   flexDirection: "column",
                   justifyContent: "center",
-                  // alignItems: "center",
+                  alignItems: "center",
+                  marginBottom: 40,
                 }}
               >
                 <TouchableOpacity
@@ -344,15 +424,7 @@ export default function SignUpScreen() {
                   }}
                   onPress={() => handleSignUp()}
                 >
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      fontSize: 16,
-
-                    }}
-                  >
-                    Sign Up
-                  </Text>
+                  <Button text="Register" width={250} height={60} />
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -371,7 +443,6 @@ export default function SignUpScreen() {
                       // color: "white",
                       textAlign: "center",
                       fontSize: 16,
-
                     }}
                   >
                     Cancel
@@ -382,30 +453,32 @@ export default function SignUpScreen() {
           </KeyboardAvoidingView>
         </ScrollView>
       </View>
-    </LinearGradient>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   signInImage: {
     width: "60%",
-    height: 300,
+    height: 250,
+    marginBottom: 20,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
 
     alignSelf: "center",
-    marginTop: 50,
+    marginTop: 0,
   },
   welcomeText: {
     flexDirection: "row",
     maxWidth: 200,
+    fontWeight: "700",
 
-    textAlign: "center",
-    fontSize: 30,
-    marginLeft: -40,
+    textAlign: "left",
+    fontSize: 40,
+    marginLeft: -20,
 
-    marginTop: 100,
+    marginTop: 50,
   },
   learningText: {
     textAlign: "center",
@@ -415,11 +488,11 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: "column",
-    gap: 10,
+    gap: 5,
 
     marginHorizontal: 16,
     // marginTop: 30,`
-    rowGap: 20,
+    rowGap: 10,
   },
   input: {
     height: 55,

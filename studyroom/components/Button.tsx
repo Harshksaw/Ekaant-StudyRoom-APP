@@ -41,8 +41,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     buttonText: {
+
         color: 'white',
         fontSize: 18,
+        letterSpacing: 2,
+        fontWeight:'600'
 
     },
 });

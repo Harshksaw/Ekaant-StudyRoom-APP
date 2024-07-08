@@ -60,24 +60,20 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
         </View>
 
         <View style={styles.picker}>
-
-        {
-  color === "white" ? (
-    <Ionicons name="location-outline" size={20} color={color} />
-  ) : (
-    assets && assets[3] && (
-      <Image
-        source={assets[3]}
-        style={{
-          width: 20,
-          height: 20,
-        }}
-      />
-    )
-  )
-}
-          
-     
+          {color === "white" ? (
+            <Ionicons name="location-outline" size={20} color={color} />
+          ) : (
+            assets &&
+            assets[3] && (
+              <Image
+                source={assets[3]}
+                style={{
+                  width: 20,
+                  height: 20,
+                }}
+              />
+            )
+          )}
 
           <Picker
             selectedValue={Enable}
@@ -85,6 +81,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
               height: 20,
               width: 180,
               borderRadius: 150,
+              
               color: color,
               borderBlockColor: color,
               borderWidth: 1,
@@ -98,12 +95,13 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
           >
             {citiesData?.map((slot, index) => (
               <Picker.Item
+              
                 key={index}
-                label={slot.name+ ',IN'}
+                label={slot.name + ",IN"}
                 value={slot.name}
                 style={{
-                  color:"#000000",
-                  lineHeight: 24,
+                  color: "#000000",
+                  lineHeight: 25,
                   fontSize: 20,
 
                   fontStyle: "normal",
@@ -168,16 +166,15 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
 
 const styles = StyleSheet.create({
   header: {
-
     height: height * 0.085,
     width: "100%",
 
-    paddingHorizontal:10,
+    paddingHorizontal: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     // backgroundColor: "pink",
-    marginBottom:10,
+    marginBottom: 10,
   },
   logoContainer: {
     alignItems: "center",
