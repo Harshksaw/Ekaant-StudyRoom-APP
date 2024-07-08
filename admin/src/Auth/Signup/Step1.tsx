@@ -5,14 +5,15 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }) => (
       <h3 className="font-bold">Enter Phone Number</h3>
       <div className="flex justify-start border border-black bg-white">
         <label
-          className=" w-32  py-2  text-black  h-[50px] justify-center items-center
-        text-center border border-gray-800 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+          className=" w-24  py-2  text-black  h-[50px] justify-center items-center
+        text-center border border-gray-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer "
         >
-          +91
+          <span className="text-3xl">🇮🇳</span>
         </label>
         <input
           type="number"
           // className="px-4 py-2 w-[410px] border-2 border-black  text-base bg-white text-gray-400"
+          className="focus:ring-0 focus:ring-offset-0 focus:outline-0 focus:outline-offset-0 "
           value={userInfo?.phone.toString()}
           placeholder="Phone"
           onChange={(e) =>
@@ -27,6 +28,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }) => (
       {/* email */}
       <div className="">
         <label className="font-bold">Enter Email ID</label>
+
         <input
           type="email"
           value={userInfo.email}
