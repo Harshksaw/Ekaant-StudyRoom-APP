@@ -27,6 +27,8 @@ const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
     </View>
   );
 };
+
+
 export default function Courses() {
   const [data, setData] = useState(null);
 
