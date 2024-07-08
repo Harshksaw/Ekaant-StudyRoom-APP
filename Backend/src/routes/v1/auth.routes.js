@@ -58,7 +58,7 @@ const handleRefreshToken = async (req, res, next) => {
 };
 
 AuthRouter.get("/ping", AuthController.pingAuthController);
-AuthRouter.post("/signup", AuthController.signUp);
+AuthRouter.post("/signup",upload.single('profile'), AuthController.signUp);
 AuthRouter.post("/signin", AuthController.signIn);
 
 AuthRouter.post("/otp", AuthController.generateOtp);

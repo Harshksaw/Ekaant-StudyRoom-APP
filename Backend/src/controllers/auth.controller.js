@@ -35,6 +35,9 @@ async function getUser(req, res, next) {
 // signup function--
 async function signUp(req, res, next) {
   const { success } = signupSchema.safeParse(req.body);
+
+  const images = req.file.path;
+  // console.log("images is ", images);
   console.log("success is ", success, req.body);
   if (!success) {
     return res.status(StatusCodes.BAD_REQUEST).json({
@@ -62,6 +65,7 @@ async function signUp(req, res, next) {
       password: req.body.password,
       phoneNumber: req.body.phoneNumber,
       accountType: req.body.accountType,
+      image: images,
     });
     // hashing the password--
 

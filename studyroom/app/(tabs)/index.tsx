@@ -130,7 +130,7 @@ export default function index() {
 
   const userDetails = useSelector((state: any) => state.user);
 
-  console.log("-------------->", userDetails);
+  // console.log("-------------->", userDetails);
 
   // return <HomeScreen />;
   const renderItem = ({ item }) => (
