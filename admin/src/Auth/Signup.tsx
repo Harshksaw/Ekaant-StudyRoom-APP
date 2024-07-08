@@ -16,23 +16,6 @@ import { StepOne } from "./Signup/Step1";
 
 
 
-const StepFive = ({ nextStep, prevStep }) => (
-  //images  - Register 5
-  <div>
-    <h2>Step 2</h2>
-    {/* Form fields for step 2 */}
-
-    <div></div>
-
-    <button onClick={prevStep}>Back</button>
-    <button
-      className="absolute bottom-10 center mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
-      onClick={nextStep}
-    >
-      Next
-    </button>
-  </div>
-);
 
 // Add similar components for StepThree, StepFour, and StepFive
 
@@ -163,7 +146,7 @@ function Signup() {
       sliders: [],
       uploadSliders: null,
     },
-    halls: "",
+    halls: 0,
     amentities: {
       coldWater: false,
       wifi: false,
@@ -182,7 +165,9 @@ function Signup() {
 
   useEffect(() => {
     console.log(userInfo);
-  }, [userInfo, userOTP]);
+    console.log(libraryDetails);
+
+  }, [userInfo, userOTP, libraryDetails, userDetails]);
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -230,7 +215,10 @@ function Signup() {
           />
         ); //library ->
       case 5:
-        return <StepFive nextStep={nextStep} prevStep={prevStep} />;
+        return <StepFive nextStep={nextStep} prevStep={prevStep}
+          libraryDetails={libraryDetails}
+          setLibraryDetails={setLibraryDetails}
+        />;
       default:
         return <h2>Final Step</h2>;
     }

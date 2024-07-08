@@ -8,7 +8,7 @@ export const StepThree = ({
   <div className="flex  flex-1 overflow-y-auto px-10 py-6 bg-white rounded-lg">
     {/* Form fields for step 2 */}
 
-    <div className=" flex-col w-full  mb-100 gap-20">
+    <div className=" flex-col w-full  mb-100 gap-25 ">
       <div className="flex-col items-center justify-start">
         <label
           htmlFor="fullName"
@@ -16,7 +16,7 @@ export const StepThree = ({
         >
           Full Name
         </label>
-        <input  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="fullName"
           value={userDetails.fullName}
@@ -24,7 +24,7 @@ export const StepThree = ({
             setUserDetails({ ...userDetails, fullName: e.target.value })
           }
           placeholder="Full Name"
-          
+
         />
       </div>
       {/* DOB */}
@@ -35,7 +35,7 @@ export const StepThree = ({
         >
           DOB
         </label>
-        <input  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="dob"
           value={userDetails.dob}
@@ -43,7 +43,7 @@ export const StepThree = ({
             setUserDetails({ ...userDetails, dob: e.target.value })
           }
           placeholder="DOB"
-         
+
         />
       </div>
       {/* Aadhar Card */}
@@ -55,7 +55,7 @@ export const StepThree = ({
         >
           Aadhar Card
         </label>
-        <input  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="aadharCard"
           value={userDetails.aadharCard}
@@ -63,36 +63,40 @@ export const StepThree = ({
             setUserDetails({ ...userDetails, aadharCard: e.target.value })
           }
           placeholder="Aadhar Card"
-       
+
         />
       </div>
       {/* Upload Aadhar */}
 
-      <div className="flex-col   items-center ">
+      <div className="flex justify-start   border-black items-center ">
         <label
           htmlFor="uploadPanCard"
-          className="w-full text-gray-700 text-left font-mulish font-bold text-md leading-tight"
+          className="w-60 h-[50px] text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight border border-2"
         >
           Addhar Card
         </label>
 
-        <input  className="bg-blue-400 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          type="file"
-          color="blue"
-          id="uploadAddharCard"
-          accept="image/*" // Restrict file types (optional)
-          onChange={(e) => {
-            const file = e.target.files ? e.target.files[0] : null;
-            if (file) {
-              setUserDetails({
-                ...userDetails,
-                uploadAadharCard: file,
-              });
-            }
-          }}
-         
-        />
+        <label htmlFor="uploadAadharCard" className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
+        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
+          Select File 
+          <input
+            type="file"
+            id="uploadAadharCard"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files ? e.target.files[0] : null;
+              if (file) {
+                setUserDetails({
+                  ...userDetails,
+                  uploadAadharCard: file,
+                });
+              }
+            }}
+            style={{ display: 'none' , justifyContent:'center' }} // Hide the actual input
+          />
+        </label>
       </div>
+
       <div className="flex-col items-center justify-start">
         <label
           htmlFor="PanCard"
@@ -100,7 +104,7 @@ export const StepThree = ({
         >
           PAN Card
         </label>
-        <input  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="PanCard"
           value={userDetails.aadharCard}
@@ -108,34 +112,38 @@ export const StepThree = ({
             setUserDetails({ ...userDetails, aadharCard: e.target.value })
           }
           placeholder="Aadhar Card"
-      
+
         />
       </div>
 
-      <div className="flex-col   items-center justify-start">
-        <label
+      <div className="flex flex-row   items-center justify-start">
+      <label
           htmlFor="uploadPanCard"
-          className="w-full text-gray-700 text-left font-mulish font-bold text-md leading-tight"
+          className="w-60 h-[50px] text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight border border-2"
         >
           Upload Pan Card
         </label>
 
-        <input  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          type="file"
-          color="blue"
-          id="uploadPanCard"
-          accept="image/*" // Restrict file types (optional)
-          onChange={(e) => {
-            const file = e.target.files ? e.target.files[0] : null;
-            if (file) {
-              setUserDetails({
-                ...userDetails,
-                uploadAadharCard: file,
-              });
-            }
-          }}
-        
-        />
+      
+        <label htmlFor="uploadAadharCard" className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
+        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
+          Select File 
+          <input
+            type="file"
+            id="uploadAadharCard"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files ? e.target.files[0] : null;
+              if (file) {
+                setUserDetails({
+                  ...userDetails,
+                  uploadAadharCard: file,
+                });
+              }
+            }}
+            style={{ display: 'none' , justifyContent:'center' }} // Hide the actual input
+          />
+        </label>
       </div>
 
       {/* addresses */}
@@ -143,9 +151,9 @@ export const StepThree = ({
       <div className="flex flex-col gap-6 ">
         <label className="text-xl">Address</label>
         {/* line 1 */}
-        <input  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
-         
+
           value={userDetails.address.line1}
           onChange={(e) => {
             setUserDetails({
@@ -159,7 +167,7 @@ export const StepThree = ({
           placeholder="Address Line 1"
         />
         {/* line 2 */}
-        <input  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           value={userDetails.address.line2}
           onChange={(e) => {
@@ -175,7 +183,7 @@ export const StepThree = ({
         />
 
         {/* city */}
-        <input  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           value={userDetails.address.city}
           onChange={(e) => {
@@ -190,7 +198,8 @@ export const StepThree = ({
           placeholder="City"
         />
         {/* pinCode */}
-        <input  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"  className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        <input 
+        className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500" className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           value={userDetails.address.pincode}
           onChange={(e) => {
