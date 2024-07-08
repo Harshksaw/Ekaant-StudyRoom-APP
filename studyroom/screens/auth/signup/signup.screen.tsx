@@ -10,6 +10,8 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from "react-native";
+
+import { Button as NativeButton } from "react-native";
 import {
   AntDesign,
   Entypo,
@@ -18,19 +20,8 @@ import {
   Ionicons,
   SimpleLineIcons,
 } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import {
-  useFonts,
-  Raleway_700Bold,
-  Raleway_600SemiBold,
-} from "@expo-google-fonts/raleway";
-import {
-  Nunito_400Regular,
-  Nunito_500Medium,
-  Nunito_700Bold,
-  Nunito_600SemiBold,
-} from "@expo-google-fonts/nunito";
-import { createRef, useState } from "react";
+import * as ImagePicker from 'expo-image-picker';
+import { createRef, useEffect, useState } from "react";
 //   import { commonStyles } from "@/styles/common/common.styles";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -51,6 +42,7 @@ export default function SignUpScreen() {
 
   const [verified, setVerified] = useState(false);
   const [userInfo, setUserInfo] = useState({
+
     name: "",
     email: "",
     phone: 0,
@@ -61,7 +53,7 @@ export default function SignUpScreen() {
     password: "",
   });
 
-  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const inputRefs = [createRef(), createRef(), createRef(), createRef()];
 
   const handleOtpChange = (text, index) => {
@@ -72,18 +64,28 @@ export default function SignUpScreen() {
     //   inputRefs[index + 1].current.focus();
     // }
   };
-  let [fontsLoaded, fontError] = useFonts({
-    Raleway_600SemiBold,
-    Raleway_700Bold,
-    Nunito_400Regular,
-    Nunito_500Medium,
-    Nunito_700Bold,
-    Nunito_600SemiBold,
-  });
 
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }
+
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+
+
 
   const validatePassword = (password: string) => {
     // Check if password is at least 8 characters long
@@ -114,19 +116,49 @@ export default function SignUpScreen() {
     }
   };
 
+
+  // useEffect hook to trigger the API call when all OTP fields are filled
+  useEffect(() => {
+    // Check if all OTP fields are filled
+    const allFieldsFilled = otp.every(value => value.trim() !== "");
+    if (allFieldsFilled) {
+      // Make your API call here
+      console.log("Making API call with OTP:", otp.join(""));
+
+
+      verifyOtp();
+
+    }
+  }, [otp]); 
   const verifyOtp = async () => {
     try {
-      const response = await axios.post(`${BACKEND}/api/v1/auth/verifyOtp`, {
-        otp: otp,
-      });
+      const otpValue = otp.join("");
+      console.log(otpValue, "aleuu")
+
+      try {
+        
+        let response = await axios.post(`${BACKEND}/api/v1/auth/verifyOtp`, {
+          otp: otpValue,
+        });
+
       if (response.data.success) {
         setVerified(true);
       }
+
       console.log(response.data);
+      } catch (error) {
+        console.log(error);
+        
+      }
+     
+
+
     } catch (error) {
       console.log(error);
     }
   };
+
+  //signup api 
   const handleSignUp = async () => {
     // if (!userInfo.name || !userInfo.email || !userInfo.phone || !userInfo.password) {
     //   setRequired(true);
@@ -154,14 +186,29 @@ export default function SignUpScreen() {
         phoneNumber: userInfo.phone,
         accountType: "User",
       });
-      const response = await axios.post(`${BACKEND}/api/v1/auth/signup`, {
-        username: userInfo.name,
-        email: userInfo.email,
-        password: userInfo.password,
-        phoneNumber: userInfo.phone,
-        accountType: "User",
+
+
+      let formData = new FormData();
+      console.log("Image path:", typeof image  )
+
+      formData.append('profile', {
+        uri: image,
+        type: '*/*', 
+        name: `${userInfo.name}.jpg`, // The name of the image file
       });
-      console.log("resposne >>>>sign up>>>>>", response.data);
+
+      // Append other user info to formData
+      formData.append('username', userInfo.name);
+      formData.append('email', userInfo.email);
+      formData.append('password', userInfo.password);
+      formData.append('phoneNumber', userInfo.phone.toString()); // Ensure phone is a string
+      formData.append('accountType', "User");
+
+      const response = await axios.post(`${BACKEND}/api/v1/auth/signup`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       if (response.data.success) {
         await AsyncStorage.setItem(
           "token",
@@ -211,7 +258,9 @@ export default function SignUpScreen() {
             <Text style={[styles.welcomeText, {}]}>
               Create {"     "} Account
             </Text>
-            <View
+
+            <TouchableOpacity 
+            onPress={pickImage} 
               style={{
                 width: 100,
                 height: 100,
@@ -224,8 +273,21 @@ export default function SignUpScreen() {
                 alignItems: "center",
               }}
             >
-              <Ionicons name="camera-outline" size={40} color={"#0077B6"} />
-            </View>
+              {/* <NativeButton  onPress={pickImage} 
+              
+              
+              > */}
+              {!image &&
+                  <Ionicons name="camera-outline" size={40} color={"#0077B6"} />
+              }
+              {/* </NativeButton> */}
+              {image && <Image source={{ uri: image }} style={{
+                width: 100,
+                height: 100,
+                borderRadius: 50,
+              }} />}
+            
+            </TouchableOpacity>
           </View>
 
           <Image
@@ -240,7 +302,7 @@ export default function SignUpScreen() {
           <KeyboardAvoidingView style={styles.inputContainer}>
             <View>
               <TextInput
-                style={[styles.input, { paddingLeft: 40,backgroundColor:"#F8F8F8" , borderRadius:50}]}
+                style={[styles.input, { paddingLeft: 40, backgroundColor: "#F8F8F8", borderRadius: 50 }]}
                 keyboardType="email-address"
                 value={userInfo.email}
                 placeholder="Email"
@@ -255,11 +317,11 @@ export default function SignUpScreen() {
                 color={"#A1A1A1"}
               />
             </View>
-            <View 
-            style={{borderRadius:50}}
+            <View
+              style={{ borderRadius: 50 }}
             >
               <TextInput
-                style={[styles.input, { paddingLeft: 40, marginBottom: -12, borderRadius:50 , backgroundColor:"#F8F8F8"}]}
+                style={[styles.input, { paddingLeft: 40, marginBottom: -12, borderRadius: 50, backgroundColor: "#F8F8F8" }]}
                 keyboardType="default"
                 value={userInfo.name}
                 placeholder="Full Name"
@@ -292,8 +354,8 @@ export default function SignUpScreen() {
                     flexDirection: "row",
                     justifyContent: "flex-start",
                     alignItems: "center",
-                              borderRadius: 50,
-                    backgroundColor:"#F8F8F8"
+                    borderRadius: 50,
+                    backgroundColor: "#F8F8F8"
                   },
                 ]}
               >
@@ -305,11 +367,11 @@ export default function SignUpScreen() {
                     width: 1,
                     borderColor: "black",
                     marginLeft: 10,
-          
+
                   }}
                 ></View>
                 <TextInput
-                  style={{ paddingLeft: 20 , }}
+                  style={{ paddingLeft: 20, }}
                   keyboardType="phone-pad"
                   value={userInfo.phone.toString()} // Convert phone number to string for the value prop
                   placeholder="phone"
@@ -333,26 +395,26 @@ export default function SignUpScreen() {
                   size={24}
                   color="black"
                 />
-                      
+
               </View>
               {showOtp && Number(userInfo.phone) >= 1000000000 && (
 
                 <View
-                style={{
-                  flexDirection: "column",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  gap: 5,
-                  marginTop: 10,
-                
-                }}
+                  style={{
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    gap: 5,
+                    marginTop: 10,
+
+                  }}
                 >
-                     <Text style={{
-                  fontSize: 18,
-                  fontWeight: "400",
-                     }}>Enter OTP</Text>
-           
-            
+                  <Text style={{
+                    fontSize: 18,
+                    fontWeight: "400",
+                  }}>Enter OTP</Text>
+
+
                   <View
                     style={{
                       flexDirection: "row",
@@ -360,36 +422,38 @@ export default function SignUpScreen() {
                       paddingHorizontal: 50,
                     }}
                   >
-                   
-                    {otp.map((value, index) => (
-                      <TextInput
-                        key={index}
-                        ref={inputRefs[index]}
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderWidth: 1,
-                          // marginHorizontal:20,
-                          borderColor: "lightgray",
-                          borderRadius: 10,
-                          backgroundColor: "white",
-                          textAlign: "center",
-                        }}
-                        maxLength={1}
-                        keyboardType="numeric"
-                        onChangeText={(text) => handleOtpChange(text, index)}
-                        value={value}
-                      />
-                    ))}
 
-                </View>
+{otp.map((value, index) => (
+        <TextInput
+          key={index}
+          // Assuming inputRefs is defined elsewhere in your component
+          ref={inputRefs[index]}
+          style={{
+            width: 40,
+            height: 40,
+            borderWidth: 1,
+            borderColor: "lightgray",
+            borderRadius: 10,
+            backgroundColor: "white",
+            textAlign: "center",
+          }}
+          maxLength={1}
+          keyboardType="numeric"
+          onChangeText={(text) => handleOtpChange(text, index)}
+          value={value}
+        />
+      ))}
+
+                  </View>
                 </View>
 
               )}
 
               <TextInput
-                style={[styles.input, { marginTop: 15 , borderRadius:50,           borderRadius: 50,
-                  backgroundColor:"#F8F8F8"}]}
+                style={[styles.input, {
+                  marginTop: 15, borderRadius: 50, borderRadius: 50,
+                  backgroundColor: "#F8F8F8"
+                }]}
                 secureTextEntry
                 value={userInfo.password}
                 placeholder="password"
