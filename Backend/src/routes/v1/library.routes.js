@@ -41,5 +41,6 @@ Library.get("/getLibrary", LibraryController.getLibrary);
 Library.post("/updateStatus", LibraryController.updateApproveStatus);
 Library.post("/getLibraryById", LibraryController.getLibraryById);
 Library.post("/getAdminLibraries", LibraryController.getAdminLibraries);
+Library.post("/getAllBookings", LibraryController.getAllBookings);
 
 module.exports = Library;

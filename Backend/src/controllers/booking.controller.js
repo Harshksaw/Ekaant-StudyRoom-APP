@@ -87,12 +87,12 @@ async function createBooking(req, res) {
 }
 
 
-async function getAllBookings(req, res) {
+async function getUserBookings(req, res) {
   try {
 
     const { id } = req.params;
 
-    const bookings = await Booking.find( {userId: id}).exec();
+    const bookings = await Booking.find({userId: id}).populate("libraryId").exec();
     return res.status(StatusCodes.OK).json({ bookings });
   } catch (error) {
     console.error(error);
@@ -102,5 +102,5 @@ async function getAllBookings(req, res) {
 module.exports = {
   createBooking,
   pingBookingController,
-  getAllBookings,
+  getUserBookings,
 };

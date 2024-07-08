@@ -9,6 +9,7 @@ const cloudinary = require("cloudinary").v2;
 const { upload } = require("multer");
 const { Library } = require("../models/library.model");
 const { db } = require("../models/user.model");
+const { Booking } = require("../models/booking.model");
 
 // async function
 // create a library which
@@ -203,11 +204,25 @@ const getAdminLibraries = async (req, res) => {
     }
 };
 
+
+async function getAllBookings(req, res) {
+  try {
+
+
+
+    const bookings = await Booking.find().populate("userId").exec();
+    return res.status(StatusCodes.OK).json({ bookings });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 module.exports = {
   pingAdmin,
   createRoom,
   getLibrary,
   getLibraryById,
   updateApproveStatus,
-  getAdminLibraries
+  getAdminLibraries,
+  getAllBookings,
 };
