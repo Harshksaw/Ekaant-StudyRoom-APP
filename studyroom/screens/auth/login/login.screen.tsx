@@ -332,7 +332,7 @@ const LoginScreen: React.FC = () => {
             <Text
               style={{
                 fontSize: 18,
-                fontFamily: "Raleway_600SemiBold",
+
                 color: "#2467EC",
                 marginLeft: 5,
               }}
