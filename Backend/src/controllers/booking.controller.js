@@ -2,7 +2,8 @@ const { StatusCodes } = require("http-status-codes");
 
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
-const { User, Booking } = require("../models");
+const { User} = require("../models");
+const { Booking } = require("../models/booking.model");
 const bookingModel = require("../models/booking.model");
 const JWT_SECRET = "MY_SECRET_KEY";
 const BookingSchema = zod.object({
@@ -28,7 +29,11 @@ const BookingSchema = zod.object({
   bookingStatus: zod.enum(["PENDING", "CONFIRMED", "CANCELLED"]).optional(),
   transactionDetails: zod.object().optional(),
 });
+function pingBookingController(req, res) {
+  // logger.error("ping error logs for ping controller");
 
+  return res.json({ message: "Booking controller is up" });
+}
 async function createBooking(req, res) {
   try {
     const {
@@ -37,6 +42,7 @@ async function createBooking(req, res) {
       initialPrice,
       finalPrice,
       timeSlot,
+      roomNo,
       bookedSeat,
       bookingDate,
       bookingPeriod,
@@ -55,13 +61,14 @@ async function createBooking(req, res) {
       libraryId,
       initialPrice,
       finalPrice,
+      roomNo,
       timeSlot,
       bookedSeat,
       bookingDate,
       bookingPeriod,
     };
 
-    const newBooking = await Booking.Booking.create(bookingData);
+    const newBooking = await Booking.create(bookingData);
 
   // Now retrieve the booking with populate
   // const populatedBooking = await 
@@ -78,13 +85,22 @@ async function createBooking(req, res) {
     console.error(error);
   }
 }
-function pingBookingController(req, res) {
-  // logger.error("ping error logs for ping controller");
 
-  return res.json({ message: "Booking controller is up" });
+
+async function getAllBookings(req, res) {
+  try {
+
+    const { id } = req.params;
+
+    const bookings = await Booking.find( {userId: id}).exec();
+    return res.status(StatusCodes.OK).json({ bookings });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 module.exports = {
   createBooking,
   pingBookingController,
+  getAllBookings,
 };

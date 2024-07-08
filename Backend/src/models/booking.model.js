@@ -32,6 +32,10 @@ const bookingSchema = new mongoose.Schema({
     from: { type: String, required: false },
     to: { type: String, required: false },
   },
+  roomNo: {
+    type: Number,
+    required: true,
+  },
   bookedSeat: {
     id: { type: String, required: false },
     label: { type: String, required: false },
