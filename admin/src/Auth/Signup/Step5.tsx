@@ -37,14 +37,14 @@ export const StepFive = ({
             Select File
             <input
               type="file"
-              id="uploadAadharCard"
+              id="uploadAadharCard" // ID to be renamed - tofix
               accept="image/*"
               onChange={(e) => {
                 const file = e.target.files ? e.target.files[0] : null;
                 if (file) {
                   setLibraryDetails({
                     ...libraryDetails,
-                    uploadImages: file,
+                    librayCardImage: file, // these field doesnt exist in the state : tofix
                   });
                 }
               }}
@@ -80,7 +80,7 @@ export const StepFive = ({
                 if (file) {
                   setLibraryDetails({
                     ...libraryDetails,
-                    uploadSliders: file,
+                    uploadSliders: file, // tofix
                   });
                 }
               }}
