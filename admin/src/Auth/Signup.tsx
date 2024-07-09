@@ -129,13 +129,13 @@ function Signup() {
       gst: "",
 
       uploadGst: null,
-      showCin: true,
+      showCin: false,
       cin: "",
       uploadCin: null,
-      showTan: true,
+      showTan: false,
       tan: "",
       uploadTan: null,
-      showMisme: true,
+      showMisme: false,
 
       misme: "",
       uploadMisme: null,
