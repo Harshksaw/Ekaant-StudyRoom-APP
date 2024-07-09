@@ -453,4 +453,5 @@ module.exports = {
   changeProfilePic,
   sendEmailOtp,
   verifyEmailOtp,
+  sendOtp
 };
