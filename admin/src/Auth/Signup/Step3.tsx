@@ -18,8 +18,6 @@ export const StepThree = ({
         </label>
         <input
           className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-         
-
           type="text"
           id="fullName"
           value={userDetails.fullName}
@@ -61,25 +59,23 @@ export const StepThree = ({
         </label>
         <input
           className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="aadharCard"
           value={userDetails.aadharCard}
           onChange={(e) =>
             setUserDetails({ ...userDetails, aadharCard: e.target.value })
           }
-          placeholder="Aadhar Card"
+          placeholder="Aadhar Card Number"
         />
       </div>
       {/* Upload Aadhar */}
 
-      <div className="flex justify-start   border-black items-center ">
+      <div className="flex justify-start mt-1 border-black items-center ">
         <label
-          htmlFor="uploadPanCard"
-          className="w-60 h-[50px] text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight border border-2"
+          htmlFor="uploadAadharCard"
+          className="w-60 h-[50px] text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
         >
-          Addhar Card
+          Upload Addhar Card
         </label>
 
         <label
@@ -107,10 +103,10 @@ export const StepThree = ({
         </label>
       </div>
 
-      <div className="flex-col items-center justify-start">
+      <div className="flex-col items-center justify-start mt-2">
         <label
           htmlFor="PanCard"
-          className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
+          className="w-1/3 text-gray-700 text-left  font-mulish font-bold text-md leading-tight"
         >
           PAN Card
         </label>
@@ -118,39 +114,40 @@ export const StepThree = ({
           className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="PanCard"
-          value={userDetails.aadharCard}
+          value={userDetails.panCard}
           onChange={(e) =>
-            setUserDetails({ ...userDetails, aadharCard: e.target.value })
+            setUserDetails({ ...userDetails, panCard: e.target.value })
           }
-          placeholder="Aadhar Card"
+          placeholder="Pan Card Number"
         />
       </div>
 
-      <div className="flex flex-row   items-center justify-start">
+      <div className="flex flex-row  mt-1 items-center justify-start">
         <label
           htmlFor="uploadPanCard"
-          className="w-60 h-[50px] text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight border border-2"
+          className="w-60 h-[50px] text-gray-700 pl-3 border-black  py-2 flex items-center text-left font-normal text-md leading-tight  border-2"
         >
           Upload Pan Card
         </label>
 
         <label
-          htmlFor="uploadAadharCard"
+          htmlFor="uploadPanCard"
           className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
         text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
         >
           Select File
           <input
             type="file"
-            id="uploadAadharCard"
+            id="uploadPanCard"
             accept="image/*"
             onChange={(e) => {
               const file = e.target.files ? e.target.files[0] : null;
               if (file) {
                 setUserDetails({
                   ...userDetails,
-                  uploadAadharCard: file,
+                  uploadPanCard: file,
                 });
+                console.log(userDetails.uploadPanCard);
               }
             }}
             style={{ display: "none", justifyContent: "center" }} // Hide the actual input
@@ -160,8 +157,8 @@ export const StepThree = ({
 
       {/* addresses */}
 
-      <div className="flex flex-col gap-6 ">
-        <label className="text-xl">Address</label>
+      <div className="flex flex-col gap-2">
+        <label className="text-xl mt-5">Address</label>
         {/* line 1 */}
         <input
           className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -196,37 +193,41 @@ export const StepThree = ({
         />
 
         {/* city */}
-        <input
-          className="w-2/3 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          type="text"
-          value={userDetails.address.city}
-          onChange={(e) => {
-            setUserDetails({
-              ...userDetails,
-              address: {
-                ...userDetails.address,
-                city: e.target.value,
-              },
-            });
-          }}
-          placeholder="City"
-        />
+        <div className="w-2/3">
+          <input
+            className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            type="text"
+            value={userDetails.address.city}
+            onChange={(e) => {
+              setUserDetails({
+                ...userDetails,
+                address: {
+                  ...userDetails.address,
+                  city: e.target.value,
+                },
+              });
+            }}
+            placeholder="City"
+          />
+        </div>
         {/* pinCode */}
-        <input
-          className="w-1/2 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          type="text"
-          value={userDetails.address.pincode}
-          onChange={(e) => {
-            setUserDetails({
-              ...userDetails,
-              address: {
-                ...userDetails.address,
-                pincode: e.target.value,
-              },
-            });
-          }}
-          placeholder="pincode"
-        />
+        <div className="w-1/2">
+          <input
+            className="w-32 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            type="text"
+            value={userDetails.address.pincode}
+            onChange={(e) => {
+              setUserDetails({
+                ...userDetails,
+                address: {
+                  ...userDetails.address,
+                  pincode: e.target.value,
+                },
+              });
+            }}
+            placeholder="pincode"
+          />
+        </div>
       </div>
       <div className="flex flex-row gap-30   -col items-center justify-between">
         <button
