@@ -98,6 +98,8 @@ export default function index() {
         const fetchedData = await fetchRoomData();
         setData(fetchedData || []);
       } catch (error) {
+        data.data = [];
+
         console.error("Failed to fetch room data:", error);
         setNotAvailable(true);
         // Handle the error as needed, e.g., set an error state, show a message, etc.
@@ -437,7 +439,7 @@ export default function index() {
               {data &&
                 data?.data.map((item, index) => renderItem({ item, index }))}
 
-              {data?.data.length == 0 && (
+              {data?.data.length == 0  && (
                 <TouchableOpacity onPress={() => setReload(true)}>
                   <Text
                     style={{

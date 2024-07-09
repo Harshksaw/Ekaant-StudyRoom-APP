@@ -66,8 +66,14 @@ const PreBook = async() => {
   const userid = JSON.parse(userData || "{}")
   const userId = userid.user._id;
 
-  console.log("User ID:", userId, "--------","libraryId", data.id, "Initial Price:", price, "Final Price:", totalAmount, "Time Slot:", BookingSlot, "Room No:", RoomNo, "Booked Seat:", BookingSeat, "Booking Date:", BookingDate, "Booking Period:", BookingMonths);
-  if(!userId || !data.id || !price || !totalAmount || !BookingSlot || !RoomNo || !BookingSeat || !BookingDate || !BookingMonths){
+  console.log("------------------->", data.details.id);
+
+  console.log("User ID:", userId, "--------","libraryId", 
+    data._id, "Initial Price:", price, "Final Price:", 
+    totalAmount, "Time Slot:", BookingSlot, "Room No:", RoomNo, 
+    "Booked Seat:", BookingSeat, "Booking Date:",
+     BookingDate, "Booking Period:", BookingMonths);
+  if(!userId || !data.details.id || !price || !totalAmount || !BookingSlot || !RoomNo || !BookingSeat || !BookingDate || !BookingMonths){
     return Toast.show("Please fill all fields !ReBook", {
       type: "error",
       placement: "top",
@@ -81,17 +87,35 @@ const PreBook = async() => {
     return;
   }
 
-  const response = await axios.post(`${BACKEND}/api/v1/booking/createBooking`,{
-    userId: userId,
-    libraryId : data.id,
-    initialPrice : price,
-    finalPrice : totalAmount,
-    timeSlot : BookingSlot,
-    roomNo : RoomNo,
-    bookedSeat : BookingSeat,
-    bookingDate : BookingDate,
-    bookingPeriod : BookingMonths,
-  })
+  try {
+    const response = await axios.post(`${BACKEND}/api/v1/booking/createBooking`,{
+      userId: userId,
+      libraryId : data.details.id,
+      initialPrice : price,
+      finalPrice : totalAmount,
+      timeSlot : BookingSlot,
+      roomNo : RoomNo,
+      bookedSeat : BookingSeat,
+      bookingDate : BookingDate,
+      bookingPeriod : BookingMonths,
+    })
+    
+  } catch (error) {
+    console.log("Error:", error);
+    return Toast.show("Error in Booking !", {
+      type: "error",
+      placement: "top",
+      animationDuration: 1000,
+      icon: <Ionicons name="alert-circle" size={24} color="red" />,
+
+      duration: 3000,
+    })
+    
+  }
+
+
+
+
 
 }
 
@@ -100,11 +124,11 @@ const PreBook = async() => {
 
 
 
-    // router.push({
-    //   pathname: "/library/payment.screen",
-    //   params: { item: JSON.stringify(BookedData), price: JSON.stringify(totalAmount) }
+    router.push({
+      pathname: "/library/payment.screen",
+      params: { item: JSON.stringify(BookedData), price: JSON.stringify(totalAmount) }
 
-    // });
+    });
   }
 
 
