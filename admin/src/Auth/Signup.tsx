@@ -12,6 +12,9 @@ import { StepThree } from "./Signup/Step3";
 import { StepFour } from "./Signup/Step4";
 import { StepOne } from "./Signup/Step1";
 import { StepFive } from "./Signup/Step5";
+import { toast } from "sonner";
+import { BASEURL } from "@/lib/utils";
+import axios from "axios";
 
 // Add similar components for StepThree, StepFour, and StepFive
 
@@ -26,7 +29,7 @@ const FinalStep = ({ prevStep }) => (
 
 function Signup() {
   //parent compoenent
-
+const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState({
     phone: 0,
     email: "",
@@ -74,6 +77,7 @@ function Signup() {
   });
 
   const handleEmailOtpInputChange = (e) => {
+    
     const { name, value } = e.target;
     const updatedEmailOtpInputs = {
       ...emailOtpInputs,
@@ -127,7 +131,6 @@ function Signup() {
       registration: "",
       showGst: false,
       gst: "",
-
       uploadGst: null,
       showCin: false,
       cin: "",
@@ -136,18 +139,11 @@ function Signup() {
       tan: "",
       uploadTan: null,
       showMisme: false,
-
       misme: "",
       uploadMisme: null,
     },
-    librayImages: {
-      images: [],
-      uploadImages: null,
-    },
-    librarySliders: {
-      sliders: [],
-      uploadSliders: null,
-    },
+    librayCardImage: [],
+    librarySliders: [],
     halls: 0,
     amentities: {
       coldWater: false,
@@ -166,13 +162,129 @@ function Signup() {
   });
 
   useEffect(() => {
-    console.log(userInfo);
-    console.log(libraryDetails);
+    // console.log(userInfo);
+    console.log(libraryDetails, "========================>Librarydetails");
+    // console.log(userDetails, " ========================> userdetails");
+
   }, [userInfo, userOTP, libraryDetails, userDetails]);
+
+
+  const createUser = async () => {
+    const AdminId = await localStorage.getItem("userId");
+
+    const createAdminDataOBJ = {
+      fullName: userDetails.fullName,
+      dob: userDetails.dob,
+      aadharCard: userDetails.aadharCard,
+      panCard: userDetails.panCard ,
+      address: userDetails.address,
+    };
+    console.log(userDetails?.uploadAadharCard,userDetails?.uploadPanCard)
+    const formData = new FormData();
+
+      formData.append("aadharImage", userDetails?.uploadAadharCard);
+      formData.append("panImage", userDetails?.uploadPanCard);
+
+    formData.append("jsonData", JSON.stringify(createAdminDataOBJ));
+
+    console.log(formData, " > > > ======================>");
+    try {
+      // setLoading(true);
+      // const response = await axios.post(
+      //   `${BASEURL}/api/v1/library/createLibrary`,
+      //   formData
+      // );
+      // console.log("Success:", response.data);
+
+      // if (response.data) {
+      //   // setLoading(false);
+      //   toast.success("Library created successfully");
+      //   setUserDetails({
+      //     fullName: "",
+      //     dob: "",
+      //     aadharCard: "",
+      //     uploadAadharCard: [],
+      //     panCard: "",
+      //     uploadPanCard: [],
+      //     address: {
+      //       line1: "",
+      //       line2: "",
+      //       city: "",
+      //       pincode: "",
+      //     },
+      //   })
+
+      // }
+    } catch (error) {
+      setLoading(false);
+      console.error(
+        "Error:"
+
+      );
+    }
+  };
+
+  const createInitialLib = async (event: React.FormEvent<HTMLFormElement>) => {
+
+
+    const AdminId = await localStorage.getItem("userId");
+    const LibraryDataOBJ = {
+      libraryOwner:AdminId ,
+      name: libraryDetails.libraryName,
+      shortDescription: libraryDetails.libraryApp.shortDescription,
+      longDescription: libraryDetails.libraryApp.longDescription,
+      rawLocation:libraryDetails.libraryApp.longDescription,
+      halls:libraryDetails.halls,
+      amenities: libraryDetails?.amentities,
+    };
+
+    const formData = new FormData();
+
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      formData.append("images", uploadedFiles[i]);
+    }
+    console.log(
+      LibraryDataOBJ,
+      typeof LibraryDataOBJ.seatLayout,
+      LibraryDataOBJ.seatLayout
+    );
+    formData.append("jsonData", JSON.stringify(LibraryDataOBJ));
+
+    console.log(JSON.stringify(formData));
+    console.log(formData);
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `${BASEURL}/api/v1/library/createLibrary`,
+        formData
+      );
+      console.log("Success:", response.data);
+
+      if (response.data) {
+        setLoading(false);
+        toast.success("Library created successfully");
+        setCurrentStep(0);
+     
+        // setImages([]);
+
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error(
+        "Error:"
+
+      );
+    }
+  };
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  const nextStep = () => setCurrentStep(currentStep + 1);
+  const nextStep = () => {
+    console.log(currentStep,'currentstep')
+    if(currentStep === 3){
+      createUser()
+    }
+    setCurrentStep(currentStep + 1)};
   const prevStep = () => setCurrentStep(currentStep - 1);
 
   const renderStep = () => {
@@ -204,6 +316,7 @@ function Signup() {
             userDetails={userDetails}
             setUserDetails={setUserDetails}
             prevStep={prevStep}
+            createUser={createUser}
           />
         );
       case 4:

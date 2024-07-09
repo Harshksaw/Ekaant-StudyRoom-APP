@@ -1,6 +1,27 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+const FriendSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: false, // Assuming email might not be mandatory
+  },
+  phoneNumber: {
+    type: Number,
+    required: false, // Assuming phone number might not be mandatory
+  },
+  relationship: {
+    type: String,
+    required: false, // Describe the relationship (optional)
+  },
+  // Add any other relevant fields here
+}, { _id: false }); 
+
+
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -12,6 +33,7 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+
   phoneNumber: {
     type: Number,
     required: true,
@@ -53,6 +75,7 @@ const UserSchema = new mongoose.Schema({
   resetPasswordExpires: {
     type: Date,
   },
+  friends: [FriendSchema]
 });
 // password hashing--
 UserSchema.methods.createHash = async function (password) {

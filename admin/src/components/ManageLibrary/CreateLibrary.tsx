@@ -133,6 +133,7 @@ const CreateLibrary = () => {
     );
     formData.append("jsonData", JSON.stringify(LibraryDataOBJ));
 
+    console.log(JSON.stringify(formData));
     console.log(formData);
     try {
       setLoading(true);

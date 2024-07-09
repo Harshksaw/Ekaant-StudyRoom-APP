@@ -17,10 +17,11 @@ import {
   ScrollView,
   Modal,
   Platform,
+  SafeAreaView
 } from "react-native";
 
 import Carousel from "react-native-reanimated-carousel";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 import { Link, router } from "expo-router";
 import Button from "@/components/Button";
 import getLocationName from "@/utils/location";

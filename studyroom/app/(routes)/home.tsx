@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, Stack, useNavigation } from "expo-router";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, SafeAreaView } from "react-native";
 import { useEffect } from "react";
 
-import { SafeAreaView } from "react-native-safe-area-context";
+
 import { useAssets } from "expo-asset";
 export default function Home() {
   const navigation = useNavigation();

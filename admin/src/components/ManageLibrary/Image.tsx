@@ -7,3 +7,4 @@ export default function Image({ src, ...rest }: any) {
       : `${BASEURL}/uploads/` + src;
   return <img {...rest} src={src} alt={""} />;
 }
+

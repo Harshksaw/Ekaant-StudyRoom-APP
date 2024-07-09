@@ -6,4 +6,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
-export const BASEURL='https://studyroom-app.onrender.com'
+// export const BASEURL='https://studyroom-app.onrender.com'
+export const BASEURL='https://4cdqvl-3000.csb.app'

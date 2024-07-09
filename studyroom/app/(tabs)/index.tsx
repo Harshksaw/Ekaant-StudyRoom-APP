@@ -9,8 +9,9 @@ import {
   Text,
   TouchableOpacity,
   View,
+  SafeAreaView 
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 
 import { Ionicons } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
@@ -20,7 +21,7 @@ import { useEffect, useRef, useState } from "react";
 
 const { width, height } = Dimensions.get("window");
 
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NotListedModal from "@/components/NotListedModal";
 import { LinearGradient } from "expo-linear-gradient";
@@ -98,6 +99,8 @@ export default function index() {
         const fetchedData = await fetchRoomData();
         setData(fetchedData || []);
       } catch (error) {
+        data.data = [];
+
         console.error("Failed to fetch room data:", error);
         setNotAvailable(true);
         // Handle the error as needed, e.g., set an error state, show a message, etc.
@@ -289,8 +292,10 @@ export default function index() {
         backgroundColor: "white",
       }}
     >
-      {/* <View style={styles.header}></View> */}
+      <View style={{marginTop:20}}>
+
       <Header color="black" />
+      </View>
 
       <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
 
@@ -437,7 +442,7 @@ export default function index() {
               {data &&
                 data?.data.map((item, index) => renderItem({ item, index }))}
 
-              {data?.data.length == 0 && (
+              {data?.data.length == 0  && (
                 <TouchableOpacity onPress={() => setReload(true)}>
                   <Text
                     style={{
