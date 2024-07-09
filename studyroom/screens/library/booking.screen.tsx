@@ -87,7 +87,7 @@ const BookingScreen: React.FC = () => {
 
   const updateRoomDetails = () => {
     const details = {
-      id: data?._id,      
+      id: data?._id,
       amenities: data?.amenities,
       images: data?.images,
       location: city,
@@ -181,6 +181,8 @@ const BookingScreen: React.FC = () => {
           ))}
         </Picker>
 
+
+
       </View>
 
       <ScrollView
@@ -193,14 +195,17 @@ const BookingScreen: React.FC = () => {
           // justifyContent: "center",
         }}
       >
+
         <Seats onSeatSelect={handleSeatSelect} SeatLayout={data?.seatLayout} />
       </ScrollView>
 
       <TouchableOpacity
         style={{
           // flex: 1,
-          justifyContent: "flex-end",
-          alignItems: "flex-end",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+
           paddingRight: 20,
         }}
         onPress={() => setIsModalVisible(true)}
@@ -383,6 +388,21 @@ const BookingScreen: React.FC = () => {
             </View>
           </Modal>
         </View>
+        <TouchableOpacity
+
+        onPress={()=>{
+          router.push("(routes)/friend");
+        
+        }}
+          style={{
+            backgroundColor: "yellow",
+            padding: 10,
+            borderRadius: 50,
+          }}
+        >
+
+          <Ionicons name="person-add-outline" size={24} color="black" />
+        </TouchableOpacity>
 
         <Button text="Book" width={200} />
       </TouchableOpacity>

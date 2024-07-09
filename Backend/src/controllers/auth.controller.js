@@ -441,6 +441,36 @@ async function changeProfilePic(req, res) {
   }
 }
 
+ async function addFriend(req, res){
+  try {
+    const { userId } = req.params;
+    const friendDetails = req.body; // Assuming friendDetails contains name, email, etc.
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    user.friends.push(friendDetails);
+    await user.save();
+    res.status(201).send(user.friends);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
+
+
+ async function getFriends(req, res){
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId).populate('friends');
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    res.status(200).send(user.friends);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
+
 module.exports = {
   signUp,
   signIn,
@@ -453,5 +483,7 @@ module.exports = {
   changeProfilePic,
   sendEmailOtp,
   verifyEmailOtp,
-  sendOtp
+  sendOtp,
+  addFriend,
+  getFriends
 };

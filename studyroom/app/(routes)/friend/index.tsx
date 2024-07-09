@@ -1,6 +1,6 @@
 
 import store from "@/redux/store"
-import FriendDetails from "@/screens/home/friend/friend.details"
+import FriendDetails from "@/screens/friend/friend.details"
 
 import { Provider } from "react-redux"
 
