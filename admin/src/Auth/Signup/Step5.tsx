@@ -24,9 +24,9 @@ export const StepFive = ({
         <div className="flex  items-center justify-start">
           <label
             htmlFor="uploadPanCard"
-            className="w-60 h-[50px] text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight border border-2"
+            className="w-60 h-[50px] pl-1 flex items-center text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight  border-2"
           >
-            Upload Pan Card
+            Upload Library Card Image
           </label>
 
           <label
@@ -44,7 +44,7 @@ export const StepFive = ({
                 if (file) {
                   setLibraryDetails({
                     ...libraryDetails,
-                    uploadAadharCard: file,
+                    uploadImages: file,
                   });
                 }
               }}
@@ -60,9 +60,9 @@ export const StepFive = ({
         <div className="flex  items-center justify-start">
           <label
             htmlFor="uploadPanCard"
-            className="w-60 h-[50px] text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight border border-2"
+            className="w-60 h-[50px] pl-1 flex items-center text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight  border-2"
           >
-            Upload Pan Card
+            Upload Slider Images
           </label>
 
           <label
@@ -80,7 +80,7 @@ export const StepFive = ({
                 if (file) {
                   setLibraryDetails({
                     ...libraryDetails,
-                    uploadAadharCard: file,
+                    uploadSliders: file,
                   });
                 }
               }}
@@ -91,14 +91,14 @@ export const StepFive = ({
       </div>
 
       <div
-        className="flex gap-10 w-2/3
+        className="flex flex-col gap-1 w-full
        items-center justify-start"
       >
         <label
           htmlFor="halls"
-          className="w-1/4 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
+          className="w-full text-gray-700 text-left font-mulish font-bold text-md leading-tight self-start"
         >
-          Halls
+          Number. Of Halls
         </label>
         <input
           className="w-3/4 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"

@@ -7,14 +7,13 @@ const errorHandler = require("./utils/errorHandler");
 const connectToDB = require("./config/db.config");
 require("dotenv").config();
 
-const cloudinary = require("cloudinary").v2;
 
-const Multer = require("multer");
 
 // const PORT
 const app = express();
-app.use(cors());
 
+
+app.use(cors("*"));
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.text());
 

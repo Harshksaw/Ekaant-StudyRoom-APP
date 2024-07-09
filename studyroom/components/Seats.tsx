@@ -13,35 +13,32 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect }) => {
 };
 
 const SeatsComponent = ({ layout, bookedSeats, onSeatSelect }) => {
-  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [selectedSeat, setSelectedSeat] = useState(null);
 
   const handleSelect = (seatData) => {
-    let newSelectedSeats = [...selectedSeats];
-    const index = newSelectedSeats.findIndex(seat => seat.id === seatData.id);
-
-    if (index !== -1) {
-      newSelectedSeats.splice(index, 1);
+    // Check if the clicked seat is already selected
+    if (selectedSeat && seatData.id === selectedSeat.id) {
+      setSelectedSeat(null); // Deselect the seat
+      onSeatSelect(null); // Pass null to indicate no seat is selected
     } else {
-      newSelectedSeats.push(seatData);
+      setSelectedSeat(seatData); // Select the new seat
+      onSeatSelect(seatData); // Pass the selected seat back to parent
     }
-
-    setSelectedSeats(newSelectedSeats);
-    onSeatSelect(newSelectedSeats); // Pass the updated selected seats back to parent
   };
 
   const createSeatGrid = () => {
     return layout.map((seat, index) => {
-      const isSelected = selectedSeats.some(selectedSeat => selectedSeat.id === seat.id);
+      const isSelected = selectedSeat && seat.id === selectedSeat.id;
       const isBooked = bookedSeats.some(bookedSeat => bookedSeat.id === seat.id);
 
       return (
         <Seat
-          key={index}
-          seatData={seat}
-          isSelected={isSelected}
-          isBooked={isBooked}
-          onSeatSelect={handleSelect}
-        />
+      key={index}
+      seatData={seat}
+      isSelected={isSelected}
+      isBooked={isBooked}
+      onSeatSelect={handleSelect}
+    />
       );
     });
   };
@@ -74,10 +71,10 @@ const styles = StyleSheet.create({
 
 export default function Seats({ onSeatSelect, SeatLayout }) {
   // Handle seat selection in this parent component
-  const handleSeatSelect = (selectedSeats) => {
-    onSeatSelect(selectedSeats);
-    console.log("Selected Seats:", selectedSeats); // Log the selected seats to verify
-    // Perform further actions with selectedSeats data here
+  const handleSeatSelect = (selectedSeat) => {
+    onSeatSelect(selectedSeat); // Now expects a single seat object or null
+    console.log("Selected Seat:", selectedSeat); // Log the selected seat to verify
+    // Perform further actions with selectedSeat data here
   };
 
   return (
