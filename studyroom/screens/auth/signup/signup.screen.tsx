@@ -9,9 +9,10 @@ import {
   Alert,
   KeyboardAvoidingView,
   ScrollView,
+  SafeAreaView
 } from "react-native";
 
-import { Button as NativeButton } from "react-native";
+
 import {
   AntDesign,
   Entypo,
@@ -19,6 +20,7 @@ import {
   Fontisto,
   Ionicons,
   SimpleLineIcons,
+  
 } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 import { createRef, useEffect, useState } from "react";
@@ -32,7 +34,7 @@ import axios from "axios";
 import { Feather } from "@expo/vector-icons";
 import { BACKEND } from "@/utils/config";
 import Button from "@/components/Button";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function SignUpScreen() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);

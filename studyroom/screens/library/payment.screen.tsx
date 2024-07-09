@@ -10,17 +10,22 @@ import {
   Modal,
   ScrollView,
   Dimensions,
+  TouchableHighlight,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+
 import { useRoute } from "@react-navigation/native";
-import { set } from "react-native-reanimated";
+
 import { router } from "expo-router";
 
-import { Image, ImageBackground } from "expo-image";
+
 import { useAssets } from "expo-asset";
 import { Card1, Credit1, Credit2, Credit3 } from "@/assets";
 import { Ionicons } from "@expo/vector-icons";
-import InvoiceScreen from "./invoice.screen";
+
+
+import RazorpayCheckout from 'react-native-razorpay';
+
+
 const PaymentScreen: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const cardWidth = Dimensions.get("window").width; // Assuming full width for simplicity, adjust as needed
@@ -36,7 +41,7 @@ const PaymentScreen: React.FC = () => {
   const [assets] = useAssets([require("../../assets/images/Credit.png")]);
 
   const route = useRoute();
-const  PaymentData = route.params.item ? JSON.parse(route.params.item) : {};
+  const PaymentData = route.params.item ? JSON.parse(route.params.item) : {};
   let PaymentPrice = route?.params.price
     ? JSON.parse(route.params.price)
     : null;
@@ -53,8 +58,8 @@ const  PaymentData = route.params.item ? JSON.parse(route.params.item) : {};
         PaymentData &&
         typeof PaymentData.date === "string" &&
         typeof PaymentData.months === "number" &&
-        typeof PaymentData.seat === "object" && 
-      
+        typeof PaymentData.seat === "object" &&
+
         typeof PaymentData.slot === "object" &&
         PaymentData.slot !== null &&
         typeof PaymentData.slot._id === "string" &&
@@ -81,12 +86,44 @@ const  PaymentData = route.params.item ? JSON.parse(route.params.item) : {};
 
   console.log("_________>>>>", PaymentData, "<<<<<_________");
 
-const InvoiceScreen = () => {
-  router.push({
-    pathname:'library/invoice.screen',
-    params: {item: JSON.stringify(PaymentData), price: JSON.stringify(PaymentPrice)}
-  })
-}
+  const InvoiceScreen = async () => {
+    await handlePayment();
+
+
+
+    // router.push({
+    //   pathname:'library/invoice.screen',
+    //   params: {item: JSON.stringify(PaymentData), price: JSON.stringify(PaymentPrice)}
+    // })
+  }
+
+  const handlePayment = async () => {
+    var options = {
+      description: 'Credits towards consultation',
+      image: 'https://i.imgur.com/3g7nmJC.jpg',
+      currency: 'INR',
+      key: 'X0hU3Y92HTO7QYUYcuWnlR1C',
+      amount: '5000',
+      name: 'Acme Corp',
+      order_id: '',
+      prefill: {
+        email: 'gaurav.kumar@example.com',
+        contact: '9191919191',
+        name: 'Gaurav Kumar'
+      }
+    }
+    RazorpayCheckout.open(options).then((data) => {
+      // handle success
+      alert(`Success: ${data.razorpay_payment_id}`);
+    }).catch((error) => {
+      // handle failure
+
+      console.log("Error in payment", error.code, error.description, error.source, error.metadata);
+      alert(`Error: ${error.code} | ${error.description} | ${error.source} | ${error.metadata}`);
+    });
+
+
+  }
 
   return (
     <SafeAreaView
@@ -136,7 +173,7 @@ const InvoiceScreen = () => {
               fontSize: 24,
               fontWeight: "500",
               lineHeight: 48,
-              marginHorizontal:20,
+              marginHorizontal: 20,
             }}
           >
             Payment Screen
@@ -148,7 +185,7 @@ const InvoiceScreen = () => {
               fontSize: 20,
               fontWeight: "600",
               lineHeight: 30,
-              marginHorizontal:20,
+              marginHorizontal: 20,
             }}
           >
             Select Payment method
@@ -158,7 +195,7 @@ const InvoiceScreen = () => {
               flexDirection: "row",
               justifyContent: "center",
               // alignItems:'center',
-              marginHorizontal:20,
+              marginHorizontal: 20,
               gap: 10,
             }}
           >
@@ -195,7 +232,7 @@ const InvoiceScreen = () => {
                 fontSize: 20,
                 lineHeight: 30,
                 fontWeight: "600",
-                marginHorizontal:20,
+                marginHorizontal: 20,
               }}
             >
               Select your card
@@ -205,7 +242,7 @@ const InvoiceScreen = () => {
               style={{
                 maxHeight: 220,
                 marginLeft: 20,
-                marginRight:5,
+                marginRight: 5,
               }}
             >
               <ScrollView
@@ -242,7 +279,7 @@ const InvoiceScreen = () => {
           </View>
 
           <TouchableOpacity
-          onPress={() => InvoiceScreen()}
+            onPress={() => InvoiceScreen()}
           >
             <View
               style={{
@@ -273,6 +310,8 @@ const InvoiceScreen = () => {
               <Ionicons name="arrow-forward" size={25} color="white" />
             </View>
           </TouchableOpacity>
+
+         
         </View>
       </View>
     </SafeAreaView>

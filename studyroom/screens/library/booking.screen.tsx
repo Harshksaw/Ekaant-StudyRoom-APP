@@ -20,8 +20,9 @@ import {
   Modal,
   StyleSheet,
   ScrollView,
+  SafeAreaView
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 import { setBookingDetails } from "@/redux/bookingSlice";
 import { useRoute } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
