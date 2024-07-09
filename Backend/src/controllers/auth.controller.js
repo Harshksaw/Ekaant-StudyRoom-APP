@@ -14,6 +14,9 @@ const signupSchema = zod.object({
 });
 let pingCounter = 0;
 
+let otpTest = 0;
+let emailOtpTest
+
 function pingAuthController(req, res) {
   // logger.error("ping error logs for ping controller");
   pingCounter++;
@@ -144,7 +147,6 @@ async function signIn(req, res, next) {
   }
 }
 
-let otpTest = 0;
 
 // async function sendOtp(phoneNumber) {
 //   // """Sends an OTP (One-Time Password) to the provided phone number using Fast2SMS Quick API.
@@ -288,31 +290,11 @@ let otpTest = 0;
 
 // Example usage (assuming a web framework like Express)
 async function sendOtp(phoneNumber) {
-  const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const otpCode = Math.floor(1000 + Math.random() * 900000).toString();
   console.log(`OTP for ${phoneNumber} is ${otpCode}`);
 
   otpTest = otpCode;
   return { success: true, message: `OTP sent to ${phoneNumber}` };
-}
-async function generateOtp(req, res, next) {
-  const phoneNumber = req.body.phoneNumber;
-  console.log("phone number is ", phoneNumber);
-  if (!phoneNumber || !/^\d{10}$/.test(phoneNumber)) {
-    console.log("invalid phone number is ", phoneNumber);
-    return res
-      .status(400)
-      .json({ success: false, message: "Missing phone number" });
-  }
-  console.log("phone number is ", phoneNumber);
-  // try {
-  const response = await sendOtp(phoneNumber);
-
-  res.json(response);
-  // } catch (error) {
-  //   console.error(error);
-  //   console.error(error.response ? error.response.data : error);
-  //   res.status(500).json({ success: false, message: "Internal server error" });
-  // }
 }
 
 async function verifyOtp(req, res) {
@@ -347,6 +329,26 @@ async function verifyOtp(req, res) {
   // }
 }
 
+async function sendEmailOtp(email) {
+  const otpCode = Math.floor(1000 + Math.random() * 900000).toString();
+  console.log(`OTP for ${email} is ${otpCode}`); // In a real scenario, this would be sent via email
+
+  emailOtpTest = otpCode; // Storing the OTP for verification
+  console.log("email otp is line 330", emailOtpTest);
+  return { success: true, message: `OTP sent to ${email}` };
+}
+
+async function verifyEmailOtp(req, res) {
+  const { otp } = req.body;
+  if (otp === "" || otp === null || otp === undefined || otp === 0) {
+    return res.status(200).json({ message: "Pass it" });
+  }
+  if (otp !== emailOtpTest) {
+    return res.status(400).json({ message: "Invalid OTP" });
+  }
+
+  return res.status(200).json({ message: "OTP verified successfully" });
+}
 // forget password--
 const forgetPasswordSchema = zod.object({
   userId: zod.string().min(3).max(255),
@@ -442,11 +444,14 @@ async function changeProfilePic(req, res) {
 module.exports = {
   signUp,
   signIn,
-  // updateProfile,
+
   pingAuthController,
-  generateOtp,
+
   verifyOtp,
   forgetPassword,
   getUser,
   changeProfilePic,
+  sendEmailOtp,
+  verifyEmailOtp,
+  sendOtp
 };

@@ -61,8 +61,10 @@ AuthRouter.get("/ping", AuthController.pingAuthController);
 AuthRouter.post("/signup",upload.single('profile'), AuthController.signUp);
 AuthRouter.post("/signin", AuthController.signIn);
 
-AuthRouter.post("/otp", AuthController.generateOtp);
+AuthRouter.post("/otp", AuthController.sendOtp);
+AuthRouter.post("/emailotp", AuthController.sendEmailOtp);
 AuthRouter.post("/verifyOtp", AuthController.verifyOtp);
+AuthRouter.post("/verifyEmailOtp", AuthController.verifyEmailOtp);
 AuthRouter.post("/forgotPassword", AuthController.forgetPassword);
 AuthRouter.get(
   "/me",

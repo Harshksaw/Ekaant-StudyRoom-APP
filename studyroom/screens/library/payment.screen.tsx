@@ -36,34 +36,32 @@ const PaymentScreen: React.FC = () => {
   const [assets] = useAssets([require("../../assets/images/Credit.png")]);
 
   const route = useRoute();
-  let PaymentData;
+const  PaymentData = route.params.item ? JSON.parse(route.params.item) : {};
   let PaymentPrice = route?.params.price
     ? JSON.parse(route.params.price)
     : null;
+
+
   useEffect(() => {
-    let PaymentData;
+
     try {
       // Attempt to parse the item parameter if it exists
-      PaymentData = route.params?.item ? JSON.parse(route.params.item) : null;
+
 
       console.log("PaymentData in line 31 ", PaymentData, PaymentPrice);
       if (
         PaymentData &&
         typeof PaymentData.date === "string" &&
         typeof PaymentData.months === "number" &&
-        Array.isArray(PaymentData.seat) &&
-        PaymentData.seat.every(
-          (seat) =>
-            typeof seat.id === "string" && typeof seat.label === "string"
-        ) &&
-        PaymentData.seat.length > 0 &&
+        typeof PaymentData.seat === "object" && 
+      
         typeof PaymentData.slot === "object" &&
         PaymentData.slot !== null &&
         typeof PaymentData.slot._id === "string" &&
         typeof PaymentData.slot.from === "string" &&
         typeof PaymentData.slot.to === "string"
       ) {
-        console.log("PaymentData", PaymentData);
+        console.log("PaymentData --->>>>>>>>", PaymentData);
         // If all conditions are met, you might not want to change the state here
         // setAvailable(true);
         // setModalVisible(false);
@@ -81,7 +79,7 @@ const PaymentScreen: React.FC = () => {
     }
   }, [route.params.item]);
 
-  console.log("_________", PaymentData, "_________");
+  console.log("_________>>>>", PaymentData, "<<<<<_________");
 
 const InvoiceScreen = () => {
   router.push({
