@@ -102,7 +102,7 @@ const PaymentScreen: React.FC = () => {
       description: 'Credits towards consultation',
       image: 'https://i.imgur.com/3g7nmJC.jpg',
       currency: 'INR',
-      key: 'X0hU3Y92HTO7QYUYcuWnlR1C',
+      key: 'rzp_test_lmy83ka5bsXLz8',
       amount: '5000',
       name: 'Acme Corp',
       order_id: '',
