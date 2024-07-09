@@ -33,12 +33,12 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect }) => {
 
       return (
         <Seat
-          key={index}
-          seatData={seat}
-          isSelected={isSelected}
-          isBooked={isBooked}
-          onSeatSelect={handleSelect}
-        />
+      key={index}
+      seatData={seat}
+      isSelected={isSelected}
+      isBooked={isBooked}
+      onSeatSelect={handleSelect}
+    />
       );
     });
   };
@@ -71,10 +71,10 @@ const styles = StyleSheet.create({
 
 export default function Seats({ onSeatSelect, SeatLayout }) {
   // Handle seat selection in this parent component
-  const handleSeatSelect = (selectedSeats) => {
-    onSeatSelect(selectedSeats);
-    console.log("Selected Seats:", selectedSeats); // Log the selected seats to verify
-    // Perform further actions with selectedSeats data here
+  const handleSeatSelect = (selectedSeat) => {
+    onSeatSelect(selectedSeat); // Now expects a single seat object or null
+    console.log("Selected Seat:", selectedSeat); // Log the selected seat to verify
+    // Perform further actions with selectedSeat data here
   };
 
   return (
