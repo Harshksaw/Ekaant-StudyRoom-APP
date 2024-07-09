@@ -125,16 +125,22 @@ function Signup() {
     },
     libraryLegal: {
       registration: "",
-      gst: null,
+      showGst: false,
+      gst: "",
+
       uploadGst: null,
+      showCin: true,
       cin: "",
       uploadCin: null,
-      tan: null,
+      showTan: true,
+      tan: "",
       uploadTan: null,
-      misme: null,
+      showMisme: true,
+
+      misme: "",
       uploadMisme: null,
     },
-    librayDetails: {
+    librayImages: {
       images: [],
       uploadImages: null,
     },
