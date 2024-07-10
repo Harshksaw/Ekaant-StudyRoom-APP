@@ -99,7 +99,7 @@ export default function index() {
         const fetchedData = await fetchRoomData();
         setData(fetchedData || []);
       } catch (error) {
-        data.data = [];
+        setData([])
 
         console.error("Failed to fetch room data:", error);
         setNotAvailable(true);
