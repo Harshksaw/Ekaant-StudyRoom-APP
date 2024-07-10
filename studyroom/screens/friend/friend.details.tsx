@@ -22,13 +22,20 @@ const FriendDetails = () => {
         // Implement seat booking logic using friend's details
         const userId = await getUserId();
         console.log(userId, "userId")
-        const res = await axios.post(`${BACKEND}/api/v1/auth/addFriend/${userId}`, {
-            name: name,
-            email: email,
-            phoneNumber: phoneNumber
+        console.log(name, email, phoneNumber, "name, email, phoneNumber")
 
-        })
 
+            const res = await axios.post(`${BACKEND}/api/v1/auth/addFriend/${userId}`, {
+                name: name,
+                email: email,
+                phoneNumber: phoneNumber
+    
+            })
+            console.log(res.status)
+    
+            
+      
+   
         if (res.status === 201 || res.status === 200) {
             console.log(res.data, "----????")
             setFriends(res.data);
@@ -36,6 +43,23 @@ const FriendDetails = () => {
             console.log('Friend added successfully');
             Toast.show('Friend added successfully');
 
+        }
+        switch (res.status) {
+            case 200: // Assuming 200 is also a success status for fetching friends
+            case 201:
+                // console.log('Friend fetched successfully', res.data);
+                // setFriends(res.data); // Assuming you have a state setter for friends
+                // Toast.show('Friend fetched successfully');
+                break;
+            case 404:
+                console.log('No friends found');
+                Toast.show('No. Try adding some!');
+                break;
+            default:
+                console.log('Unexpected error occurred');
+                Toast.show('An error occurred. Please try again.');
+                // Optionally, prompt for a retry here
+                break;
         }
         console.log('Booking seat for:', name, email, phoneNumber);
     };
