@@ -289,8 +289,9 @@ async function signIn(req, res, next) {
 // }
 
 // Example usage (assuming a web framework like Express)
-async function sendOtp(phoneNumber) {
-  const otpCode = Math.floor(1000 + Math.random() * 900000).toString();
+async function sendOtp(req, res) {
+  const { phoneNumber } = req.body;
+  const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
   console.log(`OTP for ${phoneNumber} is ${otpCode}`);
 
   otpTest = otpCode;
