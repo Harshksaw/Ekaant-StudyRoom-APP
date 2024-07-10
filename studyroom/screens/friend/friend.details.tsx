@@ -16,8 +16,10 @@ const FriendDetails = () => {
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
 
-    const [friends, setFriends] = useState([]); // [ {name: 'John', email: 'john@gmail', phoneNumber: '1234567890'}
 
+    const [friends, setFriends] = useState([]); // [ {name: 'John', email: 'john@gmail', phoneNumber: '1234567890'}
+    const [isSelected, setIsSelected] = useState(false);
+    const toggleSelection = () => setIsSelected(!isSelected);
     const AddFriend = async () => {
         // Implement seat booking logic using friend's details
         const userId = await getUserId();
@@ -70,7 +72,7 @@ const FriendDetails = () => {
             const res = await axios.post(`${BACKEND}/api/v1/auth/getFriends`, {
                 userId: userId
             });
-    
+    console.log(res, "res")
             switch (res.status) {
                 case 200: // Assuming 200 is also a success status for fetching friends
                 case 201:
@@ -106,7 +108,12 @@ const FriendDetails = () => {
 
     useEffect(() => {
         GetFriend();
-    }, []);
+    }, [])
+
+    const addForBooking = async() => {
+        const toggleSelection = () => setIsSelected(!isSelected);
+
+    }
 
 
     return (
@@ -168,19 +175,49 @@ const FriendDetails = () => {
 
             </KeyboardAvoidingView>
 
-            <ScrollView>
+            <ScrollView 
+            style={{
+                flex: 1,
+                width: '100%',
+                backgroundColor: colors.white,
+                padding: spacing.large,
+                gap:10,
+                marginBottom: 20,
+            
+            }}
+            >
+
+                <TouchableOpacity
+    onPress={()=>GetFriend()}
+                >
+
+                <Text
+                style={{
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    color: colors.black,
+                    textAlign: 'Left',
+                    letterSpacing: 2,
+                    marginBottom: 20,
+                    
+                }}
+                >Select for whom you want to book</Text>
         {friends.length === 0 && (
-                    <Text style={{
-                        fontSize: 16,
-                        color: '#666',
-                        textAlign: 'center',
-                        marginTop: 20,
-                    }}>No friends found. Add some friends to see them here.</Text>
-                
+            <Text style={{
+                fontSize: 16,
+                color: '#666',
+                textAlign: 'center',
+                marginTop: 20,
+            }}>No friends found. Add some friends to see them here.</Text>
+            
         )}
+        </TouchableOpacity>
 
                 {friends.map((friend, index) => (
-                    <View key={index} style={{
+                    <TouchableOpacity
+                    onPress={() => addForBooking}
+
+                    key={index} style={{
                         backgroundColor: '#fff',
                         padding: 20,
                         marginVertical: 8,
@@ -203,7 +240,7 @@ const FriendDetails = () => {
                             color: '#666',
                         }}>Email: {friend.email}</Text>
                         <Text style={styles.label}>Phone Number: {friend.phoneNumber}</Text>
-                    </View>
+                    </TouchableOpacity>
                 ))}
 
             </ScrollView>
@@ -216,6 +253,9 @@ const FriendDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'column',
+        gap:10,
+        
         alignItems: 'center',
         backgroundColor: colors.white,
         padding: spacing.large,
