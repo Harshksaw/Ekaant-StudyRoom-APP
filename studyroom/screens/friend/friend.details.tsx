@@ -67,14 +67,14 @@ const FriendDetails = () => {
     };
     const GetFriend = async () => {
         try {
-            const id = await AsyncStorage.getItem('userId');
-            const userId = JSON.parse(id || '{}');
-            const res = await axios.post(`${BACKEND}/api/v1/auth/getFriends`, {
-                userId: userId
-            });
-    console.log(res, "res")
+            const id = await getUserId();
+            const userId = id
+            console.log(userId, "userId")
+            const res = await axios.post(`${BACKEND}/api/v1/auth/getFriends/${userId}`);
+
+            console.log(res, "res")
             switch (res.status) {
-                case 200: // Assuming 200 is also a success status for fetching friends
+                case 200: 
                 case 201:
                     console.log('Friend fetched successfully', res.data);
                     setFriends(res.data); // Assuming you have a state setter for friends
@@ -188,7 +188,7 @@ const FriendDetails = () => {
             >
 
                 <TouchableOpacity
-    onPress={()=>GetFriend()}
+                onPress={GetFriend}
                 >
 
                 <Text
