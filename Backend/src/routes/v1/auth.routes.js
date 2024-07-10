@@ -58,12 +58,11 @@ const handleRefreshToken = async (req, res, next) => {
 };
 
 AuthRouter.get("/ping", AuthController.pingAuthController);
-AuthRouter.post("/signup",upload.single('profile'), AuthController.signUp);
+AuthRouter.post("/signup", upload.single("profile"), AuthController.signUp);
 AuthRouter.post("/signin", AuthController.signIn);
 
-
 AuthRouter.post("/addFriend/:userId", AuthController.addFriend);
-AuthRouter.post("/getFriends", AuthController.getFriends);
+AuthRouter.post("/getFriends/:userId", AuthController.getFriends);
 
 AuthRouter.post("/otp", AuthController.sendOtp);
 AuthRouter.post("/emailotp", AuthController.sendEmailOtp);

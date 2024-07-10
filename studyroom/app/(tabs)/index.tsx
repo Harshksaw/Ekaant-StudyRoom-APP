@@ -91,6 +91,7 @@ export default function index() {
   useEffect(() => {
     const fetchLibraryDate = async () => {
       const res = await getUserData();
+      console.log("User Data:", res);
       dispatch(setUserDetails(res));
 
       setIsLoading(true);

@@ -12,7 +12,7 @@ import {
   useRouter,
 } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -29,6 +29,8 @@ import { Picker } from "@react-native-picker/picker";
 import { Month } from "@/assets";
 import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
+import ToggleBookingButton from "@/components/ToggleBooking";
+import { Toast } from "react-native-toast-notifications";
 const timeSlots = [
   { from: "09:00", to: "10:00" },
   { from: "10:00", to: "11:00" },
@@ -119,7 +121,6 @@ const BookingScreen: React.FC = () => {
   };
 
 
-
   return (
     <SafeAreaView
       style={{
@@ -145,8 +146,11 @@ const BookingScreen: React.FC = () => {
         style={{
           marginTop: -40,
           // backgroundColor:'red',
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
           height: 55,
-          width: '50%',
+          width: '100%',
           paddingHorizontal: 10,
           marginHorizontal: 10
 
@@ -161,7 +165,9 @@ const BookingScreen: React.FC = () => {
           }
           }
           style={{
-            borderRadius: 50,
+            borderRadius: 20,
+            width: '50%',
+            // backgroundColor: "red",
 
           }}
           mode="dropdown"
@@ -180,6 +186,7 @@ const BookingScreen: React.FC = () => {
             />
           ))}
         </Picker>
+        <ToggleBookingButton/>
 
 
 

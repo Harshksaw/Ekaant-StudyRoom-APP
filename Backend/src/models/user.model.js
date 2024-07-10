@@ -1,26 +1,28 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-const FriendSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
+const FriendSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: false, // Assuming email might not be mandatory
+    },
+    phoneNumber: {
+      type: Number,
+      required: false, // Assuming phone number might not be mandatory
+    },
+    relationship: {
+      type: String,
+      required: false, // Describe the relationship (optional)
+    },
+    // Add any other relevant fields here
   },
-  email: {
-    type: String,
-    required: false, // Assuming email might not be mandatory
-  },
-  phoneNumber: {
-    type: Number,
-    required: false, // Assuming phone number might not be mandatory
-  },
-  relationship: {
-    type: String,
-    required: false, // Describe the relationship (optional)
-  },
-  // Add any other relevant fields here
-}, { _id: false }); 
-
+  { _id: false }
+);
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -64,7 +66,20 @@ const UserSchema = new mongoose.Schema({
   bookings: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Library", //bboking table
+      ref: "Library",
+
+      bookingFor: {
+        type: String,
+        enum: ["Self", "Friend"],
+        default: "Self", // Correct syntax for specifying a default value
+        required: false,
+      },
+      friendDetails: {
+        type: FriendSchema,
+        required: function () {
+          return this.bookingFor === "Friend";
+        },
+      },
     },
   ],
   image: {
@@ -75,7 +90,7 @@ const UserSchema = new mongoose.Schema({
   resetPasswordExpires: {
     type: Date,
   },
-  friends: [FriendSchema]
+  friends: [FriendSchema],
 });
 // password hashing--
 UserSchema.methods.createHash = async function (password) {
