@@ -10,9 +10,17 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // interface BookingState {
 //   details: BookingDetails;
 // }
-
+interface FriendDetails {
+  email: string;
+  name: string;
+  phoneNumber: number;
+}
 const initialState: any = {
  data: null,
+ bookingsForFriend: false,
+
+friendDetails: null,
+  
 };
 
 const UserSlice = createSlice({
@@ -21,11 +29,30 @@ const UserSlice = createSlice({
   reducers: {
     setUserDetails(state, action: PayloadAction<any>) {
       state.details = action.payload;
+    },    
+    setFriendDetails(state, action: PayloadAction<{ friendDetails: FriendDetails, bookingForSelf: boolean }>) {
+      if (action.payload.bookingForSelf) {
+        state.friendDetails = null; // Use null for consistency
+        state.bookingsForFriend = false;
+      } else {
+        state.friendDetails = action.payload.friendDetails;
+        state.bookingsForFriend = true;
+      }
     },
-    // Optionally, add more reducers here for individual updates if needed
+    toggleBookingForFriend(state) {
+      // If there are no friend details and trying to book for a friend, log a message
+      if (!state.friendDetails) {
+        console.log("Friend details are required to book for a friend.");
+      } else {
+        // Toggle the bookingsForFriend state
+        state.bookingsForFriend = !state.bookingsForFriend;
+      }
+    },
+    
+
   },
 });
 
-export const { setUserDetails } = UserSlice.actions;
+export const { setUserDetails, setFriendDetails } = UserSlice.actions;
 
 export default UserSlice.reducer;

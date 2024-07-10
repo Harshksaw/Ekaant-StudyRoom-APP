@@ -9,12 +9,16 @@ import { Toast } from 'react-native-toast-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '@/components/Button';
 import { getUserId } from '@/utils/keys';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFriendDetails } from '@/redux/userSlice';
+import { router } from 'expo-router';
 
 
 const FriendDetails = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const dispatch = useDispatch();
 
 
     const [friends, setFriends] = useState([]); // [ {name: 'John', email: 'john@gmail', phoneNumber: '1234567890'}
@@ -27,17 +31,17 @@ const FriendDetails = () => {
         console.log(name, email, phoneNumber, "name, email, phoneNumber")
 
 
-            const res = await axios.post(`${BACKEND}/api/v1/auth/addFriend/${userId}`, {
-                name: name,
-                email: email,
-                phoneNumber: phoneNumber
-    
-            })
-            console.log(res.status)
-    
-            
-      
-   
+        const res = await axios.post(`${BACKEND}/api/v1/auth/addFriend/${userId}`, {
+            name: name,
+            email: email,
+            phoneNumber: phoneNumber
+
+        })
+        console.log(res.status)
+
+
+
+
         if (res.status === 201 || res.status === 200) {
             console.log(res.data, "----????")
             setFriends(res.data);
@@ -74,10 +78,10 @@ const FriendDetails = () => {
 
             console.log(res, "res")
             switch (res.status) {
-                case 200: 
+                case 200:
                 case 201:
                     console.log('Friend fetched successfully', res.data);
-                    setFriends(res.data); // Assuming you have a state setter for friends
+                    setFriends(res.data);
                     Toast.show('Friend fetched successfully');
                     break;
                 case 404:
@@ -101,7 +105,7 @@ const FriendDetails = () => {
 
 
 
-              
+
             });
         }
     };
@@ -109,9 +113,26 @@ const FriendDetails = () => {
     useEffect(() => {
         GetFriend();
     }, [])
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
-    const addForBooking = async() => {
-        const toggleSelection = () => setIsSelected(!isSelected);
+    const addForBooking = async ({ friend }: any) => {
+
+
+
+        dispatch(setFriendDetails({
+            friendDetails: friend,
+            bookingForSelf: false
+        }));
+        Toast.show(`You are booking for ${friend.name}`, {
+            type: "success",
+            placement: 'top',
+            animationType: "slide-in",
+        });
+        setTimeout(() => {
+            // Navigate back after 2 seconds
+            router.back();
+        }, 2000);
+
 
     }
 
@@ -122,16 +143,16 @@ const FriendDetails = () => {
                 <Header color='black' />
             </View>
             <KeyboardAvoidingView
-            style={{
-                flex: 1,
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: colors.white,
-                padding: spacing.large,
-                gap:10,
-                marginBottom: 20,
-            }}
+                style={{
+                    flex: 1,
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: colors.white,
+                    padding: spacing.large,
+                    gap: 10,
+                    marginBottom: 20,
+                }}
             >
 
 
@@ -175,66 +196,85 @@ const FriendDetails = () => {
 
             </KeyboardAvoidingView>
 
-            <ScrollView 
-            style={{
-                flex: 1,
-                width: '100%',
-                backgroundColor: colors.white,
-                padding: spacing.large,
-                gap:10,
-                marginBottom: 20,
-            
-            }}
+            <ScrollView
+                style={{
+                    flex: 1,
+                    width: '100%',
+                    backgroundColor: colors.white,
+                    padding: spacing.large,
+                    gap: 10,
+                    marginBottom: 20,
+
+                }}
             >
 
                 <TouchableOpacity
-                onPress={GetFriend}
+                    onPress={GetFriend}
                 >
 
-                <Text
-                style={{
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    color: colors.black,
-                    textAlign: 'Left',
-                    letterSpacing: 2,
-                    marginBottom: 20,
-                    
-                }}
-                >Select for whom you want to book</Text>
-        {friends.length === 0 && (
-            <Text style={{
-                fontSize: 16,
-                color: '#666',
-                textAlign: 'center',
-                marginTop: 20,
-            }}>No friends found. Add some friends to see them here.</Text>
-            
-        )}
-        </TouchableOpacity>
+                    <Text
+                        style={{
+                            fontSize: 14,
+                            fontWeight: 'semibold',
+
+                            textAlign: 'Left',
+                            letterSpacing: 2,
+
+
+                        }}
+                    >Select for whom you want to book</Text>
+                    {friends.length === 0 && (
+                        <Text style={{
+                            fontSize: 16,
+                            color: '#666',
+                            textAlign: 'center',
+                            marginTop: 20,
+                        }}>No friends found. Add some friends to see them here.</Text>
+
+                    )}
+                </TouchableOpacity>
 
                 {friends.map((friend, index) => (
                     <TouchableOpacity
-                    onPress={() => addForBooking}
+                        onPress={() => {
 
-                    key={index} style={{
-                        backgroundColor: '#fff',
-                        padding: 20,
-                        marginVertical: 8,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        borderRadius: 5,
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.23,
-                        shadowRadius: 2.62,
-                        elevation: 4,
-                    }}>
-                        <Text style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                        }}>Name: {friend.name}</Text>
+                            {
+                                setSelectedIndex(index);
+                                addForBooking({ friend });
+                            }
+                        }}
+
+                        key={index} style={{
+                            backgroundColor: selectedIndex === index ? '#a8ebaf' : '#FFF', // Change color if selected
+                            padding: 10,
+                            marginVertical: 8,
+
+                            flexDirection: 'column',
+
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            borderRadius: 5,
+                            shadowColor: '#000',
+                            shadowOffset: { width: 3, height: 2 },
+                            shadowOpacity: 0.23,
+                            shadowRadius: 2.62,
+                            elevation: 2,
+
+                        }}>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+
+                            }}
+                        >
+
+                            <Ionicons name="person" size={24} color={colors.black} style={styles.icon} />
+                            <Text style={{
+                                fontSize: 12,
+                                fontWeight: 'semibold',
+                            }}>Name: {friend.name}</Text>
+                        </View>
                         <Text style={{
                             fontSize: 14,
                             color: '#666',
@@ -254,8 +294,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        gap:10,
-        
+        gap: 10,
+
         alignItems: 'center',
         backgroundColor: colors.white,
         padding: spacing.large,
