@@ -45,6 +45,14 @@ const bookingSchema = new mongoose.Schema({
     // default: Date.now,
     required: true,
   },
+  forFriend:{
+    type: {
+      name: String,
+      email: String,
+      phoneNumber: String,
+    },
+    required: false,
+  },
   bookingPeriod: {
     type: Number,
     default: 1,

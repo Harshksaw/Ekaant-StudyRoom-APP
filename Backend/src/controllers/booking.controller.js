@@ -45,11 +45,12 @@ async function createBooking(req, res) {
       roomNo,
       bookedSeat,
       bookingDate,
+      forFriend,
       bookingPeriod,
     } = req.body;
-
+    console.log(forFriend)
     const user = await User.findOne({ _id: userId });
-    console.log(user);
+    // console.log(user);
 
     if (!user) {
       return res
@@ -62,6 +63,7 @@ async function createBooking(req, res) {
       initialPrice,
       finalPrice,
       roomNo,
+      forFriend: !forFriend ? null : forFriend,
       timeSlot,
       bookedSeat,
       bookingDate,
@@ -99,8 +101,23 @@ async function getUserBookings(req, res) {
   }
 }
 
+async function getBookingById(req, res) {
+  try {
+
+    const { id } = req.body;
+    if(!id){
+      res.status(StatusCodes.BAD_REQUEST).json({ message: 'id not found' });
+    }
+    const bookings = await Booking.find({_id: id}).populate("user").exec();
+    return res.status(StatusCodes.OK).json({ bookings });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 module.exports = {
   createBooking,
   pingBookingController,
   getUserBookings,
+  getBookingById
 };

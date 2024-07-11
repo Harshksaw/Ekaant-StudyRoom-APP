@@ -24,6 +24,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 
 import RazorpayCheckout from 'react-native-razorpay';
+import { BACKEND } from "@/utils/config";
+import axios from "axios";
 
 
 const PaymentScreen: React.FC = () => {
@@ -42,47 +44,81 @@ const PaymentScreen: React.FC = () => {
 
   const route = useRoute();
   const PaymentData = route.params.item ? JSON.parse(route.params.item) : {};
+
+  const bookingid = route.params.id ? JSON.parse(route.params.id) : {};
+  console.log("Booking ID", bookingid);
   let PaymentPrice = route?.params.price
     ? JSON.parse(route.params.price)
     : null;
 
 
-  useEffect(() => {
+    useEffect(()=>{
 
-    try {
-      // Attempt to parse the item parameter if it exists
+      if(bookingid !== null){
+
+        
+        const getBookingDetails = async() => {
+          
+          const res = await axios.post(`${BACKEND}/api/v1/booking/getBookingById`,{
+            id : bookingid
+          })
+          console.log(res.data)
+          return res.data;
+          
+        }
 
 
-      console.log("PaymentData in line 31 ", PaymentData, PaymentPrice);
-      if (
-        PaymentData &&
-        typeof PaymentData.date === "string" &&
-        typeof PaymentData.months === "number" &&
-        typeof PaymentData.seat === "object" &&
+        const res = getBookingDetails();
+     
 
-        typeof PaymentData.slot === "object" &&
-        PaymentData.slot !== null &&
-        typeof PaymentData.slot._id === "string" &&
-        typeof PaymentData.slot.from === "string" &&
-        typeof PaymentData.slot.to === "string"
-      ) {
-        console.log("PaymentData --->>>>>>>>", PaymentData);
-        // If all conditions are met, you might not want to change the state here
-        // setAvailable(true);
-        // setModalVisible(false);
-      } else {
-        console.log(
-          "PaymentData is missing required fields or has incorrect types",
-          PaymentData
-        );
-        setModalVisible(true); // Show modal when PaymentData is missing required fields or has incorrect types
+
+
+
+
+        
+      }else{
+        console.log("Booking ID is missing");
+        setModalVisible(true)
       }
-    } catch (error) {
-      console.error("Failed to parse PaymentData:", error);
-      setModalVisible(true); // Show modal on parsing error
-      // Handle the error or set a default value for PaymentData
-    }
-  }, [route.params.item]);
+
+    },[])
+
+  // useEffect(() => {
+
+  //   try {
+  //     // Attempt to parse the item parameter if it exists
+
+
+  //     console.log("PaymentData in line 31 ", PaymentData, PaymentPrice);
+  //     if (
+  //       PaymentData &&
+  //       typeof PaymentData.date === "string" &&
+  //       typeof PaymentData.months === "number" &&
+  //       typeof PaymentData.seat === "object" &&
+
+  //       typeof PaymentData.slot === "object" &&
+  //       PaymentData.slot !== null &&
+  //       typeof PaymentData.slot._id === "string" &&
+  //       typeof PaymentData.slot.from === "string" &&
+  //       typeof PaymentData.slot.to === "string"
+  //     ) {
+  //       console.log("PaymentData --->>>>>>>>", PaymentData);
+  //       // If all conditions are met, you might not want to change the state here
+  //       // setAvailable(true);
+  //       // setModalVisible(false);
+  //     } else {
+  //       console.log(
+  //         "PaymentData is missing required fields or has incorrect types",
+  //         PaymentData
+  //       );
+  //       setModalVisible(true); // Show modal when PaymentData is missing required fields or has incorrect types
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to parse PaymentData:", error);
+  //     setModalVisible(true); // Show modal on parsing error
+  //     // Handle the error or set a default value for PaymentData
+  //   }
+  // }, [route.params.item]);
 
   console.log("_________>>>>", PaymentData, "<<<<<_________");
 
