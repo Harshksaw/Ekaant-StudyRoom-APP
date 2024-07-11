@@ -23,7 +23,8 @@
       "versionCode": 8,
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO"
       ],
       "package": "com.harsh10021.studyroom"
     },
@@ -46,10 +47,13 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
-      ],  [
+      ],
+      [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/Poppins-Regular.ttf"]
+          "fonts": [
+            "./assets/fonts/Poppins-Regular.ttf"
+          ]
         }
       ],
       [
@@ -69,6 +73,12 @@
       "eas": {
         "projectId": "4f952f89-d1f7-4778-ad5e-62961d75b1d4"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/4f952f89-d1f7-4778-ad5e-62961d75b1d4"
     }
   }
 }
