@@ -2,9 +2,9 @@ const { StatusCodes } = require("http-status-codes");
 
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
-const { User} = require("../models");
+const { User} = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
-const bookingModel = require("../models/booking.model");
+
 const JWT_SECRET = "MY_SECRET_KEY";
 const BookingSchema = zod.object({
   userId: zod.string(),
@@ -45,11 +45,12 @@ async function createBooking(req, res) {
       roomNo,
       bookedSeat,
       bookingDate,
+      forFriend,
       bookingPeriod,
     } = req.body;
-
+    console.log(forFriend)
     const user = await User.findOne({ _id: userId });
-    console.log(user);
+    // console.log(user);
 
     if (!user) {
       return res
@@ -62,6 +63,7 @@ async function createBooking(req, res) {
       initialPrice,
       finalPrice,
       roomNo,
+      forFriend: !forFriend ? null : forFriend,
       timeSlot,
       bookedSeat,
       bookingDate,
@@ -99,8 +101,24 @@ async function getUserBookings(req, res) {
   }
 }
 
+async function getBookingById(req, res) {
+  try {
+    console.log(req.body,"getBookingById") 
+
+    const { id } = req.body;
+    if(!id){
+      res.status(StatusCodes.BAD_REQUEST).json({ message: 'id not found' });
+    }
+    const bookings = await Booking.find({_id: id}).populate("userId");
+    return res.status(StatusCodes.OK).json({ bookings });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 module.exports = {
   createBooking,
   pingBookingController,
   getUserBookings,
+  getBookingById
 };

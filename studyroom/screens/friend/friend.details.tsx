@@ -112,11 +112,12 @@ const FriendDetails = () => {
 
     useEffect(() => {
         GetFriend();
+        console.log()
     }, [])
     const [selectedIndex, setSelectedIndex] = useState(-1);
 
     const addForBooking = async ({ friend }: any) => {
-
+        console.log('Booking seat for:', friend.name, friend.email, friend.phoneNumber);
 
 
         dispatch(setFriendDetails({
