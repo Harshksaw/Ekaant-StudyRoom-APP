@@ -2,20 +2,18 @@ import { Link } from "react-router-dom";
 
 import studyMain from "../assets/images/studyMain.png";
 import reading from "../assets/images/reading 1.png";
-import { LabelledInput } from "./LabelledInput";
+
 import { useEffect, useState } from "react";
-import { platform } from "os";
-import { PiPlaceholder } from "react-icons/pi";
-import { Upload } from "lucide-react";
+
 import { StepTwo } from "./Signup/Step2";
 import { StepThree } from "./Signup/Step3";
 import { StepFour } from "./Signup/Step4";
 import { StepOne } from "./Signup/Step1";
 import { StepFive } from "./Signup/Step5";
-import { toast } from "sonner";
+
 import { BASEURL } from "@/lib/utils";
 import axios from "axios";
-
+import { useToast } from "@/components/ui/use-toast"
 // Add similar components for StepThree, StepFour, and StepFive
 
 const FinalStep = ({ prevStep }) => (
@@ -28,8 +26,11 @@ const FinalStep = ({ prevStep }) => (
 );
 
 function Signup() {
+  const { toast } = useToast()
   //parent compoenent
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+
   const [userInfo, setUserInfo] = useState({
     phone: 0,
     email: "",
@@ -42,15 +43,60 @@ const [loading, setLoading] = useState(false);
     otp3: "",
     otp4: "",
   });
-
-  const verifyOTP = () => {
+  const sendOtp = async () => {
+    const { phone } = userInfo;
+    toast({
+      description: "OTP sent successfully",
+    
+    })
+  
+   
+    const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, { phoneNumber : phone });
+    if(res.status === 200){
+      console.log("OTP sent successfully")
+    }
+  
+}
+  const verifyOTP = async () => {
     const { otp1, otp2, otp3, otp4 } = userOTP;
     // Assuming verifyUserOTP is the function you want to call
-    verifyUserOTP(otp1 + otp2 + otp3 + otp4);
+    const otp = `${otp1}${otp2}${otp3}${otp4}`;
+    if (Number(otp) < 1000) {
+      return;
+    }
+
+    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOTP`, {otp});
+    console.log(res, "res")
+
+    if(res.status === 200 || res.status === 201){
+      console.log(res.data, "res.data")
+
+      toast({
+        type:'background',
+        style:{
+          background:'rgb(45, 218, 88)',
+
+
+        },
+
+        variant:'default',
+
+        color: "green",
+        description: "Your Phone Otp has been verified.",
+      })
+      console.log("OTP verified successfully")
+    }else{
+      toast({
+        description: "Your Phone Otp has not been verified.",
+      })
+    }
+
+
+
   };
 
   // Handle OTP input change
-  const handleInputChange = (e) => {
+  const handleInputChange = async(e) => {
     const { name, value } = e.target;
     console.log(name, value);
     const updatedOtpInputs = {
@@ -59,13 +105,19 @@ const [loading, setLoading] = useState(false);
     };
     setOtpInputs(updatedOtpInputs);
 
+
+
     // Check if all inputs are filled after the state update
     const allFilled = Object.values(updatedOtpInputs).every(
       (input) => input.trim() !== ""
     );
+
+    await verifyOTP();
+
     if (allFilled) {
       console.log("All inputs are filled phone otp");
-      // verifyOTP(); // Call verifyOTP function if all inputs are filled
+
+
     }
   };
 
@@ -77,7 +129,7 @@ const [loading, setLoading] = useState(false);
   });
 
   const handleEmailOtpInputChange = (e) => {
-    
+
     const { name, value } = e.target;
     const updatedEmailOtpInputs = {
       ...emailOtpInputs,
@@ -95,6 +147,26 @@ const [loading, setLoading] = useState(false);
     }
   };
 
+
+  const sendEmailOtp = async () => {  
+    toast({
+      description: "Email OTP sent successfully",
+    })
+    const { email } = userInfo;
+    const res = await axios.post(`${BASEURL}/api/v1/auth/emailotp`, { email });
+    if(res.status === 200){
+      toast({
+        description: "OTP sent successfully",
+      style:{
+        background:'rgb(45, 218, 88)',
+        color:'white',
+        padding:'1rem',
+        borderRadius:'1rem',
+      }
+      })
+      console.log("OTP sent successfully")
+    }
+  }
   // Function to call after all OTP inputs are filled
 
   // Check if all OTP inputs are filled
@@ -176,14 +248,14 @@ const [loading, setLoading] = useState(false);
       fullName: userDetails.fullName,
       dob: userDetails.dob,
       aadharCard: userDetails.aadharCard,
-      panCard: userDetails.panCard ,
+      panCard: userDetails.panCard,
       address: userDetails.address,
     };
-    console.log(userDetails?.uploadAadharCard,userDetails?.uploadPanCard)
+    console.log(userDetails?.uploadAadharCard, userDetails?.uploadPanCard)
     const formData = new FormData();
 
-      formData.append("aadharImage", userDetails?.uploadAadharCard);
-      formData.append("panImage", userDetails?.uploadPanCard);
+    formData.append("aadharImage", userDetails?.uploadAadharCard);
+    formData.append("panImage", userDetails?.uploadPanCard);
 
     formData.append("jsonData", JSON.stringify(createAdminDataOBJ));
 
@@ -229,12 +301,12 @@ const [loading, setLoading] = useState(false);
 
     const AdminId = await localStorage.getItem("userId");
     const LibraryDataOBJ = {
-      libraryOwner:AdminId ,
+      libraryOwner: AdminId,
       name: libraryDetails.libraryName,
       shortDescription: libraryDetails.libraryApp.shortDescription,
       longDescription: libraryDetails.libraryApp.longDescription,
-      rawLocation:libraryDetails.libraryApp.longDescription,
-      halls:libraryDetails.halls,
+      rawLocation: libraryDetails.libraryApp.longDescription,
+      halls: libraryDetails.halls,
       amenities: libraryDetails?.amentities,
     };
 
@@ -264,7 +336,7 @@ const [loading, setLoading] = useState(false);
         setLoading(false);
         toast.success("Library created successfully");
         setCurrentStep(0);
-     
+
         // setImages([]);
 
       }
@@ -279,12 +351,17 @@ const [loading, setLoading] = useState(false);
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  const nextStep = () => {
-    console.log(currentStep,'currentstep')
-    if(currentStep === 3){
+  const nextStep = async() => {
+    console.log(currentStep, 'currentstep')
+    if (currentStep === 3) {
       createUser()
     }
-    setCurrentStep(currentStep + 1)};
+    if(currentStep === 1){
+       sendOtp()
+       sendEmailOtp()
+    }
+    setCurrentStep(currentStep + 1)
+  };
   const prevStep = () => setCurrentStep(currentStep - 1);
 
   const renderStep = () => {
@@ -295,6 +372,8 @@ const [loading, setLoading] = useState(false);
             nextStep={nextStep}
             userInfo={userInfo}
             setUserInfo={setUserInfo}
+            sendOTP={sendOtp}
+
           />
         );
       case 2:

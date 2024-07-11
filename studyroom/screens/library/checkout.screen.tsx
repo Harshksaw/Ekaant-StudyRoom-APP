@@ -27,6 +27,8 @@ import { Toast } from "react-native-toast-notifications";
 
 const CheckoutScreen: React.FC = () => {
 
+  const userDetails = useSelector((state: any) => state.user);
+  console.log(userDetails, "-----------------")
   //getting data  from booking screen 
 
   const params = useRoute();
@@ -87,7 +89,11 @@ const PreBook = async() => {
     return;
   }
 
+
+
+
   try {
+    console.log(userDetails.friendDetails, "-----977")
     const response = await axios.post(`${BACKEND}/api/v1/booking/createBooking`,{
       userId: userId,
       libraryId : data.details.id,
@@ -98,7 +104,23 @@ const PreBook = async() => {
       bookedSeat : BookingSeat,
       bookingDate : BookingDate,
       bookingPeriod : BookingMonths,
+      forFriend: userDetails.friendDetails,
+
     })
+
+
+
+
+    Toast.show("Booking Successful !", {
+      type: "success",
+      placement: "top",
+      animationDuration: 1000,
+      icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
+
+      duration: 3000,
+    })
+
+    return response.data.Booking._id
     
   } catch (error) {
     console.log("Error:", error);
@@ -120,13 +142,13 @@ const PreBook = async() => {
 }
 
   const PaymentScreen = async() => {
-    await PreBook();
+   const data =  await PreBook();
 
 
 
     router.push({
       pathname: "/library/payment.screen",
-      params: { item: JSON.stringify(BookedData), price: JSON.stringify(totalAmount) }
+      params: { item: JSON.stringify(BookedData), price: JSON.stringify(totalAmount) , id :JSON.stringify(data) }
 
     });
   }
@@ -171,6 +193,46 @@ const PreBook = async() => {
             gap: 10,
           }}
         >
+
+          <View
+          style={{
+            width: 150,
+            height: 50,
+            borderRadius: 20,
+            backgroundColor: "rgb(218, 242, 178)", // Example background color
+            justifyContent: "center",
+            alignItems: "center",
+            marginRight: 10,
+          
+          }}
+          >
+
+            {  userDetails.bookingsForFriend &&(
+              <View
+              style={{
+                flexDirection: "column",
+                alignItems: "center",
+
+
+
+
+              }}
+            >
+              <Text>
+
+              Booking for friend
+              </Text>
+              <Text>
+
+              {userDetails?.friendDetails?.name}
+              </Text>
+            </View>
+
+            ) }
+            
+
+
+          </View>
           <Text
             style={{
               fontSize: 20,

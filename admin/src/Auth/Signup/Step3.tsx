@@ -18,7 +18,8 @@ export const StepThree = ({
           Full Name
         </label>
         <input
-          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+         
+         className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="fullName"
           value={userDetails.fullName}
@@ -37,11 +38,9 @@ export const StepThree = ({
           DOB
         </label>
         <input
-          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          type="text"
-          id="dob"
+  className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+  type="text"
+  id="dob"
           value={userDetails.dob}
           onChange={(e) =>
             setUserDetails({ ...userDetails, dob: e.target.value })

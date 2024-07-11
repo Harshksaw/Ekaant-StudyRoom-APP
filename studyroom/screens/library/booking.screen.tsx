@@ -98,12 +98,22 @@ const BookingScreen: React.FC = () => {
     };
     dispatch(setBookingDetails(details));
   };
+const [forFriend, setForFriend] = useState(false);
+
+// useEffect(()=>{
+  // const userDetails = useSelector((state: any) => state.user);
+  // console.log(userDetails, "-----------------")
+
+// },[])
+
+
 
   const BookedData = {
     seat: selectedSeat,
     date: selectedDate,
     months: selectedMonth,
     slot: selectedTimeSlot, ///stll null ,need to be fixed
+
   };
 
   const confirmBooking = () => {
@@ -186,7 +196,7 @@ const BookingScreen: React.FC = () => {
             />
           ))}
         </Picker>
-        <ToggleBookingButton/>
+        <ToggleBookingButton />
 
 
 
@@ -397,10 +407,10 @@ const BookingScreen: React.FC = () => {
         </View>
         <TouchableOpacity
 
-        onPress={()=>{
-          router.push("(routes)/friend");
-        
-        }}
+          onPress={() => {
+            router.push("(routes)/friend");
+
+          }}
           style={{
             backgroundColor: "yellow",
             padding: 10,
@@ -411,8 +421,11 @@ const BookingScreen: React.FC = () => {
           <Ionicons name="person-add-outline" size={24} color="black" />
         </TouchableOpacity>
 
+
         <Button text="Book" width={200} />
       </TouchableOpacity>
+
+
     </SafeAreaView>
   );
 };

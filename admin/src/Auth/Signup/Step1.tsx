@@ -1,4 +1,4 @@
-export const StepOne = ({ nextStep, userInfo, setUserInfo }) => (
+export const StepOne = ({ nextStep, userInfo, setUserInfo , sendOTP}) => (
   <div>
     <h2 className="">Step 1</h2>
     <div className="flex  flex-col justify-start gap-2  mb-4">
@@ -16,12 +16,21 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }) => (
           className="focus:ring-0 focus:ring-offset-0 focus:outline-0 focus:outline-offset-0 "
           value={userInfo?.phone.toString()}
           placeholder="Phone"
-          onChange={(e) =>
+          onChange={(e) => {
+            const inputVal = e.target.value;
+            // Update the userInfo state with the new phone number
             setUserInfo({
               ...userInfo,
-              phone: e.target.value ? parseInt(e.target.value, 10) : 0,
-            })
-          }
+              phone: inputVal ? parseInt(inputVal, 10) : 0,
+            });
+            // Check if the input length is 10 and call a function
+            if (inputVal.length === 10) {
+              // Call your desired function here
+
+              console.log("Input is 10 digits, calling function...");
+              // functionName(); // Replace functionName with the actual function you want to call
+            }
+          }}
           style={{ border: "none", justifyContent: "center" }}
         />
       </div>
@@ -47,6 +56,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }) => (
           placeholder="Password"
           onChange={(e) => {
             setUserInfo({ ...userInfo, password: e.target.value });
+
           }}
         />
       </div>
