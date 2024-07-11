@@ -345,6 +345,7 @@ const PaymentScreen: React.FC = () => {
             </View>
 
 
+
         </View>
       </View>
     </SafeAreaView>
