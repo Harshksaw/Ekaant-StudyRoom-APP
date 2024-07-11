@@ -26,12 +26,13 @@ import { Ionicons } from "@expo/vector-icons";
 import RazorpayCheckout from 'react-native-razorpay';
 import { BACKEND } from "@/utils/config";
 import axios from "axios";
+import { Toast } from "react-native-toast-notifications";
 
 
 const PaymentScreen: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const cardWidth = Dimensions.get("window").width; // Assuming full width for simplicity, adjust as needed
-
+  const [bookingId , setBookingId] = useState(null)
   const handleScroll = (event) => {
     const scrollPosition = event.nativeEvent.contentOffset.x;
     const index = Math.round(scrollPosition / cardWidth);
@@ -52,73 +53,52 @@ const PaymentScreen: React.FC = () => {
     : null;
 
 
-    useEffect(()=>{
+  useEffect(() => {
 
-      if(bookingid !== null){
+    const getBookingDetails = async () => {
+      if (bookingid !== null) {
 
-        
-        const getBookingDetails = async() => {
-          
-          const res = await axios.post(`${BACKEND}/api/v1/booking/getBookingById`,{
-            id : bookingid
+
+        try {
+          const res = await axios.post(`${BACKEND}/api/v1/booking/getBookingById`, {
+            id: bookingid
           })
-          console.log(res.data)
-          return res.data;
-          
+          console.log(res.data.bookings[0]._id, "[[[[[[[]]]]]]")
+
+          setBookingId(res.data.bookings[0]._id)
+          return res.data.bookings[0]._id;
+
+
+        } catch (
+        error
+
+        ) {
+          console.log(error);
+          Toast.show("Error in fetching booking details")
+
         }
 
 
-        const res = getBookingDetails();
-     
 
 
 
 
 
-        
-      }else{
+
+
+
+
+
+      } else {
         console.log("Booking ID is missing");
         setModalVisible(true)
       }
+    }
+    getBookingDetails();
 
-    },[])
-
-  // useEffect(() => {
-
-  //   try {
-  //     // Attempt to parse the item parameter if it exists
+  }, [])
 
 
-  //     console.log("PaymentData in line 31 ", PaymentData, PaymentPrice);
-  //     if (
-  //       PaymentData &&
-  //       typeof PaymentData.date === "string" &&
-  //       typeof PaymentData.months === "number" &&
-  //       typeof PaymentData.seat === "object" &&
-
-  //       typeof PaymentData.slot === "object" &&
-  //       PaymentData.slot !== null &&
-  //       typeof PaymentData.slot._id === "string" &&
-  //       typeof PaymentData.slot.from === "string" &&
-  //       typeof PaymentData.slot.to === "string"
-  //     ) {
-  //       console.log("PaymentData --->>>>>>>>", PaymentData);
-  //       // If all conditions are met, you might not want to change the state here
-  //       // setAvailable(true);
-  //       // setModalVisible(false);
-  //     } else {
-  //       console.log(
-  //         "PaymentData is missing required fields or has incorrect types",
-  //         PaymentData
-  //       );
-  //       setModalVisible(true); // Show modal when PaymentData is missing required fields or has incorrect types
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to parse PaymentData:", error);
-  //     setModalVisible(true); // Show modal on parsing error
-  //     // Handle the error or set a default value for PaymentData
-  //   }
-  // }, [route.params.item]);
 
   console.log("_________>>>>", PaymentData, "<<<<<_________");
 
@@ -313,7 +293,11 @@ const PaymentScreen: React.FC = () => {
               </View>
             </View>
           </View>
+                 
+                  {
+                    bookingId && (
 
+                 
           <TouchableOpacity
             onPress={() => InvoiceScreen()}
           >
@@ -346,8 +330,21 @@ const PaymentScreen: React.FC = () => {
               <Ionicons name="arrow-forward" size={25} color="white" />
             </View>
           </TouchableOpacity>
+             )
+            }
+            <View style={{
+              flexDirection:'row',
+              justifyContent:'flex-end',
+              marginHorizontal:20,
+              marginTop:20,
 
-         
+            }}>
+            {
+                    bookingId !== null ? <Text style={{ fontSize: 20, lineHeight: 30, fontWeight: "600", marginHorizontal: 20 }}>Booking ID : {bookingId}</Text> : null
+                  }
+            </View>
+
+
         </View>
       </View>
     </SafeAreaView>
