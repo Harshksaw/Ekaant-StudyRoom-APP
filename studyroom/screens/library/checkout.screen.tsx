@@ -199,7 +199,7 @@ const PreBook = async() => {
             width: 150,
             height: 50,
             borderRadius: 20,
-            backgroundColor: "rgb(218, 242, 178)", // Example background color
+            backgroundColor: "rgb(148, 230, 200)", // Example background color
             justifyContent: "center",
             alignItems: "center",
             marginRight: 10,
@@ -207,7 +207,7 @@ const PreBook = async() => {
           }}
           >
 
-            {  userDetails.bookingsForFriend &&(
+            {  userDetails.bookingsForFriend ? (
               <View
               style={{
                 flexDirection: "column",
@@ -228,7 +228,13 @@ const PreBook = async() => {
               </Text>
             </View>
 
-            ) }
+            ) : (
+              <Text>
+
+              Booking for SELF
+              </Text>
+
+            )}
             
 
 

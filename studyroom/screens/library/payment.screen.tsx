@@ -89,8 +89,9 @@ const PaymentScreen: React.FC = () => {
 
   const handlePayment = async () => {
     var options = {
-      description: "Credits towards consultation",
-      image: "https://i.imgur.com/3g7nmJC.jpg",
+      description: "Room Booking",
+      image: "https://i.imgur.com/3g7nmJC.jpg", //logo
+
       currency: "INR",
       key: "rzp_test_lmy83ka5bsXLz8",
       amount: "5000",
@@ -176,6 +177,27 @@ const PaymentScreen: React.FC = () => {
           >
             Payment Screen
           </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              // justifyContent: "flex-end",
+              // marginHorizontal: 20,
+              // marginTop: 20,
+            }}
+          >
+            {bookingId !== null ? (
+              <Text
+                style={{
+                  fontSize: 16,
+                  lineHeight: 20,
+                  fontWeight: "400",
+                  marginHorizontal: 20,
+                }}
+              >
+                Booking ID : {bookingId}
+              </Text>
+            ) : null}
+          </View>
 
           <Text
             style={{
@@ -307,54 +329,9 @@ const PaymentScreen: React.FC = () => {
               </View>
             </TouchableOpacity>
           )}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              marginHorizontal: 20,
-              marginTop: 20,
-            }}
-          >
-            {bookingId !== null ? (
-              <Text
-                style={{
-                  fontSize: 20,
-                  lineHeight: 30,
-                  fontWeight: "600",
-                  marginHorizontal: 20,
-                }}
-              >
-                Booking ID : {bookingId}
-              </Text>
-            ) : null}
-          </View>
+       
 
-          <TouchableOpacity onPress={() => {
-            var options = {
-              description: 'Credits towards consultation',
-              image: 'https://i.imgur.com/3g7nmJC.png',
-              currency: 'INR',
-              key: 'rzp_test_lmy83ka5bsXLz8',
-              amount: '5000',
-              name: 'foo',
-              prefill: {
-                email: 'void@razorpay.com',
-                contact: '9191919191',
-                name: 'Razorpay Software'
-              },
-              theme: { color: '#F37254' }
-            }
-            RazorpayCheckout.open(options).then((data) => {
-              // handle success
-              alert(`Success: ${data.razorpay_payment_id}`);
-            }).catch((error) => {
-              // handle failure
-              alert(`Error: ${error.code} | ${error.description}`);
-            });
-          }}>
-
-            <Text>clcickk</Text>
-          </TouchableOpacity>
+      
         </View>
       </View>
     </SafeAreaView>
