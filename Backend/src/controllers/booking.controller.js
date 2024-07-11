@@ -2,7 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
-const { User} = require("../models/user.model");
+const { User} = require("../models");
 const { Booking } = require("../models/booking.model");
 
 const JWT_SECRET = "MY_SECRET_KEY";
