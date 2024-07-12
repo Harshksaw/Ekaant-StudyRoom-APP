@@ -24,32 +24,34 @@ async function RegisterAdmin(req, res, next) {
       username
     } = req.body;
 
-    console.log(
-      phoneNumber,
-      email,
-      password,
-      fullName,
-      Dob,
-      AddharNumber,
-      PanNumber,
-      Address
-    );
+    // console.log(
+    //   phoneNumber,
+    //   email,
+    //   password,
+    //   fullName,
+    //   Dob,
+    //   AddharNumber,
+    //   PanNumber,
+    //   Address
+    // );
 
     const aadharPath = req.files["aadhar"] ;
-    const panPath = req.files["pan"] ? req.files["pan"][0].path : null;
+    const panPath = req.files["pan"];
+
+    console.log(aadharPath, panPath);
 
     const admin = await Admin.create({
       phoneNumber,
       username,
-      email,
+      email ,
       password,
-      fullName,
-      Dob,
+      fullName ,
+      Dob, 
       AddharNumber,
       PanNumber,
-      address: Address, // Assuming Address is an object that matches the expected structure
+      address: Address, 
       adhaarCardDetails: {
-        adhaarNumber: AddharNumber, // Ensure correct spelling as per your schema (adhaarNumber)
+        adhaarNumber:AddharNumber, 
         adhaarImage: aadharPath,
       },
       panCardDetails: {
