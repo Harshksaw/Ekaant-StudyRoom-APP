@@ -116,9 +116,25 @@ async function getBookingById(req, res) {
   }
 }
 
+async function getBookingByLibId(req, res) {
+  try {
+    console.log(req.body,"getBookingByLibId") 
+
+    const { lib_id } = req.body;
+    if(!lib_id){
+      res.status(StatusCodes.BAD_REQUEST).json({ message: 'lib_id not found' });
+    }
+    const bookings = await Booking.find({libraryId: lib_id}).populate("userId");
+    return res.status(StatusCodes.OK).json(bookings);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 module.exports = {
   createBooking,
   pingBookingController,
   getUserBookings,
-  getBookingById
+  getBookingById,
+  getBookingByLibId,
 };
