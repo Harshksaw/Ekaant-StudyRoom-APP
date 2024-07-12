@@ -15,7 +15,7 @@ const librarySchema = new mongoose.Schema({
   location: [ ],
   price: { type: Number, required: true },
   reviews: { type: String, required: false }, // Optional field
-
+  deleted: {type: String, required: false , default:false},
   amenities: [{ type: String }], // Not required by default
   seatLayout: {},
   approved:{
