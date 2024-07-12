@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  mongo_db:
+    container_name: mongo_db
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+
+  app:
+    container_name: app
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+        PORT: 3000 
+        CLOUD_NAME: dzwvmqbv0
+        API_KEY: 682682682682682
+        API_SECRET: Sx6t5hAG6ynwO6mr8GN-L55A7MI
+        DATABASE_URI: mongodb://mongo_db:27017/ekaant
+        CLOUDINARY_URL: cloudinary://572782272174972:Sx6t5hAG6ynwO6mr8GN-L55A7MI@dzwvmqbv0
+        GOOGLE_API: AIzaSyAkhIxMCNP3DGFWQDCi_a45pyPks0H1xXI
+    depends_on: 
+      - mongo_db
+
+
+
+volumes:
+  mongo_data: {}
+
