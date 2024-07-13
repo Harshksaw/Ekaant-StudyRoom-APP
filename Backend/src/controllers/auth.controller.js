@@ -37,20 +37,10 @@ async function getUser(req, res, next) {
 
 // signup function--
 async function signUp(req, res, next) {
-  const { success } = signupSchema.safeParse(req.body);
+
 
   const images = req.file.path;
-  // console.log("images is ", images);
-  console.log("success is ", success, req.body);
-  if (!success) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      success: false,
-      message: "Invalid data",
-      error: { 411: "Invalid data" },
-      data: {},
-    });
-  }
-  //   checking whether the user already exists or not
+ 
   const user = await User.findOne({ email: req.body.email });
   if (user) {
     return res.status(StatusCodes.BAD_REQUEST).json({
