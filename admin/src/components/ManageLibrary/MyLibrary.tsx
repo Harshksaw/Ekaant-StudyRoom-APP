@@ -41,9 +41,9 @@ export default function MyLibrary() {
     const fetchData = async () => {
       console.log("fetching data in MYLIBRARY")
       const res = await getLibraryDataById();
-      console.log(res);
+      console.log(res.data, "res44");
       setData(res.data.data);
-      console.log(data);
+      // console.log(res.data.data);
     };
     fetchData();
   }, [isLoading]);
@@ -57,15 +57,15 @@ export default function MyLibrary() {
       "
       >
 
-      {data.length === 0 && (
+      {/* {data.length === 0 && (
            <button
-           className="bg-blue-400 text-white p-2 rounded-lg shadow-md hover:bg-blue-300 flex justify-center items-center h-20"
+           className="bg-blue-200 text-white p-2 rounded-lg shadow-md hover:bg-blue-300 flex justify-center items-center h-20"
            onClick={handleRefresh}
            disabled={isLoading}
          >
            {isLoading ? <div className="loader"></div> : "Refresh"}
          </button>
-      ) }
+      ) } */}
      
 
         {Array.isArray(data) &&
