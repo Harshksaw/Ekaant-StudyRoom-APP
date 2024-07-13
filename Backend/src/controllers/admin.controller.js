@@ -5,24 +5,24 @@ const { User } = require("../models");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin.model");
 const JWT_SECRET = "MY_SECRET_KEY";
-
+const fs = require('fs');
 const ping = (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Ping successful" });
 };
 // singup
 async function RegisterAdmin(req, res, next) {
   try {
-    const {
-      phoneNumber,
-      email,
-      password,
-      fullName,
-      Dob,
-      AddharNumber,
-      PanNumber,
-      Address,
-      username,
-    } = req.body;
+    // const {
+    //   phoneNumber,
+    //   email,
+    //   password,
+    //   fullName,
+    //   Dob,
+    //   AddharNumber,
+    //   PanNumber,
+    //   Address,
+    //   username,
+    // } = req.body;
 
     // console.log(
     //   phoneNumber,
@@ -35,12 +35,27 @@ async function RegisterAdmin(req, res, next) {
     //   Address
     // );
 
-    const aadharPath = req.files["aadhar"];
-    const panPath = req.files["pan"];
+       // Convert files to base64
+      //  console.log("req.files is ", req.files);
+      //  if (!req.files || !req.files.aadhar) {
+      //   return res.status(StatusCodes.BAD_REQUEST).json({
+      //     success: false,
+      //     message: "No aadhar file uploaded",
+      //   });
+      // }
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+      const imageData = req.file;
+      //  const aadharImage =  fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.aadhar))
+      //  const panImage = fs.readFileSync(req.files.pan[0].path).toString('base64');
+   
 
-    console.log(aadharPath, panPath);
+      console.log("aadharImage is ", imageData);
 
-    //
+      return res.status(StatusCodes.OK).json({ message: "Ping successful" });
+
+
 
     const admin = await Admin.create({
       phoneNumber,
@@ -88,6 +103,7 @@ async function RegisterAdmin(req, res, next) {
     // );
     // res.status(StatusCodes.CREATED).json({ accessToken });
   } catch (error) {
+    console.log("error is ", error);
     next(error);
   }
 }
