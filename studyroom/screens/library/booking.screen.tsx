@@ -43,13 +43,14 @@ const BookingScreen: React.FC = () => {
 
   const data = JSON.parse(params.params.item);
   const city = JSON.parse(params.params.location);
-  // console.log("Seat ----->>>>", city);
+  console.log("Seat ----->>>>", data?.timeSlot);
 
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMonth, setselectedMonth] = useState(1);
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState(data?.timeSlot[0]);
+  const [selectedSlots,  setSelectedSlots] = useState([]);
+
   const handleSeatSelect = (seatDataFromChild) => {
     console.log("Selected Seat-------------------:", seatDataFromChild);
 
@@ -58,7 +59,17 @@ const BookingScreen: React.FC = () => {
     // Optionally, perform further actions on the selected seats here
   };
 
+  const handleSelectSlot = (selectedSlot) => {
 
+    console.log(selectedSlots, "Selected Slot");
+    if (selectedSlots.find(slot => slot._id === selectedSlot._id)) {
+      // If the slot is already selected, remove it from the array
+      setSelectedSlots(selectedSlots.filter(slot => slot._id !== selectedSlot._id));
+    } else {
+      // Otherwise, add the slot to the array
+      setSelectedSlots([...selectedSlots, selectedSlot]);
+    }
+  };
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
@@ -85,7 +96,11 @@ const BookingScreen: React.FC = () => {
 
   //   selectedTimeSlot
   // );
-
+  interface DataItem {
+    _id: string;
+    from: string;
+    to: string;
+  }
 
   const updateRoomDetails = () => {
     const details = {
@@ -98,13 +113,13 @@ const BookingScreen: React.FC = () => {
     };
     dispatch(setBookingDetails(details));
   };
-const [forFriend, setForFriend] = useState(false);
+  const [forFriend, setForFriend] = useState(false);
 
-// useEffect(()=>{
+  // useEffect(()=>{
   // const userDetails = useSelector((state: any) => state.user);
   // console.log(userDetails, "-----------------")
 
-// },[])
+  // },[])
 
 
 
@@ -112,7 +127,7 @@ const [forFriend, setForFriend] = useState(false);
     seat: selectedSeat,
     date: selectedDate,
     months: selectedMonth,
-    slot: selectedTimeSlot, ///stll null ,need to be fixed
+    slot: selectedSlots, ///stll null ,need to be fixed
 
   };
 
@@ -130,6 +145,17 @@ const [forFriend, setForFriend] = useState(false);
     // Perform further actions like API calls, etc.
   };
 
+  const handleData = (data: DataItem[]) => {
+    return data.map(item => {
+      if (item.from === "0" && item.to === "24") {
+        // Modify the item to indicate 24/7 availability
+        // This is just an example, adjust according to your needs
+        return { ...item, availability: "24/7" };
+      }
+      return item;
+    });
+  };
+  const available = handleData(data.timeSlot)
 
   return (
     <SafeAreaView
@@ -244,6 +270,7 @@ const [forFriend, setForFriend] = useState(false);
                       fontStyle: "normal",
                       fontWeight: 500,
                       textAlign: "center",
+                      marginTop: 20,
                     }}
                   >
                     Select Period
@@ -321,46 +348,82 @@ const [forFriend, setForFriend] = useState(false);
 
                   <View
                     style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      flexDirection: "row-reverse",
+                      
+                      rowGap: 10,
+
+                      flexWrap: "wrap",
+                      justifyContent: "center",
                       padding: 10,
                       gap: 10,
+
+                      height: 125,
+                      maxWidth: 300,
+
                     }}
                   >
-                    <Picker
-                      selectedValue={selectedTimeSlot}
-                      style={{ height: 40, width: 200 }}
-                      mode={"dialog"}
-
-
-                      onValueChange={(itemValue, itemIndex) =>
-
-                        setSelectedTimeSlot(itemValue)
-
-                      }
-                    >
-                      {data?.timeSlot.map((slot, index) => (
-                        <Picker.Item
-                          key={index}
-                          label={`${slot.from}PM - ${slot.to}PM`}
-                          value={slot}
+                    {available.map((slot, index) => {
+                      if (slot.availability) {
+                        // Render slots with an availability key in a separate view
+                        return (
+                          <View key={index}
                           style={{
-                            color: "gray",
-                            fontSize: 20,
-                            fontStyle: "normal",
-                            fontWeight: 400,
-                            textAlign: "center",
-                            borderColor: "blue",
-                            borderWidth: 1,
-                            borderRadius: 10,
-                            padding: 10,
-                            margin: 10,
-                            backgroundColor: "white",
+                            maxWidth: 70,
+                            marginHorizontal: 50,
+
                           }}
-                        />
-                      ))}
-                    </Picker>
+                          >
+                            <TouchableOpacity style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                              flexWrap: "wrap",
+                              padding: 10,
+                              gap: 5,
+                              backgroundColor:  selectedSlots.some(selectedSlot => selectedSlot._id === slot._id) ? 'rgb(204, 243, 177)' : 'rgb(236, 233, 233)',
+                              borderRadius: 10,
+                              alignItems: "center",
+                            }}
+                            // onPress={() => setSelectedTimeSlot(slot)}
+                            >
+                              <Text style={
+                                {
+                                  textAlign: 'center',
+                                  fontSize: 15,
+                                  fontWeight: 600,
+                                }
+                              }>{slot.availability}</Text>
+                            </TouchableOpacity>
+                          </View>
+
+                        );
+                      } else {
+                        // Render regular time slots
+                        return (
+                          <View key={slot._id}
+                          
+                          >
+                            <TouchableOpacity style={{ flexDirection: "row", justifyContent: "space-between", padding: 10, gap: 5,
+                             backgroundColor:  selectedSlots.some(selectedSlot => selectedSlot._id === slot._id) ? 'rgb(204, 243, 177)' : 'rgb(236, 233, 233)',
+                              borderRadius: 10, alignItems: "center", }}
+                             onPress={() => handleSelectSlot(slot)} // Step 3: Attach event handler
+                            >
+                              <Text style={{ textAlign: 'center', fontSize: 15, fontWeight: "600" }}>
+                                {slot.from}{slot.from < 12 ? "AM" : "PM"}{" -"}
+                              </Text>
+                              <Text style={{ textAlign: 'center', fontSize: 15, fontWeight: "600" }}>
+                                {slot.to}{slot.to < 12 ? "AM" : "PM"}
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        );
+                      }
+                    })}
+                 
+              
+
                   </View>
+
+               
 
                 </View>
 
@@ -372,13 +435,19 @@ const [forFriend, setForFriend] = useState(false);
                     alignItems: "center",
                     gap: 20,
                     padding: 10,
-                    // marginTop: 20,
+
+                    marginTop: 10,
                   }}
                 >
+                  
 
-                  {selectedDate && selectedSeat && selectedMonth && selectedTimeSlot && (
+                  {selectedDate && selectedSeat && selectedMonth && selectedSlots && (
                     <TouchableOpacity
-                      style={{ backgroundColor: "green" }}
+                      style={{
+                        backgroundColor: "rgb(93, 223, 38)",
+                        marginTop: 10,
+                        borderRadius: -10,
+                      }}
                       onPress={confirmBooking}
                     >
                       <Text style={{ alignItems: "center", padding: 10 }}>
@@ -395,7 +464,7 @@ const [forFriend, setForFriend] = useState(false);
                       padding: 10,
                       backgroundColor: "red",
                       borderRadius: 90,
-                      marginBottom: 20,
+                      marginBottom: -20,
                     }}
                   >
                     <Ionicons name="close" size={30} color="#000" />
@@ -442,6 +511,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flexDirection: "column",
     justifyContent: "center",
+    alignContent: "center",
 
     borderRadius: 20,
     padding: 10,
