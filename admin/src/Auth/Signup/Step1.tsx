@@ -56,7 +56,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo , sendOTP}) => (
           placeholder="Password"
           onChange={(e) => {
             setUserInfo({ ...userInfo, password: e.target.value });
-
+            console.log(userInfo);
           }}
         />
       </div>
