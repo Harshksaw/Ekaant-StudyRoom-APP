@@ -6,8 +6,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { FaRegSun } from "react-icons/fa";
 
-const ManageUsers = () => {
+const ManageBookings = () => {
   // const [isOpen, setIsOpen] = useState(false);
 
   // const toggleDropdown = () => {
@@ -15,14 +16,17 @@ const ManageUsers = () => {
   // };
 
   return (
-    <div className="">
+    <div className="flex-row ">
+
       <div>
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger>Manage Team</AccordionTrigger>
             <AccordionContent>
+
+              
               <Link
-                to="/manage-user/view"
+                to="/manage-booking/view"
                 className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
               >
                 View
@@ -30,7 +34,7 @@ const ManageUsers = () => {
             </AccordionContent>
             <AccordionContent>
               <Link
-                to="/manage-user/permission"
+                to="/manage-booking/permission"
                 className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
               >
                 Permission
@@ -38,7 +42,7 @@ const ManageUsers = () => {
             </AccordionContent>
             <AccordionContent>
               <Link
-                to="/manage-user/search"
+                to="/manage-booking/search"
                 className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
               >
                 Search
@@ -120,4 +124,4 @@ const ManageUsers = () => {
   );
 };
 
-export default ManageUsers;
+export default ManageBookings;

@@ -14,5 +14,11 @@ async function getLibraryDataById() {
   return data;
 }
 
+async function getApprovedLibraries() {
+  const response = await axios.get(`${BASEURL}/api/v1/library/getApprovedLibraries`)
+  const data = await response;
+  return data;
+}
 
-export { getLibraryDataById };
+
+export { getLibraryDataById, getApprovedLibraries };

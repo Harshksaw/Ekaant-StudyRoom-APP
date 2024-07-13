@@ -50,7 +50,7 @@ function App() {
               <Route path="/manage-library/create-library" element={<CreateLibrary />}/>
               <Route path="/dashboard" element={<Dashboard />} />
 
-              <Route path="/manage-user/view" element={<View />} />
+              <Route path="/manage-booking/view" element={<View />} />
               <Route path="manage-user/permission" element={<Permission />} />
               <Route path="manage-user/search" element={<Search />} />
 
