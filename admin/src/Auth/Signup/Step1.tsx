@@ -1,4 +1,4 @@
-export const StepOne = ({ nextStep, userInfo, setUserInfo , sendOTP}) => (
+export const StepOne = ({ nextStep, userInfo, setUserInfo, sendOTP }) => (
   <div>
     <h2 className="">Step 1</h2>
     <div className="flex  flex-col justify-start gap-2  mb-4">
@@ -15,6 +15,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo , sendOTP}) => (
           // className="px-4 py-2 w-[410px] border-2 border-black  text-base bg-white text-gray-400"
           className="focus:ring-0 focus:ring-offset-0 focus:outline-0 focus:outline-offset-0 "
           value={userInfo?.phone.toString()}
+          id="adminPhoneNumber"
           placeholder="Phone"
           onChange={(e) => {
             const inputVal = e.target.value;
@@ -41,6 +42,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo , sendOTP}) => (
         <input
           type="email"
           value={userInfo.email}
+          id="AdminEmail"
           placeholder="Email"
           onChange={(e) => {
             setUserInfo({ ...userInfo, email: e.target.value });
@@ -54,9 +56,9 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo , sendOTP}) => (
           type="password"
           value={userInfo.password}
           placeholder="Password"
+          id="adminPassword"
           onChange={(e) => {
             setUserInfo({ ...userInfo, password: e.target.value });
-
           }}
         />
       </div>

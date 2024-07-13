@@ -23,21 +23,21 @@ export const StepFive = ({
 
         <div className="flex  items-center justify-start">
           <label
-            htmlFor="uploadPanCard"
+            htmlFor="uploadLibraryCard"
             className="w-60 h-[50px] pl-1 flex items-center text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight  border-2"
           >
             Upload Library Card Image
           </label>
 
           <label
-            htmlFor="uploadAadharCard"
+            // htmlFor="uploadAadharCard"
             className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
           text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
           >
             Select File
             <input
               type="file"
-              id="uploadAadharCard" // ID to be renamed - tofix
+              id="uploadLibraryCard" // ID to be renamed - tofix
               accept="image/*"
               onChange={(e) => {
                 const file = e.target.files ? e.target.files[0] : null;
@@ -66,14 +66,14 @@ export const StepFive = ({
           </label>
 
           <label
-            htmlFor="uploadAadharCard"
+            htmlFor="uploadSliderImages"
             className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
           text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
           >
             Select File
             <input
               type="file"
-              id="uploadAadharCard"
+              id="uploadSliderImages"
               accept="image/*"
               onChange={(e) => {
                 const file = e.target.files ? e.target.files[0] : null;
@@ -108,7 +108,7 @@ export const StepFive = ({
           onChange={(e) =>
             setLibraryDetails({ ...libraryDetails, halls: e.target.value })
           }
-          placeholder="DOB"
+          placeholder="halls"
         />
       </div>
       <div className="flex gap-10 w-full items-center justify-start">
