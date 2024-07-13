@@ -3,30 +3,24 @@ const express = require("express");
 const { AdminController } = require("../../controllers");
 const AdminRouter = express.Router();
 
-
 const multer = require("multer");
 
-
-
-
 // Configure Multer storage using Cloudinary
- 
+
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
-      cb(null, 'uploads')
+    cb(null, "uploads");
   },
   filename: (req, file, cb) => {
-      cb(null, file.fieldname + '-' + Date.now())
-  }
+    cb(null, file.fieldname + "-" + Date.now());
+  },
 });
 
 // Add limits property to the multer configuration
-const upload = multer({ 
+const upload = multer({
   storage: storage,
-  limits: { fileSize: 2 * 1024 * 1024 } // Limit of 2MB
+  limits: { fileSize: 2 * 1024 * 1024 }, // Limit of 2MB
 });
-
-
 
 // const validateAccessToken = (req, res, next) => {
 //   console.log("validateAccessToken");
@@ -61,12 +55,16 @@ const upload = multer({
 //   }
 // };
 
-
-
-
 AdminRouter.get("/ping", AdminController.pingAdminController);
-AdminRouter.post("/registerAdmin", upload.fields([{ name: 'aadhar', maxCount: 1 }, { name: 'pan', maxCount: 1 }]), AdminController.RegisterAdmin);
-
+AdminRouter.post(
+  "/registerAdmin",
+  upload.fields([
+    { name: "aadhar", maxCount: 1 },
+    { name: "pan", maxCount: 1 },
+  ]),
+  AdminController.RegisterAdmin
+);
+AdminRouter.post("/loginAdmin", AdminController.LoginAdmin);
 // AdminRouter.post("/addFriend/:userId", AdminController.addFriend);
 // AdminRouter.post("/getFriends/:userId", AdminController.getFriends);
 
