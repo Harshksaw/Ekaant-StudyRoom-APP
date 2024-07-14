@@ -1,18 +1,10 @@
 const mongoose = require('mongoose');
 
 const FileSchema = new mongoose.Schema({
-  fileName: {
-    type: String,
-    required: true,
-  },
-  filePath: {
-    type: String,
-    required: true,
-  },
-  encryptedContent: {
-    type: String,
-    required: true,
-  },
+  filename: String,
+  path: String,
+
+
 });
 
 const File = mongoose.model('File', FileSchema);

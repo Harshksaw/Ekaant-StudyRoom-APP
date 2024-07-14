@@ -26,7 +26,7 @@ const AdminSchema = new mongoose.Schema({
   accountType: {
     type: String,
     default:'Admin',
-    required: true,
+    required: false,
   },
   ownedProperties:[
     {
