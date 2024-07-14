@@ -11,8 +11,7 @@ const { Library } = require("../models/library.model");
 const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
 
-// async function
-// create a library which
+
 
 const LibrarySchema = z.object({
   name: z.string(),
