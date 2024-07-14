@@ -5,11 +5,32 @@ const { User } = require("../models");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin.model");
 const JWT_SECRET = "MY_SECRET_KEY";
-const fs = require('fs');
+const fs = require("fs");
+const { Image } = require("../models/file.model");
+const crypto = require('crypto');
+const path = require('path');
+const File = require("../models/file.model");
+
 const ping = (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Ping successful" });
 };
 // singup
+// Function to encrypt file data
+// Function to encrypt data using AES-256
+function encryptData(data) {
+  const algorithm = 'aes-256-cbc'; // AES 256 CBC mode
+  const secretKey = Buffer.from(JWT_SECRET); // Using JWT_SECRET as the key
+  const iv = crypto.randomBytes(16); // IV should be 128 bits (16 bytes)
+
+  // Ensure the secret key is 32 bytes long (256 bits)
+  const key = crypto.createHash('sha256').update(String(secretKey)).digest('base64').substr(0, 32);
+
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  let encrypted = cipher.update(data, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+
+  return { encryptedData: encrypted, key: key, iv: iv.toString('hex') };
+}
 async function RegisterAdmin(req, res, next) {
   try {
     // const {
@@ -35,27 +56,29 @@ async function RegisterAdmin(req, res, next) {
     //   Address
     // );
 
-       // Convert files to base64
-      //  console.log("req.files is ", req.files);
-      //  if (!req.files || !req.files.aadhar) {
-      //   return res.status(StatusCodes.BAD_REQUEST).json({
-      //     success: false,
-      //     message: "No aadhar file uploaded",
-      //   });
-      // }
-      if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-      }
-      const imageData = req.file;
-      //  const aadharImage =  fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.aadhar))
-      //  const panImage = fs.readFileSync(req.files.pan[0].path).toString('base64');
-   
+    const pancardFile = req.files['pancard'][0];
+    // const aadharFile = req.files['aadhar'][0];
 
-      console.log("aadharImage is ", imageData);
-
-      return res.status(StatusCodes.OK).json({ message: "Ping successful" });
+    // Read file contents
+    const pancardData = fs.readFileSync(pancardFile.path, { encoding: 'utf8' });
 
 
+// Now use `encryptedString` as the value for `encryptedContent`
+// when saving your file, ensuring it matches the expected string type
+    // const encryptedAadhar = encryptData(aadharData);
+
+    // const aadharCardFile = await File.create({
+    //   fileName: AddharNumber,
+    //   filePath: aadharFile.path,
+    //   encryptedContent: encryptedAadhar,
+    // });
+    const panCardFile = await File.create({
+      fileName: '22233232',
+      // filePath: pancardFile.path,
+      encryptedContent: encryptedString,
+    });
+    panCardFile.save();
+    res.status(StatusCodes.OK).json({ message: "File uploaded successfully" });
 
     const admin = await Admin.create({
       phoneNumber,
@@ -69,11 +92,11 @@ async function RegisterAdmin(req, res, next) {
       address: Address,
       adhaarCardDetails: {
         adhaarNumber: AddharNumber,
-        adhaarImage: aadharPath,
+        // adhaarCardFile: aadharCardFile._id,
       },
       panCardDetails: {
         panNumber: PanNumber,
-        panImage: panPath,
+        panCardFile: panCardFile._id,
       },
     });
     console.log(password);

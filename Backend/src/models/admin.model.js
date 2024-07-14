@@ -39,9 +39,10 @@ const AdminSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    adhaarImage: {
-        type: String,
-        require: true,
+    adhaarCardFile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'File',
+      required: true,
     }
   },
   address: {},
@@ -50,9 +51,10 @@ const AdminSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    panImage: {
-        type: String,
-        require: true,
+    panCardFile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'File',
+      required: true,
     }
   },
   profileImage: {
