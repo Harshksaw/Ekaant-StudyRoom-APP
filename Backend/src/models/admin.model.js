@@ -25,10 +25,10 @@ const AdminSchema = new mongoose.Schema({
   },
   accountType: {
     type: String,
-    default:'Admin',
+    default: "Admin",
     required: true,
   },
-  ownedProperties:[
+  ownedProperties: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Library",
@@ -36,24 +36,24 @@ const AdminSchema = new mongoose.Schema({
   ],
   adhaarCardDetails: {
     adhaarNumber: {
-        type: String,
-        require: true,
+      type: String,
+      require: true,
     },
     adhaarImage: {
-        type: String,
-        require: true,
-    }
+      type: String,
+      require: true,
+    },
   },
   address: {},
   panCardDetails: {
     panNumber: {
-        type: String,
-        require: true,
+      type: String,
+      require: true,
     },
     panImage: {
-        type: String,
-        require: true,
-    }
+      type: String,
+      require: true,
+    },
   },
   profileImage: {
     type: String,
@@ -62,6 +62,10 @@ const AdminSchema = new mongoose.Schema({
   resetPasswordExpires: {
     type: Date,
   },
+  // adding a reset password token
+  // token: {
+  //   type: String,
+  // },
 });
 // password hashing--
 AdminSchema.methods.createHash = async function (password) {
@@ -76,4 +80,3 @@ AdminSchema.methods.validatePassword = async function (candidatePassword) {
 };
 const Admin = mongoose.model("Admin", AdminSchema);
 module.exports = Admin;
-

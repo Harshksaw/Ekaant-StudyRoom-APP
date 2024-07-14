@@ -1,17 +1,17 @@
 const express = require("express");
-const path = require('path');
+const path = require("path");
 const { AdminController } = require("../../controllers");
 const AdminRouter = express.Router();
-const multer = require('multer');
+const multer = require("multer");
 
-const uploadPath = path.join(__dirname, 'uploads');
+const uploadPath = path.join(__dirname, "uploads");
 
 // Multer storage configuration
 const storage = multer.diskStorage({
   destination: uploadPath,
   filename: (req, file, cb) => {
     cb(null, file.originalname);
-  }
+  },
 });
 
 const upload = multer({ storage: storage });
@@ -19,10 +19,14 @@ const upload = multer({ storage: storage });
 AdminRouter.get("/ping", AdminController.pingAdminController);
 AdminRouter.post(
   "/registerAdmin",
-  upload.single('image'),
+  upload.single("image"),
   AdminController.RegisterAdmin
 );
 AdminRouter.post("/loginAdmin", AdminController.LoginAdmin);
+// AdminRouter.post("/changePassword", AdminController.ChangePassword);
+// AdminRouter.post("/reset-password-token", AdminController.ResetPasswordToken);
+AdminRouter.post("/resetAdminPassword", AdminController.ResetAdminPassword);
+
 // AdminRouter.post("/addFriend/:userId", AdminController.addFriend);
 // AdminRouter.post("/getFriends/:userId", AdminController.getFriends);
 
