@@ -1,13 +1,14 @@
 import Header from "@/components/Header";
 import { LinearGradient } from "expo-linear-gradient";
 import {
-  SafeAreaView,
+
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 const sampleData = {
   Latest: [
     {
@@ -90,7 +91,7 @@ const GradientButton: React.FC<GradientButtonProps> = ({ text, onPress }) => {
 
 export default function Search() {
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         flexDirection: "column",
@@ -105,113 +106,113 @@ export default function Search() {
     >
 
 
-        <View
+      <View
         style={{
-          marginTop: 40,
+          marginTop: 0,
         }}
-        >
+      >
 
-      <Header  color="black"/>
-        </View>
-      <View  style={{
-        marginTop:40,
+        <Header color="black" />
+      </View>
+      <View style={{
+        marginTop: 10,
         flex: 1,
         flexDirection: "column",
         backgroundColor: "white",
       }}>
 
-      
-      <View>
-        <ScrollView
-          horizontal={true}
-          style={styles.scrollViewStyle}
-          contentContainerStyle={styles.scrollViewContent}
-        >
-          {/* Place your horizontally scrollable content here */}
 
-          <GradientButton
-            text="Jobs"
-            onPress={() => console.log("Search Jobs")}
-          />
-          <GradientButton
-            text="Admit Cards"
-            onPress={() => console.log("Search Jobs")}
-          />
-          <GradientButton
-            text="Latest"
-            onPress={() => console.log("Search Jobs")}
-          />
-        </ScrollView>
-      </View>
+        <View>
+          <ScrollView
+            horizontal={true}
+            style={styles.scrollViewStyle}
+            contentContainerStyle={styles.scrollViewContent}
+          >
+            {/* Place your horizontally scrollable content here */}
 
-      <View
-      style={{
-        flex: 1,
-        marginTop: 20,
-        marginHorizontal: 20,
-        flexDirection: "column",
-
-        // justifyContent: "center",
-        // alignItems: "center",
-      }}
-      >
-        <Text
-        style={{
-
-          fontSize: 30,
-          fontWeight: "semibold",
-          marginTop: 20,
-          color: "black",
-
-        }}
-        >Latest Jobs</Text>
-
-        <View
-        style={{
-          flexDirection:"column",
-          gap:20,
-
-        }}
-        >
-          {sampleData.Latest.map((item) => (
-            <TouchableOpacity key={item.id}>
-              <View
-                style={{
-                  // flex: 1,
-                  // width: 250,
-                  backgroundColor:'lightgray',
-                  borderRadius:20,
-                  padding:10,
-
-                  marginHorizontal: 10,
-                  // flexDirection: "column",
-                  justifyContent: "space-between",
-                  flexDirection: "row",
-
-                  // justifyContent:'flex-start',
-                  // alignItems: "flex-start",
-
-                }}
-              >
-                <View>
-
-                <Text style={{
-                  color:'blue',
-                }}>{item.title}</Text>
-                <Text>{item.company}</Text>
-                </View>
-
-                <Text>{item.location}</Text>
-                {/* <Text>{item.postedDate}</Text> */}
-              </View>
-            </TouchableOpacity>
-          ))}
+            <GradientButton
+              text="Jobs"
+              onPress={() => console.log("Search Jobs")}
+            />
+            <GradientButton
+              text="Admit Cards"
+              onPress={() => console.log("Search Jobs")}
+            />
+            <GradientButton
+              text="Latest"
+              onPress={() => console.log("Search Jobs")}
+            />
+          </ScrollView>
         </View>
 
-      </View>
+        <View
+          style={{
+            flex: 1,
+            marginTop: 20,
+            marginHorizontal: 20,
+            flexDirection: "column",
+
+            // justifyContent: "center",
+            // alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+
+              fontSize: 30,
+              fontWeight: "semibold",
+              marginTop: 20,
+              color: "black",
+
+            }}
+          >Latest Jobs</Text>
+
+          <View
+            style={{
+              flexDirection: "column",
+              gap: 20,
+
+            }}
+          >
+            {sampleData.Latest.map((item) => (
+              <TouchableOpacity key={item.id}>
+                <View
+                  style={{
+                    // flex: 1,
+                    // width: 250,
+                    backgroundColor: 'lightgray',
+                    borderRadius: 20,
+                    padding: 10,
+
+                    marginHorizontal: 10,
+                    // flexDirection: "column",
+                    justifyContent: "space-between",
+                    flexDirection: "row",
+
+                    // justifyContent:'flex-start',
+                    // alignItems: "flex-start",
+
+                  }}
+                >
+                  <View>
+
+                    <Text style={{
+                      color: 'blue',
+                    }}>{item.title}</Text>
+                    <Text>{item.company}</Text>
+                  </View>
+
+                  <Text>{item.location}</Text>
+                  {/* <Text>{item.postedDate}</Text> */}
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+        </View>
       </View>
 
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({

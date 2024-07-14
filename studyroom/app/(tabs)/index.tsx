@@ -4,12 +4,13 @@ import {
   Dimensions,
   Modal,
   Platform,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  SafeAreaView 
+
 } from "react-native";
 
 
@@ -17,7 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
 import Header from "@/components/Header";
 import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const { width, height } = Dimensions.get("window");
 
@@ -34,6 +35,7 @@ import { useAssets } from "expo-asset";
 // import {Picker} from '@react-native-picker/picker';
 import { Image } from "expo-image";
 import StarRating from "@/components/Ratinstar";
+import { SafeAreaView } from "react-native-safe-area-context";
 export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +44,7 @@ export default function index() {
   const [notListed, setNotListed] = useState(false);
   const [reload, setReload] = useState(false);
   const toggleNotListedModal = () => setNotListed(!notListed);
+  const [refreshing, setRefreshing] = useState(false)
 
   // const [location, setLocation] = useState(null);
   // const [errorMsg, setErrorMsg] = useState(null);
@@ -282,6 +285,13 @@ export default function index() {
     setStickyHeight(event.nativeEvent.layout.height);
   };
 
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
   return (
     <SafeAreaView
       style={{
@@ -293,7 +303,7 @@ export default function index() {
         backgroundColor: "white",
       }}
     >
-      <View style={{marginTop:20}}>
+      <View style={{marginTop:0}}>
 
       <Header color="black" />
       </View>
@@ -302,7 +312,10 @@ export default function index() {
 
       {/* ///carousel -> Listings -> Filters */}
 
-      <ScrollView style={{ flex: 1, gap: 40 }} stickyHeaderIndices={[1]}>
+      <ScrollView style={{ flex: 1, gap: 40 }} stickyHeaderIndices={[1]}
+       refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
         {/* Carousel */}
         <View style={styles.carousel}>
           <View style={styles.welcome}>

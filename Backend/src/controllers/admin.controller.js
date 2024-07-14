@@ -2,27 +2,51 @@ const { StatusCodes } = require("http-status-codes");
 const { bcrypt } = require("bcrypt");
 const zod = require("zod");
 const { User } = require("../models");
+const { crypto } = require("crypto");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin.model");
 const JWT_SECRET = "MY_SECRET_KEY";
-const fs = require('fs');
+const fs = require("fs");
+
+const { Image } = require("../models/file.model");
+const crypto = require('crypto');
+const path = require('path');
+const File = require("../models/file.model");
+
+
 const ping = (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Ping successful" });
 };
 // singup
+// Function to encrypt file data
+// Function to encrypt data using AES-256
+function encryptData(data) {
+  const algorithm = 'aes-256-cbc'; // AES 256 CBC mode
+  const secretKey = Buffer.from(JWT_SECRET); // Using JWT_SECRET as the key
+  const iv = crypto.randomBytes(16); // IV should be 128 bits (16 bytes)
+
+  // Ensure the secret key is 32 bytes long (256 bits)
+  const key = crypto.createHash('sha256').update(String(secretKey)).digest('base64').substr(0, 32);
+
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  let encrypted = cipher.update(data, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+
+  return { encryptedData: encrypted, key: key, iv: iv.toString('hex') };
+}
 async function RegisterAdmin(req, res, next) {
   try {
-    // const {
-    //   phoneNumber,
-    //   email,
-    //   password,
-    //   fullName,
-    //   Dob,
-    //   AddharNumber,
-    //   PanNumber,
-    //   Address,
-    //   username,
-    // } = req.body;
+    const {
+      phoneNumber,
+      email,
+      password,
+      fullName,
+      Dob,
+      AddharNumber,
+      PanNumber,
+      Address,
+      username,
+    } = req.body;
 
     // console.log(
     //   phoneNumber,
@@ -35,29 +59,69 @@ async function RegisterAdmin(req, res, next) {
     //   Address
     // );
 
-       // Convert files to base64
-      //  console.log("req.files is ", req.files);
-      //  if (!req.files || !req.files.aadhar) {
-      //   return res.status(StatusCodes.BAD_REQUEST).json({
-      //     success: false,
-      //     message: "No aadhar file uploaded",
-      //   });
-      // }
-      if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-      }
-      const imageData = req.file;
-      //  const aadharImage =  fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.aadhar))
-      //  const panImage = fs.readFileSync(req.files.pan[0].path).toString('base64');
-   
 
-      console.log("aadharImage is ", imageData);
+    // Convert files to base64
+    //  console.log("req.files is ", req.files);
+    //  if (!req.files || !req.files.aadhar) {
+    //   return res.status(StatusCodes.BAD_REQUEST).json({
+    //     success: false,
+    //     message: "No aadhar file uploaded",
+    //   });
+    // }
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+    const imageData = req.file;
+    //  const aadharImage =  fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.aadhar))
+    //  const panImage = fs.readFileSync(req.files.pan[0].path).toString('base64');
+=======
+    // const exist = await Admin.findOne({ email });
+    // if (exist) {
+    //   return res.status(StatusCodes.BAD_REQUEST).json({
+    //     success: false,
+    //     message: "User already exists",
+    //     error: { 411: "User already exists" },
+    //     data: {},
+    //   });
+    // }
+  
+    const { pancard, aadhar } = req.files;
+    if (pancard) {
+      console.log(pancard[0]); // Access the first (and only) pancard file
 
-      return res.status(StatusCodes.OK).json({ message: "Ping successful" });
+    }
+
+    // Access aadhar file
+    if (aadhar) {
+      console.log(aadhar[0]); // Access the first (and only) aadhar file
+
+    }
+
+ 
+
+
+    const pancardFile = new File({
+      filename: pancard[0].originalname,
+      path: pancard[0].path,
+    });
+
+    const aadharFile = new File({
+      filename: aadhar[0].originalname,
+      path: aadhar[0].path,
+    });
+
+    const pancardPath = await pancardFile.save();
+    const addharCardPath = await aadharFile.save();
+
+
+    console.log("pancardPath is ", pancardPath._id);
+    console.log("addharCardPath is ", addharCardPath._id);  
 
 
 
-    const admin = await Admin.create({
+
+
+    const newAdmin = await Admin.create({
       phoneNumber,
       username,
       email,
@@ -69,39 +133,33 @@ async function RegisterAdmin(req, res, next) {
       address: Address,
       adhaarCardDetails: {
         adhaarNumber: AddharNumber,
-        adhaarImage: aadharPath,
+        adhaarCardFile: addharCardPath._id, 
       },
       panCardDetails: {
         panNumber: PanNumber,
-        panImage: panPath,
+        panCardFile: pancardPath._id,
       },
     });
-    console.log(password);
-    //  hashing the password
-    const hashedPassword = await admin.createHash(password);
-    console.log("hashedPassword is ", hashedPassword);
-    admin.password = hashedPassword;
-    console.log("hashed password is ", admin.password);
-    // saving the admin
-    const response = await admin.save();
-    console.log(response);
-    // jwt --
-    const admin_id = admin._id;
+
+    const hashedPassword = await newAdmin.createHash(password);
+    console.log("hashedpassword is ", hashedPassword);
+    newAdmin.password = hashedPassword;
+    // saving the user--
+    await newAdmin.save();
+
+    const admin_id = newAdmin._id;
+
+    // generating the token--
     const token = jwt.sign({ admin_id }, JWT_SECRET);
+    
     return res.status(StatusCodes.CREATED).json({
       success: true,
       message: "User authenticated successfully",
       error: {},
-      data: admin,
+      data: newAdmin,
       token: token,
     });
 
-    // const user = await User.create({ email, password });
-    // const accessToken = jwt.sign(
-    //     { userId: user.id, email: user.email },
-    //     JWT_SECRET
-    // );
-    // res.status(StatusCodes.CREATED).json({ accessToken });
   } catch (error) {
     console.log("error is ", error);
     next(error);
@@ -143,11 +201,97 @@ async function LoginAdmin(req, res, next) {
     console.log("error is ", error);
   }
 }
+// change password--
+// async function ChangeAdminPassword(req, res, next) {
+//   try {
+//     const { oldPassword, newPassword, confirmPassword } = req.body;
+//     const admin = await Admin.findById(req.admin.admin_id); //can be a problem
+//     //validation of oldPass
+//     if (!admin.validatePassword(oldPassword)) {
+//       return res.status(StatusCodes.BAD_REQUEST).json({
+//         success: false,
+//         message: "Old password is incorrect",
+//         error: {},
+//       });
+//     }
+//     //validation of newPass
+//     if (newPassword !== confirmPassword) {
+//       return res.status(StatusCodes.BAD_REQUEST).json({
+//         success: false,
+//         message: "Password does not match",
+//         error: {},
+//       });
+//     }
+//     const hashedPassword = await admin.createHash(newPassword);
+//     const updatedAdminDetails = await Admin.findOneAndUpdate(
+//       { admin_id: req.admin.admin_id },
+//       { password: hashedPassword },
+//       { new: true }
+//     );
 
+//     //send mail - Password updated
+//     try {
+//       const emailResponse = await mailSender(
+//         updatedUserDetails.email,
+//         `Password updated successfully for ${updatedUserDetails.firstName} ${updatedUserDetails.lastName}`,
+//         passwordUpdated(
+//           updatedUserDetails.email,
+//           `${updatedUserDetails.firstName} ${updatedUserDetails.lastName}`
+//         )
+//       );
+//       console.log("Email sent successfully:", emailResponse.response);
+//     } catch (error) {
+//       // If there's an error sending the email, log the error and return a 500 (Internal Server Error) error
+//       console.error("Error occurred while sending email:", error);
+//       return res.status(500).json({
+//         success: false,
+//         message: "Error occurred while sending email",
+//         error: error.message,
+//       });
+//     }
+//     return res
+//       .status(200)
+//       .json({ success: true, message: "Password updated successfully" });
+//   } catch (error) {
+//     console.log("error is ", error);
+//   }
+// }
+// reset password--
+//
+async function ResetAdminPassword(req, res, next) {
+  const { email, password, confirmPassword } = req.body;
+  if (password !== confirmPassword) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      message: "Password does not match",
+      error: {},
+    });
+  }
+  const admin = await Admin.findOne({ email });
+
+  if (admin) {
+    const hashedPassword = await admin.createHash(password);
+    admin.password = hashedPassword;
+    await admin.save();
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Password updated successfully",
+      error: {},
+    });
+  } else {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      message: "Email not found",
+      error: {},
+    });
+  }
+}
 module.exports = {
   pingAdminController: ping,
   RegisterAdmin,
   LoginAdmin,
+  ResetAdminPassword,
+  // ChangeAdminPassword,
 };
 
 // ienipepec11@
@@ -156,4 +300,4 @@ module.exports = {
 // AdminHarsh
 
 // AdminHarsh@gmail.com
-// Harsh123
+// Harsh@13

@@ -156,6 +156,7 @@ const BookingScreen: React.FC = () => {
     });
   };
   const available = handleData(data.timeSlot)
+  console.log(available,"aaa")
 
   return (
     <SafeAreaView
@@ -365,8 +366,9 @@ const BookingScreen: React.FC = () => {
                     {available.map((slot, index) => {
                       if (slot.availability) {
                         // Render slots with an availability key in a separate view
+                        {console.log("Slot", slot._id)}
                         return (
-                          <View key={index}
+                          <View key={slot._id}
                           style={{
                             maxWidth: 70,
                             marginHorizontal: 50,
@@ -383,7 +385,7 @@ const BookingScreen: React.FC = () => {
                               borderRadius: 10,
                               alignItems: "center",
                             }}
-                            // onPress={() => setSelectedTimeSlot(slot)}
+                            onPress={() => handleSelectSlot(slot)}
                             >
                               <Text style={
                                 {
@@ -398,7 +400,9 @@ const BookingScreen: React.FC = () => {
                         );
                       } else {
                         // Render regular time slots
+                                
                         return (
+
                           <View key={slot._id}
                           
                           >

@@ -5,7 +5,7 @@ export const StepTwo = ({
   userEmailOTP,
   handleInputChange,
   handleEmailInputChange,
-}:any) => (
+}: any) => (
   <div>
     <div>
       <label>Enter Phone's OTP</label>
@@ -15,6 +15,7 @@ export const StepTwo = ({
             <input
               type="number"
               name={`otp${index}`}
+              id="adminPhoneOTP"
               className="w-full h-full text-center outline-none border border-gray-200 bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
               maxLength={1}
               value={userOTP[`otp${index}`]}
@@ -35,10 +36,11 @@ export const StepTwo = ({
             <input
               type="number"
               name={`emailOtp${index}`}
+              id="adminEmailOTP"
               className="w-full h-full text-center outline-none rounded-xl  border border-gray-200 bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
               maxLength={1}
               value={userEmailOTP[`emailOtp${index}`]}
-              onChange={handleEmailInputChange }
+              onChange={handleEmailInputChange}
               placeholder="0"
             />
           </div>

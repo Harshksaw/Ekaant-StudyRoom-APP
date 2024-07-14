@@ -1,3 +1,4 @@
+import { NoBookingsSVG } from "@/assets";
 import Header from "@/components/Header";
 import StarRating from "@/components/Ratinstar";
 import { fetchRoomData } from "@/hooks/api/library";
@@ -5,21 +6,22 @@ import { BACKEND } from "@/utils/config";
 import { calculatePeriod } from "@/utils/date";
 import { getUserId } from "@/utils/keys";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import axios from "axios";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   Platform,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface ApprovalStatusProps {
   isApproved: boolean;
@@ -34,29 +36,24 @@ const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
   );
 };
 
-
-
-export default function Courses() {
+export default function Bookings() {
   const [data, setData] = useState(null);
-
-
- 
-
-
-
+  const [refreshing, setRefreshing] = useState(false)
 
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
 
-    if (userId) { // Check if userId is not null
-      const res = await axios.get(`${BACKEND}/api/v1/booking/getUserBookings/${userId}`)
+    if (userId) {
+      // Check if userId is not null
+      const res = await axios.get(
+        `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
+      );
       console.log("userID---->", res.data.bookings);
       setData(res?.data?.bookings);
     } else {
       console.log("UserId is null");
     }
-  }
-
+  };
 
   useEffect(() => {
     const getBookingData = async () => {
@@ -69,26 +66,30 @@ export default function Courses() {
     getBookingData();
   }, []);
 
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
+
   return (
     <SafeAreaView
       style={{
         flex: 1,
-
 
         padding: 0,
         // marginBottom: 50,
 
         // justifyContent: "center",
         // alignItems: "center",
-
-
       }}
     >
-
-
       <View
         style={{
-          marginTop: 40,
+          marginTop: 0,
         }}
       >
         <Header color="black" />
@@ -132,31 +133,37 @@ export default function Courses() {
 
             // backgroundColor: "yellow",
           }}
-        >
-
-          {data === null && (
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
+          {data && data.length  == 0 && (
             <TouchableOpacity
-            onPress={() => getBookings()}
+              onPress={() => getBookings()}
               style={{
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: 200,
+                marginTop: 100,
               }}
             >
+                 <Image
+              style={{width:200, height:200}}
+             source={{uri:"https://img.icons8.com/?size=100&id=iUVwyb80vyVW&format=png&color=000000"}}
+
+             />
               <Text
                 style={{
-                  fontSize: 20,
+                  fontSize: 30,
                   fontWeight: "bold",
-                  color: "blue",
+                  color: "rgb(183, 34, 225)",
                   textAlign: "center",
                 }}
               >
                 No Bookings Found
               </Text>
-              <ActivityIndicator size="large" color="black" />
-            </TouchableOpacity>
           
+
+            </TouchableOpacity>
           )}
           {data &&
             data.map((item, index) => (
@@ -175,10 +182,10 @@ export default function Courses() {
                     params: { item: JSON.stringify(item) },
                   })
                 }
-              // onPress={()=> {
-              //   setNotListed(true)
+                // onPress={()=> {
+                //   setNotListed(true)
 
-              // }}
+                // }}
               >
                 <View style={styles.card}>
                   <Image
@@ -231,7 +238,10 @@ export default function Courses() {
                             textAlign: "left",
                           }}
                         >
-                          {item?.libraryId.name.split(" ").slice(0, 2).join(" ")}
+                          {item?.libraryId.name
+                            .split(" ")
+                            .slice(0, 2)
+                            .join(" ")}
                         </Text>
 
                         <ApprovalStatus isApproved={item.approved} />
@@ -273,7 +283,11 @@ export default function Courses() {
                             textAlign: "left",
                           }}
                         >
-                          Period {calculatePeriod(item?.bookingDate, item?.bookingPeriod) || "2 Months"}
+                          Period{" "}
+                          {calculatePeriod(
+                            item?.bookingDate,
+                            item?.bookingPeriod
+                          ) || "2 Months"}
                         </Text>
                       </View>
                     </View>
