@@ -234,9 +234,10 @@ function Signup() {
   });
 
   useEffect(() => {
-    // console.log(userInfo);
+    console.log(userInfo,"========>userinfo");
+    console.log(userOTP,"========>userotp");
     console.log(libraryDetails, "========================>Librarydetails");
-    // console.log(userDetails, " ========================> userdetails");
+    console.log(userDetails, " ========================> userdetails");
 
   }, [userInfo, userOTP, libraryDetails, userDetails]);
 

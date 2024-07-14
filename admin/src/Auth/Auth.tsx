@@ -135,15 +135,15 @@ const Auth = ({ type }: { type: "signin" }) => {
             </Link>
           )}
         </div>
-        <div className="w-full max-w-md">
-          <h1 className="text-5xl font-bold mb-2">
+        <div className="w-full max-w-md ">
+          <h1 className="text-5xl font-bold mb-2 text-center">
             {type === "signin" ? "Login" : "Register"}
           </h1>
-          <h6 className="text-base font-normal mb-4">
+          <h6 className="text-base font-normal mb-4 text-center">
             Hello! Let's get started
           </h6>
           <div className="px-20">
-            <div className="flex justify-start gap-2 items-center mb-4">
+          {/* <div className="flex justify-start gap-2 items-center mb-4">
               <p className="p-2 border rounded-lg">+91</p>
               <input
                 type="number"
@@ -161,7 +161,38 @@ const Auth = ({ type }: { type: "signin" }) => {
                 onClick={() => sendOtp()}
                 className="border rounded-lg p-3 h-10 w-12"
               />
-            </div>
+            </div> */}
+               <div className="flex justify-start border border-black bg-white">
+        <label
+          className=" w-24  py-2  text-black  h-[50px] justify-center items-center
+        text-center border border-gray-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer rounded-full "
+        >
+          <span className="text-3xl">🇮🇳</span>
+        </label>
+        <input
+          type="number"
+          // className="px-4 py-2 w-[410px] border-2 border-black  text-base bg-white text-gray-400"
+          className="focus:ring-0 focus:ring-offset-0 focus:outline-0 focus:outline-offset-0 "
+          value={userInfo?.phone.toString()}
+          placeholder="Phone"
+          onChange={(e) => {
+            const inputVal = e.target.value;
+            // Update the userInfo state with the new phone number
+            setUserInfo({
+              ...userInfo,
+              phone: inputVal ? parseInt(inputVal, 10) : 0,
+            });
+            // Check if the input length is 10 and call a function
+            if (inputVal.length === 10) {
+              // Call your desired function here
+
+              console.log("Input is 10 digits, calling function...");
+              // functionName(); // Replace functionName with the actual function you want to call
+            }
+          }}
+          style={{ border: "none", justifyContent: "center" }}
+        />
+      </div>
             {showOtp && userInfo.phone >= 1000000 && (
               <div className="flex justify-between items-center gap-2 mb-4">
                 <input

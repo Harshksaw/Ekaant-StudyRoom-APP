@@ -4,7 +4,7 @@ import Seats from "@/components/Seats";
 import { getDateAfterMonths } from "@/utils/date";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
-import { useAssets } from "expo-asset";
+
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useEffect } from "react";
@@ -18,10 +18,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import PaymentScreen from "./payment.screen";
+
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
-import { getUserId } from "@/utils/keys";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "react-native-toast-notifications";
 
@@ -46,7 +46,7 @@ const CheckoutScreen: React.FC = () => {
   const subtotal = Number((price + RegistrationFees).toFixed(2));
 
   const endDate = getDateAfterMonths(BookedData?.date, BookedData?.months);
-  const totalAmount = subtotal 
+  const totalAmount = subtotal
 
   // console.log("Booked Data:", data );
   const BookingDate = BookedData.date;
@@ -56,99 +56,99 @@ const CheckoutScreen: React.FC = () => {
   const RoomNo = BookedData.room || 1;
 
 
-// console.log("Price:", price);
-// console.log("Convenience Fee:", RegistrationFees);
+  // console.log("Price:", price);
+  // console.log("Convenience Fee:", RegistrationFees);
 
-// console.log("End Date:", endDate);
-// console.log("Total Amount:", totalAmount);
+  // console.log("End Date:", endDate);
+  // console.log("Total Amount:", totalAmount);
 
 
-const PreBook = async() => {
-  const userData = await AsyncStorage.getItem("userData");
-  const userid = JSON.parse(userData || "{}")
-  const userId = userid.user._id;
+  const PreBook = async () => {
+    const userData = await AsyncStorage.getItem("userData");
+    const userid = JSON.parse(userData || "{}")
+    const userId = userid.user._id;
 
-  console.log("------------------->", data.details.id);
+    // console.log("------------------->", data.details.id);
 
-  console.log("User ID:", userId, "--------","libraryId", 
-    data._id, "Initial Price:", price, "Final Price:", 
-    totalAmount, "Time Slot:", BookingSlot, "Room No:", RoomNo, 
-    "Booked Seat:", BookingSeat, "Booking Date:",
-     BookingDate, "Booking Period:", BookingMonths);
-  if(!userId || !data.details.id || !price || !totalAmount || !BookingSlot || !RoomNo || !BookingSeat || !BookingDate || !BookingMonths){
-    return Toast.show("Please fill all fields !ReBook", {
-      type: "error",
-      placement: "top",
-      animationDuration: 1000,
-      icon: <Ionicons name="alert-circle" size={24} color="red" />,
+    // console.log("User ID:", userId, "--------", "libraryId",
+    //   data._id, "Initial Price:", price, "Final Price:",
+    //   totalAmount, "Time Slot:", BookingSlot, "Room No:", RoomNo,
+    //   "Booked Seat:", BookingSeat, "Booking Date:",
+    //   BookingDate, "Booking Period:", BookingMonths);
+    if (!userId || !data.details.id || !price || !totalAmount || !BookingSlot || !RoomNo || !BookingSeat || !BookingDate || !BookingMonths) {
+      return Toast.show("Please fill all fields !ReBook", {
+        type: "error",
+        placement: "top",
+        animationDuration: 1000,
+        icon: <Ionicons name="alert-circle" size={24} color="red" />,
 
-      duration: 3000,
+        duration: 3000,
+      }
+
+      )
+      return;
     }
 
-  )
-    return;
+
+
+
+    try {
+      console.log(userDetails.friendDetails, "-----977")
+      const response = await axios.post(`${BACKEND}/api/v1/booking/createBooking`, {
+        userId: userId,
+        libraryId: data.details.id,
+        initialPrice: price,
+        finalPrice: totalAmount,
+        timeSlot: BookingSlot,
+        roomNo: RoomNo,
+        bookedSeat: BookingSeat,
+        bookingDate: BookingDate,
+        bookingPeriod: BookingMonths,
+        forFriend: userDetails.friendDetails,
+
+      })
+
+
+
+
+      Toast.show("Booking Successful !", {
+        type: "success",
+        placement: "top",
+        animationDuration: 1000,
+        icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
+
+        duration: 3000,
+      })
+
+      return response.data.Booking._id
+
+    } catch (error) {
+      console.log("Error:", error);
+      return Toast.show("Error in Booking !", {
+        type: "error",
+        placement: "top",
+        animationDuration: 1000,
+        icon: <Ionicons name="alert-circle" size={24} color="red" />,
+
+        duration: 3000,
+      })
+
+    }
+
+
+
+
+
   }
 
-
-
-
-  try {
-    console.log(userDetails.friendDetails, "-----977")
-    const response = await axios.post(`${BACKEND}/api/v1/booking/createBooking`,{
-      userId: userId,
-      libraryId : data.details.id,
-      initialPrice : price,
-      finalPrice : totalAmount,
-      timeSlot : BookingSlot,
-      roomNo : RoomNo,
-      bookedSeat : BookingSeat,
-      bookingDate : BookingDate,
-      bookingPeriod : BookingMonths,
-      forFriend: userDetails.friendDetails,
-
-    })
-
-
-
-
-    Toast.show("Booking Successful !", {
-      type: "success",
-      placement: "top",
-      animationDuration: 1000,
-      icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
-
-      duration: 3000,
-    })
-
-    return response.data.Booking._id
-    
-  } catch (error) {
-    console.log("Error:", error);
-    return Toast.show("Error in Booking !", {
-      type: "error",
-      placement: "top",
-      animationDuration: 1000,
-      icon: <Ionicons name="alert-circle" size={24} color="red" />,
-
-      duration: 3000,
-    })
-    
-  }
-
-
-
-
-
-}
-
-  const PaymentScreen = async() => {
-   const data =  await PreBook();
+  const PaymentScreen = async () => {
+    const data = await PreBook();
 
 
 
     router.push({
       pathname: "/library/payment.screen",
-      params: { item: JSON.stringify(BookedData), price: JSON.stringify(totalAmount) , id :JSON.stringify(data) }
+      params: { item: JSON.stringify(BookedData), price: JSON.stringify(totalAmount), id: JSON.stringify(data) }
 
     });
   }
@@ -195,47 +195,47 @@ const PreBook = async() => {
         >
 
           <View
-          style={{
-            width: 150,
-            height: 50,
-            borderRadius: 20,
-            backgroundColor: "rgb(148, 230, 200)", // Example background color
-            justifyContent: "center",
-            alignItems: "center",
-            marginRight: 10,
-          
-          }}
+            style={{
+              width: 150,
+              height: 50,
+              borderRadius: 20,
+              backgroundColor: "rgb(148, 230, 200)", // Example background color
+              justifyContent: "center",
+              alignItems: "center",
+              marginRight: 10,
+
+            }}
           >
 
-            {  userDetails.bookingsForFriend ? (
+            {userDetails.bookingsForFriend ? (
               <View
-              style={{
-                flexDirection: "column",
-                alignItems: "center",
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
 
 
 
 
-              }}
-            >
-              <Text>
+                }}
+              >
+                <Text>
 
-              Booking for friend
-              </Text>
-              <Text>
+                  Booking for friend
+                </Text>
+                <Text>
 
-              {userDetails?.friendDetails?.name}
-              </Text>
-            </View>
+                  {userDetails?.friendDetails?.name}
+                </Text>
+              </View>
 
             ) : (
               <Text>
 
-              Booking for SELF
+                Booking for SELF
               </Text>
 
             )}
-            
+
 
 
           </View>
@@ -370,7 +370,7 @@ const PreBook = async() => {
               }}
             >
               <Text style={{ fontSize: 20, fontWeight: "400" }}>
-               Registration Fee{" "}
+                Registration Fee{" "}
               </Text>
               <Text style={{ fontSize: 20, fontWeight: "400" }}>
                 - ₹{RegistrationFees}

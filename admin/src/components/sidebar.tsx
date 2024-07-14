@@ -10,7 +10,7 @@ import {
   FaChevronDown,
 } from "react-icons/fa";
 import dashboard from "../assets/images/chart-pie.png";
-import ManageUsers from "./ManageUsers";
+import ManageBookings from "./ManageBookings";
 // import Booking from "./ManageLibrary";
 import { Link } from "react-router-dom";
 import ManageLibrary from "./LibraryAccordion";
@@ -43,7 +43,7 @@ const Sidebar = () => {
         </p> */}
           <div className="flex items-center justify-between   cursor-pointer">
             <div className="flex items-center gap-2 ">
-              <FaRegSun color="black" />
+
               <ManageLibrary />
             </div>
 
@@ -51,14 +51,13 @@ const Sidebar = () => {
           </div>
           {/* todo-- */}
           {/* manage user styling theek krne hai */}
-          <div className="flex items-center justify-between   cursor-pointer">
-            
-            <div className="flex items-center gap-2 ">
-              <FaRegSun color="black" />
-              <ManageUsers />
+          <div className="flex flex-row items-center justify-between cursor-pointer">
+            <div className="flex items-center gap-2">
+              {/* Icon stays in place */}
+              
+              {/* Collapsible Component */}
+              <ManageBookings />
             </div>
-
-            {/* <FaChevronRight color="white" /> */}
           </div>
 
           <div className="flex items-center justify-between gap-[10px] py-[15px] cursor-pointer">
