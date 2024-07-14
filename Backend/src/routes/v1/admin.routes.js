@@ -16,10 +16,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+
 AdminRouter.get("/ping", AdminController.pingAdminController);
 AdminRouter.post(
   "/registerAdmin",
-  upload.single("image"),
+
+  upload.fields([{ name: 'pancard', maxCount: 1 }, { name: 'aadhar', maxCount: 1 }]), 
+
   AdminController.RegisterAdmin
 );
 AdminRouter.post("/loginAdmin", AdminController.LoginAdmin);

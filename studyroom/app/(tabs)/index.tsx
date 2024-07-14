@@ -4,6 +4,7 @@ import {
   Dimensions,
   Modal,
   Platform,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,7 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
 import Header from "@/components/Header";
 import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const { width, height } = Dimensions.get("window");
 
@@ -43,6 +44,7 @@ export default function index() {
   const [notListed, setNotListed] = useState(false);
   const [reload, setReload] = useState(false);
   const toggleNotListedModal = () => setNotListed(!notListed);
+  const [refreshing, setRefreshing] = useState(false)
 
   // const [location, setLocation] = useState(null);
   // const [errorMsg, setErrorMsg] = useState(null);
@@ -283,6 +285,13 @@ export default function index() {
     setStickyHeight(event.nativeEvent.layout.height);
   };
 
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
   return (
     <SafeAreaView
       style={{
@@ -303,7 +312,10 @@ export default function index() {
 
       {/* ///carousel -> Listings -> Filters */}
 
-      <ScrollView style={{ flex: 1, gap: 40 }} stickyHeaderIndices={[1]}>
+      <ScrollView style={{ flex: 1, gap: 40 }} stickyHeaderIndices={[1]}
+       refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
         {/* Carousel */}
         <View style={styles.carousel}>
           <View style={styles.welcome}>

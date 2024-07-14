@@ -7,24 +7,46 @@ const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin.model");
 const JWT_SECRET = "MY_SECRET_KEY";
 const fs = require("fs");
-// const mailSender = require("../utils/mailSender");
+
+const { Image } = require("../models/file.model");
+const crypto = require('crypto');
+const path = require('path');
+const File = require("../models/file.model");
+
+
 const ping = (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Ping successful" });
 };
 // singup
+// Function to encrypt file data
+// Function to encrypt data using AES-256
+function encryptData(data) {
+  const algorithm = 'aes-256-cbc'; // AES 256 CBC mode
+  const secretKey = Buffer.from(JWT_SECRET); // Using JWT_SECRET as the key
+  const iv = crypto.randomBytes(16); // IV should be 128 bits (16 bytes)
+
+  // Ensure the secret key is 32 bytes long (256 bits)
+  const key = crypto.createHash('sha256').update(String(secretKey)).digest('base64').substr(0, 32);
+
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  let encrypted = cipher.update(data, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+
+  return { encryptedData: encrypted, key: key, iv: iv.toString('hex') };
+}
 async function RegisterAdmin(req, res, next) {
   try {
-    // const {
-    //   phoneNumber,
-    //   email,
-    //   password,
-    //   fullName,
-    //   Dob,
-    //   AddharNumber,
-    //   PanNumber,
-    //   Address,
-    //   username,
-    // } = req.body;
+    const {
+      phoneNumber,
+      email,
+      password,
+      fullName,
+      Dob,
+      AddharNumber,
+      PanNumber,
+      Address,
+      username,
+    } = req.body;
 
     // console.log(
     //   phoneNumber,
@@ -36,6 +58,7 @@ async function RegisterAdmin(req, res, next) {
     //   PanNumber,
     //   Address
     // );
+
 
     // Convert files to base64
     //  console.log("req.files is ", req.files);
@@ -51,12 +74,54 @@ async function RegisterAdmin(req, res, next) {
     const imageData = req.file;
     //  const aadharImage =  fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.aadhar))
     //  const panImage = fs.readFileSync(req.files.pan[0].path).toString('base64');
+=======
+    // const exist = await Admin.findOne({ email });
+    // if (exist) {
+    //   return res.status(StatusCodes.BAD_REQUEST).json({
+    //     success: false,
+    //     message: "User already exists",
+    //     error: { 411: "User already exists" },
+    //     data: {},
+    //   });
+    // }
+  
+    const { pancard, aadhar } = req.files;
+    if (pancard) {
+      console.log(pancard[0]); // Access the first (and only) pancard file
 
-    console.log("aadharImage is ", imageData);
-    // TODO: Add validation
-    // return res.status(StatusCodes.OK).json({ message: "Ping successful" });
+    }
 
-    const admin = await Admin.create({
+    // Access aadhar file
+    if (aadhar) {
+      console.log(aadhar[0]); // Access the first (and only) aadhar file
+
+    }
+
+ 
+
+
+    const pancardFile = new File({
+      filename: pancard[0].originalname,
+      path: pancard[0].path,
+    });
+
+    const aadharFile = new File({
+      filename: aadhar[0].originalname,
+      path: aadhar[0].path,
+    });
+
+    const pancardPath = await pancardFile.save();
+    const addharCardPath = await aadharFile.save();
+
+
+    console.log("pancardPath is ", pancardPath._id);
+    console.log("addharCardPath is ", addharCardPath._id);  
+
+
+
+
+
+    const newAdmin = await Admin.create({
       phoneNumber,
       username,
       email,
@@ -68,39 +133,33 @@ async function RegisterAdmin(req, res, next) {
       address: Address,
       adhaarCardDetails: {
         adhaarNumber: AddharNumber,
-        adhaarImage: aadharPath,
+        adhaarCardFile: addharCardPath._id, 
       },
       panCardDetails: {
         panNumber: PanNumber,
-        panImage: panPath,
+        panCardFile: pancardPath._id,
       },
     });
-    console.log(password);
-    //  hashing the password
-    const hashedPassword = await admin.createHash(password);
-    console.log("hashedPassword is ", hashedPassword);
-    admin.password = hashedPassword;
-    console.log("hashed password is ", admin.password);
-    // saving the admin
-    const response = await admin.save();
-    console.log(response);
-    // jwt --
-    const admin_id = admin._id;
+
+    const hashedPassword = await newAdmin.createHash(password);
+    console.log("hashedpassword is ", hashedPassword);
+    newAdmin.password = hashedPassword;
+    // saving the user--
+    await newAdmin.save();
+
+    const admin_id = newAdmin._id;
+
+    // generating the token--
     const token = jwt.sign({ admin_id }, JWT_SECRET);
+    
     return res.status(StatusCodes.CREATED).json({
       success: true,
       message: "User authenticated successfully",
       error: {},
-      data: admin,
+      data: newAdmin,
       token: token,
     });
 
-    // const user = await User.create({ email, password });
-    // const accessToken = jwt.sign(
-    //     { userId: user.id, email: user.email },
-    //     JWT_SECRET
-    // );
-    // res.status(StatusCodes.CREATED).json({ accessToken });
   } catch (error) {
     console.log("error is ", error);
     next(error);

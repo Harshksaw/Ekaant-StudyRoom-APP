@@ -25,8 +25,10 @@ const AdminSchema = new mongoose.Schema({
   },
   accountType: {
     type: String,
-    default: "Admin",
-    required: true,
+
+    default:'Admin',
+    required: false,
+
   },
   ownedProperties: [
     {
@@ -39,10 +41,13 @@ const AdminSchema = new mongoose.Schema({
       type: String,
       require: true,
     },
-    adhaarImage: {
-      type: String,
-      require: true,
-    },
+
+    adhaarCardFile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'File',
+      required: true,
+    }
+
   },
   address: {},
   panCardDetails: {
@@ -50,10 +55,13 @@ const AdminSchema = new mongoose.Schema({
       type: String,
       require: true,
     },
-    panImage: {
-      type: String,
-      require: true,
-    },
+
+    panCardFile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'File',
+      required: true,
+    }
+
   },
   profileImage: {
     type: String,
