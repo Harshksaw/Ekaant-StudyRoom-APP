@@ -9,6 +9,7 @@ const JWT_SECRET = "MY_SECRET_KEY";
 
 const multer = require("multer");
 const express = require("express");
+const App = require("../models/app.model");
 const cloudinary = require("cloudinary").v2;
 
 
@@ -27,6 +28,21 @@ const ping = (req, res) => {
 
       console.log(location, "body", images);
 
+      const app = new App({
+        Banner:images,
+        locations : location,
+
+      });
+
+      const appdata = await app.save();
+
+      console.log(appdata);
+
+
+
+
+
+
 
 
       // Add code to handle file uploads using multer and cloudinary
@@ -34,7 +50,8 @@ const ping = (req, res) => {
       return res.status(StatusCodes.CREATED).json({
         success: true,
         message: "Room created successfully",
-        data: images,
+        
+        data: app,
       });
     } catch (error) {
       console.error("Error creating room: ", error);
@@ -48,10 +65,14 @@ const ping = (req, res) => {
 
   async function getApp(req, res) {
     try {
-      const id = req.params.id;
-      console.log(id);
 
-      // Add code to fetch app details by id
+      //6693fe2eb4e16e6d87026d1d
+      // const id = req.params.id;
+
+
+      const app = await App.findById({ _id : "6693fe2eb4e16e6d87026d1d" });
+
+
 
       return res.status(StatusCodes.OK).json({
         success: true,

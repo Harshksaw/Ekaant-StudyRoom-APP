@@ -15,7 +15,7 @@ cloudinary.config({
   });
   
   // Configure Multer storage using Cloudinary
-  const storage = new CloudinaryStorage({
+const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
       folder: "profile-images",
@@ -25,9 +25,9 @@ cloudinary.config({
 const upload = multer({ storage: storage });
 
 
-AppRouter.post("/ping", appController.ping);
+AppRouter.get("/ping", appController.ping);
 AppRouter.post("/createApp",upload.array('banner', 5) , appController.createApp);
-AppRouter.get("/getApp/:id", appController.getApp);
+AppRouter.get("/getApp", appController.getApp);
 AppRouter.post("/editBanner/:id", appController.editBanner);
 AppRouter.post("/editLocations/:id", appController.editLocations);
 

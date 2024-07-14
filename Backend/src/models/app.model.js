@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const appSchema= new mongoose.Schema({
   Banner:{
-    type: String,
-    required: true,
+    type: [{ type: String }],
+    required: false,
 
   },
   locations:[{
