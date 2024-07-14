@@ -1,16 +1,20 @@
+import OtpInput from 'react-otp-input';
 export const StepTwo = ({
   nextStep,
   prevStep,
   userOTP,
   userEmailOTP,
-  handleInputChange,
-  handleEmailInputChange,
+  setOtpInputs,
+  setOtpEmailInputs,
+  // handleInputChange,
+  // handleEmailInputChange,
 }: any) => (
+
   <div>
     <div>
       <label>Enter Phone's OTP</label>
       <div className="flex flex-row items-center justify-between mx-auto w-full max-w-xs">
-        {[1, 2, 3, 4].map((index) => (
+        {/* {[1, 2, 3, 4].map((index) => (
           <div key={index} className="w-16 h-16 mr-1 mt-2">
             <input
               type="number"
@@ -23,7 +27,30 @@ export const StepTwo = ({
               placeholder="0"
             />
           </div>
-        ))}
+        ))} */}
+        <OtpInput value={userOTP} numInputs={4} onChange={setOtpInputs}
+          inputType='number'
+        placeholder='0000'
+        containerStyle={
+          {
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '10px',
+            padding: '10px'
+          }
+        }
+
+          renderSeparator={<span>-</span>}
+          renderInput={(props) => <input {...props} style={
+            {
+              width: '50px',
+              height: '50px',
+              borderRadius: '10px',
+              border: '1px solid #ccc',
+              textAlign: 'center'
+            }
+          } />}
+          />
       </div>
     </div>
 
@@ -31,20 +58,31 @@ export const StepTwo = ({
     <div className="mt-2">
       <label>Enter Email's OTP</label>
       <div className="flex flex-row items-center justify-between mx-auto w-full max-w-xs">
-        {[1, 2, 3, 4].map((index) => (
-          <div key={index} className="w-16 h-16 mr-1 mt-2">
-            <input
-              type="number"
-              name={`emailOtp${index}`}
-              id="adminEmailOTP"
-              className="w-full h-full text-center outline-none rounded-xl  border border-gray-200 bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
-              maxLength={1}
-              value={userEmailOTP[`emailOtp${index}`]}
-              onChange={handleEmailInputChange}
-              placeholder="0"
-            />
-          </div>
-        ))}
+    
+
+        <OtpInput value={userEmailOTP} numInputs={4} onChange={setOtpEmailInputs}
+             inputType='number'
+             placeholder='0000'
+             containerStyle={
+               {
+                 display: 'flex',
+                 justifyContent: 'center',
+                 gap: '10px',
+                 padding: '10px'
+               }
+             }
+     
+               renderSeparator={<span>-</span>}
+               renderInput={(props) => <input {...props} style={
+                 {
+                   width: '50px',
+                   height: '50px',
+                   borderRadius: '10px',
+                   border: '1px solid #ccc',
+                   textAlign: 'center'
+                 }
+               } />}
+               />
       </div>
     </div>
 

@@ -56,20 +56,15 @@ const pingAdmin = (req, res) => {
 
 // Assuming LibraryController.createRoom is an async function
 const createRoom = async (req, res) => {
-
-
-
-
-     
-
   try {
     // const body = req.body;
     // console.log(body);
-    const images = req.files.map(file => file.path);
+    const images = req.files.map((file) => file.path);
 
     const jsonData = JSON.parse(req.body.jsonData);
-    
-    const {libraryOwner,
+
+    const {
+      libraryOwner,
       name,
       longDescription,
       shortDescription,
@@ -80,8 +75,8 @@ const createRoom = async (req, res) => {
       amenities,
       seatLayout,
 
-
-      timeSlot } = jsonData;
+      timeSlot,
+    } = jsonData;
     // console.log(seatLayout)
 
     // console.log(images);
@@ -90,20 +85,22 @@ const createRoom = async (req, res) => {
       return res.status(400).json({ error: "Name and location are required." });
     }
 
-    console.log({
-     libraryOwner,
-      name,
-      longDescription,
-      shortDescription,
-      location,
-      price,
-      amenities,
-      seatLayout,
-      timeSlot,
-    } , "body")
+    console.log(
+      {
+        libraryOwner,
+        name,
+        longDescription,
+        shortDescription,
+        location,
+        price,
+        amenities,
+        seatLayout,
+        timeSlot,
+      },
+      "body"
+    );
 
     const libraryData = {
-
       libraryOwner,
       name,
       longDescription,
@@ -154,13 +151,13 @@ const getLibrary = async (req, res) => {
 // get room by id
 const getLibraryById = async (req, res) => {
   const { id } = req.body;
-  console.log(id)
+  console.log(id);
   try {
     const room = await Library.findById(id);
     res.status(200).json({
       success: true,
       message: "Library data",
-      data : room,
+      data: room,
     });
   } catch (error) {
     console.error("Error ", error);
@@ -171,16 +168,15 @@ const updateApproveStatus = async (req, res) => {
   console.log(req.body, "reqqq");
   const { id, status } = req.body;
   try {
-    const room = await Library.findByIdAndUpdate(id,{
-      approved: status
+    const room = await Library.findByIdAndUpdate(id, {
+      approved: status,
     });
-    console.log(room?.approved)
+    console.log(room?.approved);
     res.status(200).json({
       success: true,
       message: "Library status ",
       data: room,
     });
-
   } catch (error) {
     console.error("Error ", error);
     res.status(500).json({ error: "cannot get room" });
@@ -189,28 +185,22 @@ const updateApproveStatus = async (req, res) => {
 
 const getAdminLibraries = async (req, res) => {
   try {
-
-
-      const {userId} = req.body; // Assuming the userId is passed as a URL parameter
-      console.log(userId, "userId"  )
-      const libraries = await Library.find({ libraryOwner: userId })
-      console.log(libraries, "libraries")
-      res.json({
-        message: "Libraries retrieved successfully",
-        data: libraries,
-      });
-    } catch (error) {
-      console.error("Error retrieving libraries by user _id:", error);
-      res.status(500).json({ error: "Cannot retrieve libraries" });
-    }
+    const { userId } = req.body; // Assuming the userId is passed as a URL parameter
+    console.log(userId, "userId");
+    const libraries = await Library.find({ libraryOwner: userId });
+    console.log(libraries, "libraries");
+    res.json({
+      message: "Libraries retrieved successfully",
+      data: libraries,
+    });
+  } catch (error) {
+    console.error("Error retrieving libraries by user _id:", error);
+    res.status(500).json({ error: "Cannot retrieve libraries" });
+  }
 };
-
 
 async function getAllBookings(req, res) {
   try {
-
-
-
     const bookings = await Booking.find().populate("userId").exec();
     return res.status(StatusCodes.OK).json({ bookings });
   } catch (error) {

@@ -285,7 +285,7 @@ async function sendOtp(req, res) {
   console.log(`OTP for ${phoneNumber} is ${otpCode}`);
 
   otpTest = otpCode;
-  return { success: true, message: `OTP sent to ${phoneNumber}` };
+  return res.status(200).json({ success: true, message: `OTP sent to ${phoneNumber}` });
 }
 
 async function verifyOtp(req, res) {
@@ -299,29 +299,11 @@ async function verifyOtp(req, res) {
 
   return res.status(200).json({ message: "OTP verified successfully" });
 
-  // if (!phoneNumber || !/^\d{10}$/.test(phoneNumber)) {
-  //   return res.status(400).json({ message: "Invalid phone number" });
-  // }
 
-  // if (!otp || !/^\d{6}$/.test(otp)) {
-  //   return res.status(400).json({ message: "Invalid OTP" });
-  // }
-
-  // try {
-  //   const isValid = await otpService.verifyOtp(phoneNumber, otp);
-
-  //   if (isValid) {
-  //     res.status(200).json({ message: "OTP verified successfully" });
-  //   } else {
-  //     res.status(400).json({ message: "Invalid OTP" });
-  //   }
-  // } catch (error) {
-  //   res.status(500).json({ message: "An error occurred while verifying the OTP" });
-  // }
 }
 
 async function sendEmailOtp(email) {
-  const otpCode = Math.floor(1000 + Math.random() * 900000).toString();
+  const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
   console.log(`OTP for ${email} is ${otpCode}`); // In a real scenario, this would be sent via email
 
   emailOtpTest = otpCode; // Storing the OTP for verification
