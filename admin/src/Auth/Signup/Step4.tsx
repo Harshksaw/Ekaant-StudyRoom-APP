@@ -20,6 +20,7 @@ export const StepFour = ({
         <input
           className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
+          id="adminLibraryName"
           placeholder="Library Name"
           value={libraryDetails.libraryName}
           onChange={(e) => {
@@ -36,6 +37,7 @@ export const StepFour = ({
           <input
             className="w-full pl-3 py-2 pr-40  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
+            id="adminAppShortDescription"
             placeholder="shortDescription"
             value={libraryDetails.libraryApp.shortDescription}
             onChange={(e) => {
@@ -64,6 +66,7 @@ export const StepFour = ({
           <input
             className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
+            id="adminAppLongDescription"
             placeholder="LongDescription"
             value={libraryDetails.libraryApp.LongDescription}
             onChange={(e) => {
@@ -93,6 +96,7 @@ export const StepFour = ({
         <input
           className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
+          id="adminLibraryAddressLine1"
           placeholder="Address Line 1"
           value={libraryDetails.libraryAddress.line1}
           onChange={(e) => {
@@ -109,6 +113,7 @@ export const StepFour = ({
         <input
           className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
+          id="adminLibraryAddressLine2"
           placeholder="Address Line 2"
           value={libraryDetails.libraryAddress.line2}
           onChange={(e) => {
@@ -127,6 +132,7 @@ export const StepFour = ({
             <input
               className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
               type="text"
+              id="adminLibraryAddressCity"
               placeholder="City"
               value={libraryDetails.libraryAddress.city}
               onChange={(e) => {
@@ -145,6 +151,7 @@ export const StepFour = ({
             <input
               className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
               type="text"
+              id="adminLibraryAddressState"
               placeholder="State"
               value={libraryDetails.libraryAddress.state}
               onChange={(e) => {
@@ -164,6 +171,7 @@ export const StepFour = ({
           <input
             className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
+            id="adminLibraryAddressPincode"
             placeholder="pincode"
             value={libraryDetails.libraryAddress.pincode}
             onChange={(e) => {
@@ -183,6 +191,7 @@ export const StepFour = ({
         <input
           className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
+          id="adminLibraryLegalRegistration"
           placeholder="Registration Type"
           value={libraryDetails.libraryLegal.registration}
           onChange={(e) => {
@@ -204,6 +213,7 @@ export const StepFour = ({
                 type="radio"
                 name="showGst"
                 value="true"
+                id="gst-true"
                 // checked={true}
                 //  TODO:DISCUSS WITH TEAM
                 onChange={(e) => {
@@ -229,6 +239,7 @@ export const StepFour = ({
                 type="radio"
                 name="showGst"
                 value="false"
+                id="gst-false"
                 onChange={() => {
                   // handleLibraryLegalChange("showGst", false);
 
@@ -255,6 +266,7 @@ export const StepFour = ({
                 <input
                   type="text"
                   placeholder="Gst Number"
+                  id="adminLibraryLegalGst"
                   value={libraryDetails.libraryLegal.gst}
                   onChange={(e) => {
                     setLibraryDetails({
@@ -284,6 +296,7 @@ export const StepFour = ({
                   <input
                     type="file"
                     placeholder="GST certificate"
+                    id="adminLegalUploadGst"
                     onChange={(e) => {
                       const file = e.target.files ? e.target.files[0] : null;
                       if (file) {
@@ -311,6 +324,7 @@ export const StepFour = ({
                 type="radio"
                 name="cin"
                 value="true"
+                id="cin-true"
                 // checked={true}
                 onChange={() => {
                   // handleLibraryLegalChange("cin", true);
@@ -332,6 +346,7 @@ export const StepFour = ({
                 type="radio"
                 name="cin"
                 value="false"
+                id="cin-false"
                 // checked={libraryDetails.libraryLegal.showCin === false}
                 onChange={() => {
                   // handleLibraryLegalChange("cin", false);
@@ -357,6 +372,7 @@ export const StepFour = ({
 
                 <input
                   type="text"
+                  id="adminLibraryLegalCin"
                   value={libraryDetails.libraryLegal.cin}
                   onChange={(e) => {
                     setLibraryDetails({
@@ -388,6 +404,8 @@ export const StepFour = ({
                   <input
                     type="file"
                     placeholder="CIN certificate"
+                    id="adminLegalUploadCin"
+                    // name="uploadCinCard"
                     onChange={(e) => {
                       const file = e.target.files ? e.target.files[0] : null;
                       if (file) {
@@ -415,6 +433,7 @@ export const StepFour = ({
                 <input
                   type="radio"
                   name="tan"
+                  id="tan-true"
                   value={true}
                   // checked={true}
                   onChange={() => {
@@ -436,6 +455,7 @@ export const StepFour = ({
                   type="radio"
                   name="tan"
                   value="false"
+                  id="tan-false"
                   // checked={libraryDetails.libraryLegal.tan === false}
                   onChange={() => {
                     setLibraryDetails({
@@ -459,6 +479,7 @@ export const StepFour = ({
                 <input
                   type="text"
                   placeholder="Tan Number"
+                  id="adminLibraryLegalTan"
                   value={libraryDetails.libraryLegal.tan}
                   onChange={(e) => {
                     setLibraryDetails({
@@ -487,7 +508,8 @@ export const StepFour = ({
                   Select file
                   <input
                     type="file"
-                    placeholder="CIN certificate"
+                    placeholder="Tan certificate"
+                    id="adminLegalUploadTan"
                     onChange={(e) => {
                       const file = e.target.files ? e.target.files[0] : null;
                       if (file) {
@@ -514,6 +536,7 @@ export const StepFour = ({
                 type="radio"
                 name="misme"
                 value="true"
+                id="misme-true"
                 // checked={true}
                 onChange={() => {
                   setLibraryDetails({
@@ -532,6 +555,7 @@ export const StepFour = ({
                 type="radio"
                 name="misme"
                 value="false"
+                id="misme-false"
                 // checked={libraryDetails.libraryLegal.misme === false}
                 onChange={() => {
                   setLibraryDetails({
@@ -553,6 +577,7 @@ export const StepFour = ({
               <div className=" ">
                 <input
                   type="text"
+                  id="adminLibraryLegalMisme"
                   placeholder="Misme Number"
                   value={libraryDetails.libraryLegal.misme}
                   onChange={(e) => {
@@ -583,6 +608,7 @@ export const StepFour = ({
                   <input
                     type="file"
                     placeholder="Misme certificate"
+                    id="adminLegalUploadMisme"
                     onChange={(e) => {
                       const file = e.target.files ? e.target.files[0] : null;
                       if (file) {
