@@ -1,6 +1,5 @@
 // import ProfileScreen from "@/screens/profile/profile.screen";
 
-import Button from "@/components/Button";
 import Header from "@/components/Header";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -15,10 +14,33 @@ import {
   Image,
   Platform,
   PermissionsAndroid,
-  SafeAreaView,
+
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
-import { Toast } from "react-native-toast-notifications";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "react-native-svg";
+import { LinearGradient as LinearBackground } from 'expo-linear-gradient';
+import Svg, { Path } from 'react-native-svg';
+
+
+
+
+const generateShadesOfBlue = () => {
+  // Function to generate shades of blue dynamically
+  // This example uses a simple approach to generate shades of blue.
+  // You can adjust the logic to generate the shades as per your requirement.
+  const shadesOfBlue = [
+
+
+    '#00BFFF', // Deep Sky Blue
+    '#1E90FF', // Dodger Blue
+    '#4169E1', // Royal Blue
+  ];
+  return shadesOfBlue.sort(() => 0.5 - Math.random()).slice(0, 3);
+};
+
+
 import { useSelector } from "react-redux";
 export default function profile() {
   const logout = async () => {
@@ -38,30 +60,53 @@ export default function profile() {
     ).toUpperCase();
     return initials;
   };
+  const { width } = Dimensions.get('window');
+  const [colors, setColors] = useState(generateShadesOfBlue());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // Generate new shades of blue dynamically
+      setColors(generateShadesOfBlue());
+    }, 3000); // Change colors every 3 seconds
+  
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1,     backgroundColor: "#0077B6", }}>
-         <View
+    <SafeAreaView style={{ flex: 1, }}>
+       <LinearBackground
+        colors={colors}
         style={{
-          marginTop: 40,
-
-     
+          flex: 1,
+          width: width,
         }}
       >
-        <Header  color="white"/>
-      </View>
 
+
+        <View
+          style={{
+            marginTop: 0,
+
+
+          }}
+        >
+          <Header color="white" />
+        </View>
+
+      </LinearBackground>
+    
+       
       <View
         style={{
           flex: 1,
           zIndex: 3,
-          borderRadius: 20,
+          borderRadius: 250,
           borderBottomEndRadius: 0,
           borderBottomStartRadius: 0,
           backgroundColor: "white",
           position: "absolute",
           bottom: 0,
-          height: "60%",
+          height: "70%",
           width: "100%",
           justifyContent: "flex-start",
           // borderColor: "black",
@@ -70,6 +115,8 @@ export default function profile() {
           // alignItems: "center",
         }}
       >
+        
+        
         <View
           style={{
             // position: "relative",
@@ -116,7 +163,7 @@ export default function profile() {
 
         <View
           style={{
-            marginTop: -30,
+            marginTop: -20,
             flexDirection: "column",
             gap: 10,
             marginHorizontal: 20,
@@ -142,16 +189,17 @@ export default function profile() {
               gap: 10,
               marginTop: 20,
               borderWidth: 4,
-              width: "80%",
+              width: "60%",
               height: 50,
               // justifyContent: "center",
               alignItems: "center",
 
               borderRadius: 10,
-              borderBlockColor: "blue",
+              // borderBlockColor: "lightblue",
+              borderColor: "lightblue",
             }}
           >
-            <Text style={{ fontSize: 20, fontWeight: "bold", color: "blue" }}>
+            <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }}>
               Edit Profile
             </Text>
           </View>
@@ -242,6 +290,20 @@ export default function profile() {
               </View>
             </TouchableOpacity>
           </View>
+          <View
+          style={{
+            marginTop: 10,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginHorizontal: 20,
+          }}
+          >
+            <Text>Terms & Conditions</Text>
+            <Ionicons name="arrow-forward" size={20} color="black" />
+          </View>
+
+
           <TouchableOpacity onPress={() => logout()}>
             <View
               style={{

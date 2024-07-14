@@ -9,7 +9,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  SafeAreaView 
+
 } from "react-native";
 
 
@@ -34,6 +34,7 @@ import { useAssets } from "expo-asset";
 // import {Picker} from '@react-native-picker/picker';
 import { Image } from "expo-image";
 import StarRating from "@/components/Ratinstar";
+import { SafeAreaView } from "react-native-safe-area-context";
 export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
@@ -293,7 +294,7 @@ export default function index() {
         backgroundColor: "white",
       }}
     >
-      <View style={{marginTop:20}}>
+      <View style={{marginTop:0}}>
 
       <Header color="black" />
       </View>

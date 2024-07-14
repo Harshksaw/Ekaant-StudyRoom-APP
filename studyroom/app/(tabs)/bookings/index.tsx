@@ -5,7 +5,7 @@ import { BACKEND } from "@/utils/config";
 import { calculatePeriod } from "@/utils/date";
 import { getUserId } from "@/utils/keys";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import axios from "axios";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -13,13 +13,14 @@ import { useEffect, useState } from "react";
 import {
   View,
   Text,
-  SafeAreaView,
+
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   Platform,
   ActivityIndicator,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface ApprovalStatusProps {
   isApproved: boolean;
@@ -88,7 +89,7 @@ export default function Courses() {
 
       <View
         style={{
-          marginTop: 40,
+          marginTop: 0,
         }}
       >
         <Header color="black" />

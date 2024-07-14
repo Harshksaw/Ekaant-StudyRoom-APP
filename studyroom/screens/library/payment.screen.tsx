@@ -26,11 +26,13 @@ import { BACKEND } from "@/utils/config";
 import axios from "axios";
 import { Toast } from "react-native-toast-notifications";
 import RazorpayCheckout from "react-native-razorpay";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PaymentScreen: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const cardWidth = Dimensions.get("window").width; // Assuming full width for simplicity, adjust as needed
   const [bookingId, setBookingId] = useState(null);
+  const [userData, setUserData] = useState(null);
   const handleScroll = (event) => {
     const scrollPosition = event.nativeEvent.contentOffset.x;
     const index = Math.round(scrollPosition / cardWidth);
@@ -49,9 +51,16 @@ const PaymentScreen: React.FC = () => {
   let PaymentPrice = route?.params.price
     ? JSON.parse(route.params.price)
     : null;
+    
 
   useEffect(() => {
     const getBookingDetails = async () => {
+      const userData = await AsyncStorage.getItem("userData");
+      const userid = JSON.parse(userData || "{}")
+      setUserData(userid);
+      // console.log(userid.user.email, "User ID");
+      // const userId = userid.user._id;
+      console.log(userData, "User Data");
       if (bookingid !== null) {
         try {
           const res = await axios.post(
@@ -76,7 +85,7 @@ const PaymentScreen: React.FC = () => {
     getBookingDetails();
   }, []);
 
-  console.log("_________>>>>", PaymentData, "<<<<<_________");
+  console.log("_________>>>>",PaymentPrice*100, "<<<<<_________");
 
   const InvoiceScreen = async () => {
     await handlePayment();
@@ -90,17 +99,17 @@ const PaymentScreen: React.FC = () => {
   const handlePayment = async () => {
     var options = {
       description: "Room Booking",
-      image: "https://i.imgur.com/3g7nmJC.jpg", //logo
+      image: "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png", //logo
 
       currency: "INR",
       key: "rzp_test_lmy83ka5bsXLz8",
-      amount: "5000",
-      name: "Acme Corp",
+      amount: `${PaymentPrice*100}`,
+      name: "Ekaant",
       order_id: "",
       prefill: {
-        email: "gaurav.kumar@example.com",
-        contact: "9191919191",
-        name: "Gaurav Kumar",
+        email: `${userData.user.email}`,
+        contact: `${userData.user.phoneNumber}`,
+        name:`${userData.user.username}`,
       },
     };
     RazorpayCheckout.open(options)
@@ -162,7 +171,7 @@ const PaymentScreen: React.FC = () => {
             justifyContent: "flex-start",
             alignItems: "flex-start",
             margin: 1,
-            gap: 20,
+            gap: 15,
             marginHorizontal: 0,
           }}
         >
@@ -188,8 +197,8 @@ const PaymentScreen: React.FC = () => {
             {bookingId !== null ? (
               <Text
                 style={{
-                  fontSize: 16,
-                  lineHeight: 20,
+                  fontSize: 12,
+                  lineHeight: 15,
                   fontWeight: "400",
                   marginHorizontal: 20,
                 }}
