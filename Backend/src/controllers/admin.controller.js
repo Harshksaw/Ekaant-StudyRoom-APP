@@ -1,16 +1,14 @@
 const { StatusCodes } = require("http-status-codes");
-const { bcrypt } = require("bcrypt");
-const zod = require("zod");
-const { User } = require("../models");
-const { crypto } = require("crypto");
+
+
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin.model");
 const JWT_SECRET = "MY_SECRET_KEY";
-const fs = require("fs");
 
-const { Image } = require("../models/file.model");
+
+
 const crypto = require('crypto');
-const path = require('path');
+
 const File = require("../models/file.model");
 
 
@@ -20,20 +18,7 @@ const ping = (req, res) => {
 // singup
 // Function to encrypt file data
 // Function to encrypt data using AES-256
-function encryptData(data) {
-  const algorithm = 'aes-256-cbc'; // AES 256 CBC mode
-  const secretKey = Buffer.from(JWT_SECRET); // Using JWT_SECRET as the key
-  const iv = crypto.randomBytes(16); // IV should be 128 bits (16 bytes)
 
-  // Ensure the secret key is 32 bytes long (256 bits)
-  const key = crypto.createHash('sha256').update(String(secretKey)).digest('base64').substr(0, 32);
-
-  const cipher = crypto.createCipheriv(algorithm, key, iv);
-  let encrypted = cipher.update(data, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-
-  return { encryptedData: encrypted, key: key, iv: iv.toString('hex') };
-}
 async function RegisterAdmin(req, res, next) {
   try {
     const {
@@ -71,19 +56,7 @@ async function RegisterAdmin(req, res, next) {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
-    const imageData = req.file;
-    //  const aadharImage =  fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.aadhar))
-    //  const panImage = fs.readFileSync(req.files.pan[0].path).toString('base64');
-=======
-    // const exist = await Admin.findOne({ email });
-    // if (exist) {
-    //   return res.status(StatusCodes.BAD_REQUEST).json({
-    //     success: false,
-    //     message: "User already exists",
-    //     error: { 411: "User already exists" },
-    //     data: {},
-    //   });
-    // }
+
   
     const { pancard, aadhar } = req.files;
     if (pancard) {

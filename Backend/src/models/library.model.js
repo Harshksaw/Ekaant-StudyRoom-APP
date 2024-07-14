@@ -11,7 +11,13 @@ const librarySchema = new mongoose.Schema({
   shortDescription: { type: String, required: true },
 
   thumbnail: [{ type: String, required: false }],
-  images: [{ type: String, required: false }],
+
+  cardimage: { type: String, required: false },
+  images: {
+    type: [{ type: String }],
+    required: false,
+
+  },
   location: [ ],
   price: { type: Number, required: true },
   reviews: { type: String, required: false }, // Optional field
@@ -33,6 +39,42 @@ const librarySchema = new mongoose.Schema({
     from: { type: String, required: false },
     to: { type: String, required: false },
   }],
+  gstDetails: {
+    gstNumber: {
+      type: String,
+      required:false,
+    },
+    gstCertificateFile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'File',
+      required:false,
+    }
+  },
+  cinDetails: {
+    cinNumber: {
+      type: String,
+      required:false,
+    },
+    cinCertificateFile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'File',
+      required:false,
+    }
+  },
+  tanDetails: {
+    tanNumber: {
+      type: String,
+      required: false,
+    },
+    tanCertificateFile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'File',
+      required:false,
+    }
+  },
+
+
+
 });
 
 // Export the model

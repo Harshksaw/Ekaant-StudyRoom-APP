@@ -37,12 +37,10 @@ function Signup() {
     password: "",
   });
 
-  const [userOTP, setOtpInputs] = useState({
-    otp1: "",
-    otp2: "",
-    otp3: "",
-    otp4: "",
-  });
+ 
+  const [userOTP,setOtpInputs]=useState(" ")
+console.log(userOTP, "userotp")
+
   const sendOtp = async () => {
     const { phone } = userInfo;
     toast({
@@ -78,6 +76,7 @@ function Signup() {
 
 
         },
+        
 
         variant:'default',
 
@@ -96,65 +95,45 @@ function Signup() {
   };
 
   // Handle OTP input change
-  const handleInputChange = async(e) => {
-    const { name, value } = e.target;
-    console.log(name, value);
-    const updatedOtpInputs = {
-      ...userOTP,
-      [name]: value,
-    };
-    setOtpInputs(updatedOtpInputs);
+  // const handleInputChange = async(e) => {
+  //   const { name, value } = e.target;
+  //   console.log(name, value);
+  //   const updatedOtpInputs = {
+  //     ...userOTP,
+  //     [name]: value,
+  //   };
+  //   setOtpInputs(updatedOtpInputs);
 
 
 
-    // Check if all inputs are filled after the state update
-    const allFilled = Object.values(updatedOtpInputs).every(
-      (input) => input.trim() !== ""
-    );
+  //   // Check if all inputs are filled after the state update
+  //   const allFilled = Object.values(updatedOtpInputs).every(
+  //     (input) => input.trim() !== ""
+  //   );
 
-    await verifyOTP();
+    
+  //   if (allFilled) {
+  //     console.log("All inputs are filled phone otp");
+  //     await verifyOTP();
 
-    if (allFilled) {
-      console.log("All inputs are filled phone otp");
 
+  //   }
+  // };
 
-    }
-  };
+  const [emailOtpInputs, setEmailOtpInputs] = useState("");
 
-  const [emailOtpInputs, setEmailOtpInputs] = useState({
-    emailOtp1: "",
-    emailOtp2: "",
-    emailOtp3: "",
-    emailOtp4: "",
-  });
-
-  const handleEmailOtpInputChange = (e) => {
-
-    const { name, value } = e.target;
-    const updatedEmailOtpInputs = {
-      ...emailOtpInputs,
-      [name]: value,
-    };
-    setEmailOtpInputs(updatedEmailOtpInputs);
-
-    // Check if all email OTP inputs are filled after the state update
-    const allFilled = Object.values(updatedEmailOtpInputs).every(
-      (input) => input.trim() !== ""
-    );
-    if (allFilled) {
-      console.log("All inputs are filled email otp");
-      // verifyEmailOTP(); // Call verifyEmailOTP function if all inputs are filled
-    }
-  };
+ 
 
 
   const sendEmailOtp = async () => {  
     toast({
+
       description: "Email OTP sent successfully",
     })
     const { email } = userInfo;
     const res = await axios.post(`${BASEURL}/api/v1/auth/emailotp`, { email });
     if(res.status === 200){
+      
       toast({
         description: "OTP sent successfully",
       style:{
@@ -162,14 +141,47 @@ function Signup() {
         color:'white',
         padding:'1rem',
         borderRadius:'1rem',
-      }
+      },
+      
       })
       console.log("OTP sent successfully")
     }
   }
   // Function to call after all OTP inputs are filled
 
-  // Check if all OTP inputs are filled
+  const verifyEmailOTP = async () => {
+    const { emailOtp1, emailOtp2, emailOtp3, emailOtp4 } = emailOtpInputs;
+    const otp = `${emailOtp1}${emailOtp2}${emailOtp3}${emailOtp4}`;
+    if (Number(otp) < 1000) {
+      return;
+    }
+  
+    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyEmailOtp`, {
+      otp 
+    });
+    console.log(res, "res")
+  
+    if(res.status === 200 || res.status === 201){
+      console.log(res.data, "res.data")
+  
+      toast({
+        type:'background',
+        style:{
+          background:'rgb(45, 218, 88)',
+        },
+        variant:'default',
+        color: "green",
+        description: "Your Email Otp has been verified.",
+      })
+      console.log("OTP verified successfully")
+    }else{
+      toast({
+        description: "Your Email Otp has not been verified.",
+      })
+    }
+  }
+
+
 
   const [userDetails, setUserDetails] = useState({
     fullName: "",
@@ -381,9 +393,12 @@ function Signup() {
         return (
           <StepTwo
             userOTP={userOTP}
+            setOtpInputs={setOtpInputs}
             userEmailOTP={emailOtpInputs}
-            handleInputChange={handleInputChange}
-            handleEmailInputChange={handleEmailOtpInputChange}
+            setOtpEmailInputs={setEmailOtpInputs}
+
+            // handleInputChange={handleInputChange}
+            // handleEmailInputChange={handleEmailOtpInputChange}
             nextStep={nextStep}
             prevStep={prevStep}
           />
