@@ -7,6 +7,8 @@ import TabsIndex from './index';
 import CardDetailScreen from '@/screens/home/card/card.details';
 import { ToastProvider } from "react-native-toast-notifications";
 import * as Font from 'expo-font';
+import { Provider } from 'react-redux';
+import store from '@/redux/store';
 
 
 
@@ -44,7 +46,9 @@ function RootLayoutNav() {
     
   return (
 
-
+<Provider
+store={store}
+>
     <ToastProvider>
 
     
@@ -83,9 +87,10 @@ function RootLayoutNav() {
         <Stack.Screen name="(routes)/library/checkout.screen" options={{
           headerShown: false
         }} />
-        <Stack.Screen name="(routes)/library/payment.screen" options={{
+        <Stack.Screen name="(routes)/library/invoice.screen" options={{
           headerShown: false
         }} />
+    
         <Stack.Screen name="(tabs)" options={{
           headerShown: false
         }} />
@@ -93,6 +98,7 @@ function RootLayoutNav() {
       </Stack>
 
       </ToastProvider>
+      </Provider>
 
   );
 }

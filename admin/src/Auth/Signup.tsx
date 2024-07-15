@@ -38,7 +38,7 @@ function Signup() {
   });
 
  
-  const [userOTP,setOtpInputs]=useState(" ")
+  const [userOTP,setOtpInputs]=useState("")
 console.log(userOTP, "userotp")
 
   const sendOtp = async () => {
@@ -56,12 +56,16 @@ console.log(userOTP, "userotp")
   
 }
   const verifyOTP = async () => {
-    const { otp1, otp2, otp3, otp4 } = userOTP;
+
+    console.log("verfication start user OTP");
+    // const { otp1, otp2, otp3, otp4 } = userOTP;
     // Assuming verifyUserOTP is the function you want to call
-    const otp = `${otp1}${otp2}${otp3}${otp4}`;
+    // const otp = `${otp1}${otp2}${otp3}${otp4}`;
+    const otp=userOTP
     if (Number(otp) < 1000) {
       return;
     }
+    console.log("verfication start");
 
     const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOTP`, {otp});
     console.log(res, "res")
@@ -150,8 +154,10 @@ console.log(userOTP, "userotp")
   // Function to call after all OTP inputs are filled
 
   const verifyEmailOTP = async () => {
-    const { emailOtp1, emailOtp2, emailOtp3, emailOtp4 } = emailOtpInputs;
-    const otp = `${emailOtp1}${emailOtp2}${emailOtp3}${emailOtp4}`;
+
+    // const { emailOtp1, emailOtp2, emailOtp3, emailOtp4 } = emailOtpInputs;
+    // const otp = `${emailOtp1}${emailOtp2}${emailOtp3}${emailOtp4}`;
+    const otp = emailOtpInputs;
     if (Number(otp) < 1000) {
       return;
     }
@@ -246,12 +252,23 @@ console.log(userOTP, "userotp")
   });
 
   useEffect(() => {
-    console.log(userInfo,"========>userinfo");
-    console.log(userOTP,"========>userotp");
+    console.log(emailOtpInputs,"========>userinfo");
+
+
+    // console.log(userOTP,"========>userotp");
+
+    if(Number(userOTP) > 1000){
+      verifyOTP()
+
+    }
+
+    if(Number(emailOtpInputs) > 1000){
+      verifyEmailOTP()
+    }
     console.log(libraryDetails, "========================>Librarydetails");
     console.log(userDetails, " ========================> userdetails");
 
-  }, [userInfo, userOTP, libraryDetails, userDetails]);
+  }, [userInfo, userOTP, libraryDetails, userDetails, emailOtpInputs]);
 
 
   const createUser = async () => {
@@ -386,7 +403,7 @@ console.log(userOTP, "userotp")
             userInfo={userInfo}
             setUserInfo={setUserInfo}
             sendOTP={sendOtp}
-
+            
           />
         );
       case 2:
@@ -399,6 +416,7 @@ console.log(userOTP, "userotp")
 
             // handleInputChange={handleInputChange}
             // handleEmailInputChange={handleEmailOtpInputChange}
+            
             nextStep={nextStep}
             prevStep={prevStep}
           />

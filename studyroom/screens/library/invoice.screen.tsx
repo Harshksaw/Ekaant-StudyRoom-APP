@@ -11,7 +11,13 @@ const InvoiceScreen: React.FC = () => {
   let PaymentPrice = route?.params.price
     ? JSON.parse(route.params.price)
     : null;
-  let PaymentData = route.params?.item ? JSON.parse(route.params.item) : null;
+
+  let PaymentData = route.params?.paymentData ? JSON.parse(route.params.paymentData) : null;
+  let PaymentId = route.params?.paymentId ? JSON.parse(route.params.paymentId) : null;
+  console.log(PaymentData,"--", PaymentId, "---", PaymentPrice);
+
+
+
   const [assets] = useAssets([require("../../assets/images/Subtract.png")]);
   return (
     <View style={styles.container}>

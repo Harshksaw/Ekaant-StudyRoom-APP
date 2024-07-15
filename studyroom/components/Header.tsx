@@ -12,12 +12,15 @@ import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useAssets } from "expo-asset";
 import { useSelector } from "react-redux";
+import { set } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get("window");
 
 const Header: React.FC<{ color: string }> = ({ color }) => {
   const [selectedLocation, setSelectedLocation] = useState();
   const [Enable, setEnable] = useState(true);
+
+  const [cities, setCities] = useState([]);
 
   const [assets, error] = useAssets([
     require("../assets/icons/headerlogo.svg"),
@@ -29,7 +32,9 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
   // Move the useSelector calls inside the component
 
   const citiesData = useSelector((state) => state.app);
-  console.log(citiesData);
+
+  // console.log(citiesData.locations, "----citiesData");
+  // setCities(citiesData); 
 
 
   return (
@@ -38,6 +43,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
         <View style={styles.label}>
           <Text
             style={{
+              
               fontSize: 16,
               fontWeight: "500",
               lineHeight: 24,
@@ -85,16 +91,16 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
 
             onValueChange={(itemValue, itemIndex) => setEnable(false)}
           >
-            {/* {citiesData?.map((slot, index) => (
+            {citiesData.locations?.map((slot, index) => (
               <Picker.Item
               
                 key={index}
-                label={slot.name + ",IN"}
-                value={slot.name}
+                label={slot + ",IN"}
+                value={slot}
                 style={{
                   color: "#000000",
                   lineHeight: 25,
-                  fontSize: 20,
+                  fontSize: 15,
 
                   fontStyle: "normal",
                   fontWeight: 500,
@@ -110,7 +116,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
                   // margin: 4,
                 }}
               />
-            ))} */}
+            ))}
           </Picker>
         </View>
       </View>
