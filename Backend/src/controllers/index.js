@@ -1,3 +1,4 @@
+const appController = require("./app.controller");
 
 
 module.exports = {
@@ -5,4 +6,5 @@ module.exports = {
   LibraryController: require("./library.controller"),
   BookingController: require("./booking.controller"),
   AdminController: require("./admin.controller"),
+  appController: require("./app.controller"),
 };

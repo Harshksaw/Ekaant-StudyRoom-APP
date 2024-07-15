@@ -11,8 +11,7 @@ const { Library } = require("../models/library.model");
 const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
 
-// async function
-// create a library which
+
 
 const LibrarySchema = z.object({
   name: z.string(),
@@ -77,28 +76,13 @@ const createRoom = async (req, res) => {
 
       timeSlot,
     } = jsonData;
-    // console.log(seatLayout)
 
-    // console.log(images);
 
     if (!name || !location) {
       return res.status(400).json({ error: "Name and location are required." });
     }
 
-    console.log(
-      {
-        libraryOwner,
-        name,
-        longDescription,
-        shortDescription,
-        location,
-        price,
-        amenities,
-        seatLayout,
-        timeSlot,
-      },
-      "body"
-    );
+
 
     const libraryData = {
       libraryOwner,
@@ -118,7 +102,7 @@ const createRoom = async (req, res) => {
     const LibraryData = await Library.create(libraryData);
     await LibraryData.save();
 
-    // const newLibrary = await Library.create(libraryData);
+
     res.status(201).json({
       message: "Library created successfully",
       library: LibraryData,

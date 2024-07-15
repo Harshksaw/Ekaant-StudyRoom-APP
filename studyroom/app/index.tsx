@@ -3,21 +3,23 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function TabsIndex() {
-  const printAllAsyncStorageData = async () => {
-    try {
-      const keys = await AsyncStorage.getAllKeys();
-      const result = await AsyncStorage.multiGet(keys);
 
-      console.log("All AsyncStorage data:");
-      result.forEach(([key, value]) => {
-        console.log(`${key}: ${value}`);
-      });
-    } catch (error) {
-      console.error("Error fetching AsyncStorage data", error);
-    }
-  };
 
-  printAllAsyncStorageData();
+  // const printAllAsyncStorageData = async () => {
+  //   try {
+  //     const keys = await AsyncStorage.getAllKeys();
+  //     const result = await AsyncStorage.multiGet(keys);
+
+  //     console.log("All AsyncStorage data:");
+  //     result.forEach(([key, value]) => {
+  //       console.log(`${key}: ${value}`);
+  //     });
+  //   } catch (error) {
+  //     console.error("Error fetching AsyncStorage data", error);
+  //   }
+  // };
+
+  // printAllAsyncStorageData();
 
   // const { loading, user } = useUser();
   // console.log(user)
