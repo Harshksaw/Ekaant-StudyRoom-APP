@@ -33,7 +33,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
 
   const citiesData = useSelector((state) => state.app);
 
-  console.log(citiesData.locations, "----citiesData");
+  // console.log(citiesData.locations, "----citiesData");
   // setCities(citiesData); 
 
 

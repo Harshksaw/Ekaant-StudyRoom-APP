@@ -55,6 +55,7 @@ const BookingScreen: React.FC = () => {
   const [selectedMonth, setselectedMonth] = useState(1);
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [bookingloader, setBookingLoader] = useState(false);
+  const [bookingId, setBookingId] = useState(null);
 
   const handleSeatSelect = (seatDataFromChild) => {
     // console.log("Selected Seat-------------------:", seatDataFromChild);
@@ -125,7 +126,7 @@ const BookingScreen: React.FC = () => {
   const available = handleData(data.timeSlot);
 
   const userDetails = useSelector((state: any) => state.user);
-  console.log(userDetails, "-----------------");
+  // console.log(userDetails, "-----------------");
   //getting data  from booking screen
 
   // const params = useRoute();
@@ -206,6 +207,10 @@ const BookingScreen: React.FC = () => {
           forFriend: userDetails.friendDetails,
         }
       );
+      const  bookingId = response.data.Booking._id;
+      setBookingId(bookingId);
+
+      // console.log("Booking ID", bookingId);
 
       Toast.show("Booking Successful !", {
         type: "success",
@@ -240,14 +245,17 @@ const BookingScreen: React.FC = () => {
     if(res !== null){
       // console.log("Booking Confirmed", BookedData);
     updateRoomDetails();
-    setBookingLoader(false);
-    setIsModalVisible(false);
+    
+    if(BookedData !== null && bookingId !== null){
+      setBookingLoader(false);
+      setIsModalVisible(false);
 
-    router.push({
-      pathname: "/library/checkout.screen",
-      params: { item: JSON.stringify(BookedData) },
-    });
-
+        router.push({
+          pathname: "/library/checkout.screen",
+          params: { item: JSON.stringify(BookedData) , id : JSON.stringify(bookingId) },
+        });
+        
+      }
     // console.log("Booking Confirmed");
 
     }else{

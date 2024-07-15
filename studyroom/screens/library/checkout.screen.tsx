@@ -7,7 +7,7 @@ import { useRoute } from "@react-navigation/native";
 
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -24,11 +24,16 @@ import { BACKEND } from "@/utils/config";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "react-native-toast-notifications";
+import RazorpayCheckout from "react-native-razorpay";
+
 
 const CheckoutScreen: React.FC = () => {
+  const route = useRoute();
 
   const userDetails = useSelector((state: any) => state.user);
-  console.log(userDetails, "-----------------")
+  const [bookingId, setBookingId] = useState(null);
+  const [userData, setUserData] = useState(null);
+  // console.log(userDetails, "-----------------")
   //getting data  from booking screen 
 
   const params = useRoute();
@@ -37,6 +42,7 @@ const CheckoutScreen: React.FC = () => {
 
 
   const data = useSelector((state: any) => state.booking);
+  const [modalVisible, setModalVisible] = useState(false);
   // console.log("ddd------->>>>>>>>>>>>>>>>>>>", data);
   const location = data?.details?.location
   // console.log(data.details.images[0]);
@@ -56,20 +62,123 @@ const CheckoutScreen: React.FC = () => {
   const RoomNo = BookedData.room || 1;
 
 
+  //payment 
+  const [paymentStatus, setPaymentStatus] = useState(false);  // Payment status
+  const [paymentData, setPaymentData] = useState(null); // Payment data
+  const [paymentId, setPaymentId] = useState(null); // Payment data
+  const [isPaymentComplete, setIsPaymentComplete] = useState(false);
 
 
+
+
+  // const PaymentData = route.params.item ? JSON.parse(route.params.item) : {};
+
+  const bookingid = route?.params?.id ? JSON.parse(route.params.id) : {};
+  // console.log("Booking ID-->", bookingid);
+  let PaymentPrice = totalAmount
+
+
+
+
+  useEffect(() => {
+    const getBookingDetails = async () => {
+      const userData = await AsyncStorage.getItem("userData");
+      const userid = JSON.parse(userData || "{}")
+      setUserData(userid);
+      // console.log(userid.user.email, "User ID");
+      // const userId = userid.user._id;
+      // console.log(userData, "User Data");
+      if (bookingid !== null) {
+        try {
+          const res = await axios.post(
+            `${BACKEND}/api/v1/booking/getBookingById`,
+            {
+              id: bookingid,
+            }
+          );
+          console.log(res.data.bookings[0]._id, "[[[[[[[]]]]]]");
+
+          setBookingId(res.data.bookings[0]._id);
+          return res.data.bookings[0]._id;
+        } catch (error) {
+          console.log(error);
+          Toast.show("Error in fetching booking details");
+        }
+      } else {
+        console.log("Booking ID is missing");
+        setModalVisible(true);
+      }
+    };
+    getBookingDetails();
+  }, []);
+
+
+
+  const handlePayment = async () => {
+    var options = {
+      description: "Room Booking",
+      image: "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png", //logo
+
+      currency: "INR",
+      key: "rzp_test_lmy83ka5bsXLz8",
+      amount: `${PaymentPrice * 100}`,
+      name: "Ekaant",
+      order_id: "",
+      prefill: {
+        email: `${userData?.user.email}`,
+        contact: `${userData?.user.phoneNumber}`,
+        name: `${userData?.user.username}`,
+      },
+    };
+    RazorpayCheckout.open(options)
+      .then((data) => {
+        // handle success
+        setPaymentStatus(true);
+        setPaymentData(data);
+        setPaymentId(data.razorpay_payment_id);
+        console.log(data, "Payment Success");
+
+
+        alert(`Success: ${data.razorpay_payment_id}`);
+        setIsPaymentComplete(true);
+
+      })
+      .catch((error) => {
+        // handle failure
+        setPaymentStatus(false);
+
+        console.log(
+          "Error in payment",
+          error.code,
+          error.description,
+          error.source,
+          error.metadata
+        );
+        alert(
+          `Error: ${error.code} | ${error.description} | ${error.source} | ${error.metadata}`
+        );
+      });
+  };
+ 
   const PaymentScreen = async () => {
+    await handlePayment();
 
-
-
-
-    router.push({
-      pathname: "/library/payment.screen",
-      params: { item: JSON.stringify(BookedData), price: JSON.stringify(totalAmount), id: JSON.stringify(data) }
-
-    });
   }
+  useEffect(() => {
+    if (isPaymentComplete) {
 
+      console.log("Payment Status", paymentStatus);
+      console.log("Payment Data", paymentData);
+      console.log("PaymentId", paymentId);
+      console.log("Payment is complete");
+
+      // Save payment details to the database
+
+
+      // Execute other actions here after payment is complete and success alert is shown
+      // navigateToSuccessScreen(); // Example action: navigate to a success screen
+    }
+  }, [isPaymentComplete]); // This effect runs whenever `isPaymentComplete` changes
 
   return (
     <SafeAreaView>
