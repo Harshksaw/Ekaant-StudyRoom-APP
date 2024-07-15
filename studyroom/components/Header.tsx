@@ -43,6 +43,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
         <View style={styles.label}>
           <Text
             style={{
+              
               fontSize: 16,
               fontWeight: "500",
               lineHeight: 24,
