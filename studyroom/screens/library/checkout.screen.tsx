@@ -56,93 +56,10 @@ const CheckoutScreen: React.FC = () => {
   const RoomNo = BookedData.room || 1;
 
 
-  // console.log("Price:", price);
-  // console.log("Convenience Fee:", RegistrationFees);
 
-  // console.log("End Date:", endDate);
-  // console.log("Total Amount:", totalAmount);
-
-
-  const PreBook = async () => {
-    const userData = await AsyncStorage.getItem("userData");
-    const userid = JSON.parse(userData || "{}")
-    const userId = userid.user._id;
-
-    // console.log("------------------->", data.details.id);
-
-    // console.log("User ID:", userId, "--------", "libraryId",
-    //   data._id, "Initial Price:", price, "Final Price:",
-    //   totalAmount, "Time Slot:", BookingSlot, "Room No:", RoomNo,
-    //   "Booked Seat:", BookingSeat, "Booking Date:",
-    //   BookingDate, "Booking Period:", BookingMonths);
-    if (!userId || !data.details.id || !price || !totalAmount || !BookingSlot || !RoomNo || !BookingSeat || !BookingDate || !BookingMonths) {
-      return Toast.show("Please fill all fields !ReBook", {
-        type: "error",
-        placement: "top",
-        animationDuration: 1000,
-        icon: <Ionicons name="alert-circle" size={24} color="red" />,
-
-        duration: 3000,
-      }
-
-      )
-      return;
-    }
-
-
-
-
-    try {
-      console.log(userDetails.friendDetails, "-----977")
-      const response = await axios.post(`${BACKEND}/api/v1/booking/createBooking`, {
-        userId: userId,
-        libraryId: data.details.id,
-        initialPrice: price,
-        finalPrice: totalAmount,
-        timeSlot: BookingSlot,
-        roomNo: RoomNo,
-        bookedSeat: BookingSeat,
-        bookingDate: BookingDate,
-        bookingPeriod: BookingMonths,
-        forFriend: userDetails.friendDetails,
-
-      })
-
-
-
-
-      Toast.show("Booking Successful !", {
-        type: "success",
-        placement: "top",
-        animationDuration: 1000,
-        icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
-
-        duration: 3000,
-      })
-
-      return response.data.Booking._id
-
-    } catch (error) {
-      console.log("Error:", error);
-      return Toast.show("Error in Booking !", {
-        type: "error",
-        placement: "top",
-        animationDuration: 1000,
-        icon: <Ionicons name="alert-circle" size={24} color="red" />,
-
-        duration: 3000,
-      })
-
-    }
-
-
-
-
-
-  }
 
   const PaymentScreen = async () => {
-    const data = await PreBook();
+
 
 
 
