@@ -18,7 +18,7 @@ const ping = (req, res) => {
     res.status(StatusCodes.OK).json({ message: "Ping successful" });
   };
 
-  async function createApp(req, res) {
+async function createApp(req, res) {
     try {
 
       const images = req.files.map((file) => file.path);

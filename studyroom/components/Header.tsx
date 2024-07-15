@@ -1,36 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from 'react'; // Ensure React is imported for JSX transformation
 import {
+  PermissionsAndroid,
+  SafeAreaView,
   View,
   Text,
   StyleSheet,
-  Platform,
-  PermissionsAndroid,
-  SafeAreaView,
 } from "react-native";
 import { Dimensions } from "react-native";
-
-const { width, height } = Dimensions.get("window");
 import { Image } from "expo-image";
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
-
 import { useAssets } from "expo-asset";
+import { useSelector } from "react-redux";
 
-const citiesData = [
-  { id: 1, name: "Mumbai" },
-  { id: 2, name: "Delhi" },
-  { id: 3, name: "Bangalore" },
-  { id: 4, name: "Hyderabad" },
-  { id: 5, name: "Chennai" },
-  { id: 6, name: "Kolkata" },
-  { id: 7, name: "Ahmedabad" },
-  { id: 8, name: "Pune" },
-  { id: 9, name: "Surat" },
-  { id: 10, name: "Jaipur" },
-];
+const { width, height } = Dimensions.get("window");
+
 const Header: React.FC<{ color: string }> = ({ color }) => {
   const [selectedLocation, setSelectedLocation] = useState();
-
   const [Enable, setEnable] = useState(true);
 
   const [assets, error] = useAssets([
@@ -39,6 +25,12 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
     require("../assets/icons/Ekaant.svg"),
     require("../assets/icons/Headerloc.svg"),
   ]);
+
+  // Move the useSelector calls inside the component
+
+  const citiesData = useSelector((state) => state.app);
+  console.log(citiesData);
+
 
   return (
     <View style={styles.header}>
@@ -93,7 +85,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
 
             onValueChange={(itemValue, itemIndex) => setEnable(false)}
           >
-            {citiesData?.map((slot, index) => (
+            {/* {citiesData?.map((slot, index) => (
               <Picker.Item
               
                 key={index}
@@ -118,7 +110,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
                   // margin: 4,
                 }}
               />
-            ))}
+            ))} */}
           </Picker>
         </View>
       </View>

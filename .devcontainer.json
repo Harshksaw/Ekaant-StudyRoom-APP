@@ -1,6 +1,0 @@
-"forwardPorts": [3000],
-"portsAttributes": {
-  "3000": {
-    "onAutoForward": "notify"
-  }
-}
