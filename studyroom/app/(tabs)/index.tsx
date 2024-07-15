@@ -55,20 +55,21 @@ export default function index() {
   const [locationData, setLocationData] = useState(null);
 
 
-var count =0;
+  var count = 0;
 
- 
+
 
   const getAppData = async () => {
 
     // TODO, tanstackquery
     try {
       const response = await axios.get(`${BACKEND}/api/v1/app/getApp`);
-      console.log("getAPpData called ", count++); 
+      console.log("getAPpData called ", count++);
+      // console.log(response.data.data)
 
 
       setBannerImage(response.data.data.Banner);
-      setLocationData(response.data.data.location);
+      setLocationData(response.data.data.locations);
 
 
     } catch (error) {
@@ -119,9 +120,10 @@ var count =0;
         const fetchedData = await fetchRoomData();
         setData(fetchedData || []);
       } catch (error) {
-        setData([])
 
         console.error("Failed to fetch room data:", error);
+        setData([])
+
         setNotAvailable(true);
         // Handle the error as needed, e.g., set an error state, show a message, etc.
         // For example, setError("Failed to load data. Please try again later.");
@@ -175,10 +177,10 @@ var count =0;
           params: { item: JSON.stringify(item) },
         })
       }
-      // onPress={()=> {
-      //   setNotListed(true)
+    // onPress={()=> {
+    //   setNotListed(true)
 
-      // }}
+    // }}
 
     >
       <View style={styles.card}>
@@ -327,9 +329,9 @@ var count =0;
         backgroundColor: "white",
       }}
     >
-      <View style={{marginTop:0}}>
+      <View style={{ marginTop: 0 }}>
 
-      <Header color="black"   />
+        <Header color="black" />
       </View>
 
       <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
@@ -337,9 +339,9 @@ var count =0;
       {/* ///carousel -> Listings -> Filters */}
 
       <ScrollView style={{ flex: 1, gap: 40 }} stickyHeaderIndices={[1]}
-       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         {/* Carousel */}
         <View style={styles.carousel}>
           <View style={styles.welcome}>
@@ -385,45 +387,45 @@ var count =0;
                 }}
               >
 
-                
+
                 {
                   bannerImage.length === 0 ? (
                     assets && assets[4] &&
                     <Image
-                    source={assets[4]}
-                    style={{
-                      marginTop: -50,
-                      width: width * 0.95,
-                      height: height * 0.25,
-                      borderRadius: 20,
-                      // borderTopLeftRadius: 40,
-                      // borderTopRightRadius: 40,
-                    }}
-                  />
-                    
+                      source={assets[4]}
+                      style={{
+                        marginTop: -50,
+                        width: width * 0.95,
+                        height: height * 0.25,
+                        borderRadius: 20,
+                        // borderTopLeftRadius: 40,
+                        // borderTopRightRadius: 40,
+                      }}
+                    />
+
                   ) : (
 
-                      <Image
-                    source={item}
-                    style={{
-                      marginTop: -50,
-                      width: width * 0.95,
-                      height: height * 0.25,
-                      borderRadius: 20,
-                      objectFit: 'cover',
-                      // overflow: 'hidden'
-                      // borderTopLeftRadius: 40,
-                      // borderTopRightRadius: 40,
-                    }}
-                  />
+                    <Image
+                      source={item}
+                      style={{
+                        marginTop: -50,
+                        width: width * 0.95,
+                        height: height * 0.25,
+                        borderRadius: 20,
+                        objectFit: 'cover',
+                        // overflow: 'hidden'
+                        // borderTopLeftRadius: 40,
+                        // borderTopRightRadius: 40,
+                      }}
+                    />
 
 
 
-                    
-                  ) 
+
+                  )
                 }
-                 
-            
+
+
               </View>
             )}
           />
@@ -455,7 +457,7 @@ var count =0;
                   backgroundColor: "#ffff",
                   borderRadius: 40,
                 }}
-                // onPress={onPress}
+              // onPress={onPress}
               >
                 {assets && assets[filter?.id] && (
                   <Image
@@ -507,9 +509,9 @@ var count =0;
           <>
             <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
               {data &&
-                data?.data.map((item, index) => renderItem({ item, index }))}
+                data?.data?.map((item, index) => renderItem({ item, index }))}
 
-              {data?.data.length == 0  && (
+              {data?.data?.length == 0 && (
                 <TouchableOpacity onPress={() => setReload(true)}>
                   <Text
                     style={{
