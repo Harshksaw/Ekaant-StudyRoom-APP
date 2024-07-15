@@ -131,6 +131,54 @@ async function getBookingByLibId(req, res) {
   }
 }
 
+async function ConfrimBooking(req, res) {
+  try {
+    // Find the booking by ID and update it
+
+    const { id } = req.params;
+
+    const {  bookingId,
+      paymentId,
+      paymentData,
+      paymentStatus } = req.body;
+      console.log(req.body,"ConfrimBooking")
+
+    const transactionDetailsData = {
+      bookingId,
+      paymentId,
+      paymentData,
+
+
+    }
+
+      if(paymentStatus){
+
+        
+        const updatedBooking = await Booking.findByIdAndUpdate(
+          id,
+          {
+            $set: {
+              transactionDetails: transactionDetailsData,
+              bookingStatus: "CONFIRMED"
+            }
+          },
+          { new: true } // Return the updated document
+        );
+        if (!updatedBooking) {
+          throw new Error('Booking not found');
+        }
+      }
+        
+    
+
+    return updatedBooking;
+  } catch (error) {
+    // Handle possible errors
+    console.error('Error confirming booking:', error);
+    throw error; // Rethrow or handle as needed
+  }
+}
+
 
 
 module.exports = {
@@ -139,4 +187,5 @@ module.exports = {
   getUserBookings,
   getBookingById,
   getBookingByLibId,
+  ConfrimBooking
 };

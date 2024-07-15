@@ -179,7 +179,7 @@ const BookingScreen: React.FC = () => {
       //   BookingMonths,
       //   "------------------->"
       // );
-     Toast.show("Please fill all fields !ReBook", {
+      Toast.show("Please fill all fields !ReBook", {
         type: "error",
         placement: "top",
         animationDuration: 1000,
@@ -196,7 +196,7 @@ const BookingScreen: React.FC = () => {
         `${BACKEND}/api/v1/booking/createBooking`,
         {
           userId: userId,
-          libraryId:  bookingdata.details.id,
+          libraryId: bookingdata.details.id,
           initialPrice: price,
           finalPrice: totalAmount,
           timeSlot: BookingSlot,
@@ -207,7 +207,7 @@ const BookingScreen: React.FC = () => {
           forFriend: userDetails.friendDetails,
         }
       );
-      const  bookingId = response.data.Booking._id;
+      const bookingId = response.data.Booking._id;
       setBookingId(bookingId);
 
       // console.log("Booking ID", bookingId);
@@ -224,6 +224,8 @@ const BookingScreen: React.FC = () => {
       // console.log(response.data, "------------------->");
       return response.data.Booking._id;
     } catch (error) {
+      setBookingLoader(false);
+      setIsModalVisible(false);
 
       console.log("Error:", error);
       Toast.show("Error in Booking !", {
@@ -242,29 +244,29 @@ const BookingScreen: React.FC = () => {
     setBookingLoader(true);
 
     const res = await PreBook();
-    if(res !== null){
+    if (res !== null) {
       // console.log("Booking Confirmed", BookedData);
-    updateRoomDetails();
-    
-    if(BookedData !== null && bookingId !== null){
+      updateRoomDetails();
+
+
       setBookingLoader(false);
       setIsModalVisible(false);
+      console.log("Booking ID254 boking", bookingId);
 
-        router.push({
-          pathname: "/library/checkout.screen",
-          params: { item: JSON.stringify(BookedData) , id : JSON.stringify(bookingId) },
-        });
-        
-      }
-    // console.log("Booking Confirmed");
+      router.push({
+        pathname: "/library/checkout.screen",
+        params: { item: JSON.stringify(BookedData), id: JSON.stringify(bookingId) },
+      });
 
-    }else{
+
+
+    } else {
       setBookingLoader(false);
 
-        setIsModalVisible(false);
+      setIsModalVisible(false);
     }
 
-    
+
 
   };
   return (

@@ -67,14 +67,15 @@ const CheckoutScreen: React.FC = () => {
   const [paymentData, setPaymentData] = useState(null); // Payment data
   const [paymentId, setPaymentId] = useState(null); // Payment data
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
+  const [isinvoiceComplete, setinvoiceComplete] = useState(false);
 
 
 
 
   // const PaymentData = route.params.item ? JSON.parse(route.params.item) : {};
 
-  const bookingid = route?.params?.id ? JSON.parse(route.params.id) : {};
-  // console.log("Booking ID-->", bookingid);
+  const bookingid = route.params.id ? JSON.parse(route.params.id) : {};
+  console.log("Booking ID-->", bookingid, "Booking ID", BookedData);
   let PaymentPrice = totalAmount
 
 
@@ -105,8 +106,10 @@ const CheckoutScreen: React.FC = () => {
           Toast.show("Error in fetching booking details");
         }
       } else {
+
         console.log("Booking ID is missing");
         setModalVisible(true);
+        return;
       }
     };
     getBookingDetails();
@@ -159,12 +162,32 @@ const CheckoutScreen: React.FC = () => {
         );
       });
   };
- 
+
+
+  const confirmPayment = async () => {  
+    try {
+      const res = await axios.post(
+        `${BACKEND}/api/v1/booking//confirm/${bookingId}`,
+        {
+          bookingId: bookingId,
+          paymentId: paymentId,
+          paymentData: paymentData,
+          paymentStatus: paymentStatus,
+        }
+      );
+      console.log(res.data, "Payment Confirmed");
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  
+  }
+
+
   const PaymentScreen = async () => {
     await handlePayment();
 
-  }
-  useEffect(() => {
     if (isPaymentComplete) {
 
       console.log("Payment Status", paymentStatus);
@@ -172,12 +195,38 @@ const CheckoutScreen: React.FC = () => {
       console.log("PaymentId", paymentId);
       console.log("Payment is complete");
 
-      // Save payment details to the database
+      const res = await confirmPayment();
+      if (res) {
+        setinvoiceComplete(true);
+        console.log("Payment Confirmed");
+      } else {
+        console.log("Payment Failed");
 
-
-      // Execute other actions here after payment is complete and success alert is shown
-      // navigateToSuccessScreen(); // Example action: navigate to a success screen
     }
+    
+  }}
+
+  
+  useEffect(() => {
+ 
+   
+    // InvoiceScreen();
+if(isPaymentComplete){
+
+  router.push(
+    {
+      pathname: "/library/invoice.screen",
+      params: {
+        price:JSON.stringify(PaymentPrice),
+        paymentData:JSON.stringify(paymentData),
+        paymentId:JSON.stringify(paymentId),
+        bookingId:JSON.stringify(bookingId),
+      }}
+    );
+  }
+
+
+
   }, [isPaymentComplete]); // This effect runs whenever `isPaymentComplete` changes
 
   return (
