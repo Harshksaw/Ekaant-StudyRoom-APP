@@ -91,17 +91,17 @@ const ping = (req, res) => {
 
   async function editBanner(req, res) {
     try {
-      const id = req.params.id;
-      const body = req.body;
-      console.log(id, body);
 
-      // Add code to edit banner by id
-
+      const images = req.files.map((file) => file.path);
+      const app = await App.findByIdAndUpdate({ _id: "6693fe2eb4e16e6d87026d1d" }, {
+        Banner: images
+      }, { new: true });
       return res.status(StatusCodes.OK).json({
         success: true,
         message: "Banner edited successfully",
-        data: updatedBanner,
+        data: app,
       });
+
     } catch (error) {
       console.error("Error editing banner: ", error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -112,19 +112,19 @@ const ping = (req, res) => {
     }
   }
 
-  async function editLocations(req, res) {
+async function editLocations(req, res) {
     try {
-      const id = req.params.id;
-      const body = req.body;
-      console.log(id, body);
+      const {locations} = req.body;
 
-      // Add code to edit locations by id
+      const updatedLocations = await App.findByIdAndUpdate({ _id: "6693fe2eb4e16e6d87026d1d" }, {
+        locations: locations
+      }, { new: true });
 
       return res.status(StatusCodes.OK).json({
         success: true,
         message: "Locations edited successfully",
         data: updatedLocations,
-      });
+      })
     } catch (error) {
       console.error("Error editing locations: ", error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
