@@ -108,7 +108,7 @@ function Signup() {
       console.log("OTP sent successfully");
     }
   };
-  // Function to call after all OTP inputs are filled
+
 
   const verifyEmailOTP = async () => {
     // const { emailOtp1, emailOtp2, emailOtp3, emailOtp4 } = emailOtpInputs;
@@ -229,11 +229,11 @@ function Signup() {
       verifyEmailOTP();
     }
 
-    console.log(libraryDetails, "libraryDetails");
+    console.log(userDetails,"---");
   }, [userOTP, emailOtpInputs, libraryDetails]);
 
   const createUser = async () => {
-    // setLoading(true);
+    setLoading(true);
 
     console.log(userDetails?.uploadAadharCard, userDetails?.uploadPanCard);
 
@@ -251,14 +251,14 @@ function Signup() {
     formData.append("Dob", userDetails.dob);
     formData.append("AddharNumber", userDetails.aadharCard); // If AddharNumber is a text field
     formData.append("PanNumber", userDetails.panCard); // If PanNumber is a text field
-    formData.append("Address", JSON.stringify(userDetails.address)); // Assuming Address is an object and needs to be stringified
+    formData.append("Address", userDetails.fullName); // Assuming Address is an object and needs to be stringified
     formData.append("username", createUserName);
 
-    formData.append("aadharImage", userDetails.uploadAadharCard);
-    formData.append("panImage", userDetails.uploadPanCard);
+    formData.append("aadhar", userDetails.uploadAadharCard);
+    formData.append("pancard", userDetails.uploadPanCard);
 
-    console.log(formData, " > > > ======================>");
     try {
+    
       const response = await axios.post(
         `${BASEURL}/api/v1/admin/registerAdmin`,
         formData
@@ -266,7 +266,7 @@ function Signup() {
       console.log("Success:", response.data);
 
       if (response.data) {
-        // setLoading(false);
+        setLoading(false);
 
         console.log(response.data, "response.data");
 
@@ -356,7 +356,7 @@ function Signup() {
             <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
           ),
         });
-        // setCurrentStep(0);
+        setCurrentStep(0);
 
         // setImages([]);
       }
@@ -369,7 +369,7 @@ function Signup() {
   const nextStep = async () => {
     console.log(currentStep, "currentstep");
     if (currentStep === 3) {
-      // createUser();
+      createUser();
     }
     if (currentStep === 5) {
       await createInitialLib();

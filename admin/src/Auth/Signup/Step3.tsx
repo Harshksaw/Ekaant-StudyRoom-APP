@@ -96,8 +96,9 @@ export const StepThree = ({
         if (file) {
           setUserDetails({
             ...userDetails,
-            uploadAadharCard: file,
+            uploadAadharCard   : file,
           });
+          console.log(userDetails.uploadAadharCard);
         }
       }}
       style={{ display: "none", justifyContent: "center" }} // Hide the actual input
@@ -149,7 +150,7 @@ export const StepThree = ({
               if (file) {
                 setUserDetails({
                   ...userDetails,
-                  uploadPanCard: file,
+                  uploadPanCard : file,
                 });
                 console.log(userDetails.uploadPanCard);
               }
