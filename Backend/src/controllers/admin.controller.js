@@ -1,16 +1,12 @@
 const { StatusCodes } = require("http-status-codes");
 
-
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin.model");
 const JWT_SECRET = "MY_SECRET_KEY";
 
-
-
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 const File = require("../models/file.model");
-
 
 const ping = (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Ping successful" });
@@ -21,6 +17,8 @@ const ping = (req, res) => {
 
 async function RegisterAdmin(req, res, next) {
   try {
+    console.log("eeee");
+    console.log(req.body);
     const {
       phoneNumber,
       email,
@@ -33,17 +31,16 @@ async function RegisterAdmin(req, res, next) {
       username,
     } = req.body;
 
-    // console.log(
-    //   phoneNumber,
-    //   email,
-    //   password,
-    //   fullName,
-    //   Dob,
-    //   AddharNumber,
-    //   PanNumber,
-    //   Address
-    // );
-
+    console.log(
+      phoneNumber,
+      email,
+      password,
+      fullName,
+      Dob,
+      AddharNumber,
+      PanNumber,
+      Address
+    );
 
     // Convert files to base64
     //  console.log("req.files is ", req.files);
@@ -53,25 +50,19 @@ async function RegisterAdmin(req, res, next) {
     //     message: "No aadhar file uploaded",
     //   });
     // }
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
+    // if (!req.file) {
+    //   return res.status(400).json({ error: "No file uploaded" });
+    // }
 
-  
     const { pancard, aadhar } = req.files;
     if (pancard) {
       console.log(pancard[0]); // Access the first (and only) pancard file
-
     }
 
     // Access aadhar file
     if (aadhar) {
       console.log(aadhar[0]); // Access the first (and only) aadhar file
-
     }
-
- 
-
 
     const pancardFile = new File({
       filename: pancard[0].originalname,
@@ -86,13 +77,8 @@ async function RegisterAdmin(req, res, next) {
     const pancardPath = await pancardFile.save();
     const addharCardPath = await aadharFile.save();
 
-
     console.log("pancardPath is ", pancardPath._id);
-    console.log("addharCardPath is ", addharCardPath._id);  
-
-
-
-
+    console.log("addharCardPath is ", addharCardPath._id);
 
     const newAdmin = await Admin.create({
       phoneNumber,
@@ -106,7 +92,7 @@ async function RegisterAdmin(req, res, next) {
       address: Address,
       adhaarCardDetails: {
         adhaarNumber: AddharNumber,
-        adhaarCardFile: addharCardPath._id, 
+        adhaarCardFile: addharCardPath._id,
       },
       panCardDetails: {
         panNumber: PanNumber,
@@ -124,7 +110,7 @@ async function RegisterAdmin(req, res, next) {
 
     // generating the token--
     const token = jwt.sign({ admin_id }, JWT_SECRET);
-    
+
     return res.status(StatusCodes.CREATED).json({
       success: true,
       message: "User authenticated successfully",
@@ -132,7 +118,6 @@ async function RegisterAdmin(req, res, next) {
       data: newAdmin,
       token: token,
     });
-
   } catch (error) {
     console.log("error is ", error);
     next(error);
