@@ -13,7 +13,7 @@ import { StepFive } from "./Signup/Step5";
 
 import { BASEURL } from "@/lib/utils";
 import axios from "axios";
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
 import Loader from "@/components/Loader";
 // Add similar components for StepThree, StepFour, and StepFive
@@ -27,107 +27,90 @@ const FinalStep = ({ prevStep }) => (
   </div>
 );
 
-
-
 function Signup() {
-  const { toast } = useToast()
+  const { toast } = useToast();
   //parent compoenent
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
 
+  const [userOTP, setOtpInputs] = useState("");
+  console.log(userOTP, "userotp");
 
-  const [userOTP, setOtpInputs] = useState("")
-  console.log(userOTP, "userotp")
+  
 
   const sendOtp = async () => {
     const { phone } = userInfo;
     toast({
       description: "OTP sent successfully",
+    });
 
-    })
-
-
-    const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, { phoneNumber: phone });
+    const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, {
+      phoneNumber: phone,
+    });
     if (res.status === 200) {
-      console.log("OTP sent successfully")
+      console.log("OTP sent successfully");
     }
-
-  }
+  };
   const verifyOTP = async () => {
-
     console.log("verfication start user OTP");
     // const { otp1, otp2, otp3, otp4 } = userOTP;
     // Assuming verifyUserOTP is the function you want to call
     // const otp = `${otp1}${otp2}${otp3}${otp4}`;
-    const otp = userOTP
+    const otp = userOTP;
     if (Number(otp) < 1000) {
       return;
     }
     console.log("verfication start");
 
     const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOTP`, { otp });
-    console.log(res, "res")
+    console.log(res, "res");
 
     if (res.status === 200 || res.status === 201) {
-      console.log(res.data, "res.data")
+      console.log(res.data, "res.data");
 
       toast({
-        type: 'background',
+        type: "background",
         style: {
-          background: 'rgb(45, 218, 88)',
-
-
+          background: "rgb(45, 218, 88)",
         },
 
-
-        variant: 'default',
+        variant: "default",
 
         color: "green",
         description: "Your Phone Otp has been verified.",
-      })
-      console.log("OTP verified successfully")
+      });
+      console.log("OTP verified successfully");
     } else {
       toast({
         description: "Your Phone Otp has not been verified.",
-      })
+      });
     }
-
-
-
   };
-
 
   const [emailOtpInputs, setEmailOtpInputs] = useState("");
 
-
-
-
   const sendEmailOtp = async () => {
     toast({
-
       description: "Email OTP sent successfully",
-    })
+    });
     const { email } = userInfo;
     const res = await axios.post(`${BASEURL}/api/v1/auth/emailotp`, { email });
     if (res.status === 200) {
-
       toast({
         description: "OTP sent successfully",
         style: {
-          background: 'rgb(45, 218, 88)',
-          color: 'white',
-          padding: '1rem',
-          borderRadius: '1rem',
+          background: "rgb(45, 218, 88)",
+          color: "white",
+          padding: "1rem",
+          borderRadius: "1rem",
         },
-
-      })
-      console.log("OTP sent successfully")
+      });
+      console.log("OTP sent successfully");
     }
-  }
+  };
   // Function to call after all OTP inputs are filled
 
   const verifyEmailOTP = async () => {
-
     // const { emailOtp1, emailOtp2, emailOtp3, emailOtp4 } = emailOtpInputs;
     // const otp = `${emailOtp1}${emailOtp2}${emailOtp3}${emailOtp4}`;
     const otp = emailOtpInputs;
@@ -136,29 +119,29 @@ function Signup() {
     }
 
     const res = await axios.post(`${BASEURL}/api/v1/auth/verifyEmailOtp`, {
-      otp
+      otp,
     });
-    console.log(res, "res")
+    console.log(res, "res");
 
     if (res.status === 200 || res.status === 201) {
-      console.log(res.data, "res.data")
+      console.log(res.data, "res.data");
 
       toast({
-        type: 'background',
+        type: "background",
         style: {
-          background: 'rgb(45, 218, 88)',
+          background: "rgb(45, 218, 88)",
         },
-        variant: 'default',
+        variant: "default",
         color: "green",
         description: "Your Email Otp has been verified.",
-      })
-      console.log("OTP verified successfully")
+      });
+      console.log("OTP verified successfully");
     } else {
       toast({
         description: "Your Email Otp has not been verified.",
-      })
+      });
     }
-  }
+  };
 
   const [userInfo, setUserInfo] = useState({
     phone: 0,
@@ -166,13 +149,11 @@ function Signup() {
     password: "",
   });
 
-
-
   const [userDetails, setUserDetails] = useState({
     fullName: "",
     dob: "",
     aadharCard: "",
-    uploadAadharCard:null,
+    uploadAadharCard: null,
     panCard: "",
     uploadPanCard: null,
     address: {
@@ -212,7 +193,7 @@ function Signup() {
       uploadMisme: null,
     },
     librayCardImage: null,
-    librarySliders: null,
+    librarySliders: [],
     halls: 0,
     amentities: {
       coldWater: false,
@@ -229,55 +210,55 @@ function Signup() {
       CommonParking: false,
     },
   });
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    if (event.target.files) {
+      setLibraryDetails(prevLibraryDetails => ({
+        ...prevLibraryDetails,
+        librarySliders: [...prevLibraryDetails.librarySliders, ...Array.from(event.target.files)],
+      }));
+    }
+  };
 
   useEffect(() => {
-
-
-
-
-
     if (Number(userOTP) > 1000) {
-      verifyOTP()
-
+      verifyOTP();
     }
 
     if (Number(emailOtpInputs) > 1000) {
-      verifyEmailOTP()
+      verifyEmailOTP();
     }
 
-
-  }, [ userOTP,   emailOtpInputs]);
-
+    console.log(libraryDetails, "libraryDetails");
+  }, [userOTP, emailOtpInputs, libraryDetails]);
 
   const createUser = async () => {
     // setLoading(true);
 
-    console.log(userDetails?.uploadAadharCard, userDetails?.uploadPanCard)
+    console.log(userDetails?.uploadAadharCard, userDetails?.uploadPanCard);
 
-    const createUserName = `${userDetails.fullName.split(" ").join("").toLowerCase()}${userDetails.dob}`;
+    const createUserName = `${userDetails.fullName
+      .split(" ")
+      .join("")
+      .toLowerCase()}${userDetails.dob}`;
 
     const formData = new FormData();
 
-
-    formData.append('phoneNumber', userInfo.phone.toString() );
-    formData.append('email', userInfo.email);
-    formData.append('password', userInfo.password);
-    formData.append('fullName', userDetails.fullName);
-    formData.append('Dob', userDetails.dob);
-    formData.append('AddharNumber', userDetails.aadharCard); // If AddharNumber is a text field
-    formData.append('PanNumber', userDetails.panCard); // If PanNumber is a text field
-    formData.append('Address', JSON.stringify(userDetails.address)); // Assuming Address is an object and needs to be stringified
-    formData.append('username', createUserName);
-
+    formData.append("phoneNumber", userInfo.phone.toString());
+    formData.append("email", userInfo.email);
+    formData.append("password", userInfo.password);
+    formData.append("fullName", userDetails.fullName);
+    formData.append("Dob", userDetails.dob);
+    formData.append("AddharNumber", userDetails.aadharCard); // If AddharNumber is a text field
+    formData.append("PanNumber", userDetails.panCard); // If PanNumber is a text field
+    formData.append("Address", JSON.stringify(userDetails.address)); // Assuming Address is an object and needs to be stringified
+    formData.append("username", createUserName);
 
     formData.append("aadharImage", userDetails.uploadAadharCard);
     formData.append("panImage", userDetails.uploadPanCard);
 
-
-
     console.log(formData, " > > > ======================>");
     try {
-      
       const response = await axios.post(
         `${BASEURL}/api/v1/admin/registerAdmin`,
         formData
@@ -287,17 +268,16 @@ function Signup() {
       if (response.data) {
         // setLoading(false);
 
-        console.log(response.data, "response.data")
-      
+        console.log(response.data, "response.data");
+
         toast({
           title: "Created user",
           description: `Username - ${response.data.username}`,
           action: (
             <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
           ),
-        })
+        });
       }
-
 
       setUserDetails({
         fullName: "",
@@ -318,32 +298,19 @@ function Signup() {
         email: "",
         password: "",
       });
-
-
-      
     } catch (error) {
       setLoading(false);
       setCurrentStep(1);
-      console.error(
-        "Error:"
-
-      )
+      console.error("Error:");
       toast({
         title: " user not created",
 
-        action: (
-          <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-        ),
-      })
-
-
+        action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
+      });
     }
-  }
+  };
 
   const createInitialLib = async () => {
-
-
-
     const AdminId = localStorage.getItem("userId");
 
     const LibraryDataOBJ = {
@@ -388,25 +355,19 @@ function Signup() {
           action: (
             <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
           ),
-        })
+        });
         // setCurrentStep(0);
 
         // setImages([]);
-
       }
     } catch (error) {
       setLoading(false);
-      console.error(
-        "Error:"
-
-      );
+      console.error("Error:");
     }
   };
 
-
-
   const nextStep = async () => {
-    console.log(currentStep, 'currentstep')
+    console.log(currentStep, "currentstep");
     if (currentStep === 3) {
       // createUser();
     }
@@ -414,11 +375,11 @@ function Signup() {
       await createInitialLib();
     }
     if (currentStep === 1) {
-      sendOtp()
-      sendEmailOtp()
+      sendOtp();
+      sendEmailOtp();
     }
 
-    setCurrentStep(currentStep + 1)
+    setCurrentStep(currentStep + 1);
   };
   const prevStep = () => setCurrentStep(currentStep - 1);
 
@@ -431,7 +392,6 @@ function Signup() {
             userInfo={userInfo}
             setUserInfo={setUserInfo}
             sendOTP={sendOtp}
-
           />
         );
       case 2:
@@ -441,7 +401,6 @@ function Signup() {
             setOtpInputs={setOtpInputs}
             userEmailOTP={emailOtpInputs}
             setOtpEmailInputs={setEmailOtpInputs}
-
             // handleInputChange={handleInputChange}
             // handleEmailInputChange={handleEmailOtpInputChange}
 
@@ -476,6 +435,7 @@ function Signup() {
             prevStep={prevStep}
             libraryDetails={libraryDetails}
             setLibraryDetails={setLibraryDetails}
+            handleFileChange = {handleFileChange}
           />
         );
       default:
@@ -519,8 +479,7 @@ function Signup() {
         <h1 className="text-5xl font-bold mb-2 mt-32">Register</h1>
 
         <div className="w-full  bg-blue-100 flex flex-1  justify-center items-center">
-
-          {loading && <Loader/>}
+          {loading && <Loader />}
           {renderStep()}
         </div>
       </div>

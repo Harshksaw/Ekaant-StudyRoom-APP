@@ -68,13 +68,13 @@ export const StepFour = ({
             type="text"
             id="adminAppLongDescription"
             placeholder="LongDescription"
-            value={libraryDetails.libraryApp.LongDescription}
+            value={libraryDetails.libraryApp.longDescription}
             onChange={(e) => {
               setLibraryDetails({
                 ...libraryDetails,
                 libraryApp: {
                   ...libraryDetails.libraryApp,
-                  LongDescription: e.target.value,
+                  longDescription: e.target.value,
                 },
               });
             }}

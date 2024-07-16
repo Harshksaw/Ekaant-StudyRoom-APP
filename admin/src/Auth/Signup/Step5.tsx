@@ -3,6 +3,7 @@ export const StepFive = ({
   prevStep,
   libraryDetails,
   setLibraryDetails,
+  handleFileChange 
 }: any) => {
   //images  - Register 5
 
@@ -39,25 +40,21 @@ export const StepFive = ({
               type="file"
               id="uploadLibraryCard" // ID to be renamed - tofix
               accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files ? e.target.files[0] : null;
-                if (file) {
-                  setLibraryDetails({
-                    ...libraryDetails,
-                    librayCardImage: file, // these field doesnt exist in the state : tofix
-                  });
-                }
-              }}
+              multiple
+              onChange={handleFileChange}
               style={{ display: "none", justifyContent: "center" }} // Hide the actual input
             />
           </label>
         </div>
       </div>
 
-      <div className="flex-col flex  justify-start">
+      <div className="flex-col  flex  justify-start">
         <h2 className="text-md text-bold mb-5">Library Slider Images</h2>
 
+        <div>
         <div className="flex  items-center justify-start">
+
+   
           <label
             htmlFor="uploadPanCard"
             className="w-60 h-[50px] pl-1 flex items-center text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight  border-2"
@@ -87,6 +84,18 @@ export const StepFive = ({
               style={{ display: "none", justifyContent: "center" }} // Hide the actual input
             />
           </label>
+          </div>
+
+          <div
+          className="w-full flex flex-col gap-2"
+          >
+              <h3>Uploaded Files:</h3>
+              <ul>
+                {libraryDetails.librarySliders.map((file, index) => (
+                  <li key={index}>{file.name.slice(0, 35)}</li>
+                ))}
+              </ul>
+            </div>
         </div>
       </div>
 
