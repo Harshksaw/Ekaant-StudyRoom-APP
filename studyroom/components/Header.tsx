@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // Ensure React is imported for JSX transformation
+import React, { useEffect, useState } from 'react'; // Ensure React is imported for JSX transformation
 import {
   PermissionsAndroid,
   SafeAreaView,
@@ -20,7 +20,15 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
   const [selectedLocation, setSelectedLocation] = useState();
   const [Enable, setEnable] = useState(true);
 
-  const [cities, setCities] = useState([]);
+  const citiesData = useSelector((state) => state.app); // Moved useSelector inside the component
+
+  // useState for cities is initialized with an empty array
+  const [cities, setCities] = useState(citiesData.locations || []);
+
+  // useEffect to update cities when citiesData changes
+  useEffect(() => {
+    setCities(citiesData.locations || []);
+  }, [citiesData.locations]);
 
   const [assets, error] = useAssets([
     require("../assets/icons/headerlogo.svg"),
@@ -29,21 +37,12 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
     require("../assets/icons/Headerloc.svg"),
   ]);
 
-  // Move the useSelector calls inside the component
-
-  const citiesData = useSelector((state) => state.app);
-
-  // console.log(citiesData.locations, "----citiesData");
-  // setCities(citiesData); 
-
-
   return (
     <View style={styles.header}>
       <View style={styles.citySelector}>
         <View style={styles.label}>
           <Text
             style={{
-              
               fontSize: 16,
               fontWeight: "500",
               lineHeight: 24,
@@ -74,12 +73,11 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
           )}
 
           <Picker
-            selectedValue={Enable}
+            selectedValue={selectedLocation}
             style={{
               height: 20,
               width: 180,
               borderRadius: 150,
-              
               color: color,
               borderBlockColor: color,
               borderWidth: 1,
@@ -87,33 +85,24 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
               alignItems: "center",
             }}
             mode={"dropdown"}
-            // onValueChange={(itemValue) => setEnable(itemValue)}
-
-            onValueChange={(itemValue, itemIndex) => setEnable(false)}
+            onValueChange={(itemValue, itemIndex) => {
+              setSelectedLocation(itemValue);
+              setEnable(false); // Consider updating this logic as needed
+            }}
           >
-            {citiesData.locations?.map((slot, index) => (
+            {cities.map((city, index) => (
               <Picker.Item
-              
                 key={index}
-                label={slot + ",IN"}
-                value={slot}
+                label={`${city}, IN`}
+                value={city}
                 style={{
                   color: "#000000",
                   lineHeight: 25,
                   fontSize: 15,
-
                   fontStyle: "normal",
-                  fontWeight: 500,
-
-
+                  fontWeight: "500",
                   textAlign: "center",
-                  // backgroundColor: "blue",
-                  // marginBottom: 20,
-
                   borderRadius: 20,
-
-                  // padding: 2,
-                  // margin: 4,
                 }}
               />
             ))}
@@ -147,7 +136,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
           </View>
         )}
 
-        {color == "black" && assets && assets[0] && (
+        {color === "black" && assets && assets[0] && (
           <Image
             source={assets[0]}
             style={{
@@ -161,7 +150,6 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   header: {
     height: height * 0.085,

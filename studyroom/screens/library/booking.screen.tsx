@@ -100,11 +100,7 @@ const BookingScreen: React.FC = () => {
   };
   const [forFriend, setForFriend] = useState(false);
 
-  // useEffect(()=>{
-  // const userDetails = useSelector((state: any) => state.user);
-  // console.log(userDetails, "-----------------")
 
-  // },[])
 
   const BookedData = {
     seat: selectedSeat,
@@ -126,23 +122,18 @@ const BookingScreen: React.FC = () => {
   const available = handleData(data.timeSlot);
 
   const userDetails = useSelector((state: any) => state.user);
-  // console.log(userDetails, "-----------------");
-  //getting data  from booking screen
 
-  // const params = useRoute();
-  // const BookedData = JSON.parse(params.params.item);
-  // console.log(BookedData, "_________")
 
   const bookingdata = useSelector((state: any) => state.booking);
 
   const location = bookingdata?.details?.location;
-  // console.log(data.details.images[0]);
+
   const price = bookingdata.details.price || 6000;
   const RegistrationFees = 1000;
-  // Assuming price and RegistrationFees are numbers and already calculated correctly
+
   const subtotal = Number((price + RegistrationFees).toFixed(2));
 
-  // const endDate = getDateAfterMonths(BookedData?.date, BookedData?.months);
+
   const totalAmount = subtotal;
 
   // console.log("Booked Data:", data );
@@ -157,15 +148,15 @@ const BookingScreen: React.FC = () => {
     const userid = JSON.parse(userData || "{}");
     const userId = userid.user._id;
     if (
-      !userId ||
-      !bookingdata.details.id ||
-      !price ||
-      !totalAmount ||
-      !BookingSlot ||
-      !RoomNo ||
-      !BookingSeat ||
-      !BookingDate ||
-      !BookingMonths
+      userId &&
+      bookingdata.details.id &&
+      price &&
+      totalAmount &&
+      BookingSlot &&
+      RoomNo &&
+      BookingSeat &&
+      BookingDate &&
+      BookingMonths
     ) {
       // console.log(
       //   userId,
@@ -179,65 +170,61 @@ const BookingScreen: React.FC = () => {
       //   BookingMonths,
       //   "------------------->"
       // );
-      Toast.show("Please fill all fields !ReBook", {
-        type: "error",
-        placement: "top",
-        animationDuration: 1000,
-        icon: <Ionicons name="alert-circle" size={24} color="red" />,
+      try {
+        // console.log(userDetails.friendDetails, "-----977");
+        const response = await axios.post(
+          `${BACKEND}/api/v1/booking/createBooking`,
+          {
+            userId: userId,
+            libraryId: bookingdata.details.id,
+            initialPrice: price,
+            finalPrice: totalAmount,
+            timeSlot: BookingSlot,
+            roomNo: RoomNo,
+            bookedSeat: BookingSeat,
+            bookingDate: BookingDate,
+            bookingPeriod: BookingMonths,
+            forFriend: userDetails.friendDetails,
+          }
+        );
+        const bookingId = response.data.Booking._id;
+        setBookingId(bookingId);
+  
+        // console.log("Booking ID", bookingId);
+  
+        Toast.show("Booking Successful !", {
+          type: "success",
+          placement: "top",
+          animationDuration: 1000,
+          icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
+  
+          duration: 3000,
+        });
+  
+        // console.log(response.data, "------------------->");
+        return response.data.Booking._id;
+      } catch (error) {
+        setBookingLoader(false);
+        setIsModalVisible(false);
+  
+        console.log("Error:", error);
+        Toast.show("Error in Booking !", {
+          type: "error",
+          placement: "top",
+          animationDuration: 1000,
+          icon: <Ionicons name="alert-circle" size={24} color="red" />,
+  
+          duration: 3000,
+        });
+        return null;
+      }
 
-        duration: 3000,
-      });
-      return;
+
+  
+
     }
 
-    try {
-      // console.log(userDetails.friendDetails, "-----977");
-      const response = await axios.post(
-        `${BACKEND}/api/v1/booking/createBooking`,
-        {
-          userId: userId,
-          libraryId: bookingdata.details.id,
-          initialPrice: price,
-          finalPrice: totalAmount,
-          timeSlot: BookingSlot,
-          roomNo: RoomNo,
-          bookedSeat: BookingSeat,
-          bookingDate: BookingDate,
-          bookingPeriod: BookingMonths,
-          forFriend: userDetails.friendDetails,
-        }
-      );
-      const bookingId = response.data.Booking._id;
-      setBookingId(bookingId);
-
-      // console.log("Booking ID", bookingId);
-
-      Toast.show("Booking Successful !", {
-        type: "success",
-        placement: "top",
-        animationDuration: 1000,
-        icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
-
-        duration: 3000,
-      });
-
-      // console.log(response.data, "------------------->");
-      return response.data.Booking._id;
-    } catch (error) {
-      setBookingLoader(false);
-      setIsModalVisible(false);
-
-      console.log("Error:", error);
-      Toast.show("Error in Booking !", {
-        type: "error",
-        placement: "top",
-        animationDuration: 1000,
-        icon: <Ionicons name="alert-circle" size={24} color="red" />,
-
-        duration: 3000,
-      });
-      return null;
-    }
+  
   };
 
   const confirmBooking = async () => {
