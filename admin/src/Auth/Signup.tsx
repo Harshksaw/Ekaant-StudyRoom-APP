@@ -14,6 +14,8 @@ import { StepFive } from "./Signup/Step5";
 import { BASEURL } from "@/lib/utils";
 import axios from "axios";
 import { useToast } from "@/components/ui/use-toast"
+import { ToastAction } from "@radix-ui/react-toast";
+import Loader from "@/components/Loader";
 // Add similar components for StepThree, StepFour, and StepFive
 
 const FinalStep = ({ prevStep }) => (
@@ -25,70 +27,66 @@ const FinalStep = ({ prevStep }) => (
   </div>
 );
 
+
+
 function Signup() {
   const { toast } = useToast()
   //parent compoenent
   const [loading, setLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
 
 
-  const [userInfo, setUserInfo] = useState({
-    phone: 0,
-    email: "",
-    password: "",
-  });
-
- 
-  const [userOTP,setOtpInputs]=useState("")
-console.log(userOTP, "userotp")
+  const [userOTP, setOtpInputs] = useState("")
+  console.log(userOTP, "userotp")
 
   const sendOtp = async () => {
     const { phone } = userInfo;
     toast({
       description: "OTP sent successfully",
-    
+
     })
-  
-   
-    const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, { phoneNumber : phone });
-    if(res.status === 200){
+
+
+    const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, { phoneNumber: phone });
+    if (res.status === 200) {
       console.log("OTP sent successfully")
     }
-  
-}
+
+  }
   const verifyOTP = async () => {
 
     console.log("verfication start user OTP");
     // const { otp1, otp2, otp3, otp4 } = userOTP;
     // Assuming verifyUserOTP is the function you want to call
     // const otp = `${otp1}${otp2}${otp3}${otp4}`;
-    const otp=userOTP
+    const otp = userOTP
     if (Number(otp) < 1000) {
       return;
     }
     console.log("verfication start");
 
-    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOTP`, {otp});
+    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOTP`, { otp });
     console.log(res, "res")
 
-    if(res.status === 200 || res.status === 201){
+    if (res.status === 200 || res.status === 201) {
       console.log(res.data, "res.data")
 
       toast({
-        type:'background',
-        style:{
-          background:'rgb(45, 218, 88)',
+        type: 'background',
+        style: {
+          background: 'rgb(45, 218, 88)',
 
 
         },
-        
 
-        variant:'default',
+
+        variant: 'default',
 
         color: "green",
         description: "Your Phone Otp has been verified.",
       })
       console.log("OTP verified successfully")
-    }else{
+    } else {
       toast({
         description: "Your Phone Otp has not been verified.",
       })
@@ -98,55 +96,30 @@ console.log(userOTP, "userotp")
 
   };
 
-  // Handle OTP input change
-  // const handleInputChange = async(e) => {
-  //   const { name, value } = e.target;
-  //   console.log(name, value);
-  //   const updatedOtpInputs = {
-  //     ...userOTP,
-  //     [name]: value,
-  //   };
-  //   setOtpInputs(updatedOtpInputs);
-
-
-
-  //   // Check if all inputs are filled after the state update
-  //   const allFilled = Object.values(updatedOtpInputs).every(
-  //     (input) => input.trim() !== ""
-  //   );
-
-    
-  //   if (allFilled) {
-  //     console.log("All inputs are filled phone otp");
-  //     await verifyOTP();
-
-
-  //   }
-  // };
 
   const [emailOtpInputs, setEmailOtpInputs] = useState("");
 
- 
 
 
-  const sendEmailOtp = async () => {  
+
+  const sendEmailOtp = async () => {
     toast({
 
       description: "Email OTP sent successfully",
     })
     const { email } = userInfo;
     const res = await axios.post(`${BASEURL}/api/v1/auth/emailotp`, { email });
-    if(res.status === 200){
-      
+    if (res.status === 200) {
+
       toast({
         description: "OTP sent successfully",
-      style:{
-        background:'rgb(45, 218, 88)',
-        color:'white',
-        padding:'1rem',
-        borderRadius:'1rem',
-      },
-      
+        style: {
+          background: 'rgb(45, 218, 88)',
+          color: 'white',
+          padding: '1rem',
+          borderRadius: '1rem',
+        },
+
       })
       console.log("OTP sent successfully")
     }
@@ -161,31 +134,37 @@ console.log(userOTP, "userotp")
     if (Number(otp) < 1000) {
       return;
     }
-  
+
     const res = await axios.post(`${BASEURL}/api/v1/auth/verifyEmailOtp`, {
-      otp 
+      otp
     });
     console.log(res, "res")
-  
-    if(res.status === 200 || res.status === 201){
+
+    if (res.status === 200 || res.status === 201) {
       console.log(res.data, "res.data")
-  
+
       toast({
-        type:'background',
-        style:{
-          background:'rgb(45, 218, 88)',
+        type: 'background',
+        style: {
+          background: 'rgb(45, 218, 88)',
         },
-        variant:'default',
+        variant: 'default',
         color: "green",
         description: "Your Email Otp has been verified.",
       })
       console.log("OTP verified successfully")
-    }else{
+    } else {
       toast({
         description: "Your Email Otp has not been verified.",
       })
     }
   }
+
+  const [userInfo, setUserInfo] = useState({
+    phone: 0,
+    email: "",
+    password: "",
+  });
 
 
 
@@ -193,9 +172,9 @@ console.log(userOTP, "userotp")
     fullName: "",
     dob: "",
     aadharCard: "",
-    uploadAadharCard: [],
+    uploadAadharCard:null,
     panCard: "",
-    uploadPanCard: [],
+    uploadPanCard: null,
     address: {
       line1: "",
       line2: "",
@@ -232,8 +211,8 @@ console.log(userOTP, "userotp")
       misme: "",
       uploadMisme: null,
     },
-    librayCardImage: [],
-    librarySliders: [],
+    librayCardImage: null,
+    librarySliders: null,
     halls: 0,
     amentities: {
       coldWater: false,
@@ -252,84 +231,121 @@ console.log(userOTP, "userotp")
   });
 
   useEffect(() => {
-    console.log(emailOtpInputs,"========>userinfo");
 
 
-    // console.log(userOTP,"========>userotp");
 
-    if(Number(userOTP) > 1000){
+
+
+    if (Number(userOTP) > 1000) {
       verifyOTP()
 
     }
 
-    if(Number(emailOtpInputs) > 1000){
+    if (Number(emailOtpInputs) > 1000) {
       verifyEmailOTP()
     }
-    console.log(libraryDetails, "========================>Librarydetails");
-    console.log(userDetails, " ========================> userdetails");
 
-  }, [userInfo, userOTP, libraryDetails, userDetails, emailOtpInputs]);
+
+  }, [ userOTP,   emailOtpInputs]);
 
 
   const createUser = async () => {
-    const AdminId = await localStorage.getItem("userId");
+    // setLoading(true);
 
-    const createAdminDataOBJ = {
-      fullName: userDetails.fullName,
-      dob: userDetails.dob,
-      aadharCard: userDetails.aadharCard,
-      panCard: userDetails.panCard,
-      address: userDetails.address,
-    };
     console.log(userDetails?.uploadAadharCard, userDetails?.uploadPanCard)
+
+    const createUserName = `${userDetails.fullName.split(" ").join("").toLowerCase()}${userDetails.dob}`;
+
     const formData = new FormData();
 
-    formData.append("aadharImage", userDetails?.uploadAadharCard);
-    formData.append("panImage", userDetails?.uploadPanCard);
 
-    formData.append("jsonData", JSON.stringify(createAdminDataOBJ));
+    formData.append('phoneNumber', userInfo.phone.toString() );
+    formData.append('email', userInfo.email);
+    formData.append('password', userInfo.password);
+    formData.append('fullName', userDetails.fullName);
+    formData.append('Dob', userDetails.dob);
+    formData.append('AddharNumber', userDetails.aadharCard); // If AddharNumber is a text field
+    formData.append('PanNumber', userDetails.panCard); // If PanNumber is a text field
+    formData.append('Address', JSON.stringify(userDetails.address)); // Assuming Address is an object and needs to be stringified
+    formData.append('username', createUserName);
+
+
+    formData.append("aadharImage", userDetails.uploadAadharCard);
+    formData.append("panImage", userDetails.uploadPanCard);
+
+
 
     console.log(formData, " > > > ======================>");
     try {
-      // setLoading(true);
-      // const response = await axios.post(
-      //   `${BASEURL}/api/v1/library/createLibrary`,
-      //   formData
-      // );
-      // console.log("Success:", response.data);
+      
+      const response = await axios.post(
+        `${BASEURL}/api/v1/admin/registerAdmin`,
+        formData
+      );
+      console.log("Success:", response.data);
 
-      // if (response.data) {
-      //   // setLoading(false);
-      //   toast.success("Library created successfully");
-      //   setUserDetails({
-      //     fullName: "",
-      //     dob: "",
-      //     aadharCard: "",
-      //     uploadAadharCard: [],
-      //     panCard: "",
-      //     uploadPanCard: [],
-      //     address: {
-      //       line1: "",
-      //       line2: "",
-      //       city: "",
-      //       pincode: "",
-      //     },
-      //   })
+      if (response.data) {
+        // setLoading(false);
 
-      // }
+        console.log(response.data, "response.data")
+      
+        toast({
+          title: "Created user",
+          description: `Username - ${response.data.username}`,
+          action: (
+            <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+          ),
+        })
+      }
+
+
+      setUserDetails({
+        fullName: "",
+        dob: "",
+        aadharCard: "",
+        uploadAadharCard: null,
+        panCard: "",
+        uploadPanCard: null,
+        address: {
+          line1: "",
+          line2: "",
+          city: "",
+          pincode: "",
+        },
+      });
+      setUserInfo({
+        phone: 0,
+        email: "",
+        password: "",
+      });
+
+
+      
     } catch (error) {
       setLoading(false);
+      setCurrentStep(1);
       console.error(
         "Error:"
 
-      );
+      )
+      toast({
+        title: " user not created",
+
+        action: (
+          <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+        ),
+      })
+
+
     }
-  };
+  }
 
-  const createInitialLib = async (event: React.FormEvent<HTMLFormElement>) => {
+  const createInitialLib = async () => {
 
 
-    const AdminId = await localStorage.getItem("userId");
+
+    const AdminId = localStorage.getItem("userId");
+
     const LibraryDataOBJ = {
       libraryOwner: AdminId,
       name: libraryDetails.libraryName,
@@ -339,6 +355,8 @@ console.log(userOTP, "userotp")
       halls: libraryDetails.halls,
       amenities: libraryDetails?.amentities,
     };
+
+    console.log(LibraryDataOBJ, "LibraryDataOBJ");
 
     const formData = new FormData();
 
@@ -364,8 +382,14 @@ console.log(userOTP, "userotp")
 
       if (response.data) {
         setLoading(false);
-        toast.success("Library created successfully");
-        setCurrentStep(0);
+        toast({
+          title: "Created Library",
+          description: `Library Name - ${response.data.name}`,
+          action: (
+            <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+          ),
+        })
+        // setCurrentStep(0);
 
         // setImages([]);
 
@@ -379,17 +403,21 @@ console.log(userOTP, "userotp")
     }
   };
 
-  const [currentStep, setCurrentStep] = useState(1);
 
-  const nextStep = async() => {
+
+  const nextStep = async () => {
     console.log(currentStep, 'currentstep')
     if (currentStep === 3) {
-      createUser()
+      // createUser();
     }
-    if(currentStep === 1){
-       sendOtp()
-       sendEmailOtp()
+    if (currentStep === 5) {
+      await createInitialLib();
     }
+    if (currentStep === 1) {
+      sendOtp()
+      sendEmailOtp()
+    }
+
     setCurrentStep(currentStep + 1)
   };
   const prevStep = () => setCurrentStep(currentStep - 1);
@@ -403,7 +431,7 @@ console.log(userOTP, "userotp")
             userInfo={userInfo}
             setUserInfo={setUserInfo}
             sendOTP={sendOtp}
-            
+
           />
         );
       case 2:
@@ -416,7 +444,7 @@ console.log(userOTP, "userotp")
 
             // handleInputChange={handleInputChange}
             // handleEmailInputChange={handleEmailOtpInputChange}
-            
+
             nextStep={nextStep}
             prevStep={prevStep}
           />
@@ -491,6 +519,8 @@ console.log(userOTP, "userotp")
         <h1 className="text-5xl font-bold mb-2 mt-32">Register</h1>
 
         <div className="w-full  bg-blue-100 flex flex-1  justify-center items-center">
+
+          {loading && <Loader/>}
           {renderStep()}
         </div>
       </div>

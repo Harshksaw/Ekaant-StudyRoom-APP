@@ -34,7 +34,7 @@ const upload = multer({ storage: storage });
 Library.get("/ping", LibraryController.pingAdmin);
 Library.post(
   "/createLibrary",
-  upload.array("images", 10),
+  upload.fields([{ name: "card", maxCount: 1 },{ name: "images", maxCount: 10 }]),
   LibraryController.createRoom
 );
 Library.get("/getLibrary", LibraryController.getLibrary);

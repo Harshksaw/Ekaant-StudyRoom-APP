@@ -60,6 +60,8 @@ const createRoom = async (req, res) => {
     // console.log(body);
     const images = req.files.map((file) => file.path);
 
+    // const cardImage = req.files.card[0].path;
+
     const jsonData = JSON.parse(req.body.jsonData);
 
     const {
