@@ -48,7 +48,7 @@ export const StepFive = ({
                 if (file) {
                   setLibraryDetails({
                     ...libraryDetails,
-                    uploadAadharCard   : file,
+                    librayCardImage  : file,
                   });
                   console.log(libraryDetails.libraryCardImage);
                 }
@@ -83,15 +83,7 @@ export const StepFive = ({
               type="file"
               id="uploadSliderImages"
               accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files ? e.target.files[0] : null;
-                if (file) {
-                  setLibraryDetails({
-                    ...libraryDetails,
-                    uploadSliders: file, // tofix
-                  });
-                }
-              }}
+              onChange={handleFileChange}
               style={{ display: "none", justifyContent: "center" }} // Hide the actual input
             />
           </label>

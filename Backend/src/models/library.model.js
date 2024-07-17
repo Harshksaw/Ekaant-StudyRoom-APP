@@ -19,7 +19,7 @@ const librarySchema = new mongoose.Schema({
   },
   location: [],
   address: {},
-  price: { type: Number, required: true },
+  price: { type: Number, required: false},
   reviews: { type: String, required: false }, 
   deleted: { type: String, required: false, default: false },
   amenities: [{ type: String }], // Not required by default
@@ -37,7 +37,7 @@ const librarySchema = new mongoose.Schema({
     {
       roomNo:{
           type: Number,
-          required: true,
+          required: false,
           default: 1,
       },
       seatbooked: [
@@ -48,6 +48,7 @@ const librarySchema = new mongoose.Schema({
         ],
         seatLayout: {},
   },
+  {required : false,  },
   ],
 
   legal: { type: String, required: false },
@@ -57,9 +58,8 @@ const librarySchema = new mongoose.Schema({
       required: false,
     },
     gstCertificateFile: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'File',
-      required: false,
+      type:String,
+      required:false
     }
   },
   cinDetails: {
@@ -68,9 +68,8 @@ const librarySchema = new mongoose.Schema({
       required: false,
     },
     cinCertificateFile: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'File',
-      required: false,
+      type: String,
+      required:false
     }
   },
   tanDetails: {
@@ -79,9 +78,18 @@ const librarySchema = new mongoose.Schema({
       required: false,
     },
     tanCertificateFile: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'File',
+      type: String,
+      required:false
+    }
+  },
+  msmeDetails: {
+    msmeNumber: {
+      type: String,
       required: false,
+    },
+    msmeCertificateFile: {
+      type: String,
+      required:false
     }
   },
 });

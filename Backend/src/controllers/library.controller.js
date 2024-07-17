@@ -11,8 +11,6 @@ const { Library } = require("../models/library.model");
 const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
 
-
-
 const LibrarySchema = z.object({
   name: z.string(),
   longDescription: z.string(),
@@ -56,26 +54,16 @@ const pingAdmin = (req, res) => {
 // Assuming LibraryController.createLibrary is an async function
 const createLibrary = async (req, res) => {
   try {
+    console.log(req.files, "=================>");
 
+    const cardImage = req.files.card[0].path;
+    const images = req.files.images.map((file) => file.path);
+    const gst = req.files.gst[0].path;
+    const cin = req.files.cin[0].path;
+    const tan = req.files.tan[0].path;
+    const msme = req.files.msme[0].path;
 
-
-    console.log(req.files, '=================>');
-    const uploadedFiles = {};
-    for (const field in req.files) {
-      if (req.files[field].length === 1) { // Single file
-        uploadedFiles[field] = req.files[field][0].originalname;
-        uploadedFiles[field] = req.files[field][0].path;
-      } else { // Multiple files (array)
-        uploadedFiles[field] = req.files[field].map((file) => file.originalname);
-        uploadedFiles[field] = req.files[field].map((file) => file.path);
-      }
-    }
-
-    console.log(uploadedFiles, "uploadedFiles");
-
-
-
-
+    console.log(cardImage, images, gst, cin, tan, msme, ">>>>>uploadedFiles");
 
     const jsonData = JSON.parse(req.body.jsonData);
 
@@ -86,70 +74,38 @@ const createLibrary = async (req, res) => {
       shortDescription,
       address,
 
-
-
       amenities,
 
-
-
-
-
-
       legal,
-
 
       gstNumber,
 
-
       cinNumber,
-
 
       tanNumber,
 
-
       msmeNumber,
-
-
-
-
-
-
     } = jsonData;
 
+    // const cardPath = await cardFile.save();
 
-    if (!name || !location) {
-      return res.status(400).json({ error: "Name and location are required." });
-    }
-
-    const cardFile = new File({
-      filename: card[0].originalname,
-      path: card[0].path,
-    });
+    // console.log(
+    //   name,
+    //   longDescription,
+    //   shortDescription,
+    //   address,
 
 
-
-    const cardPath = await cardFile.save();
-
-
-    console.log(
-      name,
-      longDescription,
-      shortDescription,
-      address,
-      location,
-      price,
-      amenities,
-      timeSlot,
-      cardImage,
-      images,
-      legal,
-      gstDetails,
-      cinDetails,
-      tanDetails,
-      msmeDetails
-
-
-    )
+    //   amenities,
+    //   timeSlot,
+    //   cardImage,
+    //   images,
+    //   legal,
+    //   gstDetails,
+    //   cinDetails,
+    //   tanDetails,
+    //   msmeDetails
+    // );
     const libraryData = {
       libraryOwner,
       name,
@@ -157,41 +113,29 @@ const createLibrary = async (req, res) => {
       shortDescription,
       address,
 
-
       amenities,
 
-
-
-
-
-      cardImage: uploadedFiles.card,
-      images: uploadedFiles.images,
+      cardimage :cardImage,
+      images: images,
       legal,
 
-
       gstNumber,
-
+      gstCertificateFile: gst,
 
       cinNumber,
-
+      cinCertificateFile: cin,
 
       tanNumber,
-
+      tanCertificateFile: tan,
 
       msmeNumber,
-
-
-    }
-
-
-
-
+      msmeCertificateFile: msme,
+    };
 
     console.log("-----libraryr data-- ", libraryData, "------");
 
     const LibraryData = await Library.create(libraryData);
     await LibraryData.save();
-
 
     res.status(201).json({
       message: "Library created successfully",
@@ -203,31 +147,24 @@ const createLibrary = async (req, res) => {
   }
 };
 
-
-
-
-
-
 // createRoom
 const createRoom = async (req, res) => {
   try {
-    const {
-      libraryId,
-      roomNo,
-      seatLayout,
-    } = req.body;
+    const { libraryId, roomNo, seatLayout } = req.body;
     const roomData = {
       roomNo,
       seatLayout,
     };
-    const room = await Library.findByIdAndUpdate({ _id: libraryId }, {
-      rooms: roomData
-    });
+    const room = await Library.findByIdAndUpdate(
+      { _id: libraryId },
+      {
+        rooms: roomData,
+      }
+    );
 
     if (!room) {
       return res.status(400).json({ error: "Library not found" });
     }
-
 
     await LibraryData.save();
     console.log("-----libraryr data-- ", libraryData, "------");
@@ -240,7 +177,6 @@ const createRoom = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 // get all rooms
 

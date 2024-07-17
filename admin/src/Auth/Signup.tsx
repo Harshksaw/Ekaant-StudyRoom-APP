@@ -34,10 +34,22 @@ function Signup() {
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
 
+  const [token, setToken] = useState("");
+
   const [userOTP, setOtpInputs] = useState("");
   console.log(userOTP, "userotp");
 
-  
+    useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setToken(token);
+    }
+    console.log(currentStep, "currentstep");
+    if(token !== ""){
+      console.log(token , "token");
+      setCurrentStep(4);
+    }
+    }, []);
 
   const sendOtp = async () => {
     const { phone } = userInfo;
@@ -189,9 +201,9 @@ function Signup() {
       showTan: false,
       tan: "",
       uploadTan: null,
-      showMisme: false,
-      misme: "",
-      uploadMisme: null,
+      showmsme: false,
+      msme: "",
+      uploadmsme: null,
     },
     librayCardImage: null,
     librarySliders: [],
@@ -317,16 +329,33 @@ function Signup() {
   };
 
   const createInitialLib = async () => {
+
+    console.log(libraryDetails, "libraryDetails-----------------d------");
+
+    const amenitiesArray = Object.entries(libraryDetails.amentities)
+  .filter(([key, value]) => value)
+  .map(([key]) => key);
+
     const AdminId = localStorage.getItem("userId");
 
     const LibraryDataOBJ = {
-      libraryOwner: AdminId,
+      libraryOwner: "6697d1b78a16c973714efb31",
       name: libraryDetails.libraryName,
       shortDescription: libraryDetails.libraryApp.shortDescription,
       longDescription: libraryDetails.libraryApp.longDescription,
       rawLocation: libraryDetails.libraryApp.longDescription,
       halls: libraryDetails.halls,
-      amenities: libraryDetails?.amentities,
+      amenities: amenitiesArray,
+      address:libraryDetails.libraryAddress,
+      legal : libraryDetails.libraryLegal.registration,
+
+      gstNumber:libraryDetails.libraryLegal.gst,
+
+      cinNumber:libraryDetails.libraryLegal.cin,
+
+      tanNumber:libraryDetails.libraryLegal.tan,
+
+      msmeNumber : libraryDetails.libraryLegal.msme,
     };
 
     console.log(LibraryDataOBJ, "LibraryDataOBJ");
@@ -339,6 +368,11 @@ function Signup() {
 
 
     formData.append("card", libraryDetails.librayCardImage );
+    formData.append("gst", libraryDetails.libraryLegal.uploadGst );
+    formData.append("cin", libraryDetails.libraryLegal.uploadCin );
+    formData.append("tan", libraryDetails.libraryLegal.uploadTan );
+    formData.append("msme", libraryDetails.libraryLegal.uploadmsme );
+
     // console.log(
     //   LibraryDataOBJ,
     //   typeof LibraryDataOBJ.seatLayout,
@@ -380,7 +414,9 @@ function Signup() {
   };
 
   const nextStep = async () => {
-    console.log(currentStep, "currentstep");
+  
+
+
     if (currentStep === 3) {
       createUser();
     }
