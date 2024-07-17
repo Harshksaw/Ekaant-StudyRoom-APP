@@ -48,7 +48,7 @@ const librarySchema = new mongoose.Schema({
         ],
         seatLayout: {},
   },
-  {required : false,  },
+
   ],
 
   legal: { type: String, required: false },

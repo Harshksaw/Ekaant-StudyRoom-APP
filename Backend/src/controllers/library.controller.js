@@ -150,27 +150,38 @@ const createLibrary = async (req, res) => {
 // createRoom
 const createRoom = async (req, res) => {
   try {
-    const { libraryId, roomNo, seatLayout } = req.body;
-    const roomData = {
-      roomNo,
-      seatLayout,
-    };
-    const room = await Library.findByIdAndUpdate(
-      { _id: libraryId },
-      {
-        rooms: roomData,
-      }
-    );
+    const libraryId = req.body.libraryId; // Assuming you're getting the library ID from the request parameters
+    const library = await Library.findById(libraryId);
 
-    if (!room) {
-      return res.status(400).json({ error: "Library not found" });
+    if (!library) {
+      return res.status(404).send({ message: 'Library not found' });
     }
 
-    await LibraryData.save();
-    console.log("-----libraryr data-- ", libraryData, "------");
+    // Determine the new roomNo
+    let newRoomNo = 1;
+    if (library.rooms.length > 0) {
+      const maxRoomNo = library.rooms.reduce((max, room) => room.roomNo > max ? room.roomNo : max, library.rooms[0].roomNo);
+      newRoomNo = maxRoomNo + 1;
+    }
+
+    // Create the new room with the provided seatLayout
+    const newRoom = {
+      roomNo: newRoomNo,
+      seatLayout: req.body.seatLayout, // Assuming seatLayout is provided in the request body
+
+    };
+
+    // Add the new room to the library's rooms array
+    library.rooms.push(newRoom);
+
+    // Save the updated library document
+    await library.save();
+
+
+
     res.status(201).json({
       message: "Library created successfully",
-      Library: LibraryData,
+      Library: library,
     });
   } catch (error) {
     console.error("Error ", error);
@@ -179,6 +190,39 @@ const createRoom = async (req, res) => {
 };
 
 // get all rooms
+
+// addOrUpdateRoomDetails
+const addOrUpdateRoomDetails = async (req, res) => {
+  try {
+    const { libraryId, price, timeSlot, location } = req.body; // Extracting all necessary information from the request body
+
+    const library = await Library.findById(libraryId);
+
+    if (!library) {
+      return res.status(404).send({ message: 'Library not found' });
+    }
+
+    
+    const updateLibrary = await  Library.findByIdAndUpdate(libraryId, {
+      price: price,
+      timeSlot: timeSlot,
+      location: location,
+    }, { new: true });
+    
+
+
+    // Save the updated library document
+    await updateLibrary.save();
+
+    res.status(200).json({
+      message: "Room details updated successfully",
+      library: updateLibrary
+    });
+  } catch (error) {
+    console.error("Error ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 const getLibrary = async (req, res) => {
   try {
@@ -265,4 +309,6 @@ module.exports = {
   updateApproveStatus,
   getAdminLibraries,
   getAllBookings,
+  createRoom ,
+  addOrUpdateRoomDetails
 };
