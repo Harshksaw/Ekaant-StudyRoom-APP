@@ -87,7 +87,14 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   // console.log(data)
   return (
     <SafeAreaView style={styles.container}>
+      <View
+      style={{
+        marginTop: Platform.OS === "ios" ? 0 : 20,
+      }}
+      >
+
       <Header color="black" />
+      </View>
       <ScrollView
         stickyHeaderIndices={[2]}
         showsVerticalScrollIndicator={false}
