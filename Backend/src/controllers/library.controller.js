@@ -53,14 +53,30 @@ const pingAdmin = (req, res) => {
   });
 };
 
-// Assuming LibraryController.createRoom is an async function
-const createRoom = async (req, res) => {
+// Assuming LibraryController.createLibrary is an async function
+const createLibrary = async (req, res) => {
   try {
-    // const body = req.body;
-    // console.log(body);
-    const images = req.files.map((file) => file.path);
 
-    // const cardImage = req.files.card[0].path;
+
+
+    console.log(req.files,'=================>');
+    const uploadedFiles = {};
+    for (const field in req.files) {
+      if (req.files[field].length === 1) { // Single file
+        uploadedFiles[field] = req.files[field][0].filename;
+      } else { // Multiple files (array)
+        uploadedFiles[field] = req.files[field].map((file) => file.filename);
+      }
+    }
+
+    console.log(uploadedFiles, "uploadedFiles");  
+    // const images = req.files.map((file) => file.path);
+    
+
+    return res.json({ images });
+
+
+
 
     const jsonData = JSON.parse(req.body.jsonData);
 
@@ -69,14 +85,36 @@ const createRoom = async (req, res) => {
       name,
       longDescription,
       shortDescription,
+      address,
 
-      location,
       price,
 
       amenities,
-      seatLayout,
+
 
       timeSlot,
+
+
+
+      legal,
+
+
+         gstNumber,
+
+
+cinNumber,
+
+
+         tanNumber,
+
+
+         msmeNumber,
+
+
+      
+ 
+
+
     } = jsonData;
 
 
@@ -84,20 +122,62 @@ const createRoom = async (req, res) => {
       return res.status(400).json({ error: "Name and location are required." });
     }
 
-
-
-    const libraryData = {
-      libraryOwner,
+    console.log(
       name,
       longDescription,
       shortDescription,
+      address,
       location,
       price,
       amenities,
-      seatLayout,
       timeSlot,
+      cardImage,
       images,
-    };
+      legal,
+      gstDetails,
+      cinDetails,
+      tanDetails,
+      msmeDetails
+
+    
+    )
+//     const libraryData = {
+//       libraryOwner,
+//       name,
+//       longDescription,
+//       shortDescription,
+//       address,
+//       // location,
+//       price,
+
+//       amenities,
+
+
+//       timeSlot,
+
+
+//       cardImage : uploadedFiles.card,
+//       images : uploadedFiles.images,
+//       legal,
+
+
+// gstDetails.gstNumber : gstNumber,
+// gstDetails.gstCertificate :  uploadedFiles.gst,
+
+// cinDetails.cinNumber : cinNumber,
+// cinDetails.cinCertificate : uploadedFiles.cin,
+
+// tanDetails.tanNumber : tanNumber,
+// tanDetails.tanCertificate : uploadedFiles.tan,
+
+// msmeDetails.msmeNumber : msmeNumber,
+// msmeDetails.msmeCertificate : uploadedFiles.msme,
+            
+//     }
+
+
+
+
 
     console.log("-----libraryr data-- ", libraryData, "------");
 
@@ -114,6 +194,45 @@ const createRoom = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+
+
+
+
+// createRoom
+const createRoom = async (req, res) => {
+  try {
+    const {
+      libraryId,
+      roomNo,
+      seatLayout,
+    } = req.body;
+const roomData = {
+      roomNo,
+      seatLayout,
+    };
+    const room = await Library.findByIdAndUpdate({_id: libraryId},{
+      rooms: roomData
+    });
+
+    if (!room) {
+      return res.status(400).json({ error: "Library not found" });
+    }
+
+
+    await LibraryData.save();
+    console.log("-----libraryr data-- ", libraryData, "------");
+    res.status(201).json({
+      message: "Library created successfully",
+      Library: LibraryData,
+    });
+  } catch (error) {
+    console.error("Error ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 
 // get all rooms
 
@@ -196,7 +315,7 @@ async function getAllBookings(req, res) {
 
 module.exports = {
   pingAdmin,
-  createRoom,
+  createLibrary,
   getLibrary,
   getLibraryById,
   updateApproveStatus,

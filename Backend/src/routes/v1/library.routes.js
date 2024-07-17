@@ -34,8 +34,13 @@ const upload = multer({ storage: storage });
 Library.get("/ping", LibraryController.pingAdmin);
 Library.post(
   "/createLibrary",
-  upload.fields([{ name: "card", maxCount: 1 },{ name: "images", maxCount: 10 }]),
-  LibraryController.createRoom
+  upload.fields([{ name: "card", maxCount: 1 },{ name: "images", maxCount: 10 }
+,{ name: "gst", maxCount: 1 },{ name: "cin", maxCount: 1 },{ name: "tan", maxCount: 1 },
+{ name: "msme", maxCount: 1 }
+
+  ]),
+
+  LibraryController.createLibrary
 );
 Library.get("/getLibrary", LibraryController.getLibrary);
 Library.post("/updateStatus", LibraryController.updateApproveStatus);

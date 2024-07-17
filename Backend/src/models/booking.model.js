@@ -15,6 +15,7 @@ const bookingSchema = new mongoose.Schema({
     required: true,
     ref: "Library",
   },
+  roomId: {type: String, required: true},
   initialPrice: {
     type: Number,
     required: true,
