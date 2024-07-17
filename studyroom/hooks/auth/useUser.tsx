@@ -13,16 +13,19 @@ export default function useUser() {
   useEffect(() => {
     const subscription = async () => {
       const accessToken = await AsyncStorage.getItem("token");
-      const refreshToken = await AsyncStorage.getItem("refresh_token");
+
+      console.log(accessToken, "accessToken");
+      // const refreshToken = await AsyncStorage.getItem("refresh_token");
 
       await axios
         .get(`${BACKEND}/api/v1/auth/me`, {
           headers: {
             "access-token": accessToken,
-            "refresh-token": refreshToken,
+            // "refresh-token": refreshToken,
           },
         })
         .then((res: any) => {
+          console.log(res.data.user);
           setUser(res.data.user);
           setLoading(false);
         })
@@ -30,6 +33,8 @@ export default function useUser() {
           setError(error?.message);
           setLoading(false);
         });
+
+
     };
     subscription();
   }, [refetch]);

@@ -11,8 +11,6 @@ const { Library } = require("../models/library.model");
 const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
 
-
-
 const LibrarySchema = z.object({
   name: z.string(),
   longDescription: z.string(),
@@ -53,12 +51,19 @@ const pingAdmin = (req, res) => {
   });
 };
 
-// Assuming LibraryController.createRoom is an async function
-const createRoom = async (req, res) => {
+// Assuming LibraryController.createLibrary is an async function
+const createLibrary = async (req, res) => {
   try {
-    // const body = req.body;
-    // console.log(body);
-    const images = req.files.map((file) => file.path);
+    console.log(req.files, "=================>");
+
+    const cardImage = req.files.card[0].path;
+    const images = req.files.images.map((file) => file.path);
+    const gst = req.files.gst[0].path;
+    const cin = req.files.cin[0].path;
+    const tan = req.files.tan[0].path;
+    const msme = req.files.msme[0].path;
+
+    console.log(cardImage, images, gst, cin, tan, msme, ">>>>>uploadedFiles");
 
     const jsonData = JSON.parse(req.body.jsonData);
 
@@ -67,41 +72,70 @@ const createRoom = async (req, res) => {
       name,
       longDescription,
       shortDescription,
-
-      location,
-      price,
+      address,
 
       amenities,
-      seatLayout,
 
-      timeSlot,
+      legal,
+
+      gstNumber,
+
+      cinNumber,
+
+      tanNumber,
+
+      msmeNumber,
     } = jsonData;
 
+    // const cardPath = await cardFile.save();
 
-    if (!name || !location) {
-      return res.status(400).json({ error: "Name and location are required." });
-    }
+    // console.log(
+    //   name,
+    //   longDescription,
+    //   shortDescription,
+    //   address,
 
 
-
+    //   amenities,
+    //   timeSlot,
+    //   cardImage,
+    //   images,
+    //   legal,
+    //   gstDetails,
+    //   cinDetails,
+    //   tanDetails,
+    //   msmeDetails
+    // );
     const libraryData = {
       libraryOwner,
       name,
       longDescription,
       shortDescription,
-      location,
-      price,
+      address,
+
       amenities,
-      seatLayout,
-      timeSlot,
-      images,
+
+      cardimage :cardImage,
+      images: images,
+      legal,
+
+      gstNumber,
+      gstCertificateFile: gst,
+
+      cinNumber,
+      cinCertificateFile: cin,
+
+      tanNumber,
+      tanCertificateFile: tan,
+
+      msmeNumber,
+      msmeCertificateFile: msme,
     };
 
     console.log("-----libraryr data-- ", libraryData, "------");
 
     const LibraryData = await Library.create(libraryData);
     await LibraryData.save();
-
 
     res.status(201).json({
       message: "Library created successfully",
@@ -113,7 +147,82 @@ const createRoom = async (req, res) => {
   }
 };
 
+// createRoom
+const createRoom = async (req, res) => {
+  try {
+    const libraryId = req.body.libraryId; // Assuming you're getting the library ID from the request parameters
+    const library = await Library.findById(libraryId);
+
+    if (!library) {
+      return res.status(404).send({ message: 'Library not found' });
+    }
+
+    // Determine the new roomNo
+    let newRoomNo = 1;
+    if (library.rooms.length > 0) {
+      const maxRoomNo = library.rooms.reduce((max, room) => room.roomNo > max ? room.roomNo : max, library.rooms[0].roomNo);
+      newRoomNo = maxRoomNo + 1;
+    }
+
+    // Create the new room with the provided seatLayout
+    const newRoom = {
+      roomNo: newRoomNo,
+      seatLayout: req.body.seatLayout, // Assuming seatLayout is provided in the request body
+
+    };
+
+    // Add the new room to the library's rooms array
+    library.rooms.push(newRoom);
+
+    // Save the updated library document
+    await library.save();
+
+
+
+    res.status(201).json({
+      message: "Library created successfully",
+      Library: library,
+    });
+  } catch (error) {
+    console.error("Error ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 // get all rooms
+
+// addOrUpdateRoomDetails
+const addOrUpdateRoomDetails = async (req, res) => {
+  try {
+    const { libraryId, price, timeSlot, location } = req.body; // Extracting all necessary information from the request body
+
+    const library = await Library.findById(libraryId);
+
+    if (!library) {
+      return res.status(404).send({ message: 'Library not found' });
+    }
+
+    
+    const updateLibrary = await  Library.findByIdAndUpdate(libraryId, {
+      price: price,
+      timeSlot: timeSlot,
+      location: location,
+    }, { new: true });
+    
+
+
+    // Save the updated library document
+    await updateLibrary.save();
+
+    res.status(200).json({
+      message: "Room details updated successfully",
+      library: updateLibrary
+    });
+  } catch (error) {
+    console.error("Error ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 const getLibrary = async (req, res) => {
   try {
@@ -194,10 +303,12 @@ async function getAllBookings(req, res) {
 
 module.exports = {
   pingAdmin,
-  createRoom,
+  createLibrary,
   getLibrary,
   getLibraryById,
   updateApproveStatus,
   getAdminLibraries,
   getAllBookings,
+  createRoom ,
+  addOrUpdateRoomDetails
 };

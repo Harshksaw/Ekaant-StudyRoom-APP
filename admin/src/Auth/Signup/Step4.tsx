@@ -68,13 +68,13 @@ export const StepFour = ({
             type="text"
             id="adminAppLongDescription"
             placeholder="LongDescription"
-            value={libraryDetails.libraryApp.LongDescription}
+            value={libraryDetails.libraryApp.longDescription}
             onChange={(e) => {
               setLibraryDetails({
                 ...libraryDetails,
                 libraryApp: {
                   ...libraryDetails.libraryApp,
-                  LongDescription: e.target.value,
+                  longDescription: e.target.value,
                 },
               });
             }}
@@ -528,22 +528,22 @@ export const StepFour = ({
               </div>
             </div>
           )}
-          {/* Misme */}
+          {/* msme */}
           <div className="flex gap-5 mx-5 my-5">
-            <label>Misme</label>
+            <label>msme</label>
             <div>
               <input
                 type="radio"
-                name="misme"
+                name="msme"
                 value="true"
-                id="misme-true"
+                id="msme-true"
                 // checked={true}
                 onChange={() => {
                   setLibraryDetails({
                     ...libraryDetails,
                     libraryLegal: {
                       ...libraryDetails.libraryLegal,
-                      showMisme: true,
+                      showmsme: true,
                     },
                   });
                 }}
@@ -553,16 +553,16 @@ export const StepFour = ({
             <div>
               <input
                 type="radio"
-                name="misme"
+                name="msme"
                 value="false"
-                id="misme-false"
-                // checked={libraryDetails.libraryLegal.misme === false}
+                id="msme-false"
+                // checked={libraryDetails.libraryLegal.msme === false}
                 onChange={() => {
                   setLibraryDetails({
                     ...libraryDetails,
                     libraryLegal: {
                       ...libraryDetails.libraryLegal,
-                      showMisme: false,
+                      showmsme: false,
                     },
                   });
                 }}
@@ -571,34 +571,34 @@ export const StepFour = ({
             </div>
           </div>
           {/* conditional rendering */}
-          {libraryDetails.libraryLegal.showMisme && (
+          {libraryDetails.libraryLegal.showmsme && (
             <div>
-              {/* Misme input */}
+              {/* msme input */}
               <div className=" ">
                 <input
                   type="text"
-                  id="adminLibraryLegalMisme"
-                  placeholder="Misme Number"
-                  value={libraryDetails.libraryLegal.misme}
+                  id="adminLibraryLegalmsme"
+                  placeholder="msme Number"
+                  value={libraryDetails.libraryLegal.msme}
                   onChange={(e) => {
                     setLibraryDetails({
                       ...libraryDetails,
                       libraryLegal: {
                         ...libraryDetails.libraryLegal,
-                        misme: e.target.value,
+                        msme: e.target.value,
                       },
                     });
                   }}
                 />
               </div>
 
-              {/* Upload Misme */}
+              {/* Upload msme */}
               <div className="flex justify-start mt-1 border-black items-center">
                 <label
                   htmlFor="uploadCinCard"
                   className="w-60 h-[50px] text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
                 >
-                  Misme Certificate
+                  msme Certificate
                 </label>
                 <label
                   className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
@@ -607,8 +607,8 @@ export const StepFour = ({
                   Select file
                   <input
                     type="file"
-                    placeholder="Misme certificate"
-                    id="adminLegalUploadMisme"
+                    placeholder="msme certificate"
+                    id="adminLegalUploadmsme"
                     onChange={(e) => {
                       const file = e.target.files ? e.target.files[0] : null;
                       if (file) {
@@ -616,7 +616,7 @@ export const StepFour = ({
                           ...libraryDetails,
                           libraryLegal: {
                             ...libraryDetails.libraryLegal,
-                            uploadMisme: file,
+                            uploadmsme: file,
                           },
                         });
                       }

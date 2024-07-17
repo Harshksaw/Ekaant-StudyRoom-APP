@@ -84,11 +84,9 @@ const CheckoutScreen: React.FC = () => {
   useEffect(() => {
     const getBookingDetails = async () => {
       const userData = await AsyncStorage.getItem("userData");
-      const userid = JSON.parse(userData || "{}")
+      const userid = JSON.parse(userData)
       setUserData(userid);
-      // console.log(userid.user.email, "User ID");
-      // const userId = userid.user._id;
-      // console.log(userData, "User Data");
+
       if (bookingid !== null) {
         try {
           const res = await axios.post(
@@ -100,6 +98,7 @@ const CheckoutScreen: React.FC = () => {
           console.log(res.data.bookings[0]._id, "[[[[[[[]]]]]]");
 
           setBookingId(res.data.bookings[0]._id);
+
           return res.data.bookings[0]._id;
         } catch (error) {
           console.log(error);
@@ -108,6 +107,7 @@ const CheckoutScreen: React.FC = () => {
       } else {
 
         console.log("Booking ID is missing");
+        Toast.show("Booking ID is missing");
         setModalVisible(true);
         return;
       }
@@ -142,7 +142,7 @@ const CheckoutScreen: React.FC = () => {
         console.log(data, "Payment Success");
 
 
-        alert(`Success: ${data.razorpay_payment_id}`);
+        // alert(`Success: ${data.razorpay_payment_id}`);
         setIsPaymentComplete(true);
 
       })
@@ -164,8 +164,15 @@ const CheckoutScreen: React.FC = () => {
   };
 
 
-  const confirmPayment = async () => {  
+  const confirmPayment = async () => {
+
+    if(!bookingId){
+      Toast.show("Booking ID is missing");
+
+    }
     try {
+
+
       const res = await axios.post(
         `${BACKEND}/api/v1/booking//confirm/${bookingId}`,
         {
@@ -181,7 +188,7 @@ const CheckoutScreen: React.FC = () => {
       console.log(error);
       return false;
     }
-  
+
   }
 
 
@@ -196,34 +203,39 @@ const CheckoutScreen: React.FC = () => {
       console.log("Payment is complete");
 
       const res = await confirmPayment();
+      console.log("Payment Confirmation", res);
       if (res) {
         setinvoiceComplete(true);
         console.log("Payment Confirmed");
       } else {
         console.log("Payment Failed");
 
+      }
+
     }
-    
-  }}
-
-  
-  useEffect(() => {
- 
-   
-    // InvoiceScreen();
-if(isPaymentComplete){
-
-  router.push(
-    {
-      pathname: "/library/invoice.screen",
-      params: {
-        price:JSON.stringify(PaymentPrice),
-        paymentData:JSON.stringify(paymentData),
-        paymentId:JSON.stringify(paymentId),
-        bookingId:JSON.stringify(bookingId),
-      }}
-    );
   }
+
+
+  useEffect(() => {
+
+
+    // InvoiceScreen();
+    if (isinvoiceComplete) {
+
+
+
+      router.push(
+        {
+          pathname: "/library/invoice.screen",
+          params: {
+            price: JSON.stringify(PaymentPrice),
+            paymentData: JSON.stringify(paymentData),
+            paymentId: JSON.stringify(paymentId),
+            bookingId: JSON.stringify(bookingId),
+          }
+        }
+      );
+    }
 
 
 

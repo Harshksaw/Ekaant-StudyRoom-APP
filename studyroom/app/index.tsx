@@ -1,6 +1,8 @@
 import { Redirect } from "expo-router";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Loader from "@/components/loader/loader";
+import useUser from "@/hooks/auth/useUser";
 
 export default function TabsIndex() {
 
@@ -24,28 +26,32 @@ export default function TabsIndex() {
   // const { loading, user } = useUser();
   // console.log(user)
 
-  const [user, setUser] = useState(false);
+  // const [user, setUser] = useState(false);
 
-  const [token, setToken] = useState("");
-  useEffect(() => {
-    const checkToken = async () => {
-      const response = await AsyncStorage.getItem("token");
-      const tokenResponse = response ? JSON.parse(response) : null;
-      setToken(tokenResponse);
-      console.log("token", token);
-    };
+  // const [token, setToken] = useState("");
+  // useEffect(() => {
+  //   const checkToken = async () => {
+  //     const response = await AsyncStorage.getItem("token");
+  //     const tokenResponse = response ? JSON.parse(response) : null;
+  //     setToken(tokenResponse);
+  //     console.log("token", token);
+  //   };
 
-    checkToken();
-  }, []); // 
+  //   checkToken();
+  // }, []); // 
 
   // (async () => {
   //   checkToken();
   //   console.log(user, "user")
   // })();
-
+  const { loading, user } = useUser();
   return (
     <>
+      {!loading ? (
+        <Loader />
+      ) : (
       <Redirect href={user ? "/(tabs)" : "/(routes)/onboarding"} />
+      )}
       {/* <Redirect href={!user ? "/(tabs)" : "/(routes)/library/library.booking"} /> */}
     </>
   );

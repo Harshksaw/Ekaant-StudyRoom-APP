@@ -42,20 +42,20 @@ const validateAccessToken = (req, res, next) => {
 };
 
 // Middleware to optionally refresh tokens
-const handleRefreshToken = async (req, res, next) => {
-  console.log("handleRefreshToken");
-  const refreshToken = req.headers["refresh-token"];
-  if (!refreshToken) return next(); // Proceed without refreshing if no refresh token provided
+// const handleRefreshToken = async (req, res, next) => {
+//   console.log("handleRefreshToken");
+//   const refreshToken = req.headers["refresh-token"];
+//   if (!refreshToken) return next(); // Proceed without refreshing if no refresh token provided
 
-  try {
-    const newTokens = await refreshToken(refreshToken);
-    res.setHeader("access-token", newTokens.accessToken); // Send new access token back in response headers
-    req.user = jwt.decode(newTokens.accessToken); // Update req.user with new token info
-    next();
-  } catch (error) {
-    return res.status(403).send({ message: "Invalid refresh token" });
-  }
-};
+//   try {
+//     const newTokens = await refreshToken(refreshToken);
+//     res.setHeader("access-token", newTokens.accessToken); // Send new access token back in response headers
+//     req.user = jwt.decode(newTokens.accessToken); // Update req.user with new token info
+//     next();
+//   } catch (error) {
+//     return res.status(403).send({ message: "Invalid refresh token" });
+//   }
+// };
 
 AuthRouter.get("/ping", AuthController.pingAuthController);
 AuthRouter.post("/signup", upload.single("profile"), AuthController.signUp);
@@ -72,7 +72,7 @@ AuthRouter.post("/forgotPassword", AuthController.forgetPassword);
 AuthRouter.get(
   "/me",
   validateAccessToken,
-  handleRefreshToken,
+
   AuthController.getUser
 );
 AuthRouter.post(
