@@ -59,21 +59,20 @@ const createLibrary = async (req, res) => {
 
 
 
-    console.log(req.files,'=================>');
+    console.log(req.files, '=================>');
     const uploadedFiles = {};
     for (const field in req.files) {
       if (req.files[field].length === 1) { // Single file
-        uploadedFiles[field] = req.files[field][0].filename;
+        uploadedFiles[field] = req.files[field][0].originalname;
+        uploadedFiles[field] = req.files[field][0].path;
       } else { // Multiple files (array)
-        uploadedFiles[field] = req.files[field].map((file) => file.filename);
+        uploadedFiles[field] = req.files[field].map((file) => file.originalname);
+        uploadedFiles[field] = req.files[field].map((file) => file.path);
       }
     }
 
-    console.log(uploadedFiles, "uploadedFiles");  
-    // const images = req.files.map((file) => file.path);
-    
+    console.log(uploadedFiles, "uploadedFiles");
 
-    return res.json({ images });
 
 
 
@@ -87,32 +86,32 @@ const createLibrary = async (req, res) => {
       shortDescription,
       address,
 
-      price,
+
 
       amenities,
 
 
-      timeSlot,
+
 
 
 
       legal,
 
 
-         gstNumber,
+      gstNumber,
 
 
-cinNumber,
+      cinNumber,
 
 
-         tanNumber,
+      tanNumber,
 
 
-         msmeNumber,
+      msmeNumber,
 
 
-      
- 
+
+
 
 
     } = jsonData;
@@ -121,6 +120,16 @@ cinNumber,
     if (!name || !location) {
       return res.status(400).json({ error: "Name and location are required." });
     }
+
+    const cardFile = new File({
+      filename: card[0].originalname,
+      path: card[0].path,
+    });
+
+
+
+    const cardPath = await cardFile.save();
+
 
     console.log(
       name,
@@ -139,41 +148,40 @@ cinNumber,
       tanDetails,
       msmeDetails
 
-    
+
     )
-//     const libraryData = {
-//       libraryOwner,
-//       name,
-//       longDescription,
-//       shortDescription,
-//       address,
-//       // location,
-//       price,
-
-//       amenities,
+    const libraryData = {
+      libraryOwner,
+      name,
+      longDescription,
+      shortDescription,
+      address,
 
 
-//       timeSlot,
+      amenities,
 
 
-//       cardImage : uploadedFiles.card,
-//       images : uploadedFiles.images,
-//       legal,
 
 
-// gstDetails.gstNumber : gstNumber,
-// gstDetails.gstCertificate :  uploadedFiles.gst,
 
-// cinDetails.cinNumber : cinNumber,
-// cinDetails.cinCertificate : uploadedFiles.cin,
+      cardImage: uploadedFiles.card,
+      images: uploadedFiles.images,
+      legal,
 
-// tanDetails.tanNumber : tanNumber,
-// tanDetails.tanCertificate : uploadedFiles.tan,
 
-// msmeDetails.msmeNumber : msmeNumber,
-// msmeDetails.msmeCertificate : uploadedFiles.msme,
-            
-//     }
+      gstNumber,
+
+
+      cinNumber,
+
+
+      tanNumber,
+
+
+      msmeNumber,
+
+
+    }
 
 
 
@@ -208,11 +216,11 @@ const createRoom = async (req, res) => {
       roomNo,
       seatLayout,
     } = req.body;
-const roomData = {
+    const roomData = {
       roomNo,
       seatLayout,
     };
-    const room = await Library.findByIdAndUpdate({_id: libraryId},{
+    const room = await Library.findByIdAndUpdate({ _id: libraryId }, {
       rooms: roomData
     });
 

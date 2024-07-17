@@ -16,6 +16,7 @@ import axios from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
 import Loader from "@/components/Loader";
+
 // Add similar components for StepThree, StepFour, and StepFive
 
 const FinalStep = ({ prevStep }) => (
@@ -229,7 +230,8 @@ function Signup() {
       verifyEmailOTP();
     }
 
-    console.log(userDetails,"---");
+    // console.log(userDetails,"---");
+    console.log(libraryDetails,"---");
   }, [userOTP, emailOtpInputs, libraryDetails]);
 
   const createUser = async () => {
@@ -269,6 +271,10 @@ function Signup() {
         setLoading(false);
 
         console.log(response.data, "response.data");
+
+        localStorage.setItem("token", response.data.token);
+        // localStorage.setItem("userId", response.data.data.user._id);
+        localStorage.setItem("role", "ADMIN");
 
         toast({
           title: "Created user",
@@ -327,18 +333,23 @@ function Signup() {
 
     const formData = new FormData();
 
-    for (let i = 0; i < uploadedFiles.length; i++) {
-      formData.append("images", uploadedFiles[i]);
+    for (let i = 0; i < libraryDetails.librarySliders.length; i++) {
+      formData.append("images", libraryDetails.librarySliders[i]);
     }
-    console.log(
-      LibraryDataOBJ,
-      typeof LibraryDataOBJ.seatLayout,
-      LibraryDataOBJ.seatLayout
-    );
+
+
+    formData.append("card", libraryDetails.librayCardImage );
+    // console.log(
+    //   LibraryDataOBJ,
+    //   typeof LibraryDataOBJ.seatLayout,
+    //   LibraryDataOBJ.seatLayout
+    // );
+
     formData.append("jsonData", JSON.stringify(LibraryDataOBJ));
 
-    console.log(JSON.stringify(formData));
+    console.log(JSON.stringify(formData), "349");
     console.log(formData);
+
     try {
       setLoading(true);
       const response = await axios.post(
@@ -356,6 +367,8 @@ function Signup() {
             <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
           ),
         });
+
+        
         setCurrentStep(0);
 
         // setImages([]);

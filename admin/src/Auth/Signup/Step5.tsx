@@ -1,3 +1,5 @@
+import { set } from "react-hook-form";
+
 export const StepFive = ({
   nextStep,
   prevStep,
@@ -41,7 +43,16 @@ export const StepFive = ({
               id="uploadLibraryCard" // ID to be renamed - tofix
               accept="image/*"
               multiple
-              onChange={handleFileChange}
+              onChange={(e) => {
+                const file = e.target.files ? e.target.files[0] : null;
+                if (file) {
+                  setLibraryDetails({
+                    ...libraryDetails,
+                    uploadAadharCard   : file,
+                  });
+                  console.log(libraryDetails.libraryCardImage);
+                }
+              }}
               style={{ display: "none", justifyContent: "center" }} // Hide the actual input
             />
           </label>

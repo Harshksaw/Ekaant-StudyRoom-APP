@@ -53,9 +53,9 @@ async function RegisterAdmin(req, res, next) {
     //     message: "No aadhar file uploaded",
     //   });
     // }
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
+    // if (!req.file) {
+    //   return res.status(400).json({ error: "No file uploaded" });
+    // }
 
   
     const { pancard, aadhar } = req.files;
