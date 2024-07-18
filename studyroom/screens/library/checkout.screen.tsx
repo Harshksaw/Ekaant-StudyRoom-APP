@@ -38,6 +38,8 @@ const CheckoutScreen: React.FC = () => {
 
   const params = useRoute();
   const BookedData = JSON.parse(params.params.item);
+  const BookAgain = JSON.parse(params.params.bookitem);
+  // console.log(BookAgain, "_________")
   // console.log(BookedData, "_________")
 
 

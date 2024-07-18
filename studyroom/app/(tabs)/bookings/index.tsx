@@ -41,6 +41,7 @@ export default function Bookings() {
   const [refreshing, setRefreshing] = useState(false)
 
   const getBookings = async () => {
+
     const userId = await getUserId(); // Wait for getUserId to complete
 
     if (userId) {
@@ -64,6 +65,7 @@ export default function Bookings() {
       // setData(fetchedData.data || []);
     };
     getBookingData();
+    console.log("Data+++", data);
   }, []);
 
 
@@ -177,9 +179,10 @@ export default function Bookings() {
                 }}
                 key={item._id}
                 onPress={() =>
+                  // console.log("Item", item)
                   router.push({
-                    pathname: "/(routes)/card-details",
-                    params: { item: JSON.stringify(item) },
+                    pathname: "/library/checkout.screen",
+                    params: { bookitem: JSON.stringify(item) },
                   })
                 }
                 // onPress={()=> {

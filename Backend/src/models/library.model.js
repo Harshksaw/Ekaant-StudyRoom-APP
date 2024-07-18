@@ -15,7 +15,6 @@ const librarySchema = new mongoose.Schema({
   images: {
     type: [{ type: String }],
     required: false,
-
   },
   location: [],
   address: {},
@@ -23,7 +22,11 @@ const librarySchema = new mongoose.Schema({
   reviews: { type: String, required: false }, 
   deleted: { type: String, required: false, default: false },
   amenities: [{ type: String }], // Not required by default
-  
+  commingSoon:{
+    type: Boolean,
+    default: false,
+    required: false,
+  },
   approved: {
     type: Boolean,
     default: false,
