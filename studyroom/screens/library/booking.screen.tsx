@@ -69,6 +69,7 @@ const BookingScreen: React.FC = () => {
 
   const handleSelectSlot = (selectedSlot) => {
     // console.log(selectedSlots, "Selected Slot");
+    console.log(selectedSlot, "Selected Slot");
     if (selectedSlots.find((slot) => slot._id === selectedSlot._id)) {
       // If the slot is already selected, remove it from the array
       setSelectedSlots(
@@ -78,6 +79,7 @@ const BookingScreen: React.FC = () => {
       // Otherwise, add the slot to the array
       setSelectedSlots([...selectedSlots, selectedSlot]);
     }
+
   };
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
@@ -111,9 +113,9 @@ const BookingScreen: React.FC = () => {
     date: selectedDate,
     months: selectedMonth,
     room: currentRoomNo,
+    slot: selectedSlots, 
 
 
-    slot: selectedSlots, ///stll null ,need to be fixed
   };
 
   const handleData = (data: DataItem[]) => {
@@ -133,7 +135,7 @@ const BookingScreen: React.FC = () => {
 
   const bookingdata = useSelector((state: any) => state.booking);
 
-  const location = bookingdata?.details?.location;
+  // const location = bookingdata?.details?.location;
 
   const price = bookingdata.details.price || 6000;
   const RegistrationFees = 1000;
@@ -151,6 +153,7 @@ const BookingScreen: React.FC = () => {
   const RoomNo = BookedData.room || 1;
 
   const PreBook = async () => {
+    console.log(BookedData.slot,BookingSlot, "--------111")
     const userData = await AsyncStorage.getItem("userData");
     const userid = JSON.parse(userData || "{}");
     const userId = userid.user._id;
@@ -212,6 +215,12 @@ const BookingScreen: React.FC = () => {
   
           duration: 3000,
         });
+
+        setSelectedSeat(null);
+        setSelectedDate(null);
+        setselectedMonth(1);
+        setCurrentRoomNo(1);
+        setSelectedSlots([]);
   
         console.log(response.data, "------------------->");
         return response.data.Booking._id;

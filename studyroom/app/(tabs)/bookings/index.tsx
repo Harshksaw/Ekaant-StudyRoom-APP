@@ -50,7 +50,8 @@ export default function Bookings() {
         `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
       );
       console.log("userID---->", res.data.bookings);
-      setData(res?.data?.bookings);
+
+      setData(res.data.bookings);
     } else {
       console.log("UserId is null");
     }
@@ -179,11 +180,11 @@ export default function Bookings() {
                 }}
                 key={item._id}
                 onPress={() =>
-                  console.log("Item", item)
-                  // router.push({
-                  //   pathname: "/(routes)/library/checkout.screen",
-                  //   params: { bookitem: JSON.stringify(item) },
-                  // })
+                  // console.log("Item", item)
+                  router.push({
+                    pathname: "/(routes)/library/checkout.screen",
+                    params: { bookitem: JSON.stringify(item) },
+                  })
                 }
                 // onPress={()=> {
                 //   setNotListed(true)

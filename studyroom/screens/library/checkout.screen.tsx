@@ -61,21 +61,21 @@ console.log(BookedData, "_________-----")
   // console.log(BookedData, "_________")
   
   // console.log("Booked Data:", data );
-  const BookingDate = BookedData?.date || BookedData.bookingDate.slice(0, 10);
-  const BookingMonths = BookedData?.months || BookedData?.bookingPeriod;
-  const BookingSeat = BookedData?.seat || BookedData?.bookedSeat;
-  const BookingSlot = BookedData?.slot || BookedData?.timeSlot;
-  const RoomNo = BookedData?.room || BookedData?.roomNo;
+//   const BookingDate = BookedData?.date || BookedData.bookingDate.slice(0, 10);
+//   const BookingMonths = BookedData?.months || BookedData?.bookingPeriod;
+//   const BookingSeat = BookedData?.seat || BookedData?.bookedSeat;
+//   const BookingSlot = BookedData?.slot || BookedData?.timeSlot;
+//   const RoomNo = BookedData?.room || BookedData?.roomNo;
 
-console.log(  
-  BookingDate,"---", BookingMonths,
+// console.log(  
+//   BookingDate,"---", BookingMonths,
   
-  BookingSeat, 
-  "----",
-  BookingSlot, 
-  "----",
-  RoomNo, "Booking Date"
-)
+//   BookingSeat, 
+//   "----",
+//   BookingSlot, 
+//   "----",
+//   RoomNo, "Booking Date"
+// )
 
   return (
     <>
