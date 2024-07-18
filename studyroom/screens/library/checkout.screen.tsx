@@ -24,6 +24,7 @@ import { BACKEND } from "@/utils/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "react-native-toast-notifications";
 import RazorpayCheckout from "react-native-razorpay";
+import { sub } from "react-native-reanimated";
 
 const CheckoutScreen: React.FC = () => {
   const route = useRoute();
@@ -31,116 +32,86 @@ const CheckoutScreen: React.FC = () => {
   const userDetails = useSelector((state: any) => state.user);
   const [bookingId, setBookingId] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [libraryData, setLibraryData] = useState(null);
   // console.log(userDetails, "-----------------")
   //getting data  from booking screen
 
   const params = useRoute();
   let BookedData;
-if (params?.params?.item) {
-  BookedData = JSON.parse(params.params.item);
-} else if (params?.params?.bookitem) {
-  BookedData = JSON.parse(params.params.bookitem);
-}
+  if (params?.params?.item) {
+    BookedData = JSON.parse(params.params.item);
+  } else if (params?.params?.bookitem) {
+    BookedData = JSON.parse(params.params.bookitem);
+  }
 
-console.log(BookedData, "_________-----")
-
-
-
-  // const BookedData = JSON.parse(params?.params?.item);
-  // const BookAgain = JSON.parse(params.params?.bookitem);
-  // console.log(BookedData, "_________-----")
-  // const BookingDate = BookedData?.date || BookedData?.bookingDate.slice(0, 10);
-  // console.log(BookingDate, "Booking Date");
-  // return(
-  // <View>
-  //   <Text>
-  //   ddd
-  //   </Text>
-  // </View>
-  // )
-  // console.log(BookedData, "_________")
   
-  // console.log("Booked Data:", data );
-//   const BookingDate = BookedData?.date || BookedData.bookingDate.slice(0, 10);
-//   const BookingMonths = BookedData?.months || BookedData?.bookingPeriod;
-//   const BookingSeat = BookedData?.seat || BookedData?.bookedSeat;
-//   const BookingSlot = BookedData?.slot || BookedData?.timeSlot;
-//   const RoomNo = BookedData?.room || BookedData?.roomNo;
-
-// console.log(  
-//   BookingDate,"---", BookingMonths,
-  
-//   BookingSeat, 
-//   "----",
-//   BookingSlot, 
-//   "----",
-//   RoomNo, "Booking Date"
-// )
-
-  return (
-    <>
-  
-    </>)
-
-  const data = useSelector((state: any) => state.booking);
+  const BookingDate = BookedData?.date || BookedData.bookingDate.slice(0, 10);
+  const BookingMonths = BookedData?.months || BookedData?.bookingPeriod;
+  const BookingSeat = BookedData?.seat || BookedData?.bookedSeat;
+  const BookingSlot = BookedData?.slot || BookedData?.timeSlot;
+  const RoomNo = BookedData?.room || BookedData?.roomNo;
+  const BookedDate = BookedData?.date || BookedData?.bookingDate.slice(0, 10);
   const [modalVisible, setModalVisible] = useState(false);
-  // console.log("ddd------->>>>>>>>>>>>>>>>>>>", data);
-  const location = data?.details?.location;
-  // console.log(data.details.images[0]);
-  const price = data.details.price || 6000;
-  const RegistrationFees = 1000;
-  // Assuming price and RegistrationFees are numbers and already calculated correctly
-  const subtotal = Number((price + RegistrationFees).toFixed(2));
-
-  const endDate = getDateAfterMonths(BookedData?.date, BookedData?.months);
-  const totalAmount = subtotal;
 
 
-  //payment
-  const [paymentStatus, setPaymentStatus] = useState(false); // Payment status
+  const [paymentStatus, setPaymentStatus] = useState(false); 
   const [paymentData, setPaymentData] = useState(null); // Payment data
   const [paymentId, setPaymentId] = useState(null); // Payment data
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
 
-  // const PaymentData = route.params.item ? JSON.parse(route.params.item) : {};
 
-  const bookingid = route.params?.id ? JSON.parse(route.params.id) : {};
+  useEffect(() => {
+    // console.log(BookedData.libraryId._id, "71 Data");
+    const getLibraryData = async () => {
+      try {
+
+        const userDataId =  await AsyncStorage.getItem("userData");
+        const userid = JSON.parse(userDataId);
+        setUserData(userid);
+
+        const res = await axios.post(
+          `${BACKEND}/api/v1/library/getLibraryById`,
+          {
+            id: BookedData?.libraryId._id,
+          }
+        );
+        setLibraryData(res.data);
+
+
+        return res.data.library;
+      } catch (error) {
+        console.log(error);
+
+        Toast.show("Error in fetching library details, Try again", {
+          dangerColor: "red",
+          duration: 2000,
+          icon: <Ionicons name="alert-circle" size={24} color="red" />,
+        });
+
+        // router.back();
+      }
+    };
+    getLibraryData();
+
+  }, []);
+
+  const price =4444;
+  const RegistrationFees = 1000;
+  const subtotal = Number((price + RegistrationFees).toFixed(2));
+  const endDate = getDateAfterMonths(BookedDate, BookingMonths);
+  const totalAmount = subtotal;
+
+  // console.log(libraryData, "Library Data79");
+
+
+  const bookingid = BookedData._id 
+  // setBookingId(bookingid);
   console.log("Booking ID-->", bookingid, "Booking ID", BookedData);
   let PaymentPrice = totalAmount;
 
-  useEffect(() => {
-    const getBookingDetails = async () => {
-      const userData = await AsyncStorage.getItem("userData");
-      const userid = JSON.parse(userData);
-      setUserData(userid);
 
-      if (bookingid !== null) {
-        try {
-          const res = await axios.post(
-            `${BACKEND}/api/v1/booking/getBookingById`,
-            {
-              id: bookingid,
-            }
-          );
-          console.log(res.data.bookings[0]._id, "[[[[[[[]]]]]]");
 
-          setBookingId(res.data.bookings[0]._id);
-
-          return res.data.bookings[0]._id;
-        } catch (error) {
-          console.log(error);
-          Toast.show("Error in fetching booking details");
-        }
-      } else {
-        console.log("Booking ID is missing");
-        Toast.show("Booking ID is missing");
-        setModalVisible(true);
-        return;
-      }
-    };
-    getBookingDetails();
-  }, []);
 
   const handlePayment = async () => {
     var options = {
@@ -154,9 +125,9 @@ console.log(BookedData, "_________-----")
       name: "Ekaant",
       order_id: "",
       prefill: {
-        email: `${userData?.user.email}`,
-        contact: `${userData?.user.phoneNumber}`,
-        name: `${userData?.user.username}`,
+        // email: `${userData?.user.email}`,
+        // contact: `${userData?.user.phoneNumber}`,
+        // name: `${userData?.user.username}`,
       },
     };
     RazorpayCheckout.open(options)
@@ -186,6 +157,10 @@ console.log(BookedData, "_________-----")
         );
       });
   };
+
+ console.log(userData, "User Data", BookedData.libraryId);
+
+
 
   const confirmPayment = async () => {
     if (!bookingId) {
@@ -229,20 +204,20 @@ console.log(BookedData, "_________-----")
     }
   };
 
-  useEffect(() => {
-    // InvoiceScreen();
-    if (isinvoiceComplete) {
-      router.push({
-        pathname: "/library/invoice.screen",
-        params: {
-          price: JSON.stringify(PaymentPrice),
-          paymentData: JSON.stringify(paymentData),
-          paymentId: JSON.stringify(paymentId),
-          bookingId: JSON.stringify(bookingId),
-        },
-      });
-    }
-  }, [isPaymentComplete]); // This effect runs whenever `isPaymentComplete` changes
+  // useEffect(() => {
+  //   // InvoiceScreen();
+  //   if (isinvoiceComplete) {
+  //     router.push({
+  //       pathname: "/library/invoice.screen",
+  //       params: {
+  //         price: JSON.stringify(PaymentPrice),
+  //         paymentData: JSON.stringify(paymentData),
+  //         paymentId: JSON.stringify(paymentId),
+  //         bookingId: JSON.stringify(bookingId),
+  //       },
+  //     });
+  //   }
+  // }, [isPaymentComplete]);
 
   return (
     <SafeAreaView>
@@ -267,14 +242,14 @@ console.log(BookedData, "_________-----")
       >
         <View style={{}}>
           <Image
-            source={{ uri: data.details.images[0] }}
+            source={{ uri: BookedData.libraryId.images[0] }}
             style={{
               width: 140,
               height: 200,
               borderRadius: 10,
             }}
           />
-          {/* <Image source={{uri : data.details.images[0]}} /> */}
+
         </View>
         <View
           style={{
@@ -316,7 +291,7 @@ console.log(BookedData, "_________-----")
               fontWeight: "bold",
             }}
           >
-            {data?.details?.name}
+            {BookedData.libraryId.name}
           </Text>
 
           <View
@@ -380,16 +355,16 @@ console.log(BookedData, "_________-----")
                 flexDirection: "column",
                 alignItems: "center",
                 fontSize: 15,
-                fontWeight: "semi-bold",
+                fontWeight: "500",
               }}
             >
               {" "}
-              {BookedData.date} -
+              {BookedDate} -
             </Text>
             <Text
               style={{
                 fontSize: 15,
-                fontWeight: "semi-bold",
+                fontWeight: "500",
               }}
             >
               {" "}
@@ -406,7 +381,7 @@ console.log(BookedData, "_________-----")
         >
           <SeatsCheckout />
 
-          <Text>{data.details.seats} Seats</Text>
+          <Text>{BookedData.bookedSeat.label} Seat</Text>
         </View>
       </View>
 
@@ -480,14 +455,14 @@ console.log(BookedData, "_________-----")
               }}
             >
               <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                {location.split(" ").slice(0, 2).join(" ")}{" "}
+                {/* {location.split(" ").slice(0, 2).join(" ")}{" "} */}
               </Text>
             </View>
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
               <Text style={{ fontSize: 15, fontWeight: "300" }}>
-                {location.split(" ").slice(3, 5).join(" ")}{" "}
+                {/* {location.split(" ").slice(3, 5).join(" ")}{" "} */}
               </Text>
             </View>
           </View>
@@ -509,9 +484,26 @@ console.log(BookedData, "_________-----")
                 gap: 10,
               }}
             >
-              <Text style={{ fontSize: 20, fontWeight: "400" }}>
-                Slot Time - {data.details.slot} - 2:00
-              </Text>
+              <View style={{ fontSize: 20, fontWeight: "400" ,
+                flexDirection: "row",
+                gap: 10,
+              }}>
+
+              {BookedData.libraryId.timeSlot.map((slot) => (
+                <View style={{
+                  flexDirection: "row",
+                  // justifyContent: "space-between",
+                  gap: 2,
+                }}>
+
+
+                <Text>{slot.from}{slot.from < 12 ? "AM" : "PM"}</Text>
+                <Text> - </Text>
+                <Text>{slot.to}{slot.to < 12 ? "AM" : "PM"} ,</Text>
+                </View>
+              ))}
+
+              </View>
             </View>
           </View>
         </View>

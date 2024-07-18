@@ -35,11 +35,6 @@ import { Toast } from "react-native-toast-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
-// const timeSlots = [
-//   { from: "09:00", to: "10:00" },
-//   { from: "10:00", to: "11:00" },
-//   // Add more time slots as needed
-// ];
 
 const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
@@ -55,7 +50,6 @@ const BookingScreen: React.FC = () => {
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [bookingloader, setBookingLoader] = useState(false);
   const [bookingId, setBookingId] = useState(null);
-
 
   const [currentRoomNo, setCurrentRoomNo] = useState(1);
 
@@ -79,8 +73,9 @@ const BookingScreen: React.FC = () => {
       // Otherwise, add the slot to the array
       setSelectedSlots([...selectedSlots, selectedSlot]);
     }
-
   };
+
+
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
@@ -91,8 +86,7 @@ const BookingScreen: React.FC = () => {
     to: string;
   }
 
-  const updateRoomDetails = async() => {
-
+  const updateRoomDetails = async () => {
     console.log(data, "Data944");
     const details = {
       id: data._id,
@@ -104,18 +98,15 @@ const BookingScreen: React.FC = () => {
     };
     dispatch(setBookingDetails(details));
   };
+
   const [forFriend, setForFriend] = useState(false);
-
-
 
   const BookedData = {
     seat: selectedSeat,
     date: selectedDate,
     months: selectedMonth,
     room: currentRoomNo,
-    slot: selectedSlots, 
-
-
+    slot: selectedSlots,
   };
 
   const handleData = (data: DataItem[]) => {
@@ -132,7 +123,6 @@ const BookingScreen: React.FC = () => {
 
   const userDetails = useSelector((state: any) => state.user);
 
-
   const bookingdata = useSelector((state: any) => state.booking);
 
   // const location = bookingdata?.details?.location;
@@ -141,7 +131,6 @@ const BookingScreen: React.FC = () => {
   const RegistrationFees = 1000;
 
   const subtotal = Number((price + RegistrationFees).toFixed(2));
-
 
   const totalAmount = subtotal;
 
@@ -153,7 +142,7 @@ const BookingScreen: React.FC = () => {
   const RoomNo = BookedData.room || 1;
 
   const PreBook = async () => {
-    console.log(BookedData.slot,BookingSlot, "--------111")
+    console.log(BookedData.slot, BookingSlot, "--------PRebook156");
     const userData = await AsyncStorage.getItem("userData");
     const userid = JSON.parse(userData || "{}");
     const userId = userid.user._id;
@@ -180,10 +169,8 @@ const BookingScreen: React.FC = () => {
       BookingDate &&
       BookingMonths
     ) {
-  
       try {
         // console.log(userDetails.friendDetails, "-----977");
-
 
         const response = await axios.post(
           `${BACKEND}/api/v1/booking/createBooking`,
@@ -204,15 +191,15 @@ const BookingScreen: React.FC = () => {
         console.log(response.data, "+++++------------------->");
         const bookingId = response.data.Booking._id;
         setBookingId(bookingId);
-  
+
         // console.log("Booking ID", bookingId);
-  
+
         Toast.show("Booking Successful !", {
           type: "success",
           placement: "top",
           animationDuration: 1000,
           icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
-  
+
           duration: 3000,
         });
 
@@ -221,33 +208,26 @@ const BookingScreen: React.FC = () => {
         setselectedMonth(1);
         setCurrentRoomNo(1);
         setSelectedSlots([]);
-  
+
         console.log(response.data, "------------------->");
         return response.data.Booking._id;
       } catch (error) {
         setBookingLoader(false);
         setIsModalVisible(false);
-  
+
         console.log("Error:", error);
         Toast.show("Error in Booking !", {
           type: "error",
           placement: "top",
           animationDuration: 1000,
           icon: <Ionicons name="alert-circle" size={24} color="red" />,
-  
+
           duration: 3000,
         });
         return null;
       }
-
-
-  
-
     }
-
-  
   };
-
 
   const confirmBooking = async () => {
     setBookingLoader(true);
@@ -266,7 +246,6 @@ const BookingScreen: React.FC = () => {
     );
     const res = await PreBook();
 
-
     if (res) {
       // console.log("Booking Confirmed", BookedData);
       setBookingLoader(false);
@@ -275,19 +254,16 @@ const BookingScreen: React.FC = () => {
 
       router.push({
         pathname: "/library/checkout.screen",
-        params: { item: JSON.stringify(BookedData), id: JSON.stringify(bookingId) },
+        params: {
+          item: JSON.stringify(BookedData),
+          id: JSON.stringify(bookingId),
+        },
       });
-
-
-
     } else {
       setBookingLoader(false);
 
       setIsModalVisible(false);
     }
-
-
-
   };
 
   return (
@@ -338,20 +314,18 @@ const BookingScreen: React.FC = () => {
           }}
           mode="dropdown"
         >
-          {data?.rooms.map(  (item, index  )=> (
+          {data?.rooms.map((item, index) => (
             <Picker.Item
-            key={index}
+              key={index}
               style={{
                 fontSize: 20,
                 borderRadius: 50,
               }}
               key={item.roomNo}
-              label={` Room ${item.roomNo }`}
-              value={`${item.roomNo }`}
+              label={` Room ${item.roomNo}`}
+              value={`${item.roomNo}`}
             />
-          ))
-          }
-
+          ))}
         </Picker>
         <ToggleBookingButton />
       </View>
@@ -368,8 +342,11 @@ const BookingScreen: React.FC = () => {
       >
         {/* //seating arrangement */}
 
-        <Seats onSeatSelect={handleSeatSelect} SeatLayout={data?.rooms} currentRoom={currentRoomNo} />
-        
+        <Seats
+          onSeatSelect={handleSeatSelect}
+          SeatLayout={data?.rooms}
+          currentRoom={currentRoomNo}
+        />
       </ScrollView>
 
       <TouchableOpacity
@@ -435,8 +412,6 @@ const BookingScreen: React.FC = () => {
                       }}
                     >
                       <Picker
-
-
                         selectedValue={selectedMonth}
                         onValueChange={(itemValue, itemIndex) => {
                           // console.log(itemValue, itemIndex);
@@ -490,7 +465,6 @@ const BookingScreen: React.FC = () => {
                   >
                     {available.map((slot, index) => {
                       if (slot?.availability) {
-
                         return (
                           <View
                             key={slot._id}
