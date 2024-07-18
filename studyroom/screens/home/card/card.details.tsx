@@ -74,6 +74,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
+  console.log(data,"-----------------")
 
   const librarybooking = () => {
     router.push({

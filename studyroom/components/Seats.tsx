@@ -12,7 +12,7 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect }) => {
   );
 };
 
-const SeatsComponent = ({ layout, bookedSeats, onSeatSelect }) => {
+const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
   const [selectedSeat, setSelectedSeat] = useState(null);
 
   const handleSelect = (seatData) => {
@@ -26,8 +26,9 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect }) => {
     }
   };
 
+
   const createSeatGrid = () => {
-    return layout.map((seat, index) => {
+    return layout[currentRoom -1].seatLayout.map((seat, index) => {
       const isSelected = selectedSeat && seat.id === selectedSeat.id;
       const isBooked = bookedSeats.some(bookedSeat => bookedSeat.id === seat.id);
 
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
   }),
 });
 
-export default function Seats({ onSeatSelect, SeatLayout }) {
+export default function Seats({ onSeatSelect, SeatLayout , currentRoom}) {
   // Handle seat selection in this parent component
   const handleSeatSelect = (selectedSeat) => {
     onSeatSelect(selectedSeat); // Now expects a single seat object or null
@@ -82,6 +83,7 @@ export default function Seats({ onSeatSelect, SeatLayout }) {
       layout={SeatLayout}
       bookedSeats={[]}
       onSeatSelect={handleSeatSelect}
+      currentRoom={currentRoom}
     />
   );
 }
