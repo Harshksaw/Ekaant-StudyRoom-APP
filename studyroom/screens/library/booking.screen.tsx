@@ -35,11 +35,11 @@ import { Toast } from "react-native-toast-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
-const timeSlots = [
-  { from: "09:00", to: "10:00" },
-  { from: "10:00", to: "11:00" },
-  // Add more time slots as needed
-];
+// const timeSlots = [
+//   { from: "09:00", to: "10:00" },
+//   { from: "10:00", to: "11:00" },
+//   // Add more time slots as needed
+// ];
 
 const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
@@ -47,8 +47,7 @@ const BookingScreen: React.FC = () => {
 
   const data = JSON.parse(params.params.item);
   const city = JSON.parse(params.params.location);
-  // console.log("Seat ----->>>>", data?.timeSlot);
-
+  // console.log("Seat ----->>>>", data);
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -56,6 +55,9 @@ const BookingScreen: React.FC = () => {
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [bookingloader, setBookingLoader] = useState(false);
   const [bookingId, setBookingId] = useState(null);
+
+
+  const [currentRoomNo, setCurrentRoomNo] = useState(1);
 
   const handleSeatSelect = (seatDataFromChild) => {
     // console.log("Selected Seat-------------------:", seatDataFromChild);
@@ -87,14 +89,16 @@ const BookingScreen: React.FC = () => {
     to: string;
   }
 
-  const updateRoomDetails = () => {
+  const updateRoomDetails = async() => {
+
+    console.log(data, "Data944");
     const details = {
-      id: data?._id,
-      amenities: data?.amenities,
-      images: data?.images,
+      id: data._id,
+      amenities: data.amenities,
+      images: data.images,
       location: city,
-      name: data?.name,
-      price: data?.price,
+      name: data.name,
+      price: data.price,
     };
     dispatch(setBookingDetails(details));
   };
@@ -106,6 +110,9 @@ const BookingScreen: React.FC = () => {
     seat: selectedSeat,
     date: selectedDate,
     months: selectedMonth,
+    room: currentRoomNo,
+
+
     slot: selectedSlots, ///stll null ,need to be fixed
   };
 
@@ -147,6 +154,18 @@ const BookingScreen: React.FC = () => {
     const userData = await AsyncStorage.getItem("userData");
     const userid = JSON.parse(userData || "{}");
     const userId = userid.user._id;
+    console.log(
+      userId,
+      bookingdata.details.id,
+      price,
+      totalAmount,
+      BookingSlot,
+      RoomNo,
+      BookingSeat,
+      BookingDate,
+      BookingMonths,
+      "/////------------------->"
+    );
     if (
       userId &&
       bookingdata.details.id &&
@@ -158,20 +177,11 @@ const BookingScreen: React.FC = () => {
       BookingDate &&
       BookingMonths
     ) {
-      // console.log(
-      //   userId,
-      //   bookingdata.details.id,
-      //   price,
-      //   totalAmount,
-      //   BookingSlot,
-      //   RoomNo,
-      //   BookingSeat,
-      //   BookingDate,
-      //   BookingMonths,
-      //   "------------------->"
-      // );
+  
       try {
         // console.log(userDetails.friendDetails, "-----977");
+
+
         const response = await axios.post(
           `${BACKEND}/api/v1/booking/createBooking`,
           {
@@ -187,6 +197,8 @@ const BookingScreen: React.FC = () => {
             forFriend: userDetails.friendDetails,
           }
         );
+
+        console.log(response.data, "+++++------------------->");
         const bookingId = response.data.Booking._id;
         setBookingId(bookingId);
   
@@ -201,7 +213,7 @@ const BookingScreen: React.FC = () => {
           duration: 3000,
         });
   
-        // console.log(response.data, "------------------->");
+        console.log(response.data, "------------------->");
         return response.data.Booking._id;
       } catch (error) {
         setBookingLoader(false);
@@ -227,15 +239,27 @@ const BookingScreen: React.FC = () => {
   
   };
 
+
   const confirmBooking = async () => {
     setBookingLoader(true);
-
+    await updateRoomDetails();
+    console.log(
+      bookingdata.details.id,
+      price,
+      totalAmount,
+      BookingSlot,
+      RoomNo,
+      BookingSeat,
+      BookingDate,
+      BookingMonths,
+      RoomNo,
+      "------------------->"
+    );
     const res = await PreBook();
-    if (res !== null) {
+
+
+    if (res) {
       // console.log("Booking Confirmed", BookedData);
-      updateRoomDetails();
-
-
       setBookingLoader(false);
       setIsModalVisible(false);
       console.log("Booking ID254 boking", bookingId);
@@ -256,6 +280,7 @@ const BookingScreen: React.FC = () => {
 
 
   };
+
   return (
     <SafeAreaView
       style={{
@@ -292,10 +317,10 @@ const BookingScreen: React.FC = () => {
         }}
       >
         <Picker
-          selectedValue={selectedMonth}
+          selectedValue={currentRoomNo}
           onValueChange={(itemValue, itemIndex) => {
-            // console.log(itemValue, itemIndex);
-            setselectedMonth(itemValue);
+            console.log(itemValue, itemIndex);
+            setCurrentRoomNo(itemValue);
           }}
           style={{
             borderRadius: 20,
@@ -304,17 +329,20 @@ const BookingScreen: React.FC = () => {
           }}
           mode="dropdown"
         >
-          {Array.from({ length: 3 }, (_, i) => (
+          {data?.rooms.map(  (item, index  )=> (
             <Picker.Item
+            key={index}
               style={{
                 fontSize: 20,
                 borderRadius: 50,
               }}
-              key={i}
-              label={` Room ${i + 1}`}
-              value={`${i + 1}`}
+              key={item.roomNo}
+              label={` Room ${item.roomNo }`}
+              value={`${item.roomNo }`}
             />
-          ))}
+          ))
+          }
+
         </Picker>
         <ToggleBookingButton />
       </View>
@@ -329,7 +357,10 @@ const BookingScreen: React.FC = () => {
           // justifyContent: "center",
         }}
       >
-        <Seats onSeatSelect={handleSeatSelect} SeatLayout={data?.seatLayout} />
+        {/* //seating arrangement */}
+
+        <Seats onSeatSelect={handleSeatSelect} SeatLayout={data?.rooms} currentRoom={currentRoomNo} />
+        
       </ScrollView>
 
       <TouchableOpacity
@@ -395,6 +426,8 @@ const BookingScreen: React.FC = () => {
                       }}
                     >
                       <Picker
+
+
                         selectedValue={selectedMonth}
                         onValueChange={(itemValue, itemIndex) => {
                           // console.log(itemValue, itemIndex);

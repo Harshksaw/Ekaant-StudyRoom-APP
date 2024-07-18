@@ -77,7 +77,7 @@ async function createBooking(req, res) {
   //   .populate("userId")
   //   .populate("libraryId");
    
-    // await newBooking.save();
+    await newBooking.save();
 
     return res.status(StatusCodes.CREATED).json({
       message: "Booking created successfully",

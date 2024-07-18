@@ -119,6 +119,7 @@ export default function index() {
       try {
         const fetchedData = await fetchRoomData();
         setData(fetchedData || []);
+        console.log("Fetched Data:________", fetchedData);
       } catch (error) {
 
         console.error("Failed to fetch room data:", error);
@@ -134,6 +135,8 @@ export default function index() {
     getTokenAndPrintIt();
 
     fetchLibraryDate();
+
+
   }, [reload]);
 
   const [assets, error] = useAssets([
@@ -171,18 +174,21 @@ export default function index() {
         padding: 2,
       }}
       key={item._id}
-      onPress={() =>
-        router.push({
-          pathname: "/(routes)/card-details",
-          params: { item: JSON.stringify(item) },
-        })
-      }
+      onPress={
+        item.approved ? () =>
+          router.push({
+            pathname: "/(routes)/card-details",
+            params: { item: JSON.stringify(item) },
+          }) : () => toggleNotListedModal()}
     // onPress={()=> {
     //   setNotListed(true)
 
     // }}
 
     >
+
+
+
       <View style={styles.card}>
         <Image
           source={{
@@ -227,7 +233,7 @@ export default function index() {
               style={{
                 fontSize: 12.14,
                 fontWeight: "400",
-                lineHeight: 18.21,
+                lineHeight: 20.21,
                 textAlign: "auto",
                 color: "#626262",
               }}
@@ -247,54 +253,68 @@ export default function index() {
               alignItems: "center",
             }}
           >
-            <View>
-              {item?.ratings ? (
-                <View
-                  style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-                >
-                  <StarRating rating={item?.ratings} />
-                  <Text>{item?.ratings}</Text>
-                </View>
-              ) : (
-                <View
-                  style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-                >
-                  <StarRating rating={3} />
-                  <Text>3.0</Text>
-                </View>
-              )}
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 3,
-                padding: 4,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {assets && assets[6] && (
-                <Image
-                  source={assets[6]}
-                  style={{
-                    width: 15,
-                    height: 20,
-                  }}
-                />
-              )}
 
-              <Text
-                style={{
-                  fontSize: 12.14,
-                  fontWeight: "400",
-                  lineHeight: 18.21,
-                  textAlign: "auto",
-                  color: "#1E1E1E",
-                }}
-              >
-                {item.distance || "2KMs"}
-              </Text>
-            </View>
+
+            {
+              item.approved && (
+                <View>
+                  {item?.ratings ? (
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+                    >
+                      <StarRating rating={item?.ratings} />
+                      <Text>{item?.ratings}</Text>
+                    </View>
+                  ) : (
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+                    >
+                      <StarRating rating={3} />
+                      <Text>3.0</Text>
+                    </View>
+                  )}
+                </View>
+
+              )
+            }
+
+            {
+              item.approved && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 3,
+                    padding: 4,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {assets && assets[6] && (
+                    <Image
+                      source={assets[6]}
+                      style={{
+                        width: 15,
+                        height: 20,
+                      }}
+                    />
+                  )}
+
+                  <Text
+                    style={{
+                      fontSize: 12.14,
+                      fontWeight: "400",
+                      lineHeight: 18.21,
+                      textAlign: "auto",
+                      color: "#1E1E1E",
+                    }}
+                  >
+                    {item.distance || "2KMs"}
+                  </Text>
+                </View>
+
+              )
+            }
+
           </View>
         </View>
       </View>
@@ -507,6 +527,8 @@ export default function index() {
           />
         ) : (
           <>
+
+
             <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
               {data &&
                 data?.data?.map((item, index) => renderItem({ item, index }))}
@@ -526,6 +548,7 @@ export default function index() {
                 </TouchableOpacity>
               )}
             </View>
+
             {/* <View style={{ height: 900, width: 45 }}></View> */}
           </>
         )}

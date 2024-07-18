@@ -13,7 +13,7 @@ const NotListedModal: React.FC<NotListedModalProps> = ({
     <>
       <Modal animationType="slide" transparent visible={isVisible}>
         <LinearGradient
-          colors={["transparent", "blue"]}
+          colors={["transparent", "rgb(71, 178, 225)"]}
           style={styles.modalContainer}
         >
           <View style={styles.imagePlaceholder}>
