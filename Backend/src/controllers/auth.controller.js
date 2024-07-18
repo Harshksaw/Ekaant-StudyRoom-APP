@@ -137,17 +137,19 @@ const signinSchema = zod.object({
   password: zod.string().min(8),
 });
 async function signIn(req, res, next) {
-  const { success } = signinSchema.safeParse(req.body);
-  if (!success) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      success: false,
-      message: "Invalid data",
-      error: { 411: "Invalid data" },
-      data: {},
-    });
-  }
+  // const { success } = signinSchema.safeParse(req.body);
+  // if (!success) {
+  //   return res.status(StatusCodes.BAD_REQUEST).json({
+  //     success: false,
+  //     message: "Invalid data",
+  //     error: { 411: "Invalid data" },
+  //     data: {},
+  //   });
+  // }
   try {
     const { email, password } = req.body;
+
+    console.log(email , password)
 
     const user = await User.findOne({ email });
 
