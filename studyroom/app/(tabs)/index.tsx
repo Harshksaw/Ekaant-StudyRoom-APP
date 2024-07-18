@@ -10,9 +10,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-
 } from "react-native";
-
 
 import { Ionicons } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
@@ -21,7 +19,6 @@ import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const { width, height } = Dimensions.get("window");
-
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NotListedModal from "@/components/NotListedModal";
@@ -54,37 +51,25 @@ export default function index() {
   const [bannerImage, setBannerImage] = useState([]);
   const [locationData, setLocationData] = useState(null);
 
-
   var count = 0;
 
-
-
   const getAppData = async () => {
-
     // TODO, tanstackquery
     try {
       const response = await axios.get(`${BACKEND}/api/v1/app/getApp`);
       console.log("getAPpData called ", count++);
       // console.log(response.data.data)
 
-
       setBannerImage(response.data.data.Banner);
       setLocationData(response.data.data.locations);
-
-
     } catch (error) {
       setBannerImage([]);
       console.error("Failed to fetch banner image data:", error);
     }
-  }
+  };
   //TODO tanstackquery , redux save in Appslice
 
-
   dispatch(setAppDetails(locationData || []));
-
-
-
-
 
   const getTokenAndPrintIt = async () => {
     try {
@@ -104,10 +89,7 @@ export default function index() {
   };
 
   useEffect(() => {
-
     getAppData();
-
-
 
     const fetchLibraryDate = async () => {
       const res = await getUserData();
@@ -121,9 +103,8 @@ export default function index() {
         setData(fetchedData || []);
         console.log("Fetched Data:________", fetchedData);
       } catch (error) {
-
         console.error("Failed to fetch room data:", error);
-        setData([])
+        setData([]);
 
         setNotAvailable(true);
         // Handle the error as needed, e.g., set an error state, show a message, etc.
@@ -135,8 +116,6 @@ export default function index() {
     getTokenAndPrintIt();
 
     fetchLibraryDate();
-
-
   }, [reload]);
 
   const [assets, error] = useAssets([
@@ -160,9 +139,6 @@ export default function index() {
 
   // console.log("-------------->", userDetails);
 
-
-
-
   //card listedrooms
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -175,20 +151,21 @@ export default function index() {
       }}
       key={item._id}
       onPress={
-        item.approved ? () =>
-          router.push({
-            pathname: "/(routes)/card-details",
-            params: { item: JSON.stringify(item) },
-          }) : () => toggleNotListedModal()}
-    // onPress={()=> {
-    //   setNotListed(true)
+        item.approved
+          ? () =>
+              router.push({
+                pathname: "/(routes)/card-details",
+                params: { item: JSON.stringify(item) },
+              })
+          : () => toggleNotListedModal()
+      }
+      // onPress={()=> {
+      //   setNotListed(true)
 
-    // }}
-
+      // }}
     >
 
-
-
+      
       <View style={styles.card}>
         <Image
           source={{
@@ -253,68 +230,67 @@ export default function index() {
               alignItems: "center",
             }}
           >
-
-
-            {
-              item.approved && (
-                <View>
-                  {item?.ratings ? (
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-                    >
-                      <StarRating rating={item?.ratings} />
-                      <Text>{item?.ratings}</Text>
-                    </View>
-                  ) : (
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-                    >
-                      <StarRating rating={3} />
-                      <Text>3.0</Text>
-                    </View>
-                  )}
-                </View>
-
-              )
-            }
-
-            {
-              item.approved && (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 3,
-                    padding: 4,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {assets && assets[6] && (
-                    <Image
-                      source={assets[6]}
-                      style={{
-                        width: 15,
-                        height: 20,
-                      }}
-                    />
-                  )}
-
-                  <Text
+            {item.approved && (
+              <View>
+                {item?.ratings ? (
+                  <View
                     style={{
-                      fontSize: 12.14,
-                      fontWeight: "400",
-                      lineHeight: 18.21,
-                      textAlign: "auto",
-                      color: "#1E1E1E",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 5,
                     }}
                   >
-                    {item.distance || "2KMs"}
-                  </Text>
-                </View>
+                    <StarRating rating={item?.ratings} />
+                    <Text>{item?.ratings}</Text>
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    <StarRating rating={3} />
+                    <Text>3.0</Text>
+                  </View>
+                )}
+              </View>
+            )}
 
-              )
-            }
+            {item.approved && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 3,
+                  padding: 4,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {assets && assets[6] && (
+                  <Image
+                    source={assets[6]}
+                    style={{
+                      width: 15,
+                      height: 20,
+                    }}
+                  />
+                )}
 
+                <Text
+                  style={{
+                    fontSize: 12.14,
+                    fontWeight: "400",
+                    lineHeight: 18.21,
+                    textAlign: "auto",
+                    color: "#1E1E1E",
+                  }}
+                >
+                  {item.distance || "2KMs"}
+                </Text>
+              </View>
+            )}
           </View>
         </View>
       </View>
@@ -327,12 +303,9 @@ export default function index() {
     setStickyHeight(event.nativeEvent.layout.height);
   };
 
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     getAppData();
-
-
 
     setTimeout(() => {
       setRefreshing(false);
@@ -350,7 +323,6 @@ export default function index() {
       }}
     >
       <View style={{ marginTop: 0 }}>
-
         <Header color="black" />
       </View>
 
@@ -358,10 +330,13 @@ export default function index() {
 
       {/* ///carousel -> Listings -> Filters */}
 
-      <ScrollView style={{ flex: 1, gap: 40 }} stickyHeaderIndices={[1]}
+      <ScrollView
+        style={{ flex: 1, gap: 40 }}
+        stickyHeaderIndices={[1]}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
+        }
+      >
         {/* Carousel */}
         <View style={styles.carousel}>
           <View style={styles.welcome}>
@@ -385,7 +360,6 @@ export default function index() {
             </Text>
           </View>
 
-
           <Carousel
             loop
             width={width}
@@ -406,11 +380,9 @@ export default function index() {
                   padding: 30,
                 }}
               >
-
-
-                {
-                  bannerImage.length === 0 ? (
-                    assets && assets[4] &&
+                {bannerImage.length === 0 ? (
+                  assets &&
+                  assets[4] && (
                     <Image
                       source={assets[4]}
                       style={{
@@ -422,30 +394,22 @@ export default function index() {
                         // borderTopRightRadius: 40,
                       }}
                     />
-
-                  ) : (
-
-                    <Image
-                      source={item}
-                      style={{
-                        marginTop: -50,
-                        width: width * 0.95,
-                        height: height * 0.25,
-                        borderRadius: 20,
-                        objectFit: 'cover',
-                        // overflow: 'hidden'
-                        // borderTopLeftRadius: 40,
-                        // borderTopRightRadius: 40,
-                      }}
-                    />
-
-
-
-
                   )
-                }
-
-
+                ) : (
+                  <Image
+                    source={item}
+                    style={{
+                      marginTop: -50,
+                      width: width * 0.95,
+                      height: height * 0.25,
+                      borderRadius: 20,
+                      objectFit: "cover",
+                      // overflow: 'hidden'
+                      // borderTopLeftRadius: 40,
+                      // borderTopRightRadius: 40,
+                    }}
+                  />
+                )}
               </View>
             )}
           />
@@ -477,7 +441,7 @@ export default function index() {
                   backgroundColor: "#ffff",
                   borderRadius: 40,
                 }}
-              // onPress={onPress}
+                // onPress={onPress}
               >
                 {assets && assets[filter?.id] && (
                   <Image
@@ -527,8 +491,6 @@ export default function index() {
           />
         ) : (
           <>
-
-
             <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
               {data &&
                 data?.data?.map((item, index) => renderItem({ item, index }))}
