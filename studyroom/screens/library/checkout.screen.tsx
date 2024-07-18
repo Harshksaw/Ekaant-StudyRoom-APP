@@ -24,7 +24,8 @@ import { BACKEND } from "@/utils/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "react-native-toast-notifications";
 import RazorpayCheckout from "react-native-razorpay";
-import { sub } from "react-native-reanimated";
+import { set, sub } from "react-native-reanimated";
+import getLocationName from "@/utils/location";
 
 const CheckoutScreen: React.FC = () => {
   const route = useRoute();
@@ -33,6 +34,7 @@ const CheckoutScreen: React.FC = () => {
   const [bookingId, setBookingId] = useState(null);
   const [userData, setUserData] = useState(null);
   const [libraryData, setLibraryData] = useState(null);
+  const [location, setLocation] = useState(null);
   // console.log(userDetails, "-----------------")
   //getting data  from booking screen
 
@@ -44,7 +46,7 @@ const CheckoutScreen: React.FC = () => {
     BookedData = JSON.parse(params.params.bookitem);
   }
 
-  
+
   const BookingDate = BookedData?.date || BookedData.bookingDate.slice(0, 10);
   const BookingMonths = BookedData?.months || BookedData?.bookingPeriod;
   const BookingSeat = BookedData?.seat || BookedData?.bookedSeat;
@@ -54,7 +56,7 @@ const CheckoutScreen: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
 
-  const [paymentStatus, setPaymentStatus] = useState(false); 
+  const [paymentStatus, setPaymentStatus] = useState(false);
   const [paymentData, setPaymentData] = useState(null); // Payment data
   const [paymentId, setPaymentId] = useState(null); // Payment data
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
@@ -62,13 +64,17 @@ const CheckoutScreen: React.FC = () => {
 
 
   useEffect(() => {
-    // console.log(BookedData.libraryId._id, "71 Data");
+    console.log(BookedData?.libraryId.location[0], "71 Data");
     const getLibraryData = async () => {
+      const loc = await getLocationName(BookedData?.libraryId.location[0], BookedData?.libraryId.location[1]);
+      setLocation(loc);
       try {
 
-        const userDataId =  await AsyncStorage.getItem("userData");
+        const userDataId = await AsyncStorage.getItem("userData");
         const userid = JSON.parse(userDataId);
         setUserData(userid);
+
+    
 
         const res = await axios.post(
           `${BACKEND}/api/v1/library/getLibraryById`,
@@ -91,21 +97,25 @@ const CheckoutScreen: React.FC = () => {
 
         // router.back();
       }
+
     };
     getLibraryData();
+     
 
   }, []);
 
-  const price =4444;
+  const price = 4444;
   const RegistrationFees = 1000;
   const subtotal = Number((price + RegistrationFees).toFixed(2));
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
   const totalAmount = subtotal;
 
+  // const location = getLocationName(BookedData.libraryId.location[0], BookedData.libraryId.location[1]);
+
   // console.log(libraryData, "Library Data79");
 
 
-  const bookingid = BookedData._id 
+  const bookingid = BookedData._id
   // setBookingId(bookingid);
   console.log("Booking ID-->", bookingid, "Booking ID", BookedData);
   let PaymentPrice = totalAmount;
@@ -158,7 +168,7 @@ const CheckoutScreen: React.FC = () => {
       });
   };
 
- console.log(userData, "User Data", BookedData.libraryId);
+  console.log(userData, "User Data", BookedData.libraryId);
 
 
 
@@ -455,14 +465,14 @@ const CheckoutScreen: React.FC = () => {
               }}
             >
               <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                {/* {location.split(" ").slice(0, 2).join(" ")}{" "} */}
+                {location && location?.split(" ").slice(0, 2).join(" ") || "undisclosed" }{" "}
               </Text>
             </View>
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
               <Text style={{ fontSize: 15, fontWeight: "300" }}>
-                {/* {location.split(" ").slice(3, 5).join(" ")}{" "} */}
+                {location &&  location?.split(" ").slice(1, 5).join(" ") || "undisclosed"}{" "}
               </Text>
             </View>
           </View>
@@ -484,24 +494,25 @@ const CheckoutScreen: React.FC = () => {
                 gap: 10,
               }}
             >
-              <View style={{ fontSize: 20, fontWeight: "400" ,
+              <View style={{
+                fontSize: 20, fontWeight: "400",
                 flexDirection: "row",
                 gap: 10,
               }}>
 
-              {BookedData.libraryId.timeSlot.map((slot) => (
-                <View style={{
-                  flexDirection: "row",
-                  // justifyContent: "space-between",
-                  gap: 2,
-                }}>
+                {BookedData.libraryId.timeSlot.map((slot) => (
+                  <View style={{
+                    flexDirection: "row",
+                    // justifyContent: "space-between",
+                    gap: 2,
+                  }}>
 
 
-                <Text>{slot.from}{slot.from < 12 ? "AM" : "PM"}</Text>
-                <Text> - </Text>
-                <Text>{slot.to}{slot.to < 12 ? "AM" : "PM"} ,</Text>
-                </View>
-              ))}
+                    <Text>{slot.from}{slot.from < 12 ? "AM" : "PM"}</Text>
+                    <Text> - </Text>
+                    <Text>{slot.to}{slot.to < 12 ? "AM" : "PM"} ,</Text>
+                  </View>
+                ))}
 
               </View>
             </View>
