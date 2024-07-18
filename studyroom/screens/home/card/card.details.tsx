@@ -49,7 +49,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
       }
 
       const res = await getLocationName(data.location[0], data.location[1]);
-      console.log("----card.details--45", res);
+      // console.log("----card.details--45", res);
 
       // Check if res is not null before setting it
       if (res !== null) {
@@ -203,7 +203,8 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 style={{
                   flexDirection: "row",
                   flexWrap: "wrap",
-                  gap: 10,
+                  // gap: 2,
+                  rowGap: 2,
                   marginTop: 6,
                   // justifyContent: "space-between",
                 }}
@@ -214,7 +215,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                     style={{
                       flexDirection: "row",
                       justifyContent: "space-between",
-                      marginTop: 10,
+                      marginTop: 5,
                       borderColor: "#dfdfdf",
                       borderWidth: 1,
                       borderRadius: 20,

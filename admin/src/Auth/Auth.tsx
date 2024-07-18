@@ -61,11 +61,11 @@ const Auth = ({ type }: { type: "signin" }) => {
     if (type === "signin") {
       try {
         const response = await axios.post(`${BASEURL}/api/v1/auth/signin`, {
-          username: userInfo.name,
+          // username: userInfo.name,
           email: userInfo.email,
-          phoneNumber: userInfo?.phone,
+          // phoneNumber: userInfo?.phone,
           password: userInfo.password,
-          accountType: "Admin",
+      
         });
 
         if (response.data.success) {
@@ -162,7 +162,7 @@ const Auth = ({ type }: { type: "signin" }) => {
                 className="border rounded-lg p-3 h-10 w-12"
               />
             </div> */}
-               <div className="flex justify-start border border-black bg-white">
+               {/* <div className="flex justify-start border border-black bg-white">
         <label
           className=" w-24  py-2  text-black  h-[50px] justify-center items-center
         text-center border border-gray-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer rounded-full "
@@ -192,7 +192,7 @@ const Auth = ({ type }: { type: "signin" }) => {
           }}
           style={{ border: "none", justifyContent: "center" }}
         />
-      </div>
+      </div> */}
             {showOtp && userInfo.phone >= 1000000 && (
               <div className="flex justify-between items-center gap-2 mb-4">
                 <input

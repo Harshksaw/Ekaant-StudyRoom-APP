@@ -41,6 +41,7 @@ export default function Bookings() {
   const [refreshing, setRefreshing] = useState(false)
 
   const getBookings = async () => {
+
     const userId = await getUserId(); // Wait for getUserId to complete
 
     if (userId) {
@@ -49,7 +50,8 @@ export default function Bookings() {
         `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
       );
       console.log("userID---->", res.data.bookings);
-      setData(res?.data?.bookings);
+
+      setData(res.data.bookings);
     } else {
       console.log("UserId is null");
     }
@@ -64,6 +66,7 @@ export default function Bookings() {
       // setData(fetchedData.data || []);
     };
     getBookingData();
+    console.log("Data+++", data);
   }, []);
 
 
@@ -177,9 +180,10 @@ export default function Bookings() {
                 }}
                 key={item._id}
                 onPress={() =>
+                  // console.log("Item", item)
                   router.push({
-                    pathname: "/(routes)/card-details",
-                    params: { item: JSON.stringify(item) },
+                    pathname: "/(routes)/library/checkout.screen",
+                    params: { bookitem: JSON.stringify(item) },
                   })
                 }
                 // onPress={()=> {

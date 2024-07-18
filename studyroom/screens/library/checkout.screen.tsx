@@ -12,7 +12,6 @@ import {
   View,
   Text,
   SafeAreaView,
-
   StyleSheet,
   Touchable,
   TouchableOpacity,
@@ -25,7 +24,8 @@ import { BACKEND } from "@/utils/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "react-native-toast-notifications";
 import RazorpayCheckout from "react-native-razorpay";
-
+import { set, sub } from "react-native-reanimated";
+import getLocationName from "@/utils/location";
 
 const CheckoutScreen: React.FC = () => {
   const route = useRoute();
@@ -33,94 +33,101 @@ const CheckoutScreen: React.FC = () => {
   const userDetails = useSelector((state: any) => state.user);
   const [bookingId, setBookingId] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [libraryData, setLibraryData] = useState(null);
+  const [location, setLocation] = useState(null);
   // console.log(userDetails, "-----------------")
-  //getting data  from booking screen 
+  //getting data  from booking screen
 
   const params = useRoute();
-  const BookedData = JSON.parse(params.params.item);
-  // console.log(BookedData, "_________")
+  let BookedData;
+  if (params?.params?.item) {
+    BookedData = JSON.parse(params.params.item);
+  } else if (params?.params?.bookitem) {
+    BookedData = JSON.parse(params.params.bookitem);
+  }
 
 
-  const data = useSelector((state: any) => state.booking);
+  const BookingDate = BookedData?.date || BookedData.bookingDate.slice(0, 10);
+  const BookingMonths = BookedData?.months || BookedData?.bookingPeriod;
+  const BookingSeat = BookedData?.seat || BookedData?.bookedSeat;
+  const BookingSlot = BookedData?.slot || BookedData?.timeSlot;
+  const RoomNo = BookedData?.room || BookedData?.roomNo;
+  const BookedDate = BookedData?.date || BookedData?.bookingDate.slice(0, 10);
   const [modalVisible, setModalVisible] = useState(false);
-  // console.log("ddd------->>>>>>>>>>>>>>>>>>>", data);
-  const location = data?.details?.location
-  // console.log(data.details.images[0]);
-  const price = data.details.price || 6000;
-  const RegistrationFees = 1000;
-  // Assuming price and RegistrationFees are numbers and already calculated correctly
-  const subtotal = Number((price + RegistrationFees).toFixed(2));
-
-  const endDate = getDateAfterMonths(BookedData?.date, BookedData?.months);
-  const totalAmount = subtotal
-
-  // console.log("Booked Data:", data );
-  const BookingDate = BookedData.date;
-  const BookingMonths = BookedData.months;
-  const BookingSeat = BookedData.seat;
-  const BookingSlot = BookedData.slot;
-  const RoomNo = BookedData.room || 1;
 
 
-  //payment 
-  const [paymentStatus, setPaymentStatus] = useState(false);  // Payment status
+  const [paymentStatus, setPaymentStatus] = useState(false);
   const [paymentData, setPaymentData] = useState(null); // Payment data
   const [paymentId, setPaymentId] = useState(null); // Payment data
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
 
 
-
-
-  // const PaymentData = route.params.item ? JSON.parse(route.params.item) : {};
-
-  const bookingid = route.params.id ? JSON.parse(route.params.id) : {};
-  console.log("Booking ID-->", bookingid, "Booking ID", BookedData);
-  let PaymentPrice = totalAmount
-
-
-
-
   useEffect(() => {
-    const getBookingDetails = async () => {
-      const userData = await AsyncStorage.getItem("userData");
-      const userid = JSON.parse(userData)
-      setUserData(userid);
+    console.log(BookedData?.libraryId.location[0], "71 Data");
+    const getLibraryData = async () => {
+      const loc = await getLocationName(BookedData?.libraryId.location[0], BookedData?.libraryId.location[1]);
+      setLocation(loc);
+      try {
 
-      if (bookingid !== null) {
-        try {
-          const res = await axios.post(
-            `${BACKEND}/api/v1/booking/getBookingById`,
-            {
-              id: bookingid,
-            }
-          );
-          console.log(res.data.bookings[0]._id, "[[[[[[[]]]]]]");
+        const userDataId = await AsyncStorage.getItem("userData");
+        const userid = JSON.parse(userDataId);
+        setUserData(userid);
 
-          setBookingId(res.data.bookings[0]._id);
+    
 
-          return res.data.bookings[0]._id;
-        } catch (error) {
-          console.log(error);
-          Toast.show("Error in fetching booking details");
-        }
-      } else {
+        const res = await axios.post(
+          `${BACKEND}/api/v1/library/getLibraryById`,
+          {
+            id: BookedData?.libraryId._id,
+          }
+        );
+        setLibraryData(res.data);
 
-        console.log("Booking ID is missing");
-        Toast.show("Booking ID is missing");
-        setModalVisible(true);
-        return;
+
+        return res.data.library;
+      } catch (error) {
+        console.log(error);
+
+        Toast.show("Error in fetching library details, Try again", {
+          dangerColor: "red",
+          duration: 2000,
+          icon: <Ionicons name="alert-circle" size={24} color="red" />,
+        });
+
+        // router.back();
       }
+
     };
-    getBookingDetails();
+    getLibraryData();
+     
+
   }, []);
+
+  const price = 4444;
+  const RegistrationFees = 1000;
+  const subtotal = Number((price + RegistrationFees).toFixed(2));
+  const endDate = getDateAfterMonths(BookedDate, BookingMonths);
+  const totalAmount = subtotal;
+
+  // const location = getLocationName(BookedData.libraryId.location[0], BookedData.libraryId.location[1]);
+
+  // console.log(libraryData, "Library Data79");
+
+
+  const bookingid = BookedData._id
+  // setBookingId(bookingid);
+  console.log("Booking ID-->", bookingid, "Booking ID", BookedData);
+  let PaymentPrice = totalAmount;
+
 
 
 
   const handlePayment = async () => {
     var options = {
       description: "Room Booking",
-      image: "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png", //logo
+      image:
+        "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png", //logo
 
       currency: "INR",
       key: "rzp_test_lmy83ka5bsXLz8",
@@ -128,9 +135,9 @@ const CheckoutScreen: React.FC = () => {
       name: "Ekaant",
       order_id: "",
       prefill: {
-        email: `${userData?.user.email}`,
-        contact: `${userData?.user.phoneNumber}`,
-        name: `${userData?.user.username}`,
+        // email: `${userData?.user.email}`,
+        // contact: `${userData?.user.phoneNumber}`,
+        // name: `${userData?.user.username}`,
       },
     };
     RazorpayCheckout.open(options)
@@ -141,10 +148,8 @@ const CheckoutScreen: React.FC = () => {
         setPaymentId(data.razorpay_payment_id);
         console.log(data, "Payment Success");
 
-
         // alert(`Success: ${data.razorpay_payment_id}`);
         setIsPaymentComplete(true);
-
       })
       .catch((error) => {
         // handle failure
@@ -163,16 +168,15 @@ const CheckoutScreen: React.FC = () => {
       });
   };
 
+  console.log(userData, "User Data", BookedData.libraryId);
+
+
 
   const confirmPayment = async () => {
-
-    if(!bookingId){
+    if (!bookingId) {
       Toast.show("Booking ID is missing");
-
     }
     try {
-
-
       const res = await axios.post(
         `${BACKEND}/api/v1/booking//confirm/${bookingId}`,
         {
@@ -188,15 +192,12 @@ const CheckoutScreen: React.FC = () => {
       console.log(error);
       return false;
     }
-
-  }
-
+  };
 
   const PaymentScreen = async () => {
     await handlePayment();
 
     if (isPaymentComplete) {
-
       console.log("Payment Status", paymentStatus);
       console.log("Payment Data", paymentData);
       console.log("PaymentId", paymentId);
@@ -209,37 +210,24 @@ const CheckoutScreen: React.FC = () => {
         console.log("Payment Confirmed");
       } else {
         console.log("Payment Failed");
-
       }
-
     }
-  }
+  };
 
-
-  useEffect(() => {
-
-
-    // InvoiceScreen();
-    if (isinvoiceComplete) {
-
-
-
-      router.push(
-        {
-          pathname: "/library/invoice.screen",
-          params: {
-            price: JSON.stringify(PaymentPrice),
-            paymentData: JSON.stringify(paymentData),
-            paymentId: JSON.stringify(paymentId),
-            bookingId: JSON.stringify(bookingId),
-          }
-        }
-      );
-    }
-
-
-
-  }, [isPaymentComplete]); // This effect runs whenever `isPaymentComplete` changes
+  // useEffect(() => {
+  //   // InvoiceScreen();
+  //   if (isinvoiceComplete) {
+  //     router.push({
+  //       pathname: "/library/invoice.screen",
+  //       params: {
+  //         price: JSON.stringify(PaymentPrice),
+  //         paymentData: JSON.stringify(paymentData),
+  //         paymentId: JSON.stringify(paymentId),
+  //         bookingId: JSON.stringify(bookingId),
+  //       },
+  //     });
+  //   }
+  // }, [isPaymentComplete]);
 
   return (
     <SafeAreaView>
@@ -250,7 +238,6 @@ const CheckoutScreen: React.FC = () => {
           marginBottom: 10,
         }}
       >
-
         <Header color="black" />
       </View>
 
@@ -264,12 +251,15 @@ const CheckoutScreen: React.FC = () => {
         }}
       >
         <View style={{}}>
-          <Image source={{ uri: data.details.images[0] }} style={{
-            width: 140,
-            height: 200,
-            borderRadius: 10,
-          }} />
-          {/* <Image source={{uri : data.details.images[0]}} /> */}
+          <Image
+            source={{ uri: BookedData.libraryId.images[0] }}
+            style={{
+              width: 140,
+              height: 200,
+              borderRadius: 10,
+            }}
+          />
+
         </View>
         <View
           style={{
@@ -280,7 +270,6 @@ const CheckoutScreen: React.FC = () => {
             gap: 10,
           }}
         >
-
           <View
             style={{
               width: 150,
@@ -290,41 +279,21 @@ const CheckoutScreen: React.FC = () => {
               justifyContent: "center",
               alignItems: "center",
               marginRight: 10,
-
             }}
           >
-
             {userDetails.bookingsForFriend ? (
               <View
                 style={{
                   flexDirection: "column",
                   alignItems: "center",
-
-
-
-
                 }}
               >
-                <Text>
-
-                  Booking for friend
-                </Text>
-                <Text>
-
-                  {userDetails?.friendDetails?.name}
-                </Text>
+                <Text>Booking for friend</Text>
+                <Text>{userDetails?.friendDetails?.name}</Text>
               </View>
-
             ) : (
-              <Text>
-
-                Booking for SELF
-              </Text>
-
+              <Text>Booking for SELF</Text>
             )}
-
-
-
           </View>
           <Text
             style={{
@@ -332,7 +301,7 @@ const CheckoutScreen: React.FC = () => {
               fontWeight: "bold",
             }}
           >
-            {data?.details?.name}
+            {BookedData.libraryId.name}
           </Text>
 
           <View
@@ -343,7 +312,10 @@ const CheckoutScreen: React.FC = () => {
             }}
           >
             <Ionicons name="time-outline" size={24} color="black" />
-            <Text>Period - {BookedData.months}{BookedData.months > 1 ? "Months" : "Month"} </Text>
+            <Text>
+              Period - {BookedData.months}
+              {BookedData.months > 1 ? "Months" : "Month"}{" "}
+            </Text>
           </View>
 
           <View
@@ -393,16 +365,16 @@ const CheckoutScreen: React.FC = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 fontSize: 15,
-                fontWeight: "semi-bold",
+                fontWeight: "500",
               }}
             >
               {" "}
-              {BookedData.date} -
+              {BookedDate} -
             </Text>
             <Text
               style={{
                 fontSize: 15,
-                fontWeight: "semi-bold",
+                fontWeight: "500",
               }}
             >
               {" "}
@@ -417,10 +389,9 @@ const CheckoutScreen: React.FC = () => {
             alignItems: "center",
           }}
         >
+          <SeatsCheckout />
 
-          < SeatsCheckout />
-
-          <Text>{data.details.seats} Seats</Text>
+          <Text>{BookedData.bookedSeat.label} Seat</Text>
         </View>
       </View>
 
@@ -494,14 +465,14 @@ const CheckoutScreen: React.FC = () => {
               }}
             >
               <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                {location.split(" ").slice(0, 2).join(" ")}{" "}
+                {location && location?.split(" ").slice(0, 2).join(" ") || "undisclosed" }{" "}
               </Text>
             </View>
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
               <Text style={{ fontSize: 15, fontWeight: "300" }}>
-                {location.split(" ").slice(3, 5).join(" ")}{" "}
+                {location &&  location?.split(" ").slice(1, 5).join(" ") || "undisclosed"}{" "}
               </Text>
             </View>
           </View>
@@ -509,7 +480,6 @@ const CheckoutScreen: React.FC = () => {
 
         {/* //slot */}
         <View style={styles.summary}>
-
           <Note />
           <View
             style={{
@@ -524,9 +494,27 @@ const CheckoutScreen: React.FC = () => {
                 gap: 10,
               }}
             >
-              <Text style={{ fontSize: 20, fontWeight: "400" }}>
-                Slot Time - {data.details.slot} - 2:00
-              </Text>
+              <View style={{
+                fontSize: 20, fontWeight: "400",
+                flexDirection: "row",
+                gap: 10,
+              }}>
+
+                {BookedData.libraryId.timeSlot.map((slot) => (
+                  <View style={{
+                    flexDirection: "row",
+                    // justifyContent: "space-between",
+                    gap: 2,
+                  }}>
+
+
+                    <Text>{slot.from}{slot.from < 12 ? "AM" : "PM"}</Text>
+                    <Text> - </Text>
+                    <Text>{slot.to}{slot.to < 12 ? "AM" : "PM"} ,</Text>
+                  </View>
+                ))}
+
+              </View>
             </View>
           </View>
         </View>

@@ -43,11 +43,13 @@ function Signup() {
     const token = localStorage.getItem("token");
     if (token) {
       setToken(token);
+      setCurrentStep(4);
     }
+    console.log(token, "token");
     console.log(currentStep, "currentstep");
     if(token !== ""){
       console.log(token , "token");
-      setCurrentStep(4);
+      setCurrentStep(1);
     }
     }, []);
 
