@@ -46,10 +46,10 @@ function App() {
           <Route path="/signup" element={<Signup/>} />
           <Route path="/signin" element={<Auth type="signin" />} />
 
+          <Route path="/manage-library/create-room" element={<CreateRoom />}/>
           {role === "Admin" && (
             <Route element={<ProtectedRoute />}>
               <Route path="/manage-library/create-library" element={<CreateLibrary />}/>
-              <Route path="/manage-library/create-room" element={<CreateRoom />}/>
               <Route path="/dashboard" element={<Dashboard />} />
 
 
