@@ -161,6 +161,7 @@ async function ConfrimBooking(req, res) {
           {
             $set: {
               transactionDetails: transactionDetailsData,
+              paid: true, 
               bookingStatus: "CONFIRMED"
             }
           },

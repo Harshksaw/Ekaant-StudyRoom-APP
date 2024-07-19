@@ -37,14 +37,21 @@ const CheckoutScreen: React.FC = () => {
   const [location, setLocation] = useState(null);
   // console.log(userDetails, "-----------------")
   //getting data  from booking screen
-
+const [libraryId, setLibraryId] = useState(null);
   const params = useRoute();
   let BookedData;
   if (params?.params?.item) {
     BookedData = JSON.parse(params.params.item);
   } else if (params?.params?.bookitem) {
     BookedData = JSON.parse(params.params.bookitem);
+   let libraryData = useSelector((state: any) => state.library);
+   setLibraryId(libraryData);
   }
+  
+  console.log(libraryId, "Library Id");
+  
+  const bookingid = BookedData._id
+
 
 
   const BookingDate = BookedData?.date || BookedData.bookingDate.slice(0, 10);
@@ -64,9 +71,10 @@ const CheckoutScreen: React.FC = () => {
 
 
   useEffect(() => {
-    console.log(BookedData?.libraryId.location[0], "71 Data");
+    console.log(BookedData, "71 Data");
+    setBookingId(bookingid);
     const getLibraryData = async () => {
-      const loc = await getLocationName(BookedData?.libraryId.location[0], BookedData?.libraryId.location[1]);
+      const loc = await getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
       setLocation(loc);
       try {
 
@@ -79,7 +87,7 @@ const CheckoutScreen: React.FC = () => {
         const res = await axios.post(
           `${BACKEND}/api/v1/library/getLibraryById`,
           {
-            id: BookedData?.libraryId._id,
+            id: BookedData?.libraryId?._id,
           }
         );
         setLibraryData(res.data);
@@ -103,6 +111,7 @@ const CheckoutScreen: React.FC = () => {
      
 
   }, []);
+  console.log(BookedData,libraryData , "Booked Data/////////////////");
 
   const price = 4444;
   const RegistrationFees = 1000;
@@ -110,14 +119,13 @@ const CheckoutScreen: React.FC = () => {
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
   const totalAmount = subtotal;
 
-  // const location = getLocationName(BookedData.libraryId.location[0], BookedData.libraryId.location[1]);
+  // const location = getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
 
   // console.log(libraryData, "Library Data79");
 
 
-  const bookingid = BookedData._id
-  // setBookingId(bookingid);
-  console.log("Booking ID-->", bookingid, "Booking ID", BookedData);
+
+  // console.log("userData", userData?.user.email);
   let PaymentPrice = totalAmount;
 
 
@@ -135,9 +143,9 @@ const CheckoutScreen: React.FC = () => {
       name: "Ekaant",
       order_id: "",
       prefill: {
-        // email: `${userData?.user.email}`,
-        // contact: `${userData?.user.phoneNumber}`,
-        // name: `${userData?.user.username}`,
+        email: `${userData.user.email}`,
+        contact: `${userData.user.phoneNumber}`,
+        name: `${userData.user.username}`,
       },
     };
     RazorpayCheckout.open(options)
@@ -146,10 +154,15 @@ const CheckoutScreen: React.FC = () => {
         setPaymentStatus(true);
         setPaymentData(data);
         setPaymentId(data.razorpay_payment_id);
-        console.log(data, "Payment Success");
+        // console.log(data, "Payment Success");
 
-        // alert(`Success: ${data.razorpay_payment_id}`);
+
         setIsPaymentComplete(true);
+        Toast.show("Payment Success", {
+          successColor: "green",
+          duration: 4000,
+          icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
+        });
       })
       .catch((error) => {
         // handle failure
@@ -168,7 +181,7 @@ const CheckoutScreen: React.FC = () => {
       });
   };
 
-  console.log(userData, "User Data", BookedData.libraryId);
+  // console.log(userData, "User Data", BookedData?.libraryId);
 
 
 
@@ -177,6 +190,7 @@ const CheckoutScreen: React.FC = () => {
       Toast.show("Booking ID is missing");
     }
     try {
+      console.log("Payment Data is 186");
       const res = await axios.post(
         `${BACKEND}/api/v1/booking//confirm/${bookingId}`,
         {
@@ -186,7 +200,7 @@ const CheckoutScreen: React.FC = () => {
           paymentStatus: paymentStatus,
         }
       );
-      console.log(res.data, "Payment Confirmed");
+      console.log(res.data, "Payment Confirmed 196");
       return true;
     } catch (error) {
       console.log(error);
@@ -196,6 +210,7 @@ const CheckoutScreen: React.FC = () => {
 
   const PaymentScreen = async () => {
     await handlePayment();
+    // console.log("Payment Screen");
 
     if (isPaymentComplete) {
       console.log("Payment Status", paymentStatus);
@@ -214,20 +229,20 @@ const CheckoutScreen: React.FC = () => {
     }
   };
 
-  // useEffect(() => {
-  //   // InvoiceScreen();
-  //   if (isinvoiceComplete) {
-  //     router.push({
-  //       pathname: "/library/invoice.screen",
-  //       params: {
-  //         price: JSON.stringify(PaymentPrice),
-  //         paymentData: JSON.stringify(paymentData),
-  //         paymentId: JSON.stringify(paymentId),
-  //         bookingId: JSON.stringify(bookingId),
-  //       },
-  //     });
-  //   }
-  // }, [isPaymentComplete]);
+  useEffect(() => {
+    // InvoiceScreen();
+    if (isinvoiceComplete) {
+      router.push({
+        pathname: "/library/invoice.screen",
+        params: {
+          price: JSON.stringify(PaymentPrice),
+          paymentData: JSON.stringify(paymentData),
+          paymentId: JSON.stringify(paymentId),
+          bookingId: JSON.stringify(bookingId),
+        },
+      });
+    }
+  }, [isPaymentComplete]);
 
   return (
     <SafeAreaView>
@@ -252,7 +267,7 @@ const CheckoutScreen: React.FC = () => {
       >
         <View style={{}}>
           <Image
-            source={{ uri: BookedData.libraryId.images[0] }}
+            source={{ uri: BookedData?.libraryId?.images[0] }}
             style={{
               width: 140,
               height: 200,
@@ -301,7 +316,7 @@ const CheckoutScreen: React.FC = () => {
               fontWeight: "bold",
             }}
           >
-            {BookedData.libraryId.name}
+            {BookedData?.libraryId?.name}
           </Text>
 
           <View
@@ -391,7 +406,7 @@ const CheckoutScreen: React.FC = () => {
         >
           <SeatsCheckout />
 
-          <Text>{BookedData.bookedSeat.label} Seat</Text>
+          <Text>{BookedData?.bookedSeat?.label} Seat</Text>
         </View>
       </View>
 
@@ -500,7 +515,7 @@ const CheckoutScreen: React.FC = () => {
                 gap: 10,
               }}>
 
-                {BookedData.libraryId.timeSlot.map((slot) => (
+                {BookedData?.libraryId?.timeSlot.map((slot) => (
                   <View style={{
                     flexDirection: "row",
                     // justifyContent: "space-between",

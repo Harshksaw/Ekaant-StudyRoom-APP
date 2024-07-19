@@ -20,7 +20,7 @@ export default async function getLocationName(latitude, longitude) {
     console.log(data)
     if (data.status === 'OK') {
       const locationName = data.results[0].formatted_address;
-      console.log(locationName, "---locationName--23")
+      // console.log(locationName, "---locationName--23")
 
       return locationName;
     } else {

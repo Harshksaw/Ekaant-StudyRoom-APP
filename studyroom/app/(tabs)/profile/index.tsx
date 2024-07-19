@@ -12,16 +12,15 @@ import {
   Text,
   StyleSheet,
   Image,
-  Platform,
-  PermissionsAndroid,
+
 
   TouchableOpacity,
   Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "react-native-svg";
+
 import { LinearGradient as LinearBackground } from 'expo-linear-gradient';
-import Svg, { Path } from 'react-native-svg';
+
 
 
 
@@ -41,10 +40,21 @@ const generateShadesOfBlue = () => {
 };
 
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { resetUserState } from "@/redux/userSlice";
+import { resetAppState } from "@/redux/appSlice";
+import { resetBookingState } from "@/redux/bookingSlice";
 export default function profile() {
+
+  const dispatch = useDispatch();
+
   const logout = async () => {
     await AsyncStorage.removeItem("token");
+    await AsyncStorage.removeItem("userData");
+    dispatch(resetUserState());
+    dispatch(resetAppState());
+    dispatch(resetBookingState());
+
     router.push("(routes)/welcome");
   };
 
