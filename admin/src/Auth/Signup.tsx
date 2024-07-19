@@ -13,8 +13,8 @@ import { StepFive } from "./Signup/Step5";
 
 import { BASEURL } from "@/lib/utils";
 import axios from "axios";
-import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@radix-ui/react-toast";
+
+import { ToastContainer, toast } from 'react-toastify';
 import Loader from "@/components/Loader";
 
 // Add similar components for StepThree, StepFour, and StepFive
@@ -29,7 +29,7 @@ const FinalStep = ({ prevStep }) => (
 );
 
 function Signup() {
-  const { toast } = useToast();
+
   //parent compoenent
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -37,6 +37,9 @@ function Signup() {
   const [token, setToken] = useState("");
 
   const [userOTP, setOtpInputs] = useState("");
+  const [verfiedOtp, setVerifiedOtp] = useState({one:false,two:false});
+
+
   console.log(userOTP, "userotp");
 
     useEffect(() => {
@@ -55,9 +58,18 @@ function Signup() {
 
   const sendOtp = async () => {
     const { phone } = userInfo;
-    toast({
-      description: "OTP sent successfully",
-    });
+    //@GourishMarkan - Add toast ike this and replace the older method
+    toast('Sent OTP', { 
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+
+      });
 
     const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, {
       phoneNumber: phone,
@@ -82,23 +94,35 @@ function Signup() {
 
     if (res.status === 200 || res.status === 201) {
       console.log(res.data, "res.data");
+      setVerifiedOtp(
+        (prev) => ({ ...prev, one: true })
+      )
 
-      toast({
-        type: "background",
-        style: {
-          background: "rgb(45, 218, 88)",
-        },
 
-        variant: "default",
-
-        color: "green",
-        description: "Your Phone Otp has been verified.",
-      });
+      toast('Sent OTP', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+  
+        });
       console.log("OTP verified successfully");
     } else {
-      toast({
-        description: "Your Phone Otp has not been verified.",
-      });
+      toast('Sent OTP', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+  
+        });
     }
   };
 
@@ -126,8 +150,7 @@ function Signup() {
 
 
   const verifyEmailOTP = async () => {
-    // const { emailOtp1, emailOtp2, emailOtp3, emailOtp4 } = emailOtpInputs;
-    // const otp = `${emailOtp1}${emailOtp2}${emailOtp3}${emailOtp4}`;
+    const notify = () => toast("Verified Email OTP");
     const otp = emailOtpInputs;
     if (Number(otp) < 1000) {
       return;
@@ -140,21 +163,15 @@ function Signup() {
 
     if (res.status === 200 || res.status === 201) {
       console.log(res.data, "res.data");
+      setVerifiedOtp(
+        (prev) => ({ ...prev, two: true })
+      )
 
-      toast({
-        type: "background",
-        style: {
-          background: "rgb(45, 218, 88)",
-        },
-        variant: "default",
-        color: "green",
-        description: "Your Email Otp has been verified.",
-      });
-      console.log("OTP verified successfully");
+      notify();
     } else {
-      toast({
-        description: "Your Email Otp has not been verified.",
-      });
+      // toast({
+      //   description: "Your Email Otp has not been verified.",
+      // });
     }
   };
 
@@ -454,6 +471,8 @@ function Signup() {
             setOtpEmailInputs={setEmailOtpInputs}
             // handleInputChange={handleInputChange}
             // handleEmailInputChange={handleEmailOtpInputChange}
+            verified={verfiedOtp}
+
 
             nextStep={nextStep}
             prevStep={prevStep}
@@ -462,6 +481,8 @@ function Signup() {
 
       case 3:
         return (
+
+        
           <StepThree
             nextStep={nextStep}
             userDetails={userDetails}
@@ -487,6 +508,15 @@ function Signup() {
             libraryDetails={libraryDetails}
             setLibraryDetails={setLibraryDetails}
             handleFileChange = {handleFileChange}
+          />
+        );
+      case 6:
+        return (
+          <FinalStep
+
+            prevStep={prevStep}
+
+
           />
         );
       default:
