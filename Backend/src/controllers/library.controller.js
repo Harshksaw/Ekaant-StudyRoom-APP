@@ -10,6 +10,7 @@ const { upload } = require("multer");
 const { Library } = require("../models/library.model");
 const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
+const { get } = require("mongoose");
 
 const LibrarySchema = z.object({
   name: z.string(),
@@ -241,6 +242,23 @@ const getLibrary = async (req, res) => {
   }
 };
 
+const getAllLibrary = async (req, res) => {
+  try {
+    const roomsData = await Library.find();
+    res.status(200).json({
+      success: true,
+      count: roomsData.length,
+      data: roomsData,
+    });
+  } catch (error) {
+    console.error("Error fetching library data:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to retrieve library rooms. Please try again later.",
+    });
+  }
+};
+
 // get room by id
 const getLibraryById = async (req, res) => {
   const { id } = req.body;
@@ -328,5 +346,6 @@ module.exports = {
   getAllBookings,
   createRoom ,
   addOrUpdateRoomDetails,
-  getLibraryByUserId
+  getLibraryByUserId,
+  getAllLibrary
 };
