@@ -27,19 +27,7 @@ const Auth = ({ type }: { type: "signin" }) => {
   };
 
   // send otp--
-  const sendOtp = async () => {
-    try {
-      // send otp
-      console.log(userInfo.phone);
-      setShowOtp(true);
-      const response = await axios.post(`${BASEURL}/api/v1/auth/otp`, {
-        phoneNumber: userInfo.phone,
-      });
-      console.log(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
 
   // verfiy otp
   const verifyOtp = async () => {
@@ -60,36 +48,42 @@ const Auth = ({ type }: { type: "signin" }) => {
   async function sendRequest() {
     if (type === "signin") {
       try {
-        const response = await axios.post(`${BASEURL}/api/v1/auth/signin`, {
-          // username: userInfo.name,
+        const response = await axios.post(`${BASEURL}/api/v1/admin/loginAdmin`, {
           email: userInfo.email,
-          // phoneNumber: userInfo?.phone,
           password: userInfo.password,
-      
         });
-
+      
         if (response.data.success) {
-          console.log(response.data);
-          console.log(response.data.token);
+          console.log(response);
           const token = response.data.token;
-          const accountType = response.data.data.user.accountType;
-
+          console.log("----59");
+          const accountType = response.data.data.accountType;
+          console.log("----61", accountType);
+          
           localStorage.setItem("token", token);
-          localStorage.setItem("userId", response.data.data.user._id);
+          console.log("----62", token);
+          console.log(response.data.token);
+          console.log("----63");
           localStorage.setItem("role", accountType);
-          const role = await localStorage.getItem("role");
+          console.log("----64");
+          const role = localStorage.getItem("role");
+          console.log("----65");
+          if(!response?.hasRooms){
+            navigate("/manage-library/create-room", { replace: true });
+          }else{
 
-          role === "Admin"
-            ? navigate("/dashboard", {
-                replace: true,
-              })
-            : navigate("/admin", {
-                replace: true,
-              });
+            
+            role === "Admin"
+            ? navigate("/dashboard", { replace: true })
+            : navigate("/admin", { replace: true });
+          }
+        } else {
+          // Handle unsuccessful login attempt
+          alert("Login failed. Please check your credentials.");
         }
       } catch (e) {
-        alert("error while signing up");
-        console.log("error is ", e);
+        console.error("Error during login:", e);
+        alert("Error while signing up. Please check the console for more details.");
       }
     }
   }
@@ -143,56 +137,7 @@ const Auth = ({ type }: { type: "signin" }) => {
             Hello! Let's get started
           </h6>
           <div className="px-20">
-          {/* <div className="flex justify-start gap-2 items-center mb-4">
-              <p className="p-2 border rounded-lg">+91</p>
-              <input
-                type="number"
-                className="px-4 py-2 w-full rounded-lg border text-base bg-white text-gray-400"
-                value={userInfo?.phone.toString()}
-                placeholder="Phone"
-                onChange={(e) =>
-                  setUserInfo({
-                    ...userInfo,
-                    phone: e.target.value ? parseInt(e.target.value, 10) : 0,
-                  })
-                }
-              />
-              <Send
-                onClick={() => sendOtp()}
-                className="border rounded-lg p-3 h-10 w-12"
-              />
-            </div> */}
-               {/* <div className="flex justify-start border border-black bg-white">
-        <label
-          className=" w-24  py-2  text-black  h-[50px] justify-center items-center
-        text-center border border-gray-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer rounded-full "
-        >
-          <span className="text-3xl">🇮🇳</span>
-        </label>
-        <input
-          type="number"
-          // className="px-4 py-2 w-[410px] border-2 border-black  text-base bg-white text-gray-400"
-          className="focus:ring-0 focus:ring-offset-0 focus:outline-0 focus:outline-offset-0 "
-          value={userInfo?.phone.toString()}
-          placeholder="Phone"
-          onChange={(e) => {
-            const inputVal = e.target.value;
-            // Update the userInfo state with the new phone number
-            setUserInfo({
-              ...userInfo,
-              phone: inputVal ? parseInt(inputVal, 10) : 0,
-            });
-            // Check if the input length is 10 and call a function
-            if (inputVal.length === 10) {
-              // Call your desired function here
-
-              console.log("Input is 10 digits, calling function...");
-              // functionName(); // Replace functionName with the actual function you want to call
-            }
-          }}
-          style={{ border: "none", justifyContent: "center" }}
-        />
-      </div> */}
+    
             {showOtp && userInfo.phone >= 1000000 && (
               <div className="flex justify-between items-center gap-2 mb-4">
                 <input

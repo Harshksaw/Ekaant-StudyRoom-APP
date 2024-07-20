@@ -1,16 +1,12 @@
 const { StatusCodes } = require("http-status-codes");
 
-
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin.model");
 const JWT_SECRET = "MY_SECRET_KEY";
 
-
-
-const crypto = require('crypto');
-
+const bcrypt = require("bcrypt");
 const File = require("../models/file.model");
-
+const { Library } = require("../models/library.model");
 
 const ping = (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Ping successful" });
@@ -44,7 +40,6 @@ async function RegisterAdmin(req, res, next) {
     //   Address
     // );
 
-
     // Convert files to base64
     //  console.log("req.files is ", req.files);
     //  if (!req.files || !req.files.aadhar) {
@@ -57,21 +52,15 @@ async function RegisterAdmin(req, res, next) {
     //   return res.status(400).json({ error: "No file uploaded" });
     // }
 
-  
     const { pancard, aadhar } = req.files;
     if (pancard) {
       console.log(pancard[0]); // Access the first (and only) pancard file
-
     }
 
     // Access aadhar file
     if (aadhar) {
       console.log(aadhar[0]); // Access the first (and only) aadhar file
-
     }
-
- 
-
 
     const pancardFile = new File({
       filename: pancard[0].originalname,
@@ -86,19 +75,16 @@ async function RegisterAdmin(req, res, next) {
     const pancardPath = await pancardFile.save();
     const addharCardPath = await aadharFile.save();
 
+    // console.log("pancardPath is ", pancardPath._id);
+    // console.log("addharCardPath is ", addharCardPath._id);
 
-    console.log("pancardPath is ", pancardPath._id);
-    console.log("addharCardPath is ", addharCardPath._id);  
-
-
-
-
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newAdmin = await Admin.create({
       phoneNumber,
       username,
       email,
-      password,
+      password: hashedPassword,
       fullName,
       Dob,
       AddharNumber,
@@ -106,7 +92,7 @@ async function RegisterAdmin(req, res, next) {
       address: Address,
       adhaarCardDetails: {
         adhaarNumber: AddharNumber,
-        adhaarCardFile: addharCardPath._id, 
+        adhaarCardFile: addharCardPath._id,
       },
       panCardDetails: {
         panNumber: PanNumber,
@@ -114,64 +100,101 @@ async function RegisterAdmin(req, res, next) {
       },
     });
 
-    const hashedPassword = await newAdmin.createHash(password);
-    console.log("hashedpassword is ", hashedPassword);
-    newAdmin.password = hashedPassword;
-    // saving the user--
     await newAdmin.save();
 
-    const admin_id = newAdmin._id;
+    // Generate token
+    const token = jwt.sign({ admin_id: newAdmin._id }, JWT_SECRET);
 
-    // generating the token--
-    const token = jwt.sign({ admin_id }, JWT_SECRET);
-    
-    return res.status(StatusCodes.CREATED).json({
+    // Respond with token
+    return res.status(201).json({
       success: true,
-      message: "User authenticated successfully",
-      error: {},
+      message: "Admin created successfully",
       data: newAdmin,
-      token: token,
+      token,
     });
-
   } catch (error) {
     console.log("error is ", error);
     next(error);
   }
 }
 // login--
-async function LoginAdmin(req, res, next) {
+async function LoginAdmin(req, res) {
   const { email, password } = req.body;
-  console.log("email and password is ", email, password);
-  // console.log(email, password);
+
+
+
   try {
     const admin = await Admin.findOne({ email });
-    console.log(admin);
-    if (admin) {
-      if (await admin.validatePassword(password)) {
-        const token = jwt.sign({ admin_id: admin._id }, JWT_SECRET);
-        return res.status(StatusCodes.OK).json({
+    console.log(admin)
+    if (!admin) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ success: false, message: "Authentication failed" });
+    }
+
+
+    const isMatch = await bcrypt.compare(password, admin.password);
+    console.log("isMatch is ", isMatch);  
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({
+          success: false,
+          message: "Authentication failed. Wrong password.",
+        });
+    }
+
+    // Generate token
+    const token = jwt.sign({ admin_id: admin._id }, JWT_SECRET);
+    const libraries = await Library.find({ libraryOwner: admin._id })
+
+    if (libraries.length > 1) {
+      // User owns more than one library, considered an existing user
+      return res.status(200).json({
+        success: true,
+        message: "Existing user with multiple libraries.",
+        data: admin,
+        token,
+      });
+    } else if (libraries.length === 1) {
+      // User owns exactly one library, check for rooms
+
+      const hasRooms = libraries[0].rooms ;
+      console.log(hasRooms);
+
+      if (hasRooms.length === 0) {
+        // The single library has rooms
+        return res.status(200).json({
           success: true,
-          message: "User authenticated successfully",
-          error: {},
-          data: { admin, admin_id: admin._id },
-          token: token,
+          message: "Admin authenticated successfully, library has no  rooms.",
+          hasRooms : false,
+          data: admin,
+          token,
         });
       } else {
-        return res.status(StatusCodes.UNAUTHORIZED).json({
-          success: false,
-          message: "Invalid password",
-          error: {},
+        // The single library does not have rooms
+        return res.status(200).json({
+          success: true,
+          message: "Admin authenticated successfully, but the library has  rooms.",
+          hasRooms : true,
+          data: admin,
+          token,
         });
       }
     } else {
-      return res.status(StatusCodes.UNAUTHORIZED).json({
-        success: false,
-        message: "email not found",
-        error: {},
+      // No libraries found, user does not own any libraries
+      return res.status(200).json({
+        success: true,
+        message: "Admin authenticated successfully, but no libraries owned.",
+        data: admin,
+        token,
       });
     }
+  
   } catch (error) {
-    console.log("error is ", error);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ success: false, message: error.message });
   }
 }
 // change password--

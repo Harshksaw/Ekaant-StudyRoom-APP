@@ -6,7 +6,7 @@ import { View, useColorScheme } from 'react-native';
 import TabsIndex from './index';
 import CardDetailScreen from '@/screens/home/card/card.details';
 import { ToastProvider } from "react-native-toast-notifications";
-import * as Font from 'expo-font';
+
 import { Provider } from 'react-redux';
 import store from '@/redux/store';
 
