@@ -4,9 +4,11 @@ const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin.model");
 const JWT_SECRET = "MY_SECRET_KEY";
 
+
 const bcrypt = require("bcrypt");
 const File = require("../models/file.model");
 const { Library } = require("../models/library.model");
+
 
 const ping = (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Ping successful" });
@@ -17,6 +19,8 @@ const ping = (req, res) => {
 
 async function RegisterAdmin(req, res, next) {
   try {
+    console.log("eeee");
+    console.log(req.body);
     const {
       phoneNumber,
       email,
@@ -29,6 +33,7 @@ async function RegisterAdmin(req, res, next) {
       username,
     } = req.body;
 
+
     // console.log(
     //   phoneNumber,
     //   email,
@@ -39,6 +44,7 @@ async function RegisterAdmin(req, res, next) {
     //   PanNumber,
     //   Address
     // );
+
 
     // Convert files to base64
     //  console.log("req.files is ", req.files);
@@ -75,10 +81,12 @@ async function RegisterAdmin(req, res, next) {
     const pancardPath = await pancardFile.save();
     const addharCardPath = await aadharFile.save();
 
+
     // console.log("pancardPath is ", pancardPath._id);
     // console.log("addharCardPath is ", addharCardPath._id);
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
 
     const newAdmin = await Admin.create({
       phoneNumber,
@@ -105,8 +113,10 @@ async function RegisterAdmin(req, res, next) {
     // Generate token
     const token = jwt.sign({ admin_id: newAdmin._id }, JWT_SECRET);
 
+
     // Respond with token
     return res.status(201).json({
+
       success: true,
       message: "Admin created successfully",
       data: newAdmin,
