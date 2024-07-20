@@ -75,7 +75,6 @@ const BookingScreen: React.FC = () => {
     }
   };
 
-
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
@@ -107,7 +106,6 @@ const BookingScreen: React.FC = () => {
     months: selectedMonth,
     room: currentRoomNo,
     slot: selectedSlots,
-
   };
 
   const handleData = (data: DataItem[]) => {
@@ -259,19 +257,15 @@ const BookingScreen: React.FC = () => {
         bookingPeriod: selectedMonth,
         roomNo: currentRoomNo,
         timeSlot: selectedSlots,
-      }
+      };
 
-      const Bookdata = {   ...newBookingData, libraryId: data }
+      const Bookdata = { ...newBookingData, libraryId: data };
       // console.log("Booking ID254 boking",Bookdata);
 
-
       router.push({
-
-
         pathname: "/library/checkout.screen",
         params: {
           item: JSON.stringify(Bookdata),
-
         },
       });
     } else {
@@ -479,7 +473,7 @@ const BookingScreen: React.FC = () => {
                     }}
                   >
                     {available.map((slot, index) => {
-                      if (slot?.availability) {
+                      if (slot?.availability && slot?.from !== null) {
                         return (
                           <View
                             key={slot._id}
@@ -518,7 +512,7 @@ const BookingScreen: React.FC = () => {
                             </TouchableOpacity>
                           </View>
                         );
-                      } else {
+                      } else if( slot?.from !== null) {
                         // Render regular time slots
 
                         return (
@@ -547,9 +541,7 @@ const BookingScreen: React.FC = () => {
                                   fontWeight: "600",
                                 }}
                               >
-                                {slot.from}
-                                {slot.from < 12 ? "AM" : "PM"}
-                                {" -"}
+                                {slot.from ? slot.from + " -" : ""}
                               </Text>
                               <Text
                                 style={{
@@ -559,7 +551,6 @@ const BookingScreen: React.FC = () => {
                                 }}
                               >
                                 {slot.to}
-                                {slot.to < 12 ? "AM" : "PM"}
                               </Text>
                             </TouchableOpacity>
                           </View>

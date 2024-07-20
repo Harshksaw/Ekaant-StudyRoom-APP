@@ -38,10 +38,9 @@ const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
 
 export default function Bookings() {
   const [data, setData] = useState(null);
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
 
   const getBookings = async () => {
-
     const userId = await getUserId(); // Wait for getUserId to complete
 
     if (userId) {
@@ -69,7 +68,6 @@ export default function Bookings() {
     console.log("Data+++", data);
   }, []);
 
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
@@ -77,17 +75,11 @@ export default function Bookings() {
     }, 2000);
   }, []);
 
-
   return (
     <SafeAreaView
       style={{
         flex: 1,
-
         padding: 0,
-        // marginBottom: 50,
-
-        // justifyContent: "center",
-        // alignItems: "center",
       }}
     >
       <View
@@ -138,8 +130,9 @@ export default function Bookings() {
           }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }>
-          {data && data.length  == 0 && (
+          }
+        >
+          {data && data.length == 0 && (
             <TouchableOpacity
               onPress={() => getBookings()}
               style={{
@@ -149,11 +142,12 @@ export default function Bookings() {
                 marginTop: 100,
               }}
             >
-                 <Image
-              style={{width:200, height:200}}
-             source={{uri:"https://img.icons8.com/?size=100&id=iUVwyb80vyVW&format=png&color=000000"}}
-
-             />
+              <Image
+                style={{ width: 200, height: 200 }}
+                source={{
+                  uri: "https://img.icons8.com/?size=100&id=iUVwyb80vyVW&format=png&color=000000",
+                }}
+              />
               <Text
                 style={{
                   fontSize: 30,
@@ -164,8 +158,6 @@ export default function Bookings() {
               >
                 No Bookings Found
               </Text>
-          
-
             </TouchableOpacity>
           )}
           {data &&
@@ -183,7 +175,7 @@ export default function Bookings() {
                   // console.log("Item", item)
                   router.push({
                     pathname: "/(routes)/library/checkout.screen",
-                    params: {item : JSON.stringify(item) },
+                    params: { item: JSON.stringify(item) },
                   })
                 }
                 // onPress={()=> {

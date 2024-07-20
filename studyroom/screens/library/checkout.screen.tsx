@@ -74,7 +74,7 @@ const [libraryId, setLibraryId] = useState(null);
   const RoomNo = BookedData?.roomNo;
   const BookedDate = BookedData?.bookingDate.slice(0,10);
   const [modalVisible, setModalVisible] = useState(false);
-console.log(BookedDate, "Booked Date");
+console.log(BookedData, "Booked Date");
 
    // return (
   //   <View>
@@ -138,7 +138,7 @@ console.log(BookedDate, "Booked Date");
   const RegistrationFees = 1000;
   const subtotal = Number((price + RegistrationFees).toFixed(2));
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
-  const totalAmount = subtotal;
+  const totalAmount = subtotal * BookingMonths;
 
   console.log(endDate, "End Date");
   // const location = getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
