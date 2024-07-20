@@ -194,7 +194,7 @@ const createRoom = async (req, res) => {
 // addOrUpdateRoomDetails
 const addOrUpdateRoomDetails = async (req, res) => {
   try {
-    const { libraryId, price, timeSlot, location } = req.body; // Extracting all necessary information from the request body
+    const { libraryId, price, timeSlot, location } = req.body;
 
     const library = await Library.findById(libraryId);
 
@@ -247,6 +247,23 @@ const getLibraryById = async (req, res) => {
   console.log(id);
   try {
     const room = await Library.findById(id);
+    res.status(200).json({
+      success: true,
+      message: "Library data",
+      data: room,
+    });
+  } catch (error) {
+    console.error("Error ", error);
+    res.status(500).json({ error: "cannot get room" });
+  }
+};
+
+
+const getLibraryByUserId = async (req, res) => {
+  const { id } = req.body;
+  console.log(id);
+  try {
+    const room = await Library.findOne({libraryOwner : id});
     res.status(200).json({
       success: true,
       message: "Library data",
@@ -310,5 +327,6 @@ module.exports = {
   getAdminLibraries,
   getAllBookings,
   createRoom ,
-  addOrUpdateRoomDetails
+  addOrUpdateRoomDetails,
+  getLibraryByUserId
 };

@@ -129,21 +129,11 @@ function Signup() {
   const [emailOtpInputs, setEmailOtpInputs] = useState("");
 
   const sendEmailOtp = async () => {
-    toast({
-      description: "Email OTP sent successfully",
-    });
+   
     const { email } = userInfo;
     const res = await axios.post(`${BASEURL}/api/v1/auth/emailotp`, { email });
     if (res.status === 200) {
-      toast({
-        description: "OTP sent successfully",
-        style: {
-          background: "rgb(45, 218, 88)",
-          color: "white",
-          padding: "1rem",
-          borderRadius: "1rem",
-        },
-      });
+    
       console.log("OTP sent successfully");
     }
   };
@@ -284,7 +274,7 @@ function Signup() {
     formData.append("Dob", userDetails.dob);
     formData.append("AddharNumber", userDetails.aadharCard); // If AddharNumber is a text field
     formData.append("PanNumber", userDetails.panCard); // If PanNumber is a text field
-    formData.append("Address", userDetails.fullName); // Assuming Address is an object and needs to be stringified
+    formData.append("Address", JSON.stringify(userDetails.address)); // Assuming Address is an object and needs to be stringified
     formData.append("username", createUserName);
 
     formData.append("aadhar", userDetails.uploadAadharCard);
@@ -307,13 +297,7 @@ function Signup() {
         // localStorage.setItem("userId", response.data.data.user._id);
         localStorage.setItem("role", "ADMIN");
 
-        toast({
-          title: "Created user",
-          description: `Username - ${response.data.username}`,
-          action: (
-            <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-          ),
-        });
+      
       }
 
       setUserDetails({
@@ -339,11 +323,7 @@ function Signup() {
       setLoading(false);
       setCurrentStep(1);
       console.error("Error:");
-      toast({
-        title: " user not created",
-
-        action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
-      });
+    
     }
   };
 
@@ -413,14 +393,7 @@ function Signup() {
 
       if (response.data) {
         setLoading(false);
-        toast({
-          title: "Created Library",
-          description: `Library Name - ${response.data.name}`,
-          action: (
-            <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-          ),
-        });
-
+       
         
         setCurrentStep(0);
 
