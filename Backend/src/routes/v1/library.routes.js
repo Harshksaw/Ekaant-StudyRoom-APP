@@ -47,6 +47,8 @@ Library.post(
 Library.post("/createRoom", LibraryController.createRoom);
 Library.post("/updateRoom", LibraryController.addOrUpdateRoomDetails);
 Library.get("/getLibrary", LibraryController.getLibrary);
+Library.get("/getAllLibrary", LibraryController.getAllLibrary);
+Library.get("/getLibrarybyUserId", LibraryController.getLibraryByUserId);
 Library.post("/updateStatus", LibraryController.updateApproveStatus);
 Library.post("/getLibraryById", LibraryController.getLibraryById);
 Library.post("/getAdminLibraries", LibraryController.getAdminLibraries);

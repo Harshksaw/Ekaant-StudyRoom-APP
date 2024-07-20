@@ -28,10 +28,13 @@ const bookingSlice = createSlice({
     setBookingDetails(state, action: PayloadAction<any>) {
       state.details = action.payload;
     },
+    resetBookingState(state) {
+      state.details = initialState.details;
+    }
     // Optionally, add more reducers here for individual updates if needed
   },
 });
 
-export const { setBookingDetails } = bookingSlice.actions;
+export const { setBookingDetails, resetBookingState } = bookingSlice.actions;
 
 export default bookingSlice.reducer;

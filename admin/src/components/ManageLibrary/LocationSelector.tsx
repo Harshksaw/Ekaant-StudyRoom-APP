@@ -1,4 +1,4 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -8,7 +8,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-const LocationSelector = ({ onLocationSelect }:any) => {
+const LocationSelector = ({ onLocationSelect }: any) => {
   const [position, setPosition] = useState<[number, number] | null>(null);
 
   const askForLocation = () => {
@@ -66,7 +66,7 @@ const LocationSelector = ({ onLocationSelect }:any) => {
   };
 
   return (
-    <div style={{ height: "400px", width: "100%" }}>
+    <div style={{ height: "400px", width: "90%" }} className="flex-col justify-center  items-center">
       {position && (
         <MapContainer
           center={position}
@@ -89,10 +89,10 @@ const LocationSelector = ({ onLocationSelect }:any) => {
           )}
         </MapContainer>
       )}
-       <div  className="absolute right-0 bg-blue-400">
-      {/* Your existing map and location selection UI */}
-      <button onClick={handleSaveLocation}>Save Location</button>
-    </div>
+      <div className="flex justify-center items-center bg-blue-100">
+        {/* Your existing map and location selection UI */}
+        <button className=" text-3xl p-2  text-green-800 rounded-md " onClick={handleSaveLocation}>Save Location</button>
+      </div>
     </div>
   );
 };

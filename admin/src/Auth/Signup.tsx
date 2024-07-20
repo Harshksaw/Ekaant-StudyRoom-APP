@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useNavigation } from "react-router-dom";
 
 import studyMain from "../assets/images/studyMain.png";
 import reading from "../assets/images/reading 1.png";
@@ -13,23 +13,27 @@ import { StepFive } from "./Signup/Step5";
 
 import { BASEURL } from "@/lib/utils";
 import axios from "axios";
-import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@radix-ui/react-toast";
-import Loader from "@/components/Loader";
 
+import { ToastContainer, toast } from 'react-toastify';
+import Loader from "@/components/Loader";
 // Add similar components for StepThree, StepFour, and StepFive
 
-const FinalStep = ({ prevStep }) => (
+const FinalStep = ({ prevStep }) => {
+  const navigate = useNavigate();
+  return(
+  
   <div>
     <h2>Final Step</h2>
     {/* Summary or confirmation */}
-    <button onClick={prevStep}>Back</button>
+    <button onClick={()=> navigate("/signin", {
+                replace: true,
+              }) }>Back</button>
     <button onClick={() => alert("Form Submitted")}>Submit</button>
   </div>
-);
+)}
 
 function Signup() {
-  const { toast } = useToast();
+
   //parent compoenent
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -37,127 +41,7 @@ function Signup() {
   const [token, setToken] = useState("");
 
   const [userOTP, setOtpInputs] = useState("");
-  console.log(userOTP, "userotp");
-
-    useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setToken(token);
-      setCurrentStep(4);
-    }
-    console.log(token, "token");
-    console.log(currentStep, "currentstep");
-    if(token !== ""){
-      console.log(token , "token");
-      setCurrentStep(1);
-    }
-    }, []);
-
-  const sendOtp = async () => {
-    const { phone } = userInfo;
-    toast({
-      description: "OTP sent successfully",
-    });
-
-    const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, {
-      phoneNumber: phone,
-    });
-    if (res.status === 200) {
-      console.log("OTP sent successfully");
-    }
-  };
-  const verifyOTP = async () => {
-    console.log("verfication start user OTP");
-    // const { otp1, otp2, otp3, otp4 } = userOTP;
-    // Assuming verifyUserOTP is the function you want to call
-    // const otp = `${otp1}${otp2}${otp3}${otp4}`;
-    const otp = userOTP;
-    if (Number(otp) < 1000) {
-      return;
-    }
-    console.log("verfication start");
-
-    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOTP`, { otp });
-    console.log(res, "res");
-
-    if (res.status === 200 || res.status === 201) {
-      console.log(res.data, "res.data");
-
-      toast({
-        type: "background",
-        style: {
-          background: "rgb(45, 218, 88)",
-        },
-
-        variant: "default",
-
-        color: "green",
-        description: "Your Phone Otp has been verified.",
-      });
-      console.log("OTP verified successfully");
-    } else {
-      toast({
-        description: "Your Phone Otp has not been verified.",
-      });
-    }
-  };
-
-  const [emailOtpInputs, setEmailOtpInputs] = useState("");
-
-  const sendEmailOtp = async () => {
-    toast({
-      description: "Email OTP sent successfully",
-    });
-    const { email } = userInfo;
-    const res = await axios.post(`${BASEURL}/api/v1/auth/emailotp`, { email });
-    if (res.status === 200) {
-      toast({
-        description: "OTP sent successfully",
-        style: {
-          background: "rgb(45, 218, 88)",
-          color: "white",
-          padding: "1rem",
-          borderRadius: "1rem",
-        },
-      });
-      console.log("OTP sent successfully");
-    }
-  };
-
-
-  const verifyEmailOTP = async () => {
-    // const { emailOtp1, emailOtp2, emailOtp3, emailOtp4 } = emailOtpInputs;
-    // const otp = `${emailOtp1}${emailOtp2}${emailOtp3}${emailOtp4}`;
-    const otp = emailOtpInputs;
-    if (Number(otp) < 1000) {
-      return;
-    }
-
-    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyEmailOtp`, {
-      otp,
-    });
-    console.log(res, "res");
-
-    if (res.status === 200 || res.status === 201) {
-      console.log(res.data, "res.data");
-
-      toast({
-        type: "background",
-        style: {
-          background: "rgb(45, 218, 88)",
-        },
-        variant: "default",
-        color: "green",
-        description: "Your Email Otp has been verified.",
-      });
-      console.log("OTP verified successfully");
-    } else {
-      toast({
-        description: "Your Email Otp has not been verified.",
-      });
-    }
-  };
-
+  const [verfiedOtp, setVerifiedOtp] = useState({one:false,two:false});
   const [userInfo, setUserInfo] = useState({
     phone: 0,
     email: "",
@@ -225,6 +109,137 @@ function Signup() {
       CommonParking: false,
     },
   });
+
+
+
+  console.log(userOTP, "userotp");
+
+    useEffect(() => {
+    const token = localStorage.getItem("token");
+    const admin = localStorage.getItem("userId")
+    if (token !== ""  && admin !== "") {
+      setCurrentStep(4);
+      setToken(token);
+    }
+    console.log(token, "token");
+    console.log(currentStep, "currentstep");
+
+    if(!token){
+      console.log(token , "token");
+      setCurrentStep(1);
+    }
+    }, []);
+
+  const sendOtp = async () => {
+    const { phone } = userInfo;
+    //@GourishMarkan - Add toast ike this and replace the older method
+    toast('Sent OTP', { 
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+
+      });
+
+    const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, {
+      phoneNumber: phone,
+    });
+    if (res.status === 200) {
+      console.log("OTP sent successfully");
+    }
+  };
+  const verifyOTP = async () => {
+    console.log("verfication start user OTP");
+    // const { otp1, otp2, otp3, otp4 } = userOTP;
+    // Assuming verifyUserOTP is the function you want to call
+    // const otp = `${otp1}${otp2}${otp3}${otp4}`;
+    const otp = userOTP;
+    if (Number(otp) < 1000) {
+      return;
+    }
+    console.log("verfication start");
+
+    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOTP`, { otp });
+    console.log(res, "res");
+
+    if (res.status === 200 || res.status === 201) {
+      console.log(res.data, "res.data");
+      setVerifiedOtp(
+        (prev) => ({ ...prev, one: true })
+      )
+
+
+      toast('Verified  OTP', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+  
+        });
+      console.log("OTP verified successfully");
+    } else {
+      toast('Sent OTP', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+  
+        });
+    }
+  };
+
+  const [emailOtpInputs, setEmailOtpInputs] = useState("");
+
+  const sendEmailOtp = async () => {
+   
+    const { email } = userInfo;
+    const res = await axios.post(`${BASEURL}/api/v1/auth/emailotp`, { email });
+    if (res.status === 200) {
+    
+      console.log("OTP sent successfully");
+    }
+  };
+
+
+  const verifyEmailOTP = async () => {
+    const notify = () => toast("Verified Email OTP");
+    const otp = emailOtpInputs;
+    if (Number(otp) < 1000) {
+      return;
+    }
+
+    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyEmailOtp`, {
+      otp,
+    });
+    console.log(res, "res");
+
+    if (res.status === 200 || res.status === 201) {
+      console.log(res.data, "res.data");
+      setVerifiedOtp(
+        (prev) => ({ ...prev, two: true })
+      )
+
+      notify();
+    } else {
+      // toast({
+      //   description: "Your Email Otp has not been verified.",
+      // });
+    }
+  };
+
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     if (event.target.files) {
@@ -236,12 +251,19 @@ function Signup() {
   };
 
   useEffect(() => {
+
+
     if (Number(userOTP) > 1000) {
-      verifyOTP();
+      {
+        currentStep ===2 && verifyOTP();
+      }
     }
 
     if (Number(emailOtpInputs) > 1000) {
-      verifyEmailOTP();
+      {
+        currentStep ===2 &&  verifyEmailOTP();;
+      }
+     
     }
 
     // console.log(userDetails,"---");
@@ -267,7 +289,7 @@ function Signup() {
     formData.append("Dob", userDetails.dob);
     formData.append("AddharNumber", userDetails.aadharCard); // If AddharNumber is a text field
     formData.append("PanNumber", userDetails.panCard); // If PanNumber is a text field
-    formData.append("Address", userDetails.fullName); // Assuming Address is an object and needs to be stringified
+    formData.append("Address", JSON.stringify(userDetails.address)); // Assuming Address is an object and needs to be stringified
     formData.append("username", createUserName);
 
     formData.append("aadhar", userDetails.uploadAadharCard);
@@ -286,17 +308,11 @@ function Signup() {
 
         console.log(response.data, "response.data");
 
-        localStorage.setItem("token", response.data.token);
-        // localStorage.setItem("userId", response.data.data.user._id);
         localStorage.setItem("role", "ADMIN");
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data.data._id);
 
-        toast({
-          title: "Created user",
-          description: `Username - ${response.data.username}`,
-          action: (
-            <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-          ),
-        });
+      
       }
 
       setUserDetails({
@@ -322,11 +338,7 @@ function Signup() {
       setLoading(false);
       setCurrentStep(1);
       console.error("Error:");
-      toast({
-        title: " user not created",
-
-        action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
-      });
+    
     }
   };
 
@@ -339,9 +351,10 @@ function Signup() {
   .map(([key]) => key);
 
     const AdminId = localStorage.getItem("userId");
+    console.log(AdminId)
 
     const LibraryDataOBJ = {
-      libraryOwner: "6697d1b78a16c973714efb31",
+      libraryOwner: AdminId,
       name: libraryDetails.libraryName,
       shortDescription: libraryDetails.libraryApp.shortDescription,
       longDescription: libraryDetails.libraryApp.longDescription,
@@ -396,14 +409,7 @@ function Signup() {
 
       if (response.data) {
         setLoading(false);
-        toast({
-          title: "Created Library",
-          description: `Library Name - ${response.data.name}`,
-          action: (
-            <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-          ),
-        });
-
+       
         
         setCurrentStep(0);
 
@@ -454,6 +460,8 @@ function Signup() {
             setOtpEmailInputs={setEmailOtpInputs}
             // handleInputChange={handleInputChange}
             // handleEmailInputChange={handleEmailOtpInputChange}
+            verified={verfiedOtp}
+
 
             nextStep={nextStep}
             prevStep={prevStep}
@@ -462,6 +470,8 @@ function Signup() {
 
       case 3:
         return (
+
+        
           <StepThree
             nextStep={nextStep}
             userDetails={userDetails}
@@ -487,6 +497,15 @@ function Signup() {
             libraryDetails={libraryDetails}
             setLibraryDetails={setLibraryDetails}
             handleFileChange = {handleFileChange}
+          />
+        );
+      case 6:
+        return (
+          <FinalStep
+
+            prevStep={prevStep}
+
+
           />
         );
       default:

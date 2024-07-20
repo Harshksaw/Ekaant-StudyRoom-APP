@@ -6,8 +6,7 @@ export const StepTwo = ({
   userEmailOTP,
   setOtpInputs,
   setOtpEmailInputs,
-  // handleInputChange,
-  // handleEmailInputChange,
+  verified
 }: any) => (
 
   <div>
@@ -93,12 +92,19 @@ export const StepTwo = ({
       >
         Back
       </button>
-      <button
-        className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
-        onClick={nextStep}
-      >
+
+      {
+        verified.one && verified.two &&(
+
+          <button
+          className=" center  mt-1 bg-gradient-to-r from-sky-600 to-sky-300 text-white py-2 px-20 rounded-full"
+          onClick={nextStep}
+          >
         Next
       </button>
+      )
+      }
+   
     </div>
   </div>
 );

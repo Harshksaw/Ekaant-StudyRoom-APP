@@ -20,6 +20,8 @@ const initialState: any = {
  bookingsForFriend: false,
 
 friendDetails: null,
+details: null,
+
   
 };
 
@@ -48,11 +50,18 @@ const UserSlice = createSlice({
         state.bookingsForFriend = !state.bookingsForFriend;
       }
     },
+    resetUserState(state) {
+      state.data = null;
+      state.bookingsForFriend = false;
+      state.friendDetails = null;
+      state.details = null;
+    },
+    
     
 
   },
 });
 
-export const { setUserDetails, setFriendDetails } = UserSlice.actions;
+export const { setUserDetails, setFriendDetails,resetUserState } = UserSlice.actions;
 
 export default UserSlice.reducer;

@@ -19,6 +19,7 @@ import OwnerHome from "./components/Owner/OwnerHome";
 import MyLibrary from "./components/ManageLibrary/MyLibrary";
 import Auth from "./Auth/Auth";
 import Signup from "./Auth/Signup";
+import CreateRoom from "./components/ManageLibrary/CreateRoom";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -47,8 +48,10 @@ function App() {
 
           {role === "Admin" && (
             <Route element={<ProtectedRoute />}>
+              <Route path="/manage-library/create-room" element={<CreateRoom />}/>
               <Route path="/manage-library/create-library" element={<CreateLibrary />}/>
               <Route path="/dashboard" element={<Dashboard />} />
+
 
               <Route path="/manage-booking/view" element={<View />} />
               <Route path="manage-user/permission" element={<Permission />} />
