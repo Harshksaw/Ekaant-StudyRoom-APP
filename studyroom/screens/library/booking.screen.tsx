@@ -107,6 +107,7 @@ const BookingScreen: React.FC = () => {
     months: selectedMonth,
     room: currentRoomNo,
     slot: selectedSlots,
+
   };
 
   const handleData = (data: DataItem[]) => {
@@ -252,11 +253,25 @@ const BookingScreen: React.FC = () => {
       setIsModalVisible(false);
       console.log("Booking ID254 boking", bookingId);
 
+      const newBookingData = {
+        bookedSeat: selectedSeat,
+        bookingDate: selectedDate,
+        bookingPeriod: selectedMonth,
+        roomNo: currentRoomNo,
+        timeSlot: selectedSlots,
+      }
+
+      const Bookdata = {   ...newBookingData, libraryId: data }
+      // console.log("Booking ID254 boking",Bookdata);
+
+
       router.push({
+
+
         pathname: "/library/checkout.screen",
         params: {
-          item: JSON.stringify(BookedData),
-          id: JSON.stringify(bookingId),
+          item: JSON.stringify(Bookdata),
+
         },
       });
     } else {

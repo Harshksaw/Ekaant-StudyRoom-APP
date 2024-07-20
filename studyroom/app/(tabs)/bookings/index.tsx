@@ -183,7 +183,7 @@ export default function Bookings() {
                   // console.log("Item", item)
                   router.push({
                     pathname: "/(routes)/library/checkout.screen",
-                    params: { bookitem: JSON.stringify(item) },
+                    params: {item : JSON.stringify(item) },
                   })
                 }
                 // onPress={()=> {

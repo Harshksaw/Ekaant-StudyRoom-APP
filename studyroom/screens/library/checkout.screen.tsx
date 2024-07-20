@@ -15,6 +15,7 @@ import {
   StyleSheet,
   Touchable,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -35,18 +36,30 @@ const CheckoutScreen: React.FC = () => {
   const [userData, setUserData] = useState(null);
   const [libraryData, setLibraryData] = useState(null);
   const [location, setLocation] = useState(null);
+
+
   // console.log(userDetails, "-----------------")
   //getting data  from booking screen
 const [libraryId, setLibraryId] = useState(null);
   const params = useRoute();
-  let BookedData;
-  if (params?.params?.item) {
-    BookedData = JSON.parse(params.params.item);
-  } else if (params?.params?.bookitem) {
-    BookedData = JSON.parse(params.params.bookitem);
-   let libraryData = useSelector((state: any) => state.library);
-   setLibraryId(libraryData);
+
+
+  const BookedData = JSON.parse(params.params.item);
+
+  if(!BookedData){
+
+    return (
+      <View>
+        <ActivityIndicator  size="large" color="#0000ff" />
+      </View>
+    )
+    
   }
+
+  console.log(BookedData, "Booked Data");
+
+
+ 
   
   console.log(libraryId, "Library Id");
   
@@ -54,13 +67,21 @@ const [libraryId, setLibraryId] = useState(null);
 
 
 
-  const BookingDate = BookedData?.date || BookedData.bookingDate.slice(0, 10);
-  const BookingMonths = BookedData?.months || BookedData?.bookingPeriod;
-  const BookingSeat = BookedData?.seat || BookedData?.bookedSeat;
-  const BookingSlot = BookedData?.slot || BookedData?.timeSlot;
-  const RoomNo = BookedData?.room || BookedData?.roomNo;
-  const BookedDate = BookedData?.date || BookedData?.bookingDate.slice(0, 10);
+  // const BookingDate = BookedData?.bookingDate
+  const BookingMonths =  BookedData?.bookingPeriod;
+  const BookingSeat = BookedData?.bookedSeat;
+  const BookingSlot = BookedData?.timeSlot;
+  const RoomNo = BookedData?.roomNo;
+  const BookedDate = BookedData?.bookingDate.slice(0,10);
   const [modalVisible, setModalVisible] = useState(false);
+console.log(BookedDate, "Booked Date");
+
+   // return (
+  //   <View>
+  //     <Text>Checkout Screen</Text>
+  //   </View>
+
+  // )
 
 
   const [paymentStatus, setPaymentStatus] = useState(false);
@@ -119,9 +140,10 @@ const [libraryId, setLibraryId] = useState(null);
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
   const totalAmount = subtotal;
 
+  console.log(endDate, "End Date");
   // const location = getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
 
-  // console.log(libraryData, "Library Data79");
+
 
 
 
@@ -384,7 +406,7 @@ const [libraryId, setLibraryId] = useState(null);
               }}
             >
               {" "}
-              {BookedDate} -
+              {BookedDate}{"  "} -
             </Text>
             <Text
               style={{
@@ -523,9 +545,9 @@ const [libraryId, setLibraryId] = useState(null);
                   }}>
 
 
-                    <Text>{slot.from}{slot.from < 12 ? "AM" : "PM"}</Text>
+                    <Text>{slot.from}</Text>
                     <Text> - </Text>
-                    <Text>{slot.to}{slot.to < 12 ? "AM" : "PM"} ,</Text>
+                    <Text>{slot.to},</Text>
                   </View>
                 ))}
 
