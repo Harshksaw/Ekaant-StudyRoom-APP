@@ -56,16 +56,19 @@ const Auth = ({ type }: { type: "signin" }) => {
         if (response.data.success) {
           console.log(response);
           const token = response.data.token;
-          console.log("----59");
+
           const accountType = response.data.data.accountType;
-          console.log("----61", accountType);
+          const accountId = response.data.data._id;
+
           
           localStorage.setItem("token", token);
-          console.log("----62", token);
-          console.log(response.data.token);
-          console.log("----63");
+          
+          localStorage.setItem("userId", accountId);
+
+
+
           localStorage.setItem("role", accountType);
-          console.log("----64");
+
           const role = localStorage.getItem("role");
           console.log("----65");
           if(!response?.hasRooms){

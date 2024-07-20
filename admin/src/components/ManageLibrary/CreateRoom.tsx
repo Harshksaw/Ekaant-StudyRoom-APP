@@ -14,8 +14,13 @@ const CreateRoom: React.FC = () => {
   const [location, setLocation] = React.useState(null);
   const [loading, setLoading] = useState(false); // Step 1: Loading state
 
+  useEffect(() => { 
+    const libraryId = localStorage.getItem("libraryId");
+    if (libraryId) {
+      setLibraryId(libraryId);
+    }
+  },[]);
 
-  //@GourishMarkan same time in createlibrary , to select time
   const [timeSlots, setTimeSlots] = useState([
     { from: null, to: null },
     { from: null, to: null },
