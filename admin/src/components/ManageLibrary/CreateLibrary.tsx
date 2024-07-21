@@ -17,6 +17,8 @@ import { useNavigate } from "react-router-dom";
 //       amenities,
 //       seatLayout,
 const CreateLibrary = () => {
+
+
   const [currentStep, setCurrentStep] = useState(1);
   const [title, setTitle] = useState("");
   const [shortDescription, setshortDescription] = useState("");
@@ -182,9 +184,44 @@ const CreateLibrary = () => {
   const goToPreviousStep = () => {
     setCurrentStep(currentStep - 1);
   };
-
+  const [isOverlayVisible, setIsOverlayVisible] = useState(true);
   return (
     <div className="m-2 relative w-full">
+         {isOverlayVisible && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000, // Ensure it covers other content
+        }}>
+          <div style={{
+            padding: '40px',
+            backgroundColor: '#fff',
+            borderRadius: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)',
+          }}>
+            <h2 className="text-5xl text-blue-400">Coming Soon</h2>
+            <p className="text-gray-600 mt-4">Stay tuned for exciting updates!</p>
+            <button 
+            onClick={() => navigate('/dashboard') }
+            className="bg-blue-500 text-white px-4 py-2 mt-6 rounded-md hover:bg-blue-600">
+              Close
+            </button>
+          </div>
+        </div>
+            )}
+
+
       {currentStep === 1 && (
         <form onSubmit={savePlace}>
           {preInput(
