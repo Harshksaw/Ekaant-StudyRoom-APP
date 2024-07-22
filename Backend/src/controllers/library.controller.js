@@ -195,7 +195,7 @@ const createRoom = async (req, res) => {
 // addOrUpdateRoomDetails
 const addOrUpdateRoomDetails = async (req, res) => {
   try {
-    const { libraryId, price, timeSlot, location } = req.body;
+    const { libraryId, timeSlot, location } = req.body;
 
     const library = await Library.findById(libraryId);
 
@@ -205,7 +205,7 @@ const addOrUpdateRoomDetails = async (req, res) => {
 
     
     const updateLibrary = await  Library.findByIdAndUpdate(libraryId, {
-      price: price,
+
       timeSlot: timeSlot,
       location: location,
     }, { new: true });
