@@ -6,6 +6,8 @@ import Seats from "../seatinglayout/SeatLayout";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs from "dayjs";
 import { Progress } from "@/components/ui/progress"
+import { toast } from "react-toastify";
+import { Navigate } from "react-router-dom";
 
 const CreateRoom: React.FC = () => {
   const [libraryId, setLibraryId] = React.useState("");
@@ -17,10 +19,15 @@ const CreateRoom: React.FC = () => {
   const [loading, setLoading] = useState(false); // Step 1: Loading state
   const [rooms, setRooms] = useState([]);
   const [progress, setProgress] = React.useState(13)
-  const [selectedRoom, setSelectedRoom] = useState([]);
+  const [selectedRoom, setSelectedRoom] = useState(0);
 
   const [selectedLibrary, setSelectedLibrary] = useState(null);
-
+  const [timeSlots, setTimeSlots] = useState([
+    { from: null, to: null, price: 0 },
+    { from: null, to: null, price: 0 },
+    { from: null, to: null, price: 0 },
+    { from: null, to: null, price: 0 },
+  ]);
   useEffect(() => {
     const fetchLibrary = async () => {
       try {
@@ -37,13 +44,13 @@ const CreateRoom: React.FC = () => {
     };
     fetchLibrary();
   }, []);
+  useEffect(() => {
+    const libraryObject = libraryData.find(library => library?._id === libraryId);
+    setSelectedLibrary(libraryObject);
+  }, [libraryId]);
+  console.log(selectedLibrary);
 
-  const [timeSlots, setTimeSlots] = useState([
-    { from: null, to: null, price: 0 },
-    { from: null, to: null, price: 0 },
-    { from: null, to: null, price: 0 },
-    { from: null, to: null, price: 0 },
-  ]);
+
   const handleLocationSelect = (location: any) => {
     console.log("Selected Location:", location);
     setLocation(location);
@@ -66,14 +73,18 @@ const CreateRoom: React.FC = () => {
   const handleLibraryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLibraryId(event.target.value);
 
+    // setRooms(libraryData?.rooms)
+
   };
+  function handlePriceChange(index, newValue) {
+    // Assuming timeSlots is part of your component's state
+    // and you have a method to update this state
+    const updatedTimeSlots = [...timeSlots];
+    updatedTimeSlots[index].price = newValue;
+    setTimeSlots(updatedTimeSlots); // Update your state with the new timeSlots array
+  }
 
-  useEffect(() => {
-    const libraryObject = libraryData.find(library => library?._id === libraryId);
-    setSelectedLibrary(libraryObject);
-  }, [libraryId]);
-  console.log(selectedLibrary);
-
+ 
 
   const createRoom = async () => {
     console.log("Creating Room", libraryId, seatLayout);
@@ -83,6 +94,7 @@ const CreateRoom: React.FC = () => {
         `${BASEURL}/api/v1/library/createRoom`,
         {
           libraryId: libraryId,
+          roomNo: selectedRoom.length + 1,
           seatLayout: seatLayout,
         }
       );
@@ -116,6 +128,7 @@ const CreateRoom: React.FC = () => {
           location: location,
         }
       );
+      toast.success("Room Created/updated Successfully")
       setLoading(false);
     } catch (error) {
       console.error("Error creating room:", error);
@@ -123,13 +136,7 @@ const CreateRoom: React.FC = () => {
     }
   };
 
-  function handlePriceChange(index, newValue) {
-    // Assuming timeSlots is part of your component's state
-    // and you have a method to update this state
-    const updatedTimeSlots = [...timeSlots];
-    updatedTimeSlots[index].price = newValue;
-    setTimeSlots(updatedTimeSlots); // Update your state with the new timeSlots array
-  }
+ 
 
 
   const handleSubmit = async () => {
@@ -142,12 +149,15 @@ const CreateRoom: React.FC = () => {
       await createRoom();
 
       await addDetails();
+      toast.success("Room Created/updated Successfully")
+      window.location.reload();
+
     } catch (error) {
       console.error("Error creating room:", error);
       // Handle error
     }
   };
-
+console.log(selectedRoom)
 
   React.useEffect(() => {
     const timer = setTimeout(() => setProgress(66), 500)
@@ -172,7 +182,30 @@ const CreateRoom: React.FC = () => {
             </option>
           ))}
         </select>
-        {/* Other form elements */}
+
+      </div>
+      <div className="mt-10 flex-col 
+      justify-center items-center  gap-y-5
+      ">
+
+        <h2>
+          Select room for {selectedLibrary?.name}{" "}
+          if not new room will be created
+
+        </h2>
+        <select
+          value={selectedRoom}
+          onChange={(e) => setSelectedRoom(e.target.value)}
+          className="form-select form-select-lg mb-3"
+          aria-label=".form-select-lg example"
+        >
+          <option value="">Select a room </option>
+          {selectedLibrary?.rooms?.map((room) => (
+            <option key={room.roomNo} value={room.roomNo}>
+              {room.roomNo}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="mt-20  h-96">
