@@ -8,7 +8,7 @@ const ProtectedRoute = () => {
   useEffect(() => {
     if (!userToken) {
 
-      return <Navigate to="/login" />;
+      return <Navigate to="/signin" />;
     }
   }, [userToken]);
   return userToken ? (
@@ -16,7 +16,7 @@ const ProtectedRoute = () => {
       <Outlet />
     </ProtectedLayout>
   ) : (
-    <Navigate to="/login" />
+    <Navigate to="/signin" />
   );
 };
 export default ProtectedRoute;

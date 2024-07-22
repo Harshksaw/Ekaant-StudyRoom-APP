@@ -43,8 +43,8 @@ function App() {
 
         >
         <Route path="/" element={<Auth type="signin" />} />
-          <Route path="/signup" element={<Signup/>} />
-          <Route path="/signin" element={<Auth type="signin" />} />
+          {/* <Route path="/signup" element={<Signup/>} />
+          <Route path="/signin" element={<Auth type="signin" />} /> */}
 
           {role === "Admin" && (
             <Route element={<ProtectedRoute />}>

@@ -15,14 +15,20 @@ const ManageLibrary = () => {
           <AccordionTrigger>Manage Library</AccordionTrigger>
           <AccordionContent>
             <Link
+              to="/manage-library/create-room"
+              className="text-gray-700  block px-4 py-2 text-md hover:bg-gray-300 border-b p-5 rounded-sm "
+            >
+              Create Room
+            </Link>
+            <Link
               to="/manage-library/create-library"
-              className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+              className="text-gray-700 block px-4 py-2 text-md hover:bg-gray-100"
             >
               Create Library
             </Link>
             <Link
               to="/manage-library/my-library"
-              className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+              className="text-gray-700 block px-4 py-2 text-md hover:bg-gray-100"
             >
               My Libraries
             </Link>
