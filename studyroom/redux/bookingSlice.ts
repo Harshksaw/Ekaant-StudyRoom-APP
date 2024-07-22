@@ -18,6 +18,7 @@ const initialState: any = {
     location: "",
     name: '',
     price: 0,
+    id: '',
   },
 };
 

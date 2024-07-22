@@ -185,9 +185,12 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               style={{
                 marginTop: 2,
                 fontSize: 14,
-                lineHeight: 18.67,
+                lineHeight: 19,
                 color: "#A8A8A8",
                 borderRadius: 10,
+                textAlign: "left",
+                letterSpacing: 1.5,
+      
               }}
               numberOfLines={7}
             >
@@ -203,10 +206,10 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 style={{
                   flexDirection: "row",
                   flexWrap: "wrap",
-                  // gap: 2,
+                  gap: 5,
                   rowGap: 2,
                   marginTop: 6,
-                  // justifyContent: "space-between",
+
                 }}
               >
                 {data.amenities.map((amenity: string, index: any) => (
