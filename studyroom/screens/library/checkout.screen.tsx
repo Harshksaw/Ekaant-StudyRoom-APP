@@ -40,48 +40,46 @@ const CheckoutScreen: React.FC = () => {
 
   // console.log(userDetails, "-----------------")
   //getting data  from booking screen
-const [libraryId, setLibraryId] = useState(null);
+  const [libraryId, setLibraryId] = useState(null);
   const params = useRoute();
 
 
   const BookedData = JSON.parse(params.params.item);
 
-  if(!BookedData){
+  if (!BookedData) {
 
     return (
       <View>
-        <ActivityIndicator  size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
     )
-    
+
   }
 
   console.log(BookedData, "Booked Data");
 
 
- 
-  
+
+
   console.log(libraryId, "Library Id");
-  
+
   const bookingid = BookedData._id
 
 
 
   // const BookingDate = BookedData?.bookingDate
-  const BookingMonths =  BookedData?.bookingPeriod;
+  const BookingMonths = BookedData?.bookingPeriod;
   const BookingSeat = BookedData?.bookedSeat;
   const BookingSlot = BookedData?.timeSlot;
   const RoomNo = BookedData?.roomNo;
-  const BookedDate = BookedData?.bookingDate.slice(0,10);
+  const BookedDate = BookedData?.bookingDate.slice(0, 10);
   const [modalVisible, setModalVisible] = useState(false);
-console.log(BookedData, "Booked Date");
+  const [initialPrice, setInitialPrice] = useState(0);
+  const [RegistrationFees, setRegistrationFees] = useState(0);  
+  const [finalAmount, setFinalAmount] = useState(0);
 
-   // return (
-  //   <View>
-  //     <Text>Checkout Screen</Text>
-  //   </View>
+  console.log(BookedData, "Booked Date");
 
-  // )
 
 
   const [paymentStatus, setPaymentStatus] = useState(false);
@@ -103,7 +101,7 @@ console.log(BookedData, "Booked Date");
         const userid = JSON.parse(userDataId);
         setUserData(userid);
 
-    
+
 
         const res = await axios.post(
           `${BACKEND}/api/v1/library/getLibraryById`,
@@ -129,16 +127,16 @@ console.log(BookedData, "Booked Date");
 
     };
     getLibraryData();
-     
+
 
   }, []);
-  console.log(BookedData,libraryData , "Booked Data/////////////////");
+  console.log(BookedData, libraryData, "Booked Data/////////////////");
 
-  const price = 4444;
-  const RegistrationFees = 1000;
-  const subtotal = Number((price + RegistrationFees).toFixed(2));
+
+
+
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
-  const totalAmount = subtotal * BookingMonths;
+
 
   console.log(endDate, "End Date");
   // const location = getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
@@ -147,9 +145,41 @@ console.log(BookedData, "Booked Date");
 
 
 
-  // console.log("userData", userData?.user.email);
-  let PaymentPrice = totalAmount;
+  useEffect(() => {
+    const getFinalPrice = async () => {
 
+      const price = BookedData?.price;
+      console.log(price, "Price++++");
+      setInitialPrice(price);
+      const RegistrationFees = await AsyncStorage.getItem("RegistrationFee") || 1000;
+      setRegistrationFees(RegistrationFees);
+      const finalAmount = price + parseInt(RegistrationFees);
+      setFinalAmount(finalAmount);
+    }
+    getFinalPrice();
+
+
+
+  }, [])
+  const PaymentPrice = finalAmount;
+
+  useEffect(() => {
+
+
+
+    // InvoiceScreen();
+    if (isinvoiceComplete) {
+      router.push({
+        pathname: "/library/invoice.screen",
+        params: {
+          price: JSON.stringify(PaymentPrice),
+          paymentData: JSON.stringify(paymentData),
+          paymentId: JSON.stringify(paymentId),
+          bookingId: JSON.stringify(bookingId),
+        },
+      });
+    }
+  }, [isPaymentComplete]);
 
 
 
@@ -251,20 +281,7 @@ console.log(BookedData, "Booked Date");
     }
   };
 
-  useEffect(() => {
-    // InvoiceScreen();
-    if (isinvoiceComplete) {
-      router.push({
-        pathname: "/library/invoice.screen",
-        params: {
-          price: JSON.stringify(PaymentPrice),
-          paymentData: JSON.stringify(paymentData),
-          paymentId: JSON.stringify(paymentId),
-          bookingId: JSON.stringify(bookingId),
-        },
-      });
-    }
-  }, [isPaymentComplete]);
+
 
   return (
     <SafeAreaView>
@@ -478,7 +495,7 @@ console.log(BookedData, "Booked Date");
                 Sub Total{" "}
               </Text>
               <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                - ₹{subtotal}
+                - ₹{initialPrice}
               </Text>
             </View>
           </View>
@@ -502,14 +519,14 @@ console.log(BookedData, "Booked Date");
               }}
             >
               <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                {location && location?.split(" ").slice(0, 2).join(" ") || "undisclosed" }{" "}
+                {location && location?.split(" ").slice(0, 2).join(" ") || "undisclosed"}{" "}
               </Text>
             </View>
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
               <Text style={{ fontSize: 15, fontWeight: "300" }}>
-                {location &&  location?.split(" ").slice(1, 5).join(" ") || "undisclosed"}{" "}
+                {location && location?.split(" ").slice(1, 5).join(" ") || "undisclosed"}{" "}
               </Text>
             </View>
           </View>
@@ -580,7 +597,7 @@ console.log(BookedData, "Booked Date");
                 letterSpacing: 2,
               }}
             >
-              Total Amount : ₹{totalAmount}
+              Total Amount : ₹{finalAmount}
             </Text>
 
             <Ionicons name="arrow-forward" size={25} color="white" />

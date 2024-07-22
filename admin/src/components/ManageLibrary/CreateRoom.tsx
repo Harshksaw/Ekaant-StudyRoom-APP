@@ -8,16 +8,17 @@ import dayjs from "dayjs";
 import { Progress } from "@/components/ui/progress"
 import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 const CreateRoom: React.FC = () => {
   const [libraryId, setLibraryId] = React.useState("");
   const [libraryData, setLibraryData] = React.useState([]);
-  const [seatLayout, setSeatLayout] = React.useState("");
+  const [seatLayout, setSeatLayout] = React.useState({});
   const [price, setPrice] = React.useState(libraryData?.price || "");
   const [timeSlot, setTimeSlot] = React.useState("");
   const [location, setLocation] = React.useState(null);
   const [loading, setLoading] = useState(false); // Step 1: Loading state
-  const [rooms, setRooms] = useState([]);
+  // const [rooms, setRooms] = useState([]);
   const [progress, setProgress] = React.useState(13)
   const [selectedRoom, setSelectedRoom] = useState(0);
 
@@ -44,9 +45,12 @@ const CreateRoom: React.FC = () => {
     };
     fetchLibrary();
   }, []);
+
+
   useEffect(() => {
     const libraryObject = libraryData.find(library => library?._id === libraryId);
     setSelectedLibrary(libraryObject);
+  
   }, [libraryId]);
   console.log(selectedLibrary);
 
@@ -57,7 +61,7 @@ const CreateRoom: React.FC = () => {
   };
 
   const handleSeatSelect = (seat) => {
-    // console.log(seat)
+    console.log(seat)
 
     setSeatLayout(seat);
     // console.log(seatLayout);
@@ -84,17 +88,17 @@ const CreateRoom: React.FC = () => {
     setTimeSlots(updatedTimeSlots); // Update your state with the new timeSlots array
   }
 
- 
+
 
   const createRoom = async () => {
-    console.log("Creating Room", libraryId, seatLayout);
+    console.log("Creating Room", libraryId, seatLayout, selectedRoom, selectedLibrary);
     try {
       setLoading(true);
       const response = await axios.post(
         `${BASEURL}/api/v1/library/createRoom`,
         {
           libraryId: libraryId,
-          roomNo: selectedRoom.length + 1,
+
           seatLayout: seatLayout,
         }
       );
@@ -136,12 +140,12 @@ const CreateRoom: React.FC = () => {
     }
   };
 
- 
+
 
 
   const handleSubmit = async () => {
     try {
-      if(!libraryId){
+      if (!libraryId) {
         toast.error("Please relogin, NO library Exists")
       }
 
@@ -150,14 +154,14 @@ const CreateRoom: React.FC = () => {
 
       await addDetails();
       toast.success("Room Created/updated Successfully")
-      window.location.reload();
+      // window.location.reload();
 
     } catch (error) {
       console.error("Error creating room:", error);
       // Handle error
     }
   };
-console.log(selectedRoom)
+  console.log(selectedRoom)
 
   React.useEffect(() => {
     const timer = setTimeout(() => setProgress(66), 500)
@@ -167,6 +171,8 @@ console.log(selectedRoom)
   if (loading) {
     return <Progress value={progress} className="w-[60%]" />
   }
+
+  console.log("----->", selectedLibrary.rooms, selectedLibrary.rooms.length )
   return (
     <div className="flex flex-col bg-gray-100 items-center  gap-y-25 overflow-y-scroll h-screen mb-20">
       <div className="mt-20 ">
@@ -187,30 +193,24 @@ console.log(selectedRoom)
       <div className="mt-10 flex-col 
       justify-center items-center  gap-y-5
       ">
+     <h2 style={{ fontSize: '24px', color: '#333', textAlign: 'center', margin: '20px 10px' }}>
+  You are creating Room no 
+  <span style={{ background: '#4CAF50', color: '#fff', padding: '5px 15px', borderRadius: '5px' }}>
+    {selectedLibrary.rooms.length + 1}
+  </span>
+</h2>
 
-        <h2>
-          Select room for {selectedLibrary?.name}{" "}
-          if not new room will be created
 
-        </h2>
-        <select
-          value={selectedRoom}
-          onChange={(e) => setSelectedRoom(e.target.value)}
-          className="form-select form-select-lg mb-3"
-          aria-label=".form-select-lg example"
-        >
-          <option value="">Select a room </option>
-          {selectedLibrary?.rooms?.map((room) => (
-            <option key={room.roomNo} value={room.roomNo}>
-              {room.roomNo}
-            </option>
-          ))}
-        </select>
+
       </div>
 
-      <div className="mt-20  h-96">
+      <div className="mt-20 mb-32  h-96">
 
         <Seats onSeatSelect={handleSeatSelect} />
+
+
+
+
       </div>
 
       <div className="w-[90%] mx-20 mt-60">
@@ -235,14 +235,14 @@ console.log(selectedRoom)
             </div>
             <div className="max-w-[30%] flex  flex-col  justify-center items-cente">
 
-            <input
-              type="number"
-              className="form-input rounded-md ml-60"
-              value={timeRange.price}
-              onChange={(e) => handlePriceChange(index, e.target.value)}
-              placeholder="Price"
+              <input
+                type="number"
+                className="form-input rounded-md ml-60"
+                value={timeRange.price}
+                onChange={(e) => handlePriceChange(index, e.target.value)}
+                placeholder="Price"
               />
-              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -260,7 +260,7 @@ console.log(selectedRoom)
             disabled={loading} // Disable button when loading
           >
             {loading ? "Submitting..." : "Submit"}{" "}
-            {/* Step 3: Conditional rendering */}
+
           </button>
         </div>
       </div>
