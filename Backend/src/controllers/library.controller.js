@@ -153,37 +153,51 @@ const createRoom = async (req, res) => {
   try {
     const libraryId = req.body.libraryId; // Assuming you're getting the library ID from the request parameters
     const library = await Library.findById(libraryId);
+    const providedRoomNo = req.body.roomNo;
 
     if (!library) {
       return res.status(404).send({ message: 'Library not found' });
     }
 
-    // Determine the new roomNo
-    let newRoomNo = 1;
-    if (library.rooms.length > 0) {
-      const maxRoomNo = library.rooms.reduce((max, room) => room.roomNo > max ? room.roomNo : max, library.rooms[0].roomNo);
-      newRoomNo = maxRoomNo + 1;
-    }
+  
+    let roomNo;
 
-    // Create the new room with the provided seatLayout
-    const newRoom = {
-      roomNo: newRoomNo,
-      seatLayout: req.body.seatLayout, // Assuming seatLayout is provided in the request body
+    // Check if roomNo is provided and not zero
+    if (providedRoomNo && providedRoomNo !== 0) {
+      roomNo = providedRoomNo;
+      // Here, you might want to check if a room with the provided roomNo already exists
+      // and decide whether to edit it or return an error if it doesn't exist.
+    } else {
+      // Determine the new roomNo as before
+      if (library.rooms.length > 0) {
+        const maxRoomNo = library.rooms.reduce((max, room) => room.roomNo > max ? room.roomNo : max, library.rooms[0].roomNo);
+        roomNo = maxRoomNo + 1;
+      } else {
+        roomNo = 1;
+      }}
 
-    };
-
-    // Add the new room to the library's rooms array
-    library.rooms.push(newRoom);
-
-    // Save the updated library document
-    await library.save();
-
-
-
-    res.status(201).json({
-      message: "Library created successfully",
-      Library: library,
-    });
+      if (!providedRoomNo || providedRoomNo === 0) {
+        // Create the new room with the determined roomNo and provided seatLayout
+        const newRoom = {
+          roomNo: roomNo,
+          seatLayout: req.body.seatLayout, // Assuming seatLayout is provided in the request body
+        };
+        // Add the new room to the library and save
+        library.rooms.push(newRoom);
+        await library.save();
+        res.send({ message: 'New room added successfully', room: newRoom });
+      } else {
+        // Edit an existing room logic here
+        // You need to find the room by roomNo and update it accordingly
+        const roomIndex = library.rooms.findIndex(room => room.roomNo === roomNo);
+        if (roomIndex !== -1) {
+          library.rooms[roomIndex].seatLayout = req.body.seatLayout; // Update seatLayout or any other property
+          await library.save();
+          res.send({ message: 'Room updated successfully', room: library.rooms[roomIndex] });
+        } else {
+          res.status(404).send({ message: 'Room not found' });
+        }
+      }
   } catch (error) {
     console.error("Error ", error);
     res.status(500).json({ error: "Internal server error" });

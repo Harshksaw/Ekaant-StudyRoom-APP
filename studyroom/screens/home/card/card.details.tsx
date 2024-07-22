@@ -154,7 +154,9 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                   fontStyle: "italic",
                 }}
               >
-                ₹{data?.price}/month
+
+                ₹{data?.timeSlot[0]?.price}/month
+
               </Text>
             </View>
 

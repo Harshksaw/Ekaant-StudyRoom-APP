@@ -13,14 +13,14 @@ const LocationSelector = ({ onLocationSelect }: any) => {
 
   const askForLocation = () => {
     // Step 1: Check Local Storage
-    const hasBeenAsked = localStorage.getItem("location");
+    const hasBeenAsked = localStorage.getItem("hasBeenAskedForLocation");
 
     if (
-      !hasBeenAsked && localStorage.getItem("location") !== ""
-      // window.confirm("Do you want to share your location?")
+      !hasBeenAsked &&
+      window.confirm("Do you want to share your location?")
     ) {
       // Step 3: Update Local Storage
-      localStorage.setItem("location", "true");
+      localStorage.setItem("hasBeenAskedForLocation", "true");
 
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
@@ -37,7 +37,6 @@ const LocationSelector = ({ onLocationSelect }: any) => {
             // Handle error or set a default position if desired
           }
         );
-      
       } else {
         console.log("Geolocation is not supported by this browser.");
         // Handle case where geolocation is not supported
@@ -47,7 +46,7 @@ const LocationSelector = ({ onLocationSelect }: any) => {
 
   useEffect(() => {
     askForLocation();
-    localStorage.removeItem("location");
+    localStorage.removeItem("hasBeenAskedForLocation");
   }, []);
 
   const MapClickHandler = () => {
@@ -61,7 +60,6 @@ const LocationSelector = ({ onLocationSelect }: any) => {
   const handleSaveLocation = () => {
     if (position) {
       onLocationSelect(position); // Call the callback function passed from the parent component
-      localStorage.setItem("location", String(position));
     } else {
       console.log("No location selected");
     }
