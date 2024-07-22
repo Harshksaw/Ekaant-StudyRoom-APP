@@ -125,3 +125,18 @@ button.primary {
   visibility: visible;
   pointer-events: auto;
 }
+@layer utilities {
+  @keyframes slide {
+    from {
+      background-position: 0% 50%;
+    }
+    to {
+      background-position: 100% 50%;
+    }
+  }
+  .bg-slide {
+    background-image: linear-gradient(to right, #d9d7f1 0%, #9fa0e8 50%, #7670e6 100%);
+    background-size: 200% 200%;
+    animation: slide 2s linear infinite;
+  }
+}

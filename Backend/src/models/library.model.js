@@ -18,7 +18,7 @@ const librarySchema = new mongoose.Schema({
   },
   location: [],
   address: {},
-  price: { type: Number, required: false},
+
   reviews: { type: String, required: false }, 
   deleted: { type: String, required: false, default: false },
   amenities: [{ type: String }], // Not required by default
@@ -35,7 +35,8 @@ const librarySchema = new mongoose.Schema({
   timeSlot: [{
     from: { type: String, required: false },
     to: { type: String, required: false },
-  }],
+    price: { type: Number, required: true }
+}],
   rooms:[
     {
       roomNo:{
