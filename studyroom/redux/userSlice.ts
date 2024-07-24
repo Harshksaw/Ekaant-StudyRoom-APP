@@ -21,6 +21,7 @@ const initialState: any = {
 
 friendDetails: null,
 details: null,
+selectedLocation: null,
 
   
 };
@@ -55,6 +56,9 @@ const UserSlice = createSlice({
       state.bookingsForFriend = false;
       state.friendDetails = null;
       state.details = null;
+    },
+    setSelectedLocation(state, action: PayloadAction<string>) {
+      state.selectedLocation = action.payload;
     },
     
     

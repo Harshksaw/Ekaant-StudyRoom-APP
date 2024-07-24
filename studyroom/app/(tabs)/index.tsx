@@ -51,6 +51,11 @@ export default function index() {
   const [bannerImage, setBannerImage] = useState([]);
   const [locationData, setLocationData] = useState(null);
 
+  const [selectedLocation, setSelectedLocation] = useState("Delhi");
+  
+  const handleLocationChange = (location) => {
+    setSelectedLocation(location);
+  };
   var count = 0;
 
   const getAppData = async () => {
@@ -100,7 +105,11 @@ export default function index() {
 
       setIsLoading(true);
       setReload(false);
+
+      console.log("Selected Location:109", selectedLocation);
       try {
+
+      
         const fetchedData = await fetchRoomData();
         setData(fetchedData || []);
         console.log("Fetched Data:________", fetchedData);
@@ -118,7 +127,7 @@ export default function index() {
     getTokenAndPrintIt();
 
     fetchLibraryDate();
-  }, [reload]);
+  }, [reload,selectedLocation]);
 
   const [assets, error] = useAssets([
     require("../../assets/icons/setting-5.svg"),
@@ -313,6 +322,8 @@ export default function index() {
       setRefreshing(false);
     }, 2000);
   }, []);
+
+
   return (
     <SafeAreaView
       style={{
@@ -325,7 +336,7 @@ export default function index() {
       }}
     >
       <View style={{ marginTop: 0 }}>
-        <Header color="black" />
+        <Header color="black"  handleLocationChange={handleLocationChange} />
       </View>
 
       <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
