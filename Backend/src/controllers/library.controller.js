@@ -245,6 +245,7 @@ const getLibrary = async (req, res) => {
 const getAllLibrary = async (req, res) => {
   try {
     const roomsData = await Library.find();
+    console.log("🚀 ~ getAllLibrary ~ roomsData:", roomsData)
     res.status(200).json({
       success: true,
       count: roomsData.length,
