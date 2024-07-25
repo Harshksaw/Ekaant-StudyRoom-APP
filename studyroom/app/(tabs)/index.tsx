@@ -63,11 +63,11 @@ export default function index() {
     try {
       const response = await axios.get(`${BACKEND}/api/v1/app/getApp`);
       console.log("getAPpData called ", count++);
-      console.log("🚀 ~ getAppData ~ response:", response)
+      console.log("🚀 ~ getAppData ~ response:", response.data.data.locations)
       // console.log(response.data.data)
 
       setBannerImage(response.data.data.Banner);
-      setLocationData(response.data.data.locations.location);
+      setLocationData(response.data.data.locations);
 
       AsyncStorage.setItem("RegistrationFee", response.data.data.RegistrationFee);
     } catch (error) {
@@ -471,7 +471,10 @@ export default function index() {
           </ScrollView>
         
         </View> */}
-        <TouchableOpacity >
+        <TouchableOpacity onPress={()=>   router.push({
+                pathname: "/(routes)/nearby",
+
+              })} >
 
         <View
             style={{
