@@ -1,7 +1,7 @@
 const { z } = require("zod");
 
 const { LibraryController } = require(".");
-
+const {GetNearestLibraries} =  require("../utils/location");
 const multer = require("multer");
 const express = require("express");
 const cloudinary = require("cloudinary").v2;
@@ -11,6 +11,7 @@ const { Library } = require("../models/library.model");
 const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
 const { get } = require("mongoose");
+const App = require("../models/app.model");
 
 const LibrarySchema = z.object({
   name: z.string(),
@@ -244,12 +245,33 @@ const getLibrary = async (req, res) => {
 
 const getAllLibrary = async (req, res) => {
   try {
+
+    const {city} = req.body;
+    console.log(city);
+
+    const cityCoordinates = await App.aggregate([
+      { $match: {} }, // Match all documents or apply specific conditions
+      { $unwind: "$locations" }, // Deconstruct the locations array
+      { $match: { "locations.location": city } }, // Match the specific city
+      { $project: { _id: 0, coords: "$locations.coords" } } // Project the coordinates
+    ]);
+    // console.log("🚀 ~ getAllLibrary ~ cityCoordinates:", cityCoordinates[0].coords)
+    
+
+    
+
+
     const roomsData = await Library.find();
-    console.log("🚀 ~ getAllLibrary ~ roomsData:", roomsData)
+
+    const getSortedData = await  GetNearestLibraries(roomsData, cityCoordinates[0].coords)
+    console.log("🚀 ~ getAllLibrary ~ getSortedData:", getSortedData)
+
+
+
     res.status(200).json({
       success: true,
       count: roomsData.length,
-      data: roomsData,
+      data: getSortedData,
     });
   } catch (error) {
     console.error("Error fetching library data:", error);

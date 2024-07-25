@@ -65,7 +65,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 // Function to process multiple JSON data sets
 async function GetNearestLibraries(jsonDataSets, targetCoordinate) {
   return jsonDataSets.map(dataSet => {
-    dataSet.distance = calculateDistance(dataSet.location[0], dataSet.location[1], targetCoordinate.lat, targetCoordinate.lng);
+    dataSet.distance = calculateDistance(dataSet.location[0], dataSet.location[1], targetCoordinate[0], targetCoordinate[1]);
     return dataSet;
   }).sort((a, b) => a.distance - b.distance);
 }
@@ -279,10 +279,11 @@ const jsonDataSets = [
 ]
 const targetCoordinate = { lat: 28.7040592, lng: 77.10249019999999 };
 
-GetNearestLibraries(jsonDataSets, targetCoordinate).then(sortedDataSets => {
-  console.log(sortedDataSets); // Each data set is sorted by distance
-  console.log("🚀 ~ GetNearestLibraries ~ sortedDataSets:", sortedDataSets)
-});
+// GetNearestLibraries(jsonDataSets, targetCoordinate).then(sortedDataSets => {
+//   console.log(sortedDataSets); // Each data set is sorted by distance
+//   console.log("🚀 ~ GetNearestLibraries ~ sortedDataSets:", sortedDataSets)
+//   return sortedDataSets;
+// });
 
 
 
