@@ -92,7 +92,7 @@ export default function profile() {
         }}
       >
 
-
+{/* 
         <View
           style={{
             marginTop: 0,
@@ -101,7 +101,7 @@ export default function profile() {
           }}
         >
           <Header color="white" />
-        </View>
+        </View> */}
 
       </LinearBackground>
     

@@ -1,7 +1,7 @@
 const { z } = require("zod");
 
 const { LibraryController } = require(".");
-
+const {GetNearestLibraries} =  require("../utils/location");
 const multer = require("multer");
 const express = require("express");
 const cloudinary = require("cloudinary").v2;
@@ -11,6 +11,7 @@ const { Library } = require("../models/library.model");
 const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
 const { get } = require("mongoose");
+const App = require("../models/app.model");
 
 const LibrarySchema = z.object({
   name: z.string(),
@@ -153,51 +154,37 @@ const createRoom = async (req, res) => {
   try {
     const libraryId = req.body.libraryId; // Assuming you're getting the library ID from the request parameters
     const library = await Library.findById(libraryId);
-    const providedRoomNo = req.body.roomNo;
 
     if (!library) {
       return res.status(404).send({ message: 'Library not found' });
     }
 
-  
-    let roomNo;
+    // Determine the new roomNo
+    let newRoomNo = 1;
+    if (library.rooms.length > 0) {
+      const maxRoomNo = library.rooms.reduce((max, room) => room.roomNo > max ? room.roomNo : max, library.rooms[0].roomNo);
+      newRoomNo = maxRoomNo + 1;
+    }
 
-    // Check if roomNo is provided and not zero
-    if (providedRoomNo && providedRoomNo !== 0) {
-      roomNo = providedRoomNo;
-      // Here, you might want to check if a room with the provided roomNo already exists
-      // and decide whether to edit it or return an error if it doesn't exist.
-    } else {
-      // Determine the new roomNo as before
-      if (library.rooms.length > 0) {
-        const maxRoomNo = library.rooms.reduce((max, room) => room.roomNo > max ? room.roomNo : max, library.rooms[0].roomNo);
-        roomNo = maxRoomNo + 1;
-      } else {
-        roomNo = 1;
-      }}
+    // Create the new room with the provided seatLayout
+    const newRoom = {
+      roomNo: newRoomNo,
+      seatLayout: req.body.seatLayout, // Assuming seatLayout is provided in the request body
 
-      if (!providedRoomNo || providedRoomNo === 0) {
-        // Create the new room with the determined roomNo and provided seatLayout
-        const newRoom = {
-          roomNo: roomNo,
-          seatLayout: req.body.seatLayout, // Assuming seatLayout is provided in the request body
-        };
-        // Add the new room to the library and save
-        library.rooms.push(newRoom);
-        await library.save();
-        res.send({ message: 'New room added successfully', room: newRoom });
-      } else {
-        // Edit an existing room logic here
-        // You need to find the room by roomNo and update it accordingly
-        const roomIndex = library.rooms.findIndex(room => room.roomNo === roomNo);
-        if (roomIndex !== -1) {
-          library.rooms[roomIndex].seatLayout = req.body.seatLayout; // Update seatLayout or any other property
-          await library.save();
-          res.send({ message: 'Room updated successfully', room: library.rooms[roomIndex] });
-        } else {
-          res.status(404).send({ message: 'Room not found' });
-        }
-      }
+    };
+
+    // Add the new room to the library's rooms array
+    library.rooms.push(newRoom);
+
+    // Save the updated library document
+    await library.save();
+
+
+
+    res.status(201).json({
+      message: "Library created successfully",
+      Library: library,
+    });
   } catch (error) {
     console.error("Error ", error);
     res.status(500).json({ error: "Internal server error" });
@@ -209,7 +196,7 @@ const createRoom = async (req, res) => {
 // addOrUpdateRoomDetails
 const addOrUpdateRoomDetails = async (req, res) => {
   try {
-    const { libraryId, timeSlot, location } = req.body;
+    const { libraryId,  timeSlot, location } = req.body;
 
     const library = await Library.findById(libraryId);
 
@@ -258,11 +245,33 @@ const getLibrary = async (req, res) => {
 
 const getAllLibrary = async (req, res) => {
   try {
+
+    const {city} = req.body;
+    console.log(city);
+
+    const cityCoordinates = await App.aggregate([
+      { $match: {} }, // Match all documents or apply specific conditions
+      { $unwind: "$locations" }, // Deconstruct the locations array
+      { $match: { "locations.location": city } }, // Match the specific city
+      { $project: { _id: 0, coords: "$locations.coords" } } // Project the coordinates
+    ]);
+    // console.log("🚀 ~ getAllLibrary ~ cityCoordinates:", cityCoordinates[0].coords)
+    
+
+    
+
+
     const roomsData = await Library.find();
+
+    const getSortedData = await  GetNearestLibraries(roomsData, cityCoordinates[0].coords)
+    console.log("🚀 ~ getAllLibrary ~ getSortedData:", getSortedData)
+
+
+
     res.status(200).json({
       success: true,
       count: roomsData.length,
-      data: roomsData,
+      data: getSortedData,
     });
   } catch (error) {
     console.error("Error fetching library data:", error);

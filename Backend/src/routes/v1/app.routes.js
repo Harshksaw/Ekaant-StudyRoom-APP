@@ -30,6 +30,7 @@ AppRouter.post("/createApp",upload.array('banner', 5) , appController.createApp)
 AppRouter.get("/getApp", appController.getApp);
 AppRouter.post("/editBanner",upload.array('banner', 5) , appController.editBanner);
 AppRouter.post("/editLocations", appController.editLocations);
+AppRouter.post("/getcityCoordinates", appController.getCityCoord);
 
 
 

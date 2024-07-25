@@ -50,6 +50,7 @@ const BookingScreen: React.FC = () => {
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [bookingloader, setBookingLoader] = useState(false);
   const [bookingId, setBookingId] = useState(null);
+  const [finalPrice, setFinalPrice] = useState(0);
 
   const [currentRoomNo, setCurrentRoomNo] = useState(1);
 
@@ -93,7 +94,7 @@ const BookingScreen: React.FC = () => {
       images: data.images,
       location: city,
       name: data.name,
-      price: data.price,
+      price: finalPrice,
     };
     dispatch(setBookingDetails(details));
   };
@@ -139,7 +140,25 @@ const BookingScreen: React.FC = () => {
   const BookingSeat = BookedData.seat;
   const BookingSlot = BookedData.slot;
   const RoomNo = BookedData.room || 1;
+  console.log("Booking ID254 boking", selectedSlots);
 
+  
+useEffect(() => {
+  // const price = selectedSlots.reduce((acc, slot) => {
+  //   acc.price += slot.price;
+  // }, 0);
+  let totalPrice = selectedSlots.reduce((acc, slot) => acc + slot.price, 0)
+  console.log(totalPrice, "Total Price", selectedMonth);
+  const finalPrice = totalPrice * selectedMonth;
+
+  setFinalPrice(finalPrice);
+
+
+
+
+
+},[selectedSlots, selectedMonth])
+console.log(finalPrice)
   const PreBook = async () => {
     console.log(BookedData.slot, BookingSlot, "--------PRebook156");
     const userData = await AsyncStorage.getItem("userData");
@@ -148,19 +167,19 @@ const BookingScreen: React.FC = () => {
     console.log(
       userId,
       bookingdata.details.id,
-      price,
+      finalPrice,
       totalAmount,
       BookingSlot,
       RoomNo,
       BookingSeat,
       BookingDate,
       BookingMonths,
-      "/////------------------->"
+
     );
     if (
       userId &&
       bookingdata.details.id &&
-      price &&
+      finalPrice &&
       totalAmount &&
       BookingSlot &&
       RoomNo &&
@@ -177,7 +196,7 @@ const BookingScreen: React.FC = () => {
             userId: userId,
             libraryId: bookingdata.details.id,
             initialPrice: price,
-            finalPrice: totalAmount,
+            finalPrice: finalPrice,
             timeSlot: BookingSlot,
             roomNo: RoomNo,
             bookedSeat: BookingSeat,
@@ -187,7 +206,7 @@ const BookingScreen: React.FC = () => {
           }
         );
 
-        console.log(response.data, "+++++------------------->");
+        // console.log(response.data, "+++++------------------->");
         const bookingId = response.data.Booking._id;
         setBookingId(bookingId);
 
@@ -208,7 +227,7 @@ const BookingScreen: React.FC = () => {
         setCurrentRoomNo(1);
         setSelectedSlots([]);
 
-        console.log(response.data, "------------------->");
+        // console.log(response.data, "------------------->");
         return response.data.Booking._id;
       } catch (error) {
         setBookingLoader(false);
@@ -231,18 +250,18 @@ const BookingScreen: React.FC = () => {
   const confirmBooking = async () => {
     setBookingLoader(true);
     await updateRoomDetails();
-    console.log(
-      bookingdata.details.id,
-      price,
-      totalAmount,
-      BookingSlot,
-      RoomNo,
-      BookingSeat,
-      BookingDate,
-      BookingMonths,
-      RoomNo,
-      "------------------->"
-    );
+    // console.log(
+    //   bookingdata.details.id,
+    //   price,
+    //   totalAmount,
+    //   BookingSlot,
+    //   RoomNo,
+    //   BookingSeat,
+    //   BookingDate,
+    //   BookingMonths,
+
+    //   "------------------->"
+    // );
     const res = await PreBook();
 
     if (res) {
@@ -257,6 +276,7 @@ const BookingScreen: React.FC = () => {
         bookingPeriod: selectedMonth,
         roomNo: currentRoomNo,
         timeSlot: selectedSlots,
+        price: finalPrice,
       };
 
       const Bookdata = { ...newBookingData, libraryId: data };
@@ -275,6 +295,7 @@ const BookingScreen: React.FC = () => {
     }
   };
 
+
   return (
     <SafeAreaView
       style={{
@@ -284,9 +305,9 @@ const BookingScreen: React.FC = () => {
         // marginBottom: 20,
       }}
     >
-      <View>
+      {/* <View>
         <Header color="black" />
-      </View>
+      </View> */}
 
       <View
         style={{
@@ -566,12 +587,38 @@ const BookingScreen: React.FC = () => {
                     justifyContent: "space-between",
                     alignContent: "space-evenly",
                     alignItems: "center",
-                    gap: 20,
+                    gap: 10,
                     padding: 10,
 
                     marginTop: 10,
                   }}
                 >
+
+                  <View>
+                    <Text style={{
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                      color: '#000',
+                      margin: 10,
+                      textAlign: 'center'
+
+                    }}>
+                   Price :
+                   <Text
+                   style={{
+                    fontSize: 24, // Larger font size
+                    fontWeight: 'bold', // Bold text
+                    color: '#E91E63', // A distinct color
+                    margin: 10, // Add some margin around the text
+                    textAlign: 'center'
+                   }}
+                   >
+
+                    {finalPrice}
+                   </Text>
+
+                    </Text>
+                  </View>
                   {selectedDate &&
                     selectedSeat &&
                     selectedMonth &&
@@ -647,9 +694,9 @@ const styles = StyleSheet.create({
 
     borderRadius: 20,
     padding: 10,
-    gap: 10,
+    gap: 5,
     width: 300,
-    height: 450,
+    height: 500,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {

@@ -17,7 +17,7 @@ import {
   ScrollView,
   Modal,
   Platform,
-  SafeAreaView
+
 } from "react-native";
 
 import Carousel from "react-native-reanimated-carousel";
@@ -25,6 +25,7 @@ import Carousel from "react-native-reanimated-carousel";
 import { Link, router } from "expo-router";
 import Button from "@/components/Button";
 import getLocationName from "@/utils/location";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface CardDetailScreenProps {
   // Define your params here
@@ -88,14 +89,14 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   // console.log(data)
   return (
     <SafeAreaView style={styles.container}>
-      <View
+      {/* <View
       style={{
         marginTop: Platform.OS === "ios" ? 0 : 20,
       }}
       >
 
       <Header color="black" />
-      </View>
+      </View> */}
       <ScrollView
         stickyHeaderIndices={[2]}
         showsVerticalScrollIndicator={false}

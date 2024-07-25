@@ -2,9 +2,11 @@ import { BACKEND } from "@/utils/config"
 import axios from "axios"
 
 
-export const fetchRoomData = async () => {
+export const fetchRoomData = async ({selectedLocation}:any) => {
 
-    const response = await axios.get(`${BACKEND}/api/v1/library/getLibrary`)
+    const response = await axios.post(`${BACKEND}/api/v1/library/getLibrary`,{
+      selectedLocation
+    })
 
     return response.data
 

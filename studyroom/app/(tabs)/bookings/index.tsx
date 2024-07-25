@@ -82,13 +82,13 @@ export default function Bookings() {
         padding: 0,
       }}
     >
-      <View
+      {/* <View
         style={{
           marginTop: 0,
         }}
       >
         <Header color="black" />
-      </View>
+      </View> */}
 
       <View
         style={{

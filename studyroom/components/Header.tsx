@@ -11,12 +11,13 @@ import { Image } from "expo-image";
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useAssets } from "expo-asset";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { set } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get("window");
 
-const Header: React.FC<{ color: string }> = ({ color }) => {
+const Header= ({ color ,handleLocationChange }:any) => {
+  const dispatch = useDispatch(); 
   const [selectedLocation, setSelectedLocation] = useState();
   const [Enable, setEnable] = useState(true);
 
@@ -24,11 +25,23 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
 
   // useState for cities is initialized with an empty array
   const [cities, setCities] = useState(citiesData.locations || []);
+  console.log(selectedLocation)
+
+  
 
   // useEffect to update cities when citiesData changes
   useEffect(() => {
     setCities(citiesData.locations || []);
+
   }, [citiesData.locations]);
+
+  useEffect(() => {
+    if (selectedLocation) {
+      // Call fetchLibrary or dispatch an action to fetch library data
+      console.log(`Fetching library for location: ${selectedLocation}`);
+      // Example: dispatch(fetchLibrary(selectedLocation));
+    }
+  }, [selectedLocation, dispatch]);
 
   const [assets, error] = useAssets([
     require("../assets/icons/headerlogo.svg"),
@@ -87,6 +100,7 @@ const Header: React.FC<{ color: string }> = ({ color }) => {
             mode={"dropdown"}
             onValueChange={(itemValue, itemIndex) => {
               setSelectedLocation(itemValue);
+              handleLocationChange(itemValue);
               setEnable(false); // Consider updating this logic as needed
             }}
           >

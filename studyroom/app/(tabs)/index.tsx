@@ -51,6 +51,11 @@ export default function index() {
   const [bannerImage, setBannerImage] = useState([]);
   const [locationData, setLocationData] = useState(null);
 
+  const [selectedLocation, setSelectedLocation] = useState("Delhi");
+  
+  const handleLocationChange = (location) => {
+    setSelectedLocation(location);
+  };
   var count = 0;
 
   const getAppData = async () => {
@@ -58,10 +63,13 @@ export default function index() {
     try {
       const response = await axios.get(`${BACKEND}/api/v1/app/getApp`);
       console.log("getAPpData called ", count++);
+      console.log("🚀 ~ getAppData ~ response:", response)
       // console.log(response.data.data)
 
       setBannerImage(response.data.data.Banner);
-      setLocationData(response.data.data.locations);
+      setLocationData(response.data.data.locations.location);
+
+      AsyncStorage.setItem("RegistrationFee", response.data.data.RegistrationFee);
     } catch (error) {
       setBannerImage([]);
       console.error("Failed to fetch banner image data:", error);
@@ -98,10 +106,14 @@ export default function index() {
 
       setIsLoading(true);
       setReload(false);
+
+      console.log("Selected Location:109", selectedLocation);
       try {
-        const fetchedData = await fetchRoomData();
+
+      
+        const fetchedData = await fetchRoomData({selectedLocation});
         setData(fetchedData || []);
-        console.log("Fetched Data:________", fetchedData);
+        // console.log("Fetched Data:________", fetchedData);
       } catch (error) {
         console.error("Failed to fetch room data:", error);
         setData([]);
@@ -116,7 +128,7 @@ export default function index() {
     getTokenAndPrintIt();
 
     fetchLibraryDate();
-  }, [reload]);
+  }, [reload,selectedLocation]);
 
   const [assets, error] = useAssets([
     require("../../assets/icons/setting-5.svg"),
@@ -311,6 +323,8 @@ export default function index() {
       setRefreshing(false);
     }, 2000);
   }, []);
+
+
   return (
     <SafeAreaView
       style={{
@@ -323,7 +337,7 @@ export default function index() {
       }}
     >
       <View style={{ marginTop: 0 }}>
-        <Header color="black" />
+        <Header color="black"  handleLocationChange={handleLocationChange} />
       </View>
 
       <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
@@ -416,7 +430,7 @@ export default function index() {
           />
         </View>
         {/* Filter buttons */}
-        <View style={{ backgroundColor: "white", marginTop: 12 }}>
+        {/* <View style={{ backgroundColor: "white", marginTop: 12 }}>
           <ScrollView
             style={styles.filters}
             horizontal={true}
@@ -450,12 +464,16 @@ export default function index() {
                     style={{ width: 12, height: 12 }}
                   />
                 )}
-                {/* <Image source={assets[{filter.id}]} style={{ width: 20, height: 18 }} /> */}
+
                 <Text style={{ color: "black" }}>{filter.name}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <View
+        
+        </View> */}
+        <TouchableOpacity >
+
+        <View
             style={{
               marginVertical: 8,
               paddingHorizontal: 16,
@@ -463,14 +481,14 @@ export default function index() {
               alignItems: "center",
               justifyContent: "space-between",
             }}
-          >
+            >
             <Text
               style={{
                 fontSize: 18,
                 fontWeight: "600",
                 color: "black",
               }}
-            >
+              >
               Near By
             </Text>
             <Ionicons
@@ -478,9 +496,9 @@ export default function index() {
               size={18}
               color="blue"
               style={{ fontWeight: "600" }}
-            />
+              />
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Lib Cards */}
 
