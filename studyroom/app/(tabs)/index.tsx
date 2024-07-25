@@ -112,7 +112,7 @@ export default function index() {
       
         const fetchedData = await fetchRoomData();
         setData(fetchedData || []);
-        console.log("Fetched Data:________", fetchedData);
+        // console.log("Fetched Data:________", fetchedData);
       } catch (error) {
         console.error("Failed to fetch room data:", error);
         setData([]);
@@ -429,7 +429,7 @@ export default function index() {
           />
         </View>
         {/* Filter buttons */}
-        <View style={{ backgroundColor: "white", marginTop: 12 }}>
+        {/* <View style={{ backgroundColor: "white", marginTop: 12 }}>
           <ScrollView
             style={styles.filters}
             horizontal={true}
@@ -463,12 +463,16 @@ export default function index() {
                     style={{ width: 12, height: 12 }}
                   />
                 )}
-                {/* <Image source={assets[{filter.id}]} style={{ width: 20, height: 18 }} /> */}
+
                 <Text style={{ color: "black" }}>{filter.name}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <View
+        
+        </View> */}
+        <TouchableOpacity >
+
+        <View
             style={{
               marginVertical: 8,
               paddingHorizontal: 16,
@@ -476,14 +480,14 @@ export default function index() {
               alignItems: "center",
               justifyContent: "space-between",
             }}
-          >
+            >
             <Text
               style={{
                 fontSize: 18,
                 fontWeight: "600",
                 color: "black",
               }}
-            >
+              >
               Near By
             </Text>
             <Ionicons
@@ -491,9 +495,9 @@ export default function index() {
               size={18}
               color="blue"
               style={{ fontWeight: "600" }}
-            />
+              />
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Lib Cards */}
 

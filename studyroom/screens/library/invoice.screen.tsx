@@ -21,13 +21,13 @@ const InvoiceScreen: React.FC = () => {
   const [assets] = useAssets([require("../../assets/images/Subtract.png")]);
   return (
     <View style={styles.container}>
-      <View
+      {/* <View
         style={{
           marginTop: 20,
         }}
       >
         <Header color="black" />
-      </View>
+      </View> */}
       <View>
         {assets && (
           <ImageBackground

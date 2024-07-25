@@ -286,14 +286,14 @@ const CheckoutScreen: React.FC = () => {
   return (
     <SafeAreaView>
       {/* Header */}
-      <View
+      {/* <View
         style={{
           marginTop: 20,
           marginBottom: 10,
         }}
       >
         <Header color="black" />
-      </View>
+      </View> */}
 
       <View
         style={{

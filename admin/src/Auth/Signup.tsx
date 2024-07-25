@@ -344,7 +344,7 @@ function Signup() {
 
   const createInitialLib = async () => {
 
-    console.log(libraryDetails, "libraryDetails-----------------d------");
+    // console.log(libraryDetails, "libraryDetails-----------------d------");
 
     const amenitiesArray = Object.entries(libraryDetails.amentities)
   .filter(([key, value]) => value)

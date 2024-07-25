@@ -206,7 +206,7 @@ console.log(finalPrice)
           }
         );
 
-        console.log(response.data, "+++++------------------->");
+        // console.log(response.data, "+++++------------------->");
         const bookingId = response.data.Booking._id;
         setBookingId(bookingId);
 
@@ -227,7 +227,7 @@ console.log(finalPrice)
         setCurrentRoomNo(1);
         setSelectedSlots([]);
 
-        console.log(response.data, "------------------->");
+        // console.log(response.data, "------------------->");
         return response.data.Booking._id;
       } catch (error) {
         setBookingLoader(false);
@@ -305,9 +305,9 @@ console.log(finalPrice)
         // marginBottom: 20,
       }}
     >
-      <View>
+      {/* <View>
         <Header color="black" />
-      </View>
+      </View> */}
 
       <View
         style={{

@@ -140,9 +140,9 @@ const FriendDetails = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.headerContainer}>
+            {/* <View style={styles.headerContainer}>
                 <Header color='black' />
-            </View>
+            </View> */}
             <KeyboardAvoidingView
                 style={{
                     flex: 1,

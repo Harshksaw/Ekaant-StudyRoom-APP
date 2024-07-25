@@ -106,14 +106,14 @@ export default function Search() {
     >
 
 
-      <View
+      {/* <View
         style={{
           marginTop: 0,
         }}
       >
 
         <Header color="black" />
-      </View>
+      </View> */}
       <View style={{
         marginTop: 10,
         flex: 1,
