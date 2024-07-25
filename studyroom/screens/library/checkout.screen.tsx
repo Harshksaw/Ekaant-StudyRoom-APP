@@ -151,6 +151,8 @@ const CheckoutScreen: React.FC = () => {
       const price = BookedData?.price;
       console.log(price, "Price++++");
       setInitialPrice(price);
+
+      //registion fee from libary only
       const RegistrationFees = await AsyncStorage.getItem("RegistrationFee") || 1000;
       setRegistrationFees(RegistrationFees);
       const finalAmount = price + parseInt(RegistrationFees);

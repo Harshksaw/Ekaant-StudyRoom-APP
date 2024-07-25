@@ -1,4 +1,4 @@
-import { Link, useNavigate, useNavigation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import studyMain from "../assets/images/studyMain.png";
 import reading from "../assets/images/reading 1.png";
@@ -13,12 +13,12 @@ import { StepFive } from "./Signup/Step5";
 
 import { BASEURL } from "@/lib/utils";
 import axios from "axios";
-
+// @ts-ignore
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from "@/components/Loader";
 // Add similar components for StepThree, StepFour, and StepFive
 
-const FinalStep = ({ prevStep }) => {
+const FinalStep = () => {
   const navigate = useNavigate();
   return(
   
@@ -37,7 +37,7 @@ function Signup() {
   //parent compoenent
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-
+// @ts-ignore
   const [token, setToken] = useState("");
 
   const [userOTP, setOtpInputs] = useState("");
@@ -448,7 +448,7 @@ function Signup() {
             nextStep={nextStep}
             userInfo={userInfo}
             setUserInfo={setUserInfo}
-            sendOTP={sendOtp}
+            // sendOTP={sendOtp}
           />
         );
       case 2:
@@ -477,7 +477,7 @@ function Signup() {
             userDetails={userDetails}
             setUserDetails={setUserDetails}
             prevStep={prevStep}
-            createUser={createUser}
+            // createUser={createUser}
           />
         );
       case 4:

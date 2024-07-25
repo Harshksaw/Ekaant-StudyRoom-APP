@@ -18,8 +18,9 @@ import OwnerRoute from "./components/Owner/OwnerRoute";
 import OwnerHome from "./components/Owner/OwnerHome";
 import MyLibrary from "./components/ManageLibrary/MyLibrary";
 import Auth from "./Auth/Auth";
-import Signup from "./Auth/Signup";
+// import Signup from "./Auth/Signup";
 import CreateRoom from "./components/ManageLibrary/CreateRoom";
+import ViewBookings from "./components/ManageBookings/ViewBookings";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -53,7 +54,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
 
 
-              <Route path="/manage-booking/view" element={<View />} />
+              <Route path="/manage-booking/view" element={<ViewBookings />} />
               <Route path="manage-user/permission" element={<Permission />} />
               <Route path="manage-user/search" element={<Search />} />
 

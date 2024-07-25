@@ -96,6 +96,12 @@ const librarySchema = new mongoose.Schema({
       required:false
     }
   },
+  RegistrationFees:{
+    type: Number,
+    required: false,
+    default: 500,
+
+  }
 });
 
 // Export the model
