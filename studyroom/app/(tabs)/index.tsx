@@ -63,10 +63,11 @@ export default function index() {
     try {
       const response = await axios.get(`${BACKEND}/api/v1/app/getApp`);
       console.log("getAPpData called ", count++);
+      console.log("🚀 ~ getAppData ~ response:", response)
       // console.log(response.data.data)
 
       setBannerImage(response.data.data.Banner);
-      setLocationData(response.data.data.locations);
+      setLocationData(response.data.data.locations.location);
 
       AsyncStorage.setItem("RegistrationFee", response.data.data.RegistrationFee);
     } catch (error) {
@@ -110,7 +111,7 @@ export default function index() {
       try {
 
       
-        const fetchedData = await fetchRoomData();
+        const fetchedData = await fetchRoomData({selectedLocation});
         setData(fetchedData || []);
         // console.log("Fetched Data:________", fetchedData);
       } catch (error) {
