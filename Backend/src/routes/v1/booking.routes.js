@@ -9,7 +9,7 @@ BookingRouter.get('/ping', BookingController.pingBookingController);
 BookingRouter.post('/createBooking', BookingController.createBooking);
 BookingRouter.get('/getUserBookings/:id', BookingController.getUserBookings);
 BookingRouter.post('/getBookingById', BookingController.getBookingById);
-BookingRouter.get('/getBookingByLibId', BookingController.getBookingByLibId);
+BookingRouter.post('/getBookingByLibId', BookingController.getBookingByLibId);
 BookingRouter.post('/confirm/:id', BookingController.ConfrimBooking);
 // BookingRouter.post('/otp', BookingController.generateOtp);
 // BookingRouter.post('/verifyOtp', BookingController.verifyOtp);

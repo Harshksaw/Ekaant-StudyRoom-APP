@@ -25,4 +25,4 @@ async function getBookings() {
   return response;
 }
 
-export { getLibraryDataById, getApprovedLibraries };
+export { getLibraryDataById, getApprovedLibraries, getBookings };
