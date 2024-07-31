@@ -3,6 +3,7 @@ const { bcrypt } = require("bcrypt");
 const zod = require("zod");
 const { User } = require("../models");
 const jwt = require("jsonwebtoken");
+const OTP = require("../models/OTP");
 const JWT_SECRET = "MY_SECRET_KEY";
 // signing up schema
 const signupSchema = zod.object({
@@ -350,13 +351,23 @@ async function verifyOtp(req, res) {
 
 }
 
-async function sendEmailOtp(email) {
+async function sendEmailOtp(req, res) {
+
+  const { email } = req.body;
   const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
   console.log(`OTP for ${email} is ${otpCode}`); // In a real scenario, this would be sent via email
 
   emailOtpTest = otpCode; // Storing the OTP for verification
   console.log("email otp is line 330", emailOtpTest);
-  return { success: true, message: `OTP sent to ${email}` };
+  const otpPayload = {email, otp:emailOtpTest};
+        //creating... an entry in Database for OTP
+        const otpBody = await OTP.create(otpPayload);
+        console.log("otpBODY -> ", otpBody);
+
+        return res.status(200).json({
+          success:true,
+          message:"OTP Sended SUCCESSFULLY !!",
+      })
 }
 
 async function verifyEmailOtp(req, res) {
