@@ -7,9 +7,13 @@ const OTPSchema = new mongoose.Schema({
         type:String,
         required: true,
     },
-    otp: {
+    phoneotp: {
         type:String,
-        required:true,
+        required:false,
+    },
+    emailotp: {
+        type:String,
+        required:false,
     },
     createdAt: {
         type:Date,
@@ -19,26 +23,27 @@ const OTPSchema = new mongoose.Schema({
 });
 
 
+
 async function sendVerificationEmail(email, otp) {
     try{
         const mailResponse = await mailSender(email,
-             "Verification EMAIL from Kirshna Academy by-Dhruv",
+             "Verification EMAIL from Ekaant Study Room",
              emailTemplate(otp));
-        console.log("Email sended Successfully!! => ", mailResponse);
+        console.log("Email sent Successfully!! => ", mailResponse);
     } catch(error) {
-        // console.error(error);
-        console.log("error while SENDING.. EMAIL", error);
+        console.log("Error while sending email", error);
         throw error;
     }
 }
 
 OTPSchema.pre("save", async function(next) {
     // Only send an email when a new document is created
-	if (this.isNew) {
-		await sendVerificationEmail(this.email, this.otp);
-	}
-	next();
-} )
+    if (this.isNew) {
+        await sendVerificationEmail(this.email, this.emailotp);
+    }
+    next();
+});
+
 
 const OTP = mongoose.model("OTP", OTPSchema);
 
