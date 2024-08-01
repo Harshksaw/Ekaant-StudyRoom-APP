@@ -163,7 +163,8 @@ function Signup() {
     }
     console.log("verfication start");
 
-    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOTP`, { otp });
+    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOtp`, {phoneNumber: userInfo.phone, 
+       otp });
     console.log(res, "res");
 
     if (res.status === 200 || res.status === 201) {
@@ -214,13 +215,14 @@ function Signup() {
 
 
   const verifyEmailOTP = async () => {
-    const notify = () => toast("Verified Email OTP");
+  
     const otp = emailOtpInputs;
     if (Number(otp) < 1000) {
       return;
     }
 
     const res = await axios.post(`${BASEURL}/api/v1/auth/verifyEmailOtp`, {
+      email: userInfo.email,  
       otp,
     });
     console.log(res, "res");
@@ -230,12 +232,12 @@ function Signup() {
       setVerifiedOtp(
         (prev) => ({ ...prev, two: true })
       )
-
+      const notify = () => toast("Verified Email OTP");
       notify();
     } else {
-      // toast({
-      //   description: "Your Email Otp has not been verified.",
-      // });
+      toast({
+        description: "Your Email Otp has not been verified.",
+      });
     }
   };
 

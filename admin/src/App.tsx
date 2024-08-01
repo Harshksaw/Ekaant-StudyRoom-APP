@@ -21,6 +21,7 @@ import Auth from "./Auth/Auth";
 
 import CreateRoom from "./components/ManageLibrary/CreateRoom";
 import ViewBookings from "./components/ManageBookings/ViewBookings";
+import Signup from "./Auth/Signup";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -42,8 +43,8 @@ function App() {
         <Routes
         >
         <Route path="/" element={<Auth type="signin" />} />
-          {/* <Route path="/signup" element={<Signup/>} />
-          <Route path="/signin" element={<Auth type="signin" />} /> */}
+          <Route path="/signup" element={<Signup/>} />
+          <Route path="/signin" element={<Auth type="signin" />} />
 
           {role === "Admin" && (
             <Route element={<ProtectedRoute />}>  
