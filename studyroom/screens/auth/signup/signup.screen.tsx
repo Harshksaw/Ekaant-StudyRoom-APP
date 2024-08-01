@@ -68,7 +68,7 @@ export default function SignUpScreen() {
   };
 
 
-  const [image, setImage] = useState(null);
+  const [profileimage, setImage] = useState(null);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -140,6 +140,7 @@ export default function SignUpScreen() {
       try {
         
         let response = await axios.post(`${BACKEND}/api/v1/auth/verifyOtp`, {
+          phoneNumber : userInfo.phone,
           otp: otpValue,
         });
 
@@ -162,23 +163,7 @@ export default function SignUpScreen() {
 
   //signup api 
   const handleSignUp = async () => {
-    // if (!userInfo.name || !userInfo.email || !userInfo.phone || !userInfo.password) {
-    //   setRequired(true);
-    //   return;
-    // }
-    // if (validatePassword(userInfo.password)) {
-    //   setError({ password: validatePassword(userInfo.password) });
-    //   return;
-    // }
-    // setButtonSpinner(true);
 
-    // if(!verified){
-    //   // Toast.show("Please verify your phone number", {
-    //   //   type: "danger",
-    //   // });
-    //   setButtonSpinner(false);
-    //   return;
-    // }
     console.log("signup.screen.tsx>>>>>>", userInfo);
     try {
       console.log("Sending signup data:", {
@@ -191,13 +176,12 @@ export default function SignUpScreen() {
 
 
       let formData = new FormData();
-      console.log("Image path:", typeof image  )
+      // console.log("Image path:", typeof image  )
 
-      formData.append('profile', {
-        uri: image,
-        type: '*/*', 
-        name: `${userInfo.name}.jpg`, // The name of the image file
-      });
+      const respon = await fetch(profileimage);
+      const blob = await respon.blob();
+      const file = new File([blob], `${userInfo.name}.jpg`, { type: blob.type });
+      formData.append('profile', file);
 
       // Append other user info to formData
       formData.append('username', userInfo.name);

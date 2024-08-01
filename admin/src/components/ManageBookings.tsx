@@ -6,7 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { FaRegSun } from "react-icons/fa";
+// import { FaRegSun } from "react-icons/fa";
 
 const ManageBookings = () => {
   // const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +21,7 @@ const ManageBookings = () => {
       <div>
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
-            <AccordionTrigger>Manage Team</AccordionTrigger>
+            <AccordionTrigger>Manage Bookings</AccordionTrigger>
             <AccordionContent>
 
               

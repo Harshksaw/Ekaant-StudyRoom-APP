@@ -1,4 +1,4 @@
-import { InfoIcon } from "lucide-react";
+// import { InfoIcon } from "lucide-react";
 
 export const StepFour = ({
   nextStep,
@@ -434,6 +434,7 @@ export const StepFour = ({
                   type="radio"
                   name="tan"
                   id="tan-true"
+                  // @ts-ignore
                   value={true}
                   // checked={true}
                   onChange={() => {

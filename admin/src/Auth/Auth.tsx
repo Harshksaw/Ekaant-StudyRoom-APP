@@ -6,8 +6,8 @@ import { LabelledInput } from "./LabelledInput";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { BASEURL } from "@/lib/utils";
-import { Activity, Send } from "lucide-react";
-import { set } from "react-hook-form";
+// import { Activity, Send } from "lucide-react";
+// import { set } from "react-hook-form";
 import Loader from "@/components/Loader";
 
 const Auth = ({ type }: { type: "signin" }) => {
@@ -20,34 +20,34 @@ const Auth = ({ type }: { type: "signin" }) => {
     password: "",
   });
 
-  const [verified, setVerified] = useState(false);
-  const [otp, setOtp] = useState(0);
-  const [showOtp, setShowOtp] = useState(false);
+  // const [verified, setVerified] = useState(false);
+  // const [otp, setOtp] = useState(0);
+  // const [showOtp, setShowOtp] = useState(false);
   const [authMethod, setAuthMethod] = useState("password");
   const navigate = useNavigate();
 
-  const handleAuthMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAuthMethod(e.target.value);
-  };
+  // const handleAuthMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setAuthMethod(e.target.value);
+  // };
 
   // send otp--
 
 
   // verfiy otp
-  const verifyOtp = async () => {
-    try {
-      const response = await axios.post(`${BASEURL}/api/v1/auth/verifyOtp`, {
-        otp: otp,
-      });
-      if (response.data.success) {
-        setVerified(true);
-        console.log(verified);
-      }
-      console.log(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const verifyOtp = async () => {
+  //   try {
+  //     const response = await axios.post(`${BASEURL}/api/v1/auth/verifyOtp`, {
+  //       otp: otp,
+  //     });
+  //     if (response.data.success) {
+  //       setVerified(true);
+  //       console.log(verified);
+  //     }
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   async function sendRequest() {
     if (type === "signin") {
@@ -78,7 +78,7 @@ const Auth = ({ type }: { type: "signin" }) => {
           // console.log("----65");
           setLoading(false);
 
-
+//  .       @ts-ignore
           if (!response?.hasRooms) {
             navigate("/manage-library/create-room");
           } else {
@@ -149,7 +149,7 @@ const Auth = ({ type }: { type: "signin" }) => {
           </h6>
           <div className="px-20">
 
-            {showOtp && userInfo.phone >= 1000000 && (
+            {/* {showOtp && userInfo.phone >= 1000000 && (
               <div className="flex justify-between items-center gap-2 mb-4">
                 <input
                   className="px-4 py-2 w-full rounded-lg border text-base bg-white text-gray-400"
@@ -165,7 +165,7 @@ const Auth = ({ type }: { type: "signin" }) => {
                   Verify
                 </button>
               </div>
-            )}
+            )} */}
             <LabelledInput
               label="Enter Email Id"
               placeholder="Email"

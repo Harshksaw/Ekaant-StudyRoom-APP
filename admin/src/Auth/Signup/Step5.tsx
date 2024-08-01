@@ -1,4 +1,4 @@
-import { set } from "react-hook-form";
+// import { set } from "react-hook-form";
 
 export const StepFive = ({
   nextStep,
@@ -9,8 +9,8 @@ export const StepFive = ({
 }: any) => {
   //images  - Register 5
 
-  const handleAmenityChange = (amenityKey, newValue) => {
-    setLibraryDetails((prevDetails) => ({
+  const handleAmenityChange = (amenityKey:any, newValue:any) => {
+    setLibraryDetails((prevDetails:any) => ({
       ...prevDetails,
       amentities: {
         ...prevDetails.amentities,
@@ -94,7 +94,7 @@ export const StepFive = ({
           >
               <h3>Uploaded Files:</h3>
               <ul>
-                {libraryDetails.librarySliders.map((file, index) => (
+                {libraryDetails.librarySliders.map((file:any, index:any) => (
                   <li key={index}>{file.name.slice(0, 35)}</li>
                 ))}
               </ul>

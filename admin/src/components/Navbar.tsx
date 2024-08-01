@@ -1,10 +1,10 @@
 
 import firstPic from "../assets/images/Group 1000004651.png";
-import Avatar from "../assets/images/Avatar.png";
+// import Avatar from "../assets/images/Avatar.png";
 import SearchInput from "./SearchInput";
-import { IoIosNotifications } from "react-icons/io";
+// import { IoIosNotifications } from "react-icons/io";
 import { Button } from "@mui/material";
-import { Navigate, Route, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 const Navbar = () => {
   const navigate = useNavigate();
 

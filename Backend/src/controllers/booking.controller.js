@@ -127,7 +127,13 @@ async function getBookingByLibId(req, res) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: 'lib_id not found' });
     }
     const bookings = await Booking.find({libraryId: lib_id}).populate("userId");
-    return res.status(StatusCodes.OK).json(bookings);
+    console.log("🚀 ~ getBookingByLibId ~ bookings:", bookings)
+    
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Bookings fetched successfully",
+      data: bookings,
+    });
   } catch (error) {
     console.error(error);
   }

@@ -37,35 +37,26 @@ const CheckoutScreen: React.FC = () => {
   const [libraryData, setLibraryData] = useState(null);
   const [location, setLocation] = useState(null);
 
-
   // console.log(userDetails, "-----------------")
   //getting data  from booking screen
   const [libraryId, setLibraryId] = useState(null);
   const params = useRoute();
 
-
   const BookedData = JSON.parse(params.params.item);
 
   if (!BookedData) {
-
     return (
       <View>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
-    )
-
+    );
   }
 
   console.log(BookedData, "Booked Data");
 
-
-
-
   console.log(libraryId, "Library Id");
 
-  const bookingid = BookedData._id
-
-
+  const bookingid = BookedData._id;
 
   // const BookingDate = BookedData?.bookingDate
   const BookingMonths = BookedData?.bookingPeriod;
@@ -75,12 +66,10 @@ const CheckoutScreen: React.FC = () => {
   const BookedDate = BookedData?.bookingDate.slice(0, 10);
   const [modalVisible, setModalVisible] = useState(false);
   const [initialPrice, setInitialPrice] = useState(0);
-  const [RegistrationFees, setRegistrationFees] = useState(0);  
+  const [RegistrationFees, setRegistrationFees] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
 
   console.log(BookedData, "Booked Date");
-
-
 
   const [paymentStatus, setPaymentStatus] = useState(false);
   const [paymentData, setPaymentData] = useState(null); // Payment data
@@ -88,20 +77,19 @@ const CheckoutScreen: React.FC = () => {
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
 
-
   useEffect(() => {
     console.log(BookedData, "71 Data");
     setBookingId(bookingid);
     const getLibraryData = async () => {
-      const loc = await getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
+      const loc = await getLocationName(
+        BookedData?.libraryId?.location[0],
+        BookedData?.libraryId?.location[1]
+      );
       setLocation(loc);
       try {
-
         const userDataId = await AsyncStorage.getItem("userData");
         const userid = JSON.parse(userDataId);
         setUserData(userid);
-
-
 
         const res = await axios.post(
           `${BACKEND}/api/v1/library/getLibraryById`,
@@ -110,7 +98,6 @@ const CheckoutScreen: React.FC = () => {
           }
         );
         setLibraryData(res.data);
-
 
         return res.data.library;
       } catch (error) {
@@ -124,49 +111,34 @@ const CheckoutScreen: React.FC = () => {
 
         // router.back();
       }
-
     };
     getLibraryData();
-
-
   }, []);
   console.log(BookedData, libraryData, "Booked Data/////////////////");
 
-
-
-
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
-
 
   console.log(endDate, "End Date");
   // const location = getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
 
-
-
-
-
   useEffect(() => {
     const getFinalPrice = async () => {
-
       const price = BookedData?.price;
       console.log(price, "Price++++");
       setInitialPrice(price);
-      const RegistrationFees = await AsyncStorage.getItem("RegistrationFee") || 1000;
+
+      //registion fee from libary only
+      const RegistrationFees =
+        (await AsyncStorage.getItem("RegistrationFee")) || 1000;
       setRegistrationFees(RegistrationFees);
       const finalAmount = price + parseInt(RegistrationFees);
       setFinalAmount(finalAmount);
-    }
+    };
     getFinalPrice();
-
-
-
-  }, [])
+  }, []);
   const PaymentPrice = finalAmount;
 
   useEffect(() => {
-
-
-
     // InvoiceScreen();
     if (isinvoiceComplete) {
       router.push({
@@ -180,8 +152,6 @@ const CheckoutScreen: React.FC = () => {
       });
     }
   }, [isPaymentComplete]);
-
-
 
   const handlePayment = async () => {
     var options = {
@@ -208,7 +178,6 @@ const CheckoutScreen: React.FC = () => {
         setPaymentId(data.razorpay_payment_id);
         // console.log(data, "Payment Success");
 
-
         setIsPaymentComplete(true);
         Toast.show("Payment Success", {
           successColor: "green",
@@ -234,8 +203,6 @@ const CheckoutScreen: React.FC = () => {
   };
 
   // console.log(userData, "User Data", BookedData?.libraryId);
-
-
 
   const confirmPayment = async () => {
     if (!bookingId) {
@@ -281,83 +248,160 @@ const CheckoutScreen: React.FC = () => {
     }
   };
 
-
-
   return (
-    <SafeAreaView>
-      {/* Header */}
-      {/* <View
-        style={{
-          marginTop: 20,
-          marginBottom: 10,
-        }}
-      >
-        <Header color="black" />
-      </View> */}
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+        justifyContent: "space-between",
+        // alignItems: "center",
 
-      <View
-        style={{
-          flexDirection: "row",
-          marginHorizontal: 20,
-          justifyContent: "flex-start",
-          gap: 20,
-          alignItems: "center",
-        }}
-      >
-        <View style={{}}>
-          <Image
-            source={{ uri: BookedData?.libraryId?.images[0] }}
-            style={{
-              width: 140,
-              height: 200,
-              borderRadius: 10,
-            }}
-          />
-
-        </View>
+        marginTop: 20,
+        paddingTop: 50,
+      }}
+    >
+      <View>
         <View
           style={{
-            flexDirection: "column",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            // height: 100,
-            gap: 10,
+            flexDirection: "row",
+            marginHorizontal: 20,
+            justifyContent: "flex-start",
+            gap: 20,
+            alignItems: "center",
+          }}
+        >
+          <View style={{}}>
+            <Image
+              source={{ uri: BookedData?.libraryId?.images[0] }}
+              style={{
+                width: 140,
+                height: 200,
+                borderRadius: 10,
+              }}
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              // height: 100,
+              gap: 10,
+            }}
+          >
+            <View
+              style={{
+                width: 150,
+                height: 50,
+                borderRadius: 20,
+                backgroundColor: "rgb(148, 230, 200)", // Example background color
+                justifyContent: "center",
+                alignItems: "center",
+                marginRight: 10,
+              }}
+            >
+              {userDetails.bookingsForFriend ? (
+                <View
+                  style={{
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text>Booking for friend</Text>
+                  <Text>{userDetails?.friendDetails?.name}</Text>
+                </View>
+              ) : (
+                <Text>Booking for SELF</Text>
+              )}
+            </View>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+              }}
+            >
+              {BookedData?.libraryId?.name}
+            </Text>
+
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                alignItems: "center",
+              }}
+            >
+              <Ionicons name="time-outline" size={24} color="black" />
+              <Text>
+                Period - {BookedData.months}
+                {BookedData.months > 1 ? "Months" : "Month"}{" "}
+              </Text>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                alignItems: "center",
+              }}
+            >
+              <AC />
+
+              <Text>A/C Rooms - Yes</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Image and Side Details */}
+        <View
+          style={{
+            flexDirection: "row",
+            marginHorizontal: 20,
+            marginTop: 20,
+            // justifyContent: "space-between",
+            alignItems: "center",
+            height: 100,
+            gap: 40,
           }}
         >
           <View
             style={{
-              width: 150,
-              height: 50,
-              borderRadius: 20,
-              backgroundColor: "rgb(148, 230, 200)", // Example background color
-              justifyContent: "center",
+              flexDirection: "row",
+              gap: 10,
               alignItems: "center",
-              marginRight: 10,
+              width: 150,
             }}
           >
-            {userDetails.bookingsForFriend ? (
-              <View
+            <Ionicons name="calendar-outline" size={50} color="black" />
+            <View
+              style={{
+                flexDirection: "column",
+                // alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <Text
                 style={{
                   flexDirection: "column",
                   alignItems: "center",
+                  fontSize: 15,
+                  fontWeight: "500",
                 }}
               >
-                <Text>Booking for friend</Text>
-                <Text>{userDetails?.friendDetails?.name}</Text>
-              </View>
-            ) : (
-              <Text>Booking for SELF</Text>
-            )}
+                {" "}
+                {BookedDate}
+                {"  "} -
+              </Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: "500",
+                }}
+              >
+                {" "}
+                {endDate.toISOString().split("T")[0]}
+              </Text>
+            </View>
           </View>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "bold",
-            }}
-          >
-            {BookedData?.libraryId?.name}
-          </Text>
-
           <View
             style={{
               flexDirection: "row",
@@ -365,245 +409,179 @@ const CheckoutScreen: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <Ionicons name="time-outline" size={24} color="black" />
-            <Text>
-              Period - {BookedData.months}
-              {BookedData.months > 1 ? "Months" : "Month"}{" "}
-            </Text>
-          </View>
+            <SeatsCheckout />
 
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 10,
-              alignItems: "center",
-            }}
-          >
-            <AC />
-
-            <Text>A/C Rooms - Yes</Text>
+            <Text>{BookedData?.bookedSeat?.label} Seat</Text>
           </View>
         </View>
-      </View>
 
-      {/* Image and Side Details */}
-      <View
-        style={{
-          flexDirection: "row",
-          marginHorizontal: 20,
-          marginTop: 20,
-          // justifyContent: "space-between",
-          alignItems: "center",
-          height: 100,
-          gap: 40,
-        }}
-      >
         <View
           style={{
-            flexDirection: "row",
-            gap: 10,
-            alignItems: "center",
-            width: 150,
+            height: 1, // Thin line
+            backgroundColor: "black", // Line color
+            marginHorizontal: 20, // Match the margin you have set in the parent View
+          }}
+        ></View>
+        <View
+          style={{
+            marginHorizontal: 20,
+            marginTop: 20,
+            flexDirection: "column",
+            gap: 15,
           }}
         >
-          <Ionicons name="calendar-outline" size={50} color="black" />
-          <View
-            style={{
-              flexDirection: "column",
-              // alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <Text
+          <View style={styles.summary}>
+            <Cash />
+            <View
               style={{
                 flexDirection: "column",
-                alignItems: "center",
-                fontSize: 15,
-                fontWeight: "500",
-              }}
-            >
-              {" "}
-              {BookedDate}{"  "} -
-            </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "500",
-              }}
-            >
-              {" "}
-              {endDate.toISOString().split("T")[0]}
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 10,
-            alignItems: "center",
-          }}
-        >
-          <SeatsCheckout />
-
-          <Text>{BookedData?.bookedSeat?.label} Seat</Text>
-        </View>
-      </View>
-
-      <View
-        style={{
-          height: 1, // Thin line
-          backgroundColor: "black", // Line color
-          marginHorizontal: 20, // Match the margin you have set in the parent View
-        }}
-      ></View>
-
-      {/* Summary */}
-      <View
-        style={{
-          marginHorizontal: 20,
-          marginTop: 20,
-          flexDirection: "column",
-          gap: 15,
-        }}
-      >
-        <View style={styles.summary}>
-          <Cash />
-          <View
-            style={{
-              flexDirection: "column",
-              gap: 10,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
                 gap: 10,
               }}
             >
-              <Text style={{ fontSize: 20, fontWeight: "400" }}>
-                Registration Fee{" "}
-              </Text>
-              <Text style={{ fontSize: 20, fontWeight: "400" }}>
-                - ₹{RegistrationFees}
-              </Text>
-            </View>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                Sub Total{" "}
-              </Text>
-              <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                - ₹{initialPrice}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* //location */}
-        <View style={styles.summary}>
-          <CheckoutScreenLoc />
-
-          <View
-            style={{
-              flexDirection: "column",
-              gap: 10,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                gap: 10,
-              }}
-            >
-              <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                {location && location?.split(" ").slice(0, 2).join(" ") || "undisclosed"}{" "}
-              </Text>
-            </View>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <Text style={{ fontSize: 15, fontWeight: "300" }}>
-                {location && location?.split(" ").slice(1, 5).join(" ") || "undisclosed"}{" "}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* //slot */}
-        <View style={styles.summary}>
-          <Note />
-          <View
-            style={{
-              flexDirection: "column",
-              gap: 10,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                gap: 10,
-              }}
-            >
-              <View style={{
-                fontSize: 20, fontWeight: "400",
-                flexDirection: "row",
-                gap: 10,
-              }}>
-
-                {BookedData?.libraryId?.timeSlot.map((slot) => (
-                  <View style={{
-                    flexDirection: "row",
-                    // justifyContent: "space-between",
-                    gap: 2,
-                  }}>
-
-
-                    <Text>{slot.from}</Text>
-                    <Text> - </Text>
-                    <Text>{slot.to},</Text>
-                  </View>
-                ))}
-
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  gap: 10,
+                }}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "400" }}>
+                  Registration Fee{" "}
+                </Text>
+                <Text style={{ fontSize: 20, fontWeight: "400" }}>
+                  - ₹{RegistrationFees}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "500" }}>
+                  Sub Total{" "}
+                </Text>
+                <Text style={{ fontSize: 20, fontWeight: "500" }}>
+                  - ₹{initialPrice}
+                </Text>
               </View>
             </View>
           </View>
-        </View>
 
-        {/* //payment */}
-        <TouchableOpacity onPress={() => PaymentScreen()}>
-          <View
-            style={{
-              flexDirection: "row",
-              position: "relative",
-              justifyContent: "space-between",
-              marginHorizontal: 10,
-              alignItems: "center",
-              padding: 15,
-              backgroundColor: "#0077B6",
-              borderRadius: 10,
-              marginTop: 20,
-              bottom: 0,
-            }}
-          >
-            <Text
+          {/* //location */}
+          <View style={styles.summary}>
+            <CheckoutScreenLoc />
+
+            <View
               style={{
-                color: "#FFFFFF",
-                fontSize: 16,
-                fontWeight: "700",
-                letterSpacing: 2,
+                flexDirection: "column",
+                gap: 10,
               }}
             >
-              Total Amount : ₹{finalAmount}
-            </Text>
-
-            <Ionicons name="arrow-forward" size={25} color="white" />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  gap: 10,
+                }}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "500" }}>
+                  {(location && location?.split(" ").slice(0, 2).join(" ")) ||
+                    "undisclosed"}{" "}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={{ fontSize: 15, fontWeight: "300" }}>
+                  {(location && location?.split(" ").slice(1, 5).join(" ")) ||
+                    "undisclosed"}{" "}
+                </Text>
+              </View>
+            </View>
           </View>
-        </TouchableOpacity>
+
+          {/* //slot */}
+          <View style={styles.summary}>
+            <Note />
+            <View
+              style={{
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  gap: 10,
+                }}
+              >
+                <View
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "400",
+                    flexDirection: "row",
+                    gap: 10,
+                  }}
+                >
+{BookedData?.libraryId?.timeSlot?.length > 0 && BookedData.libraryId.timeSlot.map((slot) => (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        // justifyContent: "space-between",
+                        gap: 2,
+                      }}
+                    >
+                      <Text>{slot.from ? slot.from: ""} {"-"}</Text>
+
+                      <Text>{slot.to}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* //payment */}
+        </View>
       </View>
+      {/* Summary */}
+
+      <TouchableOpacity onPress={() => PaymentScreen()}>
+        <View
+          style={{
+            flexDirection: "row",
+            position: "absolute",
+            bottom: 25,
+
+            width: "90%",
+            justifyContent: "space-between",
+            marginHorizontal: 20,
+            alignItems: "center",
+            padding: 20,
+            backgroundColor: "#0077B6",
+            borderRadius: 10,
+            // marginTop: 20,
+          }}
+        >
+          <Text
+            style={{
+              color: "#FFFFF5",
+              fontSize: 18,
+              fontWeight: "700",
+              letterSpacing: 2,
+            }}
+          >
+            Total Amount : ₹{finalAmount}
+          </Text>
+
+          <Ionicons name="arrow-forward" size={25} color="white" />
+        </View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

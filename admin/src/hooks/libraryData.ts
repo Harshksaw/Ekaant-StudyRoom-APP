@@ -20,6 +20,9 @@ async function getApprovedLibraries() {
   return data;
 }
 
+async function getBookings() {
+  const response = await axios.get(`${BASEURL}/api/v1/booking/getBookings`);
+  return response;
+}
 
-
-export { getLibraryDataById, getApprovedLibraries };
+export { getLibraryDataById, getApprovedLibraries, getBookings };

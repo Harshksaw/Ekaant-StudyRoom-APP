@@ -22,6 +22,7 @@ const Header= ({ color ,handleLocationChange }:any) => {
   const [Enable, setEnable] = useState(true);
 
   const citiesData = useSelector((state) => state.app); // Moved useSelector inside the component
+  // console.log("🚀 ~ Header ~ citiesData:", citiesData)
 
   // useState for cities is initialized with an empty array
   const [cities, setCities] = useState(citiesData.locations || []);
@@ -107,8 +108,8 @@ const Header= ({ color ,handleLocationChange }:any) => {
             {cities.map((city, index) => (
               <Picker.Item
                 key={index}
-                label={`${city}, IN`}
-                value={city}
+                label={`${city.location}, IN`}
+                value={city.location}
                 style={{
                   color: "#000000",
                   lineHeight: 25,

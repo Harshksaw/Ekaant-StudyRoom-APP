@@ -228,7 +228,7 @@ const addOrUpdateRoomDetails = async (req, res) => {
 
 const getLibrary = async (req, res) => {
   try {
-    const roomsData = await Library.find({approved: true});
+    const roomsData = await Library.find();
     res.status(200).json({
       success: true,
       count: roomsData.length,
@@ -261,7 +261,7 @@ const getAllLibrary = async (req, res) => {
     
 
 
-    const roomsData = await Library.find();
+    const roomsData = await Library.find({approved: true});
 
     const getSortedData = await  GetNearestLibraries(roomsData, cityCoordinates[0].coords)
     console.log("🚀 ~ getAllLibrary ~ getSortedData:", getSortedData)

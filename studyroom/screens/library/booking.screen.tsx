@@ -301,8 +301,11 @@ console.log(finalPrice)
       style={{
         backgroundColor: "white",
         flex: 1,
+        marginTop: 10,
+        paddingTop: 50,
         paddingBottom: 20,
-        // marginBottom: 20,
+        marginBottom: 20,
+        gap: 30,
       }}
     >
       {/* <View>
@@ -312,7 +315,12 @@ console.log(finalPrice)
       <View
         style={{
           // flex: 1,
-          justifyContent: "center",
+
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 10,
+
+          // justifyContent: "center",
         }}
       >
         <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />

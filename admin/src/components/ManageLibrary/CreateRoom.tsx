@@ -7,8 +7,8 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs from "dayjs";
 import { Progress } from "@/components/ui/progress"
 import { toast } from "react-toastify";
-import { Navigate } from "react-router-dom";
-import { Button } from "@mui/material";
+import { getLibraryDataById } from "@/hooks/libraryData";
+
 
 const CreateRoom: React.FC = () => {
   const [libraryId, setLibraryId] = React.useState("");
@@ -32,9 +32,7 @@ const CreateRoom: React.FC = () => {
   useEffect(() => {
     const fetchLibrary = async () => {
       try {
-        const response = await axios.get(
-          `${BASEURL}/api/v1/library/getAllLibrary`
-        );
+        const response = await getLibraryDataById();
         console.log(response.data.data);
         setLibraryData(response.data.data);
         setSelectedRoom(response.data.data?.rooms);
@@ -172,7 +170,7 @@ const CreateRoom: React.FC = () => {
     return <Progress value={progress} className="w-[60%]" />
   }
 
-  console.log("----->", selectedLibrary.rooms, selectedLibrary.rooms.length )
+  // console.log("----->", selectedLibrary.rooms, selectedLibrary.rooms.length )
   return (
     <div className="flex flex-col bg-gray-100 items-center  gap-y-25 overflow-y-scroll h-screen mb-20">
       <div className="mt-20 ">
@@ -196,7 +194,7 @@ const CreateRoom: React.FC = () => {
      <h2 style={{ fontSize: '24px', color: '#333', textAlign: 'center', margin: '20px 10px' }}>
   You are creating Room no 
   <span style={{ background: '#4CAF50', color: '#fff', padding: '5px 15px', borderRadius: '5px' }}>
-    {selectedLibrary.rooms.length + 1}
+    {selectedLibrary?.rooms.length + 1}
   </span>
 </h2>
 

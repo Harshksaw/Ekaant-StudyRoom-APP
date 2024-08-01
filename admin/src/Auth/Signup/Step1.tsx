@@ -1,4 +1,4 @@
-export const StepOne = ({ nextStep, userInfo, setUserInfo, sendOTP }) => (
+export const StepOne = ({ nextStep, userInfo, setUserInfo }:any) => (
   <div>
     <h2 className="">Step 1</h2>
     <div className="flex  flex-col justify-start gap-2  mb-4">

@@ -8,6 +8,7 @@ const JWT_SECRET = "MY_SECRET_KEY";
 const bcrypt = require("bcrypt");
 const File = require("../models/file.model");
 const { Library } = require("../models/library.model");
+const OTP = require("../models/OTP");
 
 
 const ping = (req, res) => {
@@ -31,8 +32,25 @@ async function RegisterAdmin(req, res, next) {
       PanNumber,
       Address,
       username,
+      emailotp,
+      phoneotp,
     } = req.body;
-
+		const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
+        // const response = await OTP.find({ email }).sort({ createdAt: -1 });
+		console.log(response[0].emailotp, otp,"RESPONSE123");
+		if (response.length === 0) {
+			// OTP not found for the email
+			return res.status(400).json({
+				success: false,
+				message: "The OTP is not valid",
+			});
+		} else if (otp !== response[0].otp) {
+			// Invalid OTP
+			return res.status(400).json({
+				success: false,
+				message: "The OTP you entered is wrong !!",
+			});
+		}
 
     // console.log(
     //   phoneNumber,
