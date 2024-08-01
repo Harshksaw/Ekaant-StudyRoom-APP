@@ -17,7 +17,11 @@ import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from "@/components/Loader";
 // Add similar components for StepThree, StepFour, and StepFive
-
+interface LibraryDetails {
+  name: string;
+  librarySliders:string
+  // Add other properties as needed
+}
 const FinalStep = () => {
   const navigate = useNavigate();
   return(
@@ -63,7 +67,7 @@ function Signup() {
     },
   });
 
-  const [libraryDetails, setLibraryDetails] = useState({
+  const [libraryDetails, setLibraryDetails] = useState<any>({
     libraryName: "",
     libraryApp: {
       shortDescription: "",
@@ -235,9 +239,17 @@ function Signup() {
       const notify = () => toast("Verified Email OTP");
       notify();
     } else {
-      toast({
-        description: "Your Email Otp has not been verified.",
-      });
+      toast('Not verified', { 
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+  
+        });
     }
   };
 
@@ -245,12 +257,24 @@ function Signup() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     if (event.target.files) {
-      setLibraryDetails(prevLibraryDetails => ({
-        ...prevLibraryDetails,
-        librarySliders: [...prevLibraryDetails.librarySliders, ...Array.from(event.target.files)],
-      }));
+      const files = Array.from(event.target.files);
+      if (files.length > 0) {
+        setLibraryDetails((prevLibraryDetails: LibraryDetails) => ({
+          ...prevLibraryDetails,
+          librarySliders: [...prevLibraryDetails.librarySliders, ...files],
+        }));
+      }
     }
   };
+  // const updateLibraryDetails = (prevLibraryDetails: LibraryDetails): LibraryDetails => {
+  //   return {
+  //     ...prevLibraryDetails,
+  //     librarySliders: [...prevLibraryDetails.librarySliders, newFile], // Assuming newFile is of type File
+  //   };
+  // };
+  
+  // // Usage
+  // setLibraryDetails((prev) => updateLibraryDetails(prev));
 
   useEffect(() => {
 
@@ -294,8 +318,14 @@ function Signup() {
     formData.append("Address", JSON.stringify(userDetails.address)); // Assuming Address is an object and needs to be stringified
     formData.append("username", createUserName);
 
-    formData.append("aadhar", userDetails.uploadAadharCard);
-    formData.append("pancard", userDetails.uploadPanCard);
+   
+if (userDetails.uploadAadharCard) {
+  formData.append("aadhar", userDetails.uploadAadharCard);
+}
+
+if (userDetails.uploadPanCard) {
+  formData.append("pancard", userDetails.uploadPanCard);
+}
 
     try {
     
@@ -349,7 +379,7 @@ function Signup() {
     // console.log(libraryDetails, "libraryDetails-----------------d------");
 
     const amenitiesArray = Object.entries(libraryDetails.amentities)
-  .filter(([key, value]) => value)
+  .filter(([ value]) => value)
   .map(([key]) => key);
 
     const AdminId = localStorage.getItem("userId");
@@ -383,13 +413,21 @@ function Signup() {
       formData.append("images", libraryDetails.librarySliders[i]);
     }
 
-
-    formData.append("card", libraryDetails.librayCardImage );
-    formData.append("gst", libraryDetails.libraryLegal.uploadGst );
-    formData.append("cin", libraryDetails.libraryLegal.uploadCin );
-    formData.append("tan", libraryDetails.libraryLegal.uploadTan );
-    formData.append("msme", libraryDetails.libraryLegal.uploadmsme );
-
+    if (libraryDetails?.librayCardImage) {
+      formData.append("card", libraryDetails.librayCardImage);
+    }
+    if (libraryDetails.libraryLegal.uploadGst) {
+      formData.append("gst", libraryDetails.libraryLegal.uploadGst);
+    }
+    if (libraryDetails.libraryLegal.uploadCin) {
+      formData.append("cin", libraryDetails.libraryLegal.uploadCin);
+    }
+    if (libraryDetails.libraryLegal.uploadTan) {
+      formData.append("tan", libraryDetails.libraryLegal.uploadTan);
+    }
+    if (libraryDetails.libraryLegal.uploadmsme) {
+      formData.append("msme", libraryDetails.libraryLegal.uploadmsme);
+    }
     // console.log(
     //   LibraryDataOBJ,
     //   typeof LibraryDataOBJ.seatLayout,
@@ -505,7 +543,7 @@ function Signup() {
         return (
           <FinalStep
 
-            prevStep={prevStep}
+            // prevStep={prevStep}
 
 
           />

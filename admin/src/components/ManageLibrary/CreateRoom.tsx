@@ -12,10 +12,9 @@ import { getLibraryDataById } from "@/hooks/libraryData";
 
 const CreateRoom: React.FC = () => {
   const [libraryId, setLibraryId] = React.useState("");
-  const [libraryData, setLibraryData] = React.useState([]);
+  const [libraryData, setLibraryData] = React.useState<any[]>([]);
   const [seatLayout, setSeatLayout] = React.useState({});
-  const [price, setPrice] = React.useState(libraryData?.price || "");
-  const [timeSlot, setTimeSlot] = React.useState("");
+
   const [location, setLocation] = React.useState(null);
   const [loading, setLoading] = useState(false); // Step 1: Loading state
   // const [rooms, setRooms] = useState([]);
@@ -23,7 +22,7 @@ const CreateRoom: React.FC = () => {
   const [selectedRoom, setSelectedRoom] = useState(0);
 
   const [selectedLibrary, setSelectedLibrary] = useState<any>(null);
-  const [timeSlots, setTimeSlots] = useState([
+  const [timeSlots, setTimeSlots] = useState<any[]>([
     { from: null, to: null, price: 0 },
     { from: null, to: null, price: 0 },
     { from: null, to: null, price: 0 },
@@ -58,14 +57,14 @@ const CreateRoom: React.FC = () => {
     setLocation(location);
   };
 
-  const handleSeatSelect = (seat) => {
+  const handleSeatSelect = (seat:any) => {
     console.log(seat)
 
     setSeatLayout(seat);
     // console.log(seatLayout);
     // setSeatLayout((prev) => [...prev, seat]);
   };
-  const handleTimeChange = (index, type, newValue) => {
+  const handleTimeChange = (index :any, type:any, newValue:any) => {
     const updatedTimeSlots = [...timeSlots];
     updatedTimeSlots[index][type] = newValue;
     setTimeSlots(updatedTimeSlots);
@@ -78,9 +77,8 @@ const CreateRoom: React.FC = () => {
     // setRooms(libraryData?.rooms)
 
   };
-  function handlePriceChange(index, newValue) {
-    // Assuming timeSlots is part of your component's state
-    // and you have a method to update this state
+  function handlePriceChange(index : any, newValue : any) {
+
     const updatedTimeSlots = [...timeSlots];
     updatedTimeSlots[index].price = newValue;
     setTimeSlots(updatedTimeSlots); // Update your state with the new timeSlots array
@@ -119,13 +117,13 @@ const CreateRoom: React.FC = () => {
     console.log(formattedTimeSlots);
     // console.log(seatLayout);
 
-    console.log("Adding Details", libraryId, price, timeSlot, location);
+    console.log("Adding Details", libraryId,  location);
     try {
-      const response = await axios.post(
+         await axios.post(
         `${BASEURL}/api/v1/library/updateRoom`,
         {
           libraryId: libraryId,
-          price: price,
+
           timeSlot: formattedTimeSlots,
           location: location,
         }
@@ -159,7 +157,7 @@ const CreateRoom: React.FC = () => {
       // Handle error
     }
   };
-  console.log(selectedRoom)
+  // console.log(selectedRoom)
 
   React.useEffect(() => {
     const timer = setTimeout(() => setProgress(66), 500)
