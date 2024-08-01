@@ -119,7 +119,7 @@ function Signup() {
     const admin = localStorage.getItem("userId")
     if (token !== ""  && admin !== "") {
       setCurrentStep(4);
-      setToken(token);
+      setToken(token || "");
     }
     console.log(token, "token");
     console.log(currentStep, "currentstep");

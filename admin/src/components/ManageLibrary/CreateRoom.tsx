@@ -22,7 +22,7 @@ const CreateRoom: React.FC = () => {
   const [progress, setProgress] = React.useState(13)
   const [selectedRoom, setSelectedRoom] = useState(0);
 
-  const [selectedLibrary, setSelectedLibrary] = useState(null);
+  const [selectedLibrary, setSelectedLibrary] = useState<any>(null);
   const [timeSlots, setTimeSlots] = useState([
     { from: null, to: null, price: 0 },
     { from: null, to: null, price: 0 },

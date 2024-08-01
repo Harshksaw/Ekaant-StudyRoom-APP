@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 
 import Dashboard from "./pages/Dashboard";
-import { Permission, Search, View } from "./components";
+import { Permission, Search } from "./components";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 
@@ -18,7 +18,7 @@ import OwnerRoute from "./components/Owner/OwnerRoute";
 import OwnerHome from "./components/Owner/OwnerHome";
 import MyLibrary from "./components/ManageLibrary/MyLibrary";
 import Auth from "./Auth/Auth";
-// import Signup from "./Auth/Signup";
+
 import CreateRoom from "./components/ManageLibrary/CreateRoom";
 import ViewBookings from "./components/ManageBookings/ViewBookings";
 
@@ -39,16 +39,14 @@ function App() {
       basename="/"
 
       >
-
         <Routes
-
         >
         <Route path="/" element={<Auth type="signin" />} />
           {/* <Route path="/signup" element={<Signup/>} />
           <Route path="/signin" element={<Auth type="signin" />} /> */}
 
           {role === "Admin" && (
-            <Route element={<ProtectedRoute />}>
+            <Route element={<ProtectedRoute />}>  
               <Route path="/manage-library/create-room" element={<CreateRoom />}/>
               <Route path="/manage-library/create-library" element={<CreateLibrary />}/>
               <Route path="/dashboard" element={<Dashboard />} />

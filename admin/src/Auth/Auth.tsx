@@ -23,7 +23,7 @@ const Auth = ({ type }: { type: "signin" }) => {
   // const [verified, setVerified] = useState(false);
   // const [otp, setOtp] = useState(0);
   // const [showOtp, setShowOtp] = useState(false);
-  const [authMethod, setAuthMethod] = useState("password");
+  // const [authMethod, setAuthMethod] = useState("password");
   const navigate = useNavigate();
 
   // const handleAuthMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +78,7 @@ const Auth = ({ type }: { type: "signin" }) => {
           // console.log("----65");
           setLoading(false);
 
-//  .       @ts-ignore
+            //@ts-ignore
           if (!response?.hasRooms) {
             navigate("/manage-library/create-room");
           } else {

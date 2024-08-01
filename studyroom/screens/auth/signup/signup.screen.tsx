@@ -34,6 +34,7 @@ import axios from "axios";
 import { Feather } from "@expo/vector-icons";
 import { BACKEND } from "@/utils/config";
 import Button from "@/components/Button";
+import { Toast } from "react-native-toast-notifications";
 
 
 export default function SignUpScreen() {
@@ -167,6 +168,22 @@ export default function SignUpScreen() {
   //signup api 
   const handleSignUp = async () => {
 
+if(!otpVerified){
+  Toast.show("Please verify OTP", {
+    type: "danger",
+    duration: 3000,
+    placement: "top",
+    style: {
+      backgroundColor:'red',
+      borderRadius: 10,
+      padding: 10,
+      marginTop:50
+
+
+    }
+  });
+}
+
     console.log("signup.screen.tsx>>>>>>", userInfo);
     try {
       console.log("Sending signup data:", {
@@ -225,11 +242,7 @@ export default function SignUpScreen() {
         flex: 1,
       }}
     >
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
+    
         <View style={styles.signInImage}>
           <View
             style={{
@@ -508,7 +521,7 @@ export default function SignUpScreen() {
             </View>
           </KeyboardAvoidingView>
         </ScrollView>
-      </View>
+
     </SafeAreaView>
   );
 }
