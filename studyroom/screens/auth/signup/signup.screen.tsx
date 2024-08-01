@@ -40,6 +40,8 @@ export default function SignUpScreen() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [buttonSpinner, setButtonSpinner] = useState(false);
 
+  const [otpVerified, setotpVerified] = useState(false);
+
   const [showOtp, setShowOtp] = useState(false);
 
   const [verified, setVerified] = useState(false);
@@ -55,7 +57,7 @@ export default function SignUpScreen() {
     password: "",
   });
 
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", ""]);
   const inputRefs = [createRef(), createRef(), createRef(), createRef()];
 
   const handleOtpChange = (text, index) => {
@@ -68,7 +70,7 @@ export default function SignUpScreen() {
   };
 
 
-  const [profileimage, setImage] = useState(null);
+  const [image, setImage] = useState(null);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -146,6 +148,7 @@ export default function SignUpScreen() {
 
       if (response.data.success) {
         setVerified(true);
+        setotpVerified(true);
       }
 
       console.log(response.data);
@@ -178,7 +181,7 @@ export default function SignUpScreen() {
       let formData = new FormData();
       // console.log("Image path:", typeof image  )
 
-      const respon = await fetch(profileimage);
+      const respon = await fetch(image);
       const blob = await respon.blob();
       const file = new File([blob], `${userInfo.name}.jpg`, { type: blob.type });
       formData.append('profile', file);
@@ -464,18 +467,21 @@ export default function SignUpScreen() {
                   marginBottom: 40,
                 }}
               >
-                <TouchableOpacity
-                  style={{
-                    padding: 20,
-                    borderRadius: 8,
-                    marginHorizontal: 16,
 
-                    marginTop: 15,
-                  }}
-                  onPress={() => handleSignUp()}
-                >
-                  <Button text="Register" width={250} height={60} />
-                </TouchableOpacity>
+                         <TouchableOpacity
+                         style={{
+                           padding: 20,
+                           borderRadius: 8,
+                           marginHorizontal: 16,
+       
+                           marginTop: 15,
+                         }}
+                         onPress={() => handleSignUp()}
+                       >
+                         <Button text="Register" width={250} height={60} />
+                       </TouchableOpacity>
+
+
 
                 <TouchableOpacity
                   style={{
