@@ -7,10 +7,7 @@ const OTPSchema = new mongoose.Schema({
         type:String,
         required: true,
     },
-    phoneotp: {
-        type:String,
-        required:false,
-    },
+  
     emailotp: {
         type:String,
         required:false,

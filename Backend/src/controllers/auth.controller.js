@@ -1,4 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
+const axios = require("axios");
 const { bcrypt } = require("bcrypt");
 const zod = require("zod");
 const { User } = require("../models");
@@ -6,6 +7,8 @@ const jwt = require("jsonwebtoken");
 const OTP = require("../models/OTP");
 const JWT_SECRET = "MY_SECRET_KEY";
 const otpGenerator = require("otp-generator");
+const phoneotp = require("../models/phoneotp");
+const apiKey = process.env.FASTSMS;
 // signing up schema
 const signupSchema = zod.object({
   username: zod.string().min(3).max(255),
@@ -184,22 +187,58 @@ async function signIn(req, res, next) {
 // Example usage (assuming a web framework like Express)
 async function sendOtp(req, res) {
   const { phoneNumber } = req.body;
-  const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
-  console.log(`OTP for ${phoneNumber} is ${otpCode}`);
 
-  otpTest = otpCode;
-  return res
-    .status(200)
-    .json({ success: true, message: `OTP sent to ${phoneNumber}` });
+  var otp = otpGenerator.generate(4, {
+    upperCaseAlphabets: false,
+    lowerCaseAlphabets: false,
+    specialChars: false,
+  });
+  console.log("OTP GENERATED => ", typeof otp);
+
+  if (phoneNumber) {
+    const phoneOtp = otp;
+
+    // Create and save email OTP
+
+    const otpPayload = { phoneNumber , phoneotp:phoneOtp };
+    const otpBody = await phoneotp.create(otpPayload);
+    console.log("otpBODY -> ", otpBody);
+
+    // Send OTP via Fast2SMS
+    const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=otp&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
+    const response = await axios.get(url);
+    console.log("🚀 ~ sendOtp ~ response:", response.status)
+    
+  if (response.status == 200) {
+    return res.status(200).json({
+      success: true,
+      message: `OTP sent to ${phoneNumber}`,
+    });
+  }
+  }
+
+
 }
 
+
 async function verifyOtp(req, res) {
-  const { otp } = req.body;
-  if (otp === "" || otp === null || otp === undefined || otp === 0) {
-    return res.status(200).json({ message: "Pass it" });
-  }
-  if (otp !== otpTest) {
-    return res.status(400).json({ message: "Invalid OTP" });
+  const { phoneNumber, otp } = req.body;
+
+  const response = await OTP.find({ phoneNumber }).sort({ createdAt: -1 }).limit(1);
+  // const response = await OTP.find({ email }).sort({ createdAt: -1 });
+  console.log(response[0].phoneotp, otp, "RESPONSE123");
+  if (response.length === 0) {
+    // OTP not found for the email
+    return res.status(400).json({
+      success: false,
+      message: "The OTP is not valid",
+    });
+  } else if (otp != response[0].phoneotp) {
+    // Invalid OTP
+    return res.status(400).json({
+      success: false,
+      message: "The OTP you entered is wrong !!",
+    });
   }
 
   return res.status(200).json({ message: "OTP verified successfully" });
@@ -224,7 +263,7 @@ async function sendEmailOtp(req, res) {
     lowerCaseAlphabets: false,
     specialChars: false,
   });
-  console.log("OTP GENERATED => ",typeof otp);
+  console.log("OTP GENERATED => ", typeof otp);
 
   const otpPayload = { email, emailotp: otp };
 
