@@ -34,11 +34,14 @@ import axios from "axios";
 import { Feather } from "@expo/vector-icons";
 import { BACKEND } from "@/utils/config";
 import Button from "@/components/Button";
+import { Toast } from "react-native-toast-notifications";
 
 
 export default function SignUpScreen() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [buttonSpinner, setButtonSpinner] = useState(false);
+
+  const [otpVerified, setotpVerified] = useState(false);
 
   const [showOtp, setShowOtp] = useState(false);
 
@@ -55,7 +58,7 @@ export default function SignUpScreen() {
     password: "",
   });
 
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", ""]);
   const inputRefs = [createRef(), createRef(), createRef(), createRef()];
 
   const handleOtpChange = (text, index) => {
@@ -68,7 +71,7 @@ export default function SignUpScreen() {
   };
 
 
-  const [profileimage, setImage] = useState(null);
+  const [image, setImage] = useState(null);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -146,6 +149,7 @@ export default function SignUpScreen() {
 
       if (response.data.success) {
         setVerified(true);
+        setotpVerified(true);
       }
 
       console.log(response.data);
@@ -164,6 +168,22 @@ export default function SignUpScreen() {
   //signup api 
   const handleSignUp = async () => {
 
+if(!otpVerified){
+  Toast.show("Please verify OTP", {
+    type: "danger",
+    duration: 3000,
+    placement: "top",
+    style: {
+      backgroundColor:'red',
+      borderRadius: 10,
+      padding: 10,
+      marginTop:50
+
+
+    }
+  });
+}
+
     console.log("signup.screen.tsx>>>>>>", userInfo);
     try {
       console.log("Sending signup data:", {
@@ -178,7 +198,7 @@ export default function SignUpScreen() {
       let formData = new FormData();
       // console.log("Image path:", typeof image  )
 
-      const respon = await fetch(profileimage);
+      const respon = await fetch(image);
       const blob = await respon.blob();
       const file = new File([blob], `${userInfo.name}.jpg`, { type: blob.type });
       formData.append('profile', file);
@@ -222,11 +242,7 @@ export default function SignUpScreen() {
         flex: 1,
       }}
     >
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
+    
         <View style={styles.signInImage}>
           <View
             style={{
@@ -464,18 +480,21 @@ export default function SignUpScreen() {
                   marginBottom: 40,
                 }}
               >
-                <TouchableOpacity
-                  style={{
-                    padding: 20,
-                    borderRadius: 8,
-                    marginHorizontal: 16,
 
-                    marginTop: 15,
-                  }}
-                  onPress={() => handleSignUp()}
-                >
-                  <Button text="Register" width={250} height={60} />
-                </TouchableOpacity>
+                         <TouchableOpacity
+                         style={{
+                           padding: 20,
+                           borderRadius: 8,
+                           marginHorizontal: 16,
+       
+                           marginTop: 15,
+                         }}
+                         onPress={() => handleSignUp()}
+                       >
+                         <Button text="Register" width={250} height={60} />
+                       </TouchableOpacity>
+
+
 
                 <TouchableOpacity
                   style={{
@@ -502,7 +521,7 @@ export default function SignUpScreen() {
             </View>
           </KeyboardAvoidingView>
         </ScrollView>
-      </View>
+
     </SafeAreaView>
   );
 }

@@ -29,7 +29,7 @@ interface SeatsProps {
 const Seats = ({ onSeatSelect }: SeatsProps) => {
   const [rows, setRows] = useState(0);
   const [columns, setColumns] = useState(0);
-  const [showGrid, setShowGrid] = useState(false);
+  // const [showGrid, setShowGrid] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState<SeatData[]>([]);
 
   const handleSelect = (seatData: SeatData) => {
@@ -83,7 +83,7 @@ const Seats = ({ onSeatSelect }: SeatsProps) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent form from refreshing the page
-    setShowGrid(true); // Show the grid with the specified rows and columns
+    // setShowGrid(true); // Show the grid with the specified rows and columns
   };
   const matrixSize = 4;
   const matrix = Array.from({ length: matrixSize }, () =>

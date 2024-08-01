@@ -9,6 +9,7 @@ const JWT_SECRET = "MY_SECRET_KEY";
 const otpGenerator = require("otp-generator");
 const phoneotp = require("../models/phoneotp");
 const apiKey = process.env.FASTSMS;
+const cloudinary = require('cloudinary').v2;
 // signing up schema
 const signupSchema = zod.object({
   username: zod.string().min(3).max(255),
@@ -29,37 +30,6 @@ function pingAuthController(req, res) {
 }
 
 async function getUser(req, res, next) {
-  // console.log("req.user is ", req.user);
-
-  // const access_token = req.headers["access-token"] as string;
-  // if (!access_token) {
-  //   return next(
-  //     new ErrorHandler("Please login to access this resource", 400)
-  //   );
-  // }
-  // const decoded = jwt.decode(access_token) as JwtPayload
-  // if (!decoded) {
-  //   return next(new ErrorHandler("access token is not valid", 400));
-  // }
-
-  // // check if the access token is expired
-  // if (decoded.exp && decoded.exp <= Date.now() / 1000) {
-  //   try {
-  //     await updateAccessToken(req, res, next);
-  //   } catch (error) {
-  //     return next(error);
-  //   }
-  // } else {
-  //   const user = await redis.get(decoded.id);
-
-  //   if (!user) {
-  //     return next(
-  //       new ErrorHandler("Please login to access this resource", 400)
-  //     );
-  //   }
-
-  //   req.user = JSON.parse(user);
-
   try {
     const access_token = req.headers["access-token"];
     if (!access_token) {
@@ -82,21 +52,44 @@ async function getUser(req, res, next) {
   }
 }
 
-// signup function--
-async function signUp(req, res, next) {
-  const images = req.file.path;
+cloudinary.config({
+  cloud_name: "dbnnlqq5v",
+  api_key: 283514623947746,
+  api_secret: "E2s6axKWvXTiJi5_DGiFuPe7Lxo",
+});
 
-  const user = await User.findOne({ email: req.body.email });
-  if (user) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      success: false,
-      message: "User already exists",
-      error: { 411: "User already exists" },
-      data: {},
-    });
-  }
+
+
+
+// signup function--
+async function signUp(req, res) {
+
+
+
+
+
+
+
+
+
+  // if (user) {
+  //   return res.status(StatusCodes.BAD_REQUEST).json({
+  //     success: false,
+  //     message: "User already exists",
+  //     error: { 411: "User already exists" },
+  //     data: {},
+  //   });
+  // }
 
   try {
+
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'profileimages'
+    });
+    console.log(result.secure_url, "req.file is ");
+    const images = result.secure_url;
+
     const newUser = await User.create({
       username: req.body.username,
       email: req.body.email,
@@ -127,7 +120,7 @@ async function signUp(req, res, next) {
     });
   } catch (error) {
     console.log("error is ", error);
-    // next(error);
+
   }
 }
 // signin schema
@@ -202,7 +195,7 @@ async function sendOtp(req, res) {
 
     const otpPayload = { phoneNumber , phoneotp:phoneOtp };
     const otpBody = await phoneotp.create(otpPayload);
-    console.log("otpBODY -> ", otpBody);
+    // console.log("otpBODY -> ", otpBody);
 
     // Send OTP via Fast2SMS
     const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=otp&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
@@ -224,7 +217,7 @@ async function sendOtp(req, res) {
 async function verifyOtp(req, res) {
   const { phoneNumber, otp } = req.body;
 
-  const response = await OTP.find({ phoneNumber }).sort({ createdAt: -1 }).limit(1);
+  const response = await phoneotp.find({ phoneNumber }).sort({ createdAt: -1 }).limit(1);
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
   console.log(response[0].phoneotp, otp, "RESPONSE123");
   if (response.length === 0) {

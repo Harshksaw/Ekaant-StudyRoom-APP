@@ -5,24 +5,18 @@ const AuthRouter = express.Router();
 
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
+
 const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
-  cloud_name: "dzwvmqbv0",
-  api_key: 572782272174972,
-  api_secret: "Sx6t5hAG6ynwO6mr8GN-L55A7MI",
+  cloud_name: "dbnnlqq5v",
+  api_key: 283514623947746,
+  api_secret: "E2s6axKWvXTiJi5_DGiFuPe7Lxo",
 });
 
-// Configure Multer storage using Cloudinary
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "profile-images",
-    resource_type: "auto",
-  },
-});
 
-const upload = multer({ storage: storage });
+
+// const upload = multer({ storage: storage });
 
 const validateAccessToken = (req, res, next) => {
   console.log("validateAccessToken");
@@ -41,24 +35,21 @@ const validateAccessToken = (req, res, next) => {
   });
 };
 
-// Middleware to optionally refresh tokens
-// const handleRefreshToken = async (req, res, next) => {
-//   console.log("handleRefreshToken");
-//   const refreshToken = req.headers["refresh-token"];
-//   if (!refreshToken) return next(); // Proceed without refreshing if no refresh token provided
 
-//   try {
-//     const newTokens = await refreshToken(refreshToken);
-//     res.setHeader("access-token", newTokens.accessToken); // Send new access token back in response headers
-//     req.user = jwt.decode(newTokens.accessToken); // Update req.user with new token info
-//     next();
-//   } catch (error) {
-//     return res.status(403).send({ message: "Invalid refresh token" });
-//   }
-// };
+function handleUploadError(err, req, res, next) {
+  if (err) {
+    // Log the error to the console
+    console.error(err);
+    // Send an error response to the client
+    res.status(500).json({ error: "An error occurred during file upload" });
+    return;
+  }
+  next();
+}
 
+const upload = multer({ dest: 'uploads/' });
 AuthRouter.get("/ping", AuthController.pingAuthController);
-AuthRouter.post("/signup", upload.single("profile"), AuthController.signUp);
+AuthRouter.post("/signup", upload.single("image"), AuthController.signUp);
 AuthRouter.post("/signin", AuthController.signIn);
 
 AuthRouter.post("/addFriend/:userId", AuthController.addFriend);

@@ -32,8 +32,7 @@ async function RegisterAdmin(req, res, next) {
       PanNumber,
       Address,
       username,
-      emailotp,
-      phoneotp,
+
     } = req.body;
 		const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
         // const response = await OTP.find({ email }).sort({ createdAt: -1 });

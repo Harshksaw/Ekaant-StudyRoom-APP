@@ -20,34 +20,9 @@ const Auth = ({ type }: { type: "signin" }) => {
     password: "",
   });
 
-  // const [verified, setVerified] = useState(false);
-  // const [otp, setOtp] = useState(0);
-  // const [showOtp, setShowOtp] = useState(false);
-  const [authMethod, setAuthMethod] = useState("password");
   const navigate = useNavigate();
 
-  // const handleAuthMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setAuthMethod(e.target.value);
-  // };
 
-  // send otp--
-
-
-  // verfiy otp
-  // const verifyOtp = async () => {
-  //   try {
-  //     const response = await axios.post(`${BASEURL}/api/v1/auth/verifyOtp`, {
-  //       otp: otp,
-  //     });
-  //     if (response.data.success) {
-  //       setVerified(true);
-  //       console.log(verified);
-  //     }
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   async function sendRequest() {
     if (type === "signin") {
@@ -59,7 +34,8 @@ const Auth = ({ type }: { type: "signin" }) => {
         });
 
         if (response.data.success) {
-          console.log(response);
+          console.log("🚀 ~ sendRequest ~ response:", response)
+
           const token = response.data.token;
 
           const accountType = response.data.data.accountType;
@@ -78,7 +54,7 @@ const Auth = ({ type }: { type: "signin" }) => {
           // console.log("----65");
           setLoading(false);
 
-//  .       @ts-ignore
+            //@ts-ignore
           if (!response?.hasRooms) {
             navigate("/manage-library/create-room");
           } else {
@@ -90,9 +66,11 @@ const Auth = ({ type }: { type: "signin" }) => {
           }
         } else {
           // Handle unsuccessful login attempt
+          setLoading(false);
           alert("Login failed. Please check your credentials.");
         }
       } catch (e) {
+        setLoading(false);
         console.error("Error during login:", e);
         alert("Error while signing up. Please check the console for more details.");
       }

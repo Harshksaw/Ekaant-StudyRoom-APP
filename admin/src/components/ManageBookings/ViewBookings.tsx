@@ -1,11 +1,11 @@
-import { getBookings, getLibraryDataById } from "@/hooks/libraryData";
+import { getLibraryDataById } from "@/hooks/libraryData";
 import { BASEURL } from "@/lib/utils";
 import axios from "axios";
 import React from "react";
 
-type Props = {};
 
-const ViewBookings = (props: Props) => {
+
+const ViewBookings = () => {
   const [bookings, setBookings] = React.useState([]);
   const [librarybookings, setLibraryBookings] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);

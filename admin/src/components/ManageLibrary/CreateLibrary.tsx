@@ -184,10 +184,10 @@ const CreateLibrary = () => {
   const goToPreviousStep = () => {
     setCurrentStep(currentStep - 1);
   };
-  const [isOverlayVisible, setIsOverlayVisible] = useState(true);
+
   return (
     <div className="m-2 relative w-full">
-         {isOverlayVisible && (
+         {false && (
         <div style={{
           position: 'fixed',
           top: 0,

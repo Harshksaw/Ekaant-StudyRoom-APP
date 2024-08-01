@@ -10,7 +10,7 @@ async function getLibraryDataById() {
     userId : userId,
 
   })
-  const data = await response;
+  const data =  response;
   return data;
 }
 
