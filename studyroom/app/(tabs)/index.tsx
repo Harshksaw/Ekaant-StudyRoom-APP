@@ -140,14 +140,8 @@ export default function index() {
     require("../../assets/icons/locationcard.svg"),
   ]);
 
-  const filters = [
-    { id: 0, name: "Filters" },
-    { id: 1, name: "Sort" },
-    { id: 2, name: "Locality" },
-    { id: 3, name: "Price" },
-  ];
 
-  const userDetails = useSelector((state: any) => state.user);
+
 
   // console.log("-------------->", userDetails);
 
@@ -324,7 +318,20 @@ export default function index() {
     }, 2000);
   }, []);
 
+  const userDetails = useSelector((state: any) => state.user);
 
+
+  const userData = JSON.parse(userDetails?.details)?.user.username;
+  console.log("🚀 ~ Home ~ userData:", userData.split(' ')[0])
+
+
+  // function getFirstWord(str) {
+  //   return str.split(' ')[0];
+  // }
+  // const name = getFirstWord(userData?.username);
+
+
+  
   return (
     <SafeAreaView
       style={{
@@ -369,7 +376,7 @@ export default function index() {
                   color: "#0077B6",
                 }}
               >
-                Harsh👋
+            {userData.split(' ')[0]}👋
               </Text>
             </Text>
           </View>
