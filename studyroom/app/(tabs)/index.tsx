@@ -62,14 +62,14 @@ export default function index() {
     // TODO, tanstackquery
     try {
       const response = await axios.get(`${BACKEND}/api/v1/app/getApp`);
-      console.log("getAPpData called ", count++);
-      console.log("🚀 ~ getAppData ~ response:", response.data.data.locations)
+      // console.log("getAPpData called ", count++);
+      // console.log("🚀 ~ getAppData ~ response:", response.data.data.locations)
       // console.log(response.data.data)
 
       setBannerImage(response.data.data.Banner);
       setLocationData(response.data.data.locations);
 
-      AsyncStorage.setItem("RegistrationFee", response.data.data.RegistrationFee);
+      AsyncStorage.setItem("RegistrationFee", JSON.stringify(response.data.data.RegistrationFee));
     } catch (error) {
       setBannerImage([]);
       console.error("Failed to fetch banner image data:", error);
@@ -79,17 +79,7 @@ export default function index() {
 
   dispatch(setAppDetails(locationData || []));
 
-  // const getTokenAndPrintIt = async () => {
-  //   try {
-  //     const token = await AsyncStorage.getItem("token");
-  //     const userData = await AsyncStorage.getItem("userData");
-  //     // console.log("Token:", token);
-  //     // console.log("TokenData:", userData);
-  //   } catch (error) {
-  //     console.error("Error fetching token:", error);
-  //   }
-  // };
-
+  
   const getUserData = async () => {
     const res = await AsyncStorage.getItem("userData");
     // const data = JSON.parse(res);
@@ -107,7 +97,7 @@ export default function index() {
       setIsLoading(true);
       setReload(false);
 
-      console.log("Selected Location:109", selectedLocation);
+      // console.log("Selected Location:109", selectedLocation);
       try {
 
       
@@ -116,7 +106,7 @@ export default function index() {
         // console.log("Fetched Data:________", fetchedData);
       } catch (error) {
         console.error("Failed to fetch room data:", error);
-        setData([]);
+        setData(null);
 
         setNotAvailable(true);
         // Handle the error as needed, e.g., set an error state, show a message, etc.
@@ -323,7 +313,7 @@ export default function index() {
 
 
   const userData = JSON.parse(userDetails.details)?.data?.username;
-  console.log("🚀 ~ index ~ userData:", userData)
+  // console.log("🚀 ~ index ~ userData:", userData)
 
 
 
@@ -432,50 +422,11 @@ export default function index() {
             )}
           />
         </View>
-        {/* Filter buttons */}
-        {/* <View style={{ backgroundColor: "white", marginTop: 12 }}>
-          <ScrollView
-            style={styles.filters}
-            horizontal={true}
-            scrollEnabled={true}
-            showsHorizontalScrollIndicator={false}
-          >
-            {filters.map((filter, index) => (
-              <TouchableOpacity
-                key={index}
-                style={{
-                  flexDirection: filter.id <= 1 ? "row" : "row-reverse",
 
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderWidth: 1,
-                  borderColor: "lightgray",
-                  marginRight: 12,
-                  marginLeft: index === 0 ? 16 : 0,
-                  height: 30,
-                  gap: 2,
-                  // paddingHorizontal: 10,
-                  paddingHorizontal: 15,
-                  backgroundColor: "#ffff",
-                  borderRadius: 40,
-                }}
-                // onPress={onPress}
-              >
-                {assets && assets[filter?.id] && (
-                  <Image
-                    source={assets[filter?.id]}
-                    style={{ width: 12, height: 12 }}
-                  />
-                )}
-
-                <Text style={{ color: "black" }}>{filter.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        
-        </View> */}
+      
         <TouchableOpacity onPress={()=>   router.push({
                 pathname: "/(routes)/nearby",
+                // params: {data: data},
 
               })} >
 

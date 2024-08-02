@@ -1,8 +1,12 @@
 import { View, Text, StyleSheet, FlatList, Dimensions } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MapView from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 
+import * as Location from "expo-location";
+import { Image } from "expo-image";
+import { Ionicons } from "@expo/vector-icons";
+import MapViewStyle from "../utils/MapView.json";
 const libraries = [
   { id: "1", name: "Library 1", address: "123 Main St" },
   { id: "2", name: "Library 2", address: "456 Elm St" },
@@ -11,38 +15,70 @@ const libraries = [
 ];
 
 export default function NearBy() {
+  const [location, setLocation] = useState(null);
+  const [lat, setLat] = useState(0);
+  const [long, setLong] = useState(0);
+  const [errorMsg, setErrorMsg] = useState("");
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location.coords);
+      setLat(location.coords.latitude);
+      setLong(location.coords.longitude);
+
+      console.log("loc", location);
+    })();
+  }, []);
+
+  const [selectedLocation, setSelectedLocation] = useState("Delhi");
+
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>{item.name}</Text>
       <Text style={styles.cardAddress}>{item.address}</Text>
     </View>
   );
+  console.log("location", location, lat, long);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>NearBy</Text>
+      {/* <Text>NearBy</Text> */}
       <View style={styles.mapContainer}>
-        {/* <MapView style={styles.map} /> */}
+        <MapView style={styles.map} />
+
+        {/* {location && ( */}
         <MapView
           style={styles.map}
-          // customMapStyle={MapViewStyle}
+          customMapStyle={MapViewStyle}
           region={{
-            latitude: 28.6139,
-            longitude: 77.2090,
-            latitudeDelta: 0.122,
-            longitudeDelta: 0.2921,
+            latitude:lat || 28.6139, // Delhi latitude
+            longitude: long ||  77.209, // Delhi longitude
+            latitudeDelta: 0.0422,
+            longitudeDelta: 0.0421,
           }}
         >
-          {/* {location? <Marker
-         coordinate={{
-          latitude:location?.latitude,
-          longitude:location?.longitude
-         }} */}
-          {/* ></Marker> */}
-          {/* 
-        <Image source={require('../../../assets/images/car.png')} style={{width:60 , height:60}} />
-
-</Marker> : null} */}
+          {location ? (
+              <Marker
+                coordinate={{
+                  latitude: lat,
+                  longitude: long,
+                }}
+              >
+                <Image source={{
+                  uri: "https://cdn.iconscout.com/icon/free/png-256/current-location-555-461761.png"
+                }} style={{ width: 50, height: 50
+                }}
+                />
+               
+               
+              </Marker>
+            ) : null}
 
           {/* { placeList.map((place, index)=>(
 
@@ -51,7 +87,8 @@ export default function NearBy() {
     <Markers place={place} index={index} key={index} />
   ))} */}
         </MapView>
-         
+        {/* )} */}
+
         <FlatList
           data={libraries}
           renderItem={renderItem}
