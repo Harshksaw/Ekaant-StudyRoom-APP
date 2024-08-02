@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   View,
   Image,
-  KeyboardAvoidingView,
+
   SafeAreaView
 } from "react-native";
 

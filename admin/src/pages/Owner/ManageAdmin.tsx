@@ -26,8 +26,7 @@ const ManageAdmin = () => {
         {
             library.map((lib:Lib) => (
                 <div className={'flex gap-4 py-2 px-8 bg-blue-100 w-fit'}>
-                     <p className='bg-blue-400 py-1 px-3 rounded-md'>{lib.libraryOwner.
-username}</p>
+                     <p className='bg-blue-400 py-1 px-3 rounded-md'>{lib.libraryOwner.username}</p>
 
                      <p className='bg-blue-400 py-1 px-3 rounded-md'>{lib.name}</p>
                         

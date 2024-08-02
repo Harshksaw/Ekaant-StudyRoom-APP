@@ -5,12 +5,23 @@ import { useEffect } from "react";
 
 
 import { useAssets } from "expo-asset";
+
+import { useSelector } from "react-redux";
 export default function Home() {
   const navigation = useNavigation();
 
-  useEffect(() => {
-    navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  // useEffect(() => {
+  //   navigation.setOptions({ headerShown: false });
+
+
+  // }, [navigation]);
+
+  const userDetails = useSelector((state: any) => state.user);
+
+
+  const userData = JSON.parse(userDetails?.details)?.user;
+  console.log("🚀 ~ Home ~ userData:", userData)
+
   const [assets] = useAssets([
     require("../../assets/images/EKAANT.png"),
     require("../../assets/images/EkaantWelcom.png"),
@@ -20,7 +31,7 @@ export default function Home() {
       <View style={styles.view1}>
         <Text style={styles.text}>
           Lorem ipsum dolor sit{" "}
-          <Text style={{ fontWeight: "bold", color: "red" }}>harsh</Text> amet.
+          <Text style={{ fontWeight: "bold", color: "red" }}>{userData}</Text> amet.
         </Text>
 
         {assets && <Image width={100} height={100} source={assets[1]} />}
