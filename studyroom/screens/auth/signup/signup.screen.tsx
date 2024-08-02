@@ -173,7 +173,7 @@ export default function SignUpScreen() {
         });
       }
       
-      console.log("🚀 ~ verifyOtp ~ response:", response)
+      // console.log("🚀 ~ verifyOtp ~ response:", response)
 
       } catch (error) {
         console.log(error);
@@ -190,6 +190,7 @@ export default function SignUpScreen() {
   //signup api 
   const handleSignUp = async () => {
 
+    let formData = new FormData();
 if(!otpVerified){
   Toast.show("Please verify OTP", {
     type: "danger",
@@ -208,16 +209,8 @@ if(!otpVerified){
 
     console.log("signup.screen.tsx>>>>>>", userInfo);
     try {
-      console.log("Sending signup data:", {
-        username: userInfo.name,
-        email: userInfo.email,
-        password: userInfo.password,
-        phoneNumber: userInfo.phone,
-        accountType: "User",
-      });
+     
 
-
-      let formData = new FormData();
       // console.log("Image path:", typeof image  )
       if (!image){
         Toast.show("Please upload profile picture", {
@@ -235,15 +228,36 @@ if(!otpVerified){
         });
         return;
       };
+      const uri = image;
+      const respone = await fetch(uri); // Fetch the image data
+      const blob = await respone.blob();
+  
+      formData.append('image', blob, `${userInfo.name}.jpg`);  // Add image to FormData
+  
+      const cloudinaryResponse = await fetch('https://api.cloudinary.com/v1_1/dbnnlqq5v/image/upload', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      const cloudinaryData = await cloudinaryResponse.json();
+      const imageUrl = cloudinaryData.secure_url;   
+  
 
-      // Convert image to blob
-      const respon = await fetch(image);
-      const blob = await respon.blob();
 
+      // const cloudinaryResponse = await fetch('https://api.cloudinary.com/v1_1/dbnnlqq5v/image/upload', {
+      //   method: 'POST',
+      //   body: formData
+      // });
+      
+      // console.log("🚀 ~ handleSignUp ~ cloudinaryResponse:", cloudinaryResponse)
+      // const cloudinaryData = await cloudinaryResponse.json();
+      // const imageUrl = cloudinaryData.secure_url;
+      console.log("🚀 ~ handleSignUp ~ imageUrl:", imageUrl)
 
+      const file = new File([blob], `${userInfo.name}.jpg`, { type: blob.type });
       // const file = new File([blob], `${userInfo.name}.jpg`, { type: blob.type });
-
-      formData.append('image', blob);
+    console.log(typeof image, "blob")
+    formData.append('image', image); 
 
       // Append other user info to formData
       formData.append('username', userInfo.name);
@@ -257,7 +271,8 @@ if(!otpVerified){
           'Content-Type': 'multipart/form-data',
         },
       });
-      if (response.data.success) {
+      console.log("🚀 ~ handleSignUp ~ response:", response)
+      if (response.status == 200) {
         await AsyncStorage.setItem(
           "token",
           JSON.stringify(response.data.token)
