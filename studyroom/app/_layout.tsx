@@ -92,7 +92,9 @@ store={store}
         }} />
     
         <Stack.Screen name="(routes)/nearby/index" options={{
-          headerShown: false
+          headerShown: false,
+
+
         }} />
     
         <Stack.Screen name="(tabs)" options={{
