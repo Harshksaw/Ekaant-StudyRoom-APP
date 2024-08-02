@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const librarySchema = new mongoose.Schema({
   libraryOwner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Admin",
   },
 
   name: { type: String, required: true },

@@ -228,7 +228,7 @@ const addOrUpdateRoomDetails = async (req, res) => {
 
 const getLibrary = async (req, res) => {
   try {
-    const roomsData = await Library.find();
+    const roomsData = await Library.find().populate("libraryOwner");
     res.status(200).json({
       success: true,
       count: roomsData.length,

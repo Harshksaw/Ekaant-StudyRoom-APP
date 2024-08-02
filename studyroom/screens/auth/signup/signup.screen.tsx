@@ -19,7 +19,7 @@ import {
   FontAwesome,
   Fontisto,
   Ionicons,
-  SimpleLineIcons,
+
   
 } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
@@ -29,7 +29,7 @@ import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import axios from "axios";
-//   import { SERVER_URI } from "@/utils/uri";
+
 
 import { Feather } from "@expo/vector-icons";
 import { BACKEND } from "@/utils/config";
@@ -73,22 +73,30 @@ export default function SignUpScreen() {
 
   const [image, setImage] = useState(null);
 
+  
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
+    // Request permission to access media library
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    // Launch image picker
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
+    console.log("🚀 ~ pickImage ~ result:", result)
+    
 
-    console.log(result);
-
-    if (!result.canceled) {
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       setImage(result.assets[0].uri);
     }
   };
-
 
 
 
@@ -147,12 +155,26 @@ export default function SignUpScreen() {
           otp: otpValue,
         });
 
-      if (response.data.success) {
+      if (response.status == 200) {
         setVerified(true);
         setotpVerified(true);
+        Toast.show("Verified OTP", {
+          type: "danger",
+          duration: 2000,
+          placement: "top",
+          style: {
+            backgroundColor:'green',
+            borderRadius: 10,
+            padding: 10,
+            marginTop:50
+            
+            
+          }
+        });
       }
+      
+      console.log("🚀 ~ verifyOtp ~ response:", response)
 
-      console.log(response.data);
       } catch (error) {
         console.log(error);
         
@@ -197,11 +219,31 @@ if(!otpVerified){
 
       let formData = new FormData();
       // console.log("Image path:", typeof image  )
+      if (!image){
+        Toast.show("Please upload profile picture", {
+          type: "danger",
+          duration: 3000,
+          placement: "top",
+          style: {
+            backgroundColor:'red',
+            borderRadius: 10,
+            padding: 10,
+            marginTop:50
+      
+      
+          }
+        });
+        return;
+      };
 
+      // Convert image to blob
       const respon = await fetch(image);
       const blob = await respon.blob();
-      const file = new File([blob], `${userInfo.name}.jpg`, { type: blob.type });
-      formData.append('profile', file);
+
+
+      // const file = new File([blob], `${userInfo.name}.jpg`, { type: blob.type });
+
+      formData.append('image', blob);
 
       // Append other user info to formData
       formData.append('username', userInfo.name);

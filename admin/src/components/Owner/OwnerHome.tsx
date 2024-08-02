@@ -1,10 +1,12 @@
 
 
 const OwnerHome = () => {
+
   return (
     <div>
-        'sdsddsdsdsdsd
-    </div>
+    owner home
+    
+  </div>
   )
 }
 
