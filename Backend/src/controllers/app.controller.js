@@ -21,18 +21,23 @@ const ping = (req, res) => {
 
 async function createApp(req, res) {
   try {
+   
 
     const images = req.files.map((file) => file.path);
     const {
       location,
     } = req.body;
 
-    console.log(location, "body", images);
+    let parsedLocations = location;
+    if (typeof location === 'string') {
+      parsedLocations = JSON.parse(location);
+    }
+  
 
+    // console.log(location, "body", images);
     const app = new App({
       Banner: images,
-      locations: location,
-
+      locations: parsedLocations,
     });
 
     const appdata = await app.save();
