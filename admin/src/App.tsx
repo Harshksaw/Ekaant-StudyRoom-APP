@@ -33,9 +33,9 @@ function App() {
   //     const response = await User
   //   }
   // }, []);
-
+console.log(role)
   return (
-    <>
+
       <BrowserRouter
       basename="/"
 
@@ -81,8 +81,13 @@ function App() {
             </Route>
           )}
         </Routes>
+
+        <Route path="*" element={<>
+
+          <h1>404</h1>
+          </>} /> {/* Fallback route */}
       </BrowserRouter>
-    </>
+
   );
 }
 

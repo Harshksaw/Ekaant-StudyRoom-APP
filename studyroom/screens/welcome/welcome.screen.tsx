@@ -1,12 +1,17 @@
 import React from "react";
 import { Link, Stack, router, useNavigation } from "expo-router";
-import { View, Text, StyleSheet, TouchableOpacity ,SafeAreaView} from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
 import { useEffect } from "react";
-
 
 import { useAssets } from "expo-asset";
 import Button from "@/components/Button";
-import { Image } from "expo-image";
+import { Image, ImageBackground } from "expo-image";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -29,20 +34,34 @@ export default function Home() {
           Now
         </Text>
 
-        {assets  ?  <Image
-        style={{
-          width: 250,
-          height: 250,}}
-        source={assets[1]} /> : null
-        }
-
-        {assets && <Image
-           style={{
-            width: 300,
-            height: 50,
-          
+        <View
+          style={{
+            flexDirection: "column",
+            gap: 5,
+            marginVertical: 0,
           }}
-        source={assets[0]} />}
+        >
+          <ImageBackground
+            source={{
+              uri: "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597055/assets/zkh6zr51x1fmgrwai59i.png",
+            }}
+            style={{
+              width: 360,
+              height: 320,
+            }}
+          />
+          <ImageBackground
+            source={{
+              uri: "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597083/assets/cwdjhddyzahxbbp0vaqf.png",
+            }}
+            style={{
+              width: "auto",
+              height: 60,
+              // width: 320,
+              // height: 5 0,
+            }}
+          />
+        </View>
         <View
           style={{
             paddingHorizontal: 20,
@@ -57,10 +76,7 @@ export default function Home() {
       <View style={styles.view2}>
         <View style={styles.buttonBox}>
           <TouchableOpacity onPress={() => router.push("/(routes)/signup")}>
-            <Button
-            width={250}
-            text="Get Started"
-            />
+            <Button width={250} text="Get Started" />
           </TouchableOpacity>
           {/* <linearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.buttonBox}> */}
         </View>
@@ -106,7 +122,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    gap:0
+    gap: 0,
   },
   text: {
     color: "#000000",

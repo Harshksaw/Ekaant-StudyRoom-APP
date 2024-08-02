@@ -23,7 +23,7 @@ const ManageRooms = () => {
         }
        func()
        
-    },[lib_id]);
+    },[lib_id,room.approved]);
 
     const handleApprove = async (id: string, status: boolean) => {
         const res = await axios.post(`${BASEURL}/api/v1/library/updateStatus`, {id, status: !status});
@@ -32,6 +32,7 @@ const ManageRooms = () => {
             setRoom(res?.data?.data);
         }
     };
+    console.log(room)
   return (
     <div className='p-8 flex flex-col gap-4'>
     {room && (

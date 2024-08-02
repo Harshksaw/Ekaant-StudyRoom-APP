@@ -54,13 +54,18 @@ const Auth = ({ type }: { type: "signin" }) => {
           // console.log("----65");
           setLoading(false);
 
+          if(role === "Owner"){
+            navigate("/admin", { replace: true });
+            return;
+          }
+
             //@ts-ignore
           if (!response?.hasRooms) {
             navigate("/manage-library/create-room");
           } else {
 
 
-            role === "Admin"
+            role && role === "Admin"
               ? navigate("/dashboard", { replace: true })
               : navigate("/admin", { replace: true });
           }

@@ -28,7 +28,7 @@ const storage = new CloudinaryStorage({
 //     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
 //   }
 // });
-const upload = multer({ storage: storage });
+const upload = multer({ dest: 'uploads/' }); // Temporary storage for uploaded files
 
 Library.get("/ping", LibraryController.pingAdmin);
 Library.post(

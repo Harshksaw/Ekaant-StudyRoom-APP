@@ -65,6 +65,8 @@ cloudinary.config({
 async function signUp(req, res) {
 
 
+  console.log(req.file, "req.file is ");
+
 
 
 

@@ -30,45 +30,20 @@ export default function OnBoardingScreen() {
     console.log(user, error, loading);
   }, []);
 
-  // let [fontsLoaded, fontError] = useFonts({
-  //   Raleway_700Bold,
-  //   Nunito_400Regular,
-  //   Nunito_700Bold,
-  // });
+  // const [assets] = useAssets([
+  //   require("../../assets/icons/Slide1.svg"),
+  //   require("../../assets/icons/Slide2.svg"),
+  //   require("../../assets/icons/Slide3.svg"),
+  //   require("../../assets/icons/Slide4.svg"),
+  // ]);
 
-  // if (!fontsLoaded && !fontError) {
-  //   return null;
-  // }
-
-  //   return (
-  //     <LinearGradient
-  //       colors={["#E5ECF9", "#F6F7F9"]}
-  //       style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-  //     >
-  //       <View style={styles.firstContainer}>
-  //         <View>
-  //           <Image
-  //             style={{
-  //               width: responsiveWidth(70),
-  //               height: responsiveHeight(55),
-  //               marginBottom: responsiveHeight(5),
-  //               marginTop: responsiveHeight(-15),
-  //               resizeMode: "contain",
-  //             }}
-  //             source={require("../../assets/images/Study.png")}
-  //           />
-  //         </View>
-
-  //         {/* <Button text={"Get Started"} width={responsiveWidth(60)} /> */}
-  //       </View>
-  //     </LinearGradient>
-  //   );
-  const [assets] = useAssets([
-    require("../../assets/icons/Slide1.svg"),
-    require("../../assets/icons/Slide2.svg"),
-    require("../../assets/icons/Slide3.svg"),
-    require("../../assets/icons/Slide4.svg"),
-  ]);
+  const arr =[
+    "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722596840/assets/z98t3eznkwvgenvmpoxy.png",
+    "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597034/assets/lnnhcojmsp2uw8gazs4m.png",
+    "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597025/assets/aihull3sq2a6hsx4dy0h.png",
+    "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597055/assets/zkh6zr51x1fmgrwai59i.png",
+    "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597083/assets/cwdjhddyzahxbbp0vaqf.png"
+  ]
   return (
     <Carousel
       data={[
@@ -194,14 +169,38 @@ export default function OnBoardingScreen() {
               {/* //image */}
                 <View>
 
-                {assets && assets[0] && (
-                  <ImageBackground source={assets[item?.key -1]}
-                  style={{
-                    width: 300,
-                    height: 300,
-                  }}
-                  />
-                )}
+                {
+                  index != 3 ? ( <ImageBackground source={{uri: arr[index]}}
+                    style={{
+                      width: 300,
+                      height: 300,
+                    }}
+                    />):(
+                      <View style={{
+                        flexDirection: "column",
+                        gap: 5,
+                        marginVertical: 10,
+                      }}>
+
+                      <ImageBackground source={{uri: arr[3]}}
+                      style={{
+                        width: 360,
+                        height: 320,
+                      }}
+                      />
+                      <ImageBackground source={{uri: arr[4]}}
+                      style={{
+                        width:'auto',
+                        height:50,
+                        // width: 320,
+                        // height: 5 0,
+                      }}
+                      />
+                      </View>
+                    )
+                }
+                 
+
 
                 </View>
 
