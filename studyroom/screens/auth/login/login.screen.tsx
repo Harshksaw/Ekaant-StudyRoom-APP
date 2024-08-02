@@ -20,8 +20,8 @@ import {
 import { Toast } from "react-native-toast-notifications";
 
 const LoginScreen: React.FC = () => {
-  const [email, setEmail] = useState("Usertest@gmail.com");
-  const [password, setPassword] = useState("Teatuser");
+  const [email, setEmail] = useState("mister.harshkumar@gmail.com");
+  const [password, setPassword] = useState("testuser123");
 
   const [otp, setOtp] = useState(["", "", "", ""]);
   const inputRefs = [createRef(), createRef(), createRef(), createRef()];

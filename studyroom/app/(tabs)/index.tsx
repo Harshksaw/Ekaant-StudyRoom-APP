@@ -79,16 +79,16 @@ export default function index() {
 
   dispatch(setAppDetails(locationData || []));
 
-  const getTokenAndPrintIt = async () => {
-    try {
-      const token = await AsyncStorage.getItem("token");
-      const userData = await AsyncStorage.getItem("userData");
-      // console.log("Token:", token);
-      // console.log("TokenData:", userData);
-    } catch (error) {
-      console.error("Error fetching token:", error);
-    }
-  };
+  // const getTokenAndPrintIt = async () => {
+  //   try {
+  //     const token = await AsyncStorage.getItem("token");
+  //     const userData = await AsyncStorage.getItem("userData");
+  //     // console.log("Token:", token);
+  //     // console.log("TokenData:", userData);
+  //   } catch (error) {
+  //     console.error("Error fetching token:", error);
+  //   }
+  // };
 
   const getUserData = async () => {
     const res = await AsyncStorage.getItem("userData");
@@ -125,7 +125,7 @@ export default function index() {
         setIsLoading(false);
       }
     };
-    getTokenAndPrintIt();
+    // getTokenAndPrintIt();
 
     fetchLibraryDate();
   }, [reload,selectedLocation]);
@@ -321,14 +321,10 @@ export default function index() {
   const userDetails = useSelector((state: any) => state.user);
 
 
-  const userData = JSON.parse(userDetails?.details)?.user.username;
-  console.log("🚀 ~ Home ~ userData:", userData.split(' ')[0])
 
+  const userData = JSON.parse(userDetails.details)?.data?.username;
+  console.log("🚀 ~ index ~ userData:", userData)
 
-  // function getFirstWord(str) {
-  //   return str.split(' ')[0];
-  // }
-  // const name = getFirstWord(userData?.username);
 
 
   
@@ -376,7 +372,7 @@ export default function index() {
                   color: "#0077B6",
                 }}
               >
-            {userData.split(' ')[0]}👋
+            {userData ? userData?.split(' ')[0] : "Board"}👋
               </Text>
             </Text>
           </View>
