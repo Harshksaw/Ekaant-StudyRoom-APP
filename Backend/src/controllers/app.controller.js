@@ -76,7 +76,7 @@ async function getApp(req, res) {
     // const id = req.params.id;
 
 
-    const app = await App.findById({ _id: "6693fe2eb4e16e6d87026d1d" });
+    const app = await App.findById({ _id: "66acf7f64ad7bb16f6e50a1f" });
 
 
 
