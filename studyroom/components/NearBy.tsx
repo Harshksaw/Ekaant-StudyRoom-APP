@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, Dimensions } from "react-native";
+import { View, Text, StyleSheet, FlatList, Dimensions, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker } from "react-native-maps";
@@ -7,6 +7,7 @@ import * as Location from "expo-location";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import MapViewStyle from "../utils/MapView.json";
+import Loader from "./loader/loader";
 const libraries = [
   { id: "1", name: "Library 1", address: "123 Main St" },
   { id: "2", name: "Library 2", address: "456 Elm St" },
@@ -50,35 +51,37 @@ export default function NearBy() {
     <SafeAreaView style={styles.container}>
       {/* <Text>NearBy</Text> */}
       <View style={styles.mapContainer}>
-        <MapView style={styles.map} />
 
-        {/* {location && ( */}
-        <MapView
-          style={styles.map}
-          customMapStyle={MapViewStyle}
-          region={{
-            latitude:lat || 28.6139, // Delhi latitude
-            longitude: long ||  77.209, // Delhi longitude
-            latitudeDelta: 0.0422,
-            longitudeDelta: 0.0421,
-          }}
-        >
-          {location ? (
-              <Marker
-                coordinate={{
-                  latitude: lat,
-                  longitude: long,
-                }}
-              >
-                <Image source={{
-                  uri: "https://cdn.iconscout.com/icon/free/png-256/current-location-555-461761.png"
-                }} style={{ width: 50, height: 50
-                }}
-                />
-               
-               
-              </Marker>
-            ) : null}
+
+
+        {location ? (
+          <MapView
+            style={styles.map}
+            customMapStyle={MapViewStyle}
+            
+            region={{
+              latitude:lat || 28.6139,
+              longitude: long || 77.2090,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+          >
+
+            <Marker
+              coordinate={{
+                latitude: lat || 28.6139,
+                longitude: long || 77.2090,
+              }}
+              title="My Location"
+              description="I am here"
+            >
+              <Ionicons name="location" size={40} color="black" />
+            </Marker>
+          
+          </MapView>
+        ) : (
+            <ActivityIndicator size="large" color="#0000ff" />
+        )}
 
           {/* { placeList.map((place, index)=>(
 
@@ -86,8 +89,7 @@ export default function NearBy() {
 
     <Markers place={place} index={index} key={index} />
   ))} */}
-        </MapView>
-        {/* )} */}
+ 
 
         <FlatList
           data={libraries}
