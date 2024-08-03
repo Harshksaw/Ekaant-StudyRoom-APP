@@ -1,26 +1,38 @@
-import { View, Text, StyleSheet, FlatList, Dimensions, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Dimensions,
+  ActivityIndicator,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker } from "react-native-maps";
 
 import * as Location from "expo-location";
-import { Image } from "expo-image";
+
 import { Ionicons } from "@expo/vector-icons";
 import MapViewStyle from "../utils/MapView.json";
-import Loader from "./loader/loader";
-const libraries = [
-  { id: "1", name: "Library 1", address: "123 Main St" },
-  { id: "2", name: "Library 2", address: "456 Elm St" },
-  { id: "3", name: "Library 3", address: "789 Oak St" },
-  // Add more libraries as needed
-];
+
+import { useRoute } from "@react-navigation/native";
+import { Image } from "expo-image";
+import Markers from "./Maps/Markers";
 
 export default function NearBy() {
+  const route = useRoute();
+
+  const data = JSON.parse(route.params.data);
+  console.log("🚀 ~ NearBy ~ data:", data);
+
   const [location, setLocation] = useState(null);
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
+  // const [libraries, setLibraries] = useState(data.data);
+
   useEffect(() => {
+    // setLibraries(data.data);
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -33,16 +45,40 @@ export default function NearBy() {
       setLat(location.coords.latitude);
       setLong(location.coords.longitude);
 
-      console.log("loc", location);
+      // console.log("loc", location);
     })();
   }, []);
 
   const [selectedLocation, setSelectedLocation] = useState("Delhi");
 
+  // console.log(libraries,"libraries");
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <Text style={styles.cardTitle}>{item.name}</Text>
-      <Text style={styles.cardAddress}>{item.address}</Text>
+      <View style={styles.cardContent}>
+        <Image source={{ uri: item.images[0] }} style={styles.cardImage} />
+        <View style={styles.cardDetails}>
+          <Text style={styles.cardTitle}>{item.name}</Text>
+
+          <View style={{ flexDirection: "row", gap: 5 }}>
+            {item.amenities.includes("wifi") ? (
+              <Ionicons name="wifi" size={24} color="black" />
+            ) : null}
+            {item.amenities.includes("ac") ? (
+              <Ionicons
+                name="phone-landscape-outline"
+                size={24}
+                color="black"
+              />
+            ) : null}
+          </View>
+
+          {/* <Ionicons name="wifi" size={24} color="black" /> */}
+          <Text style={styles.cardAddress}>
+            {item.shortDescription.slice(0, 100)}
+          </Text>
+          <Text style={styles.cardPrice}>Price: ₹{item.RegistrationFees}</Text>
+        </View>
+      </View>
     </View>
   );
   console.log("location", location, lat, long);
@@ -51,48 +87,38 @@ export default function NearBy() {
     <SafeAreaView style={styles.container}>
       {/* <Text>NearBy</Text> */}
       <View style={styles.mapContainer}>
-
-
-
         {location ? (
           <MapView
             style={styles.map}
             customMapStyle={MapViewStyle}
-            
             region={{
-              latitude:lat || 28.6139,
-              longitude: long || 77.2090,
+              latitude: lat || 28.6139,
+              longitude: long || 77.209,
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}
           >
-
             <Marker
               coordinate={{
                 latitude: lat || 28.6139,
-                longitude: long || 77.2090,
+                longitude: long || 77.209,
               }}
               title="My Location"
               description="I am here"
             >
-              <Ionicons name="location" size={40} color="black" />
+              <Ionicons name="man" size={40} color="blue" />
             </Marker>
-          
+
+            {data.map((place, index) => (
+              <Markers place={place} index={index} key={index} />
+            ))}
           </MapView>
         ) : (
-            <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="#0000ff" />
         )}
 
-          {/* { placeList.map((place, index)=>(
-
-
-
-    <Markers place={place} index={index} key={index} />
-  ))} */}
- 
-
         <FlatList
-          data={libraries}
+          data={data}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           horizontal
@@ -106,6 +132,46 @@ export default function NearBy() {
 }
 
 const styles = StyleSheet.create({
+  card: {
+    flexDirection: "row",
+    padding: 15,
+    margin: 10,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  cardContent: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  cardImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+  },
+  cardDetails: {
+    flex: 1,
+    marginLeft: 10,
+    justifyContent: "center",
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  cardAddress: {
+    fontSize: 14,
+    color: "#666",
+  },
+  cardPrice: {
+    fontSize: 16,
+    color: "#000",
+    marginTop: 5,
+  },
+
   container: {
     flex: 1,
   },

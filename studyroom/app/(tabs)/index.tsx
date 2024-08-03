@@ -426,7 +426,7 @@ export default function index() {
       
         <TouchableOpacity onPress={()=>   router.push({
                 pathname: "/(routes)/nearby",
-                // params: {data: data},
+                params: {data:JSON.stringify(data?.data)},
 
               })} >
 
