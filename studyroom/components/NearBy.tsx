@@ -81,11 +81,11 @@ export default function NearBy() {
       </View>
     </View>
   );
-  console.log("location", location, lat, long);
+  // console.log("location", location, lat, long);
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Text>NearBy</Text> */}
+
       <View style={styles.mapContainer}>
         {location ? (
           <MapView

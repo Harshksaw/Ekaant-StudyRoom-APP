@@ -52,7 +52,7 @@ export default function index() {
   const [locationData, setLocationData] = useState(null);
 
   const [selectedLocation, setSelectedLocation] = useState("Delhi");
-  
+
   const handleLocationChange = (location) => {
     setSelectedLocation(location);
   };
@@ -69,7 +69,10 @@ export default function index() {
       setBannerImage(response.data.data.Banner);
       setLocationData(response.data.data.locations);
 
-      AsyncStorage.setItem("RegistrationFee", JSON.stringify(response.data.data.RegistrationFee));
+      AsyncStorage.setItem(
+        "RegistrationFee",
+        JSON.stringify(response.data.data.RegistrationFee)
+      );
     } catch (error) {
       setBannerImage([]);
       console.error("Failed to fetch banner image data:", error);
@@ -79,7 +82,6 @@ export default function index() {
 
   dispatch(setAppDetails(locationData || []));
 
-  
   const getUserData = async () => {
     const res = await AsyncStorage.getItem("userData");
     // const data = JSON.parse(res);
@@ -99,9 +101,7 @@ export default function index() {
 
       // console.log("Selected Location:109", selectedLocation);
       try {
-
-      
-        const fetchedData = await fetchRoomData({selectedLocation});
+        const fetchedData = await fetchRoomData({ selectedLocation });
         setData(fetchedData || []);
         // console.log("Fetched Data:________", fetchedData);
       } catch (error) {
@@ -118,7 +118,7 @@ export default function index() {
     // getTokenAndPrintIt();
 
     fetchLibraryDate();
-  }, [reload,selectedLocation]);
+  }, [reload, selectedLocation]);
 
   const [assets, error] = useAssets([
     require("../../assets/icons/setting-5.svg"),
@@ -129,9 +129,6 @@ export default function index() {
     require("../../assets/icons/hello.svg"),
     require("../../assets/icons/locationcard.svg"),
   ]);
-
-
-
 
   // console.log("-------------->", userDetails);
 
@@ -149,16 +146,16 @@ export default function index() {
       onPress={
         item.approved
           ? () =>
-              router.push({
-                pathname: "/(routes)/card-details",
-                params: { item: JSON.stringify(item) },
-              })
+            router.push({
+              pathname: "/(routes)/card-details",
+              params: { item: JSON.stringify(item) },
+            })
           : () => toggleNotListedModal()
       }
-      // onPress={()=> {
-      //   setNotListed(true)
+    // onPress={()=> {
+    //   setNotListed(true)
 
-      // }}
+    // }}
     >
       {item.approved && (
         <View style={styles.card}>
@@ -310,14 +307,9 @@ export default function index() {
 
   const userDetails = useSelector((state: any) => state.user);
 
-
-
   const userData = JSON.parse(userDetails.details)?.data?.username;
   // console.log("🚀 ~ index ~ userData:", userData)
 
-
-
-  
   return (
     <SafeAreaView
       style={{
@@ -330,7 +322,7 @@ export default function index() {
       }}
     >
       <View style={{ marginTop: 0 }}>
-        <Header color="black"  handleLocationChange={handleLocationChange} />
+        <Header color="black" handleLocationChange={handleLocationChange} />
       </View>
 
       <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
@@ -362,7 +354,7 @@ export default function index() {
                   color: "#0077B6",
                 }}
               >
-            {userData ? userData?.split(' ')[0] : "Board"}👋
+                {userData ? userData?.split(" ")[0] : "Board"}👋
               </Text>
             </Text>
           </View>
@@ -375,7 +367,7 @@ export default function index() {
             data={bannerImage}
             scrollAnimationDuration={2500}
             // onSnapToItem={(index) => console.log("current index:", index)}
-            
+
             renderItem={({ item, index }) => (
               <View
                 style={{
@@ -423,14 +415,15 @@ export default function index() {
           />
         </View>
 
-      
-        <TouchableOpacity onPress={()=>   router.push({
-                pathname: "/(routes)/nearby",
-                params: {data:JSON.stringify(data?.data)},
-
-              })} >
-
-        <View
+        <TouchableOpacity
+          onPress={() =>
+            router.push({
+              pathname: "/(routes)/nearby",
+              params: { data: JSON.stringify(data?.data) },
+            })
+          }
+        >
+          <View
             style={{
               marginVertical: 8,
               paddingHorizontal: 16,
@@ -438,14 +431,14 @@ export default function index() {
               alignItems: "center",
               justifyContent: "space-between",
             }}
-            >
+          >
             <Text
               style={{
                 fontSize: 18,
                 fontWeight: "600",
                 color: "black",
               }}
-              >
+            >
               Near By
             </Text>
             <Ionicons
@@ -453,7 +446,7 @@ export default function index() {
               size={18}
               color="blue"
               style={{ fontWeight: "600" }}
-              />
+            />
           </View>
         </TouchableOpacity>
 
