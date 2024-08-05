@@ -4,4 +4,5 @@ module.exports = {
   Library: require("./library.model.js"),
   Booking : require("./booking.model.js"),
   App: require("./app.model.js"),
+  Invoice : require("./invoice.model.js")
 };
