@@ -37,6 +37,7 @@ import { BACKEND } from "@/utils/config";
 import axios from "axios";
 import { set } from "react-native-reanimated";
 import { setAppDetails } from "@/redux/appSlice";
+import CustomLoader from "@/components/CustomLoader";
 export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
@@ -453,11 +454,7 @@ export default function index() {
         {/* Lib Cards */}
 
         {isLoading ? (
-          <ActivityIndicator
-            size="large"
-            color="#0000ff"
-            style={{ paddingTop: 50, zIndex: 9999 }}
-          />
+             <CustomLoader visible={true} />
         ) : (
           <>
             <View style={{ paddingHorizontal: 16, marginTop: 4 }}>

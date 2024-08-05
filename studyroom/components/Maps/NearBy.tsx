@@ -13,11 +13,12 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 
 import { Ionicons } from "@expo/vector-icons";
-import MapViewStyle from "../utils/MapView.json";
+import MapViewStyle from "../../utils/MapView.json";
 
 import { useRoute } from "@react-navigation/native";
 import { Image } from "expo-image";
-import Markers from "./Maps/Markers";
+import Markers from "./Markers";
+import CustomLoader from "../CustomLoader";
 
 export default function NearBy() {
   const route = useRoute();
@@ -114,7 +115,7 @@ export default function NearBy() {
             ))}
           </MapView>
         ) : (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <CustomLoader visible={true} />
         )}
 
         <FlatList
