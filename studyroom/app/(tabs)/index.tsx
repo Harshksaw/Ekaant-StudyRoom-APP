@@ -37,6 +37,7 @@ import { BACKEND } from "@/utils/config";
 import axios from "axios";
 import { set } from "react-native-reanimated";
 import { setAppDetails } from "@/redux/appSlice";
+import CustomLoader from "@/components/CustomLoader";
 export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +53,7 @@ export default function index() {
   const [locationData, setLocationData] = useState(null);
 
   const [selectedLocation, setSelectedLocation] = useState("Delhi");
-  
+
   const handleLocationChange = (location) => {
     setSelectedLocation(location);
   };
@@ -62,14 +63,17 @@ export default function index() {
     // TODO, tanstackquery
     try {
       const response = await axios.get(`${BACKEND}/api/v1/app/getApp`);
-      console.log("getAPpData called ", count++);
-      console.log("🚀 ~ getAppData ~ response:", response.data.data.locations)
+      // console.log("getAPpData called ", count++);
+      // console.log("🚀 ~ getAppData ~ response:", response.data.data.locations)
       // console.log(response.data.data)
 
       setBannerImage(response.data.data.Banner);
       setLocationData(response.data.data.locations);
 
-      AsyncStorage.setItem("RegistrationFee", response.data.data.RegistrationFee);
+      AsyncStorage.setItem(
+        "RegistrationFee",
+        JSON.stringify(response.data.data.RegistrationFee)
+      );
     } catch (error) {
       setBannerImage([]);
       console.error("Failed to fetch banner image data:", error);
@@ -78,17 +82,6 @@ export default function index() {
   //TODO tanstackquery , redux save in Appslice
 
   dispatch(setAppDetails(locationData || []));
-
-  const getTokenAndPrintIt = async () => {
-    try {
-      const token = await AsyncStorage.getItem("token");
-      const userData = await AsyncStorage.getItem("userData");
-      // console.log("Token:", token);
-      // console.log("TokenData:", userData);
-    } catch (error) {
-      console.error("Error fetching token:", error);
-    }
-  };
 
   const getUserData = async () => {
     const res = await AsyncStorage.getItem("userData");
@@ -107,16 +100,14 @@ export default function index() {
       setIsLoading(true);
       setReload(false);
 
-      console.log("Selected Location:109", selectedLocation);
+      // console.log("Selected Location:109", selectedLocation);
       try {
-
-      
-        const fetchedData = await fetchRoomData({selectedLocation});
+        const fetchedData = await fetchRoomData({ selectedLocation });
         setData(fetchedData || []);
         // console.log("Fetched Data:________", fetchedData);
       } catch (error) {
         console.error("Failed to fetch room data:", error);
-        setData([]);
+        setData(null);
 
         setNotAvailable(true);
         // Handle the error as needed, e.g., set an error state, show a message, etc.
@@ -125,10 +116,10 @@ export default function index() {
         setIsLoading(false);
       }
     };
-    getTokenAndPrintIt();
+    // getTokenAndPrintIt();
 
     fetchLibraryDate();
-  }, [reload,selectedLocation]);
+  }, [reload, selectedLocation]);
 
   const [assets, error] = useAssets([
     require("../../assets/icons/setting-5.svg"),
@@ -139,15 +130,6 @@ export default function index() {
     require("../../assets/icons/hello.svg"),
     require("../../assets/icons/locationcard.svg"),
   ]);
-
-  const filters = [
-    { id: 0, name: "Filters" },
-    { id: 1, name: "Sort" },
-    { id: 2, name: "Locality" },
-    { id: 3, name: "Price" },
-  ];
-
-  const userDetails = useSelector((state: any) => state.user);
 
   // console.log("-------------->", userDetails);
 
@@ -165,16 +147,16 @@ export default function index() {
       onPress={
         item.approved
           ? () =>
-              router.push({
-                pathname: "/(routes)/card-details",
-                params: { item: JSON.stringify(item) },
-              })
+            router.push({
+              pathname: "/(routes)/card-details",
+              params: { item: JSON.stringify(item) },
+            })
           : () => toggleNotListedModal()
       }
-      // onPress={()=> {
-      //   setNotListed(true)
+    // onPress={()=> {
+    //   setNotListed(true)
 
-      // }}
+    // }}
     >
       {item.approved && (
         <View style={styles.card}>
@@ -324,6 +306,10 @@ export default function index() {
     }, 2000);
   }, []);
 
+  const userDetails = useSelector((state: any) => state.user);
+
+  const userData = JSON.parse(userDetails.details)?.data?.username;
+  // console.log("🚀 ~ index ~ userData:", userData)
 
   return (
     <SafeAreaView
@@ -337,7 +323,7 @@ export default function index() {
       }}
     >
       <View style={{ marginTop: 0 }}>
-        <Header color="black"  handleLocationChange={handleLocationChange} />
+        <Header color="black" handleLocationChange={handleLocationChange} />
       </View>
 
       <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
@@ -369,7 +355,7 @@ export default function index() {
                   color: "#0077B6",
                 }}
               >
-                Harsh👋
+                {userData ? userData?.split(" ")[0] : "Board"}👋
               </Text>
             </Text>
           </View>
@@ -382,7 +368,7 @@ export default function index() {
             data={bannerImage}
             scrollAnimationDuration={2500}
             // onSnapToItem={(index) => console.log("current index:", index)}
-            
+
             renderItem={({ item, index }) => (
               <View
                 style={{
@@ -429,54 +415,16 @@ export default function index() {
             )}
           />
         </View>
-        {/* Filter buttons */}
-        {/* <View style={{ backgroundColor: "white", marginTop: 12 }}>
-          <ScrollView
-            style={styles.filters}
-            horizontal={true}
-            scrollEnabled={true}
-            showsHorizontalScrollIndicator={false}
-          >
-            {filters.map((filter, index) => (
-              <TouchableOpacity
-                key={index}
-                style={{
-                  flexDirection: filter.id <= 1 ? "row" : "row-reverse",
 
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderWidth: 1,
-                  borderColor: "lightgray",
-                  marginRight: 12,
-                  marginLeft: index === 0 ? 16 : 0,
-                  height: 30,
-                  gap: 2,
-                  // paddingHorizontal: 10,
-                  paddingHorizontal: 15,
-                  backgroundColor: "#ffff",
-                  borderRadius: 40,
-                }}
-                // onPress={onPress}
-              >
-                {assets && assets[filter?.id] && (
-                  <Image
-                    source={assets[filter?.id]}
-                    style={{ width: 12, height: 12 }}
-                  />
-                )}
-
-                <Text style={{ color: "black" }}>{filter.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        
-        </View> */}
-        <TouchableOpacity onPress={()=>   router.push({
-                pathname: "/(routes)/nearby",
-
-              })} >
-
-        <View
+        <TouchableOpacity
+          onPress={() =>
+            router.push({
+              pathname: "/(routes)/nearby",
+              params: { data: JSON.stringify(data?.data) },
+            })
+          }
+        >
+          <View
             style={{
               marginVertical: 8,
               paddingHorizontal: 16,
@@ -484,14 +432,14 @@ export default function index() {
               alignItems: "center",
               justifyContent: "space-between",
             }}
-            >
+          >
             <Text
               style={{
                 fontSize: 18,
                 fontWeight: "600",
                 color: "black",
               }}
-              >
+            >
               Near By
             </Text>
             <Ionicons
@@ -499,18 +447,14 @@ export default function index() {
               size={18}
               color="blue"
               style={{ fontWeight: "600" }}
-              />
+            />
           </View>
         </TouchableOpacity>
 
         {/* Lib Cards */}
 
         {isLoading ? (
-          <ActivityIndicator
-            size="large"
-            color="#0000ff"
-            style={{ paddingTop: 50, zIndex: 9999 }}
-          />
+             <CustomLoader visible={true} />
         ) : (
           <>
             <View style={{ paddingHorizontal: 16, marginTop: 4 }}>

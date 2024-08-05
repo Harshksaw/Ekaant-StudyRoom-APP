@@ -226,25 +226,34 @@ export default function SignUpScreen() {
         }
       );
       console.log("🚀 ~ handleSignUp ~ response:", response);
-      if (response.status == 200) {
+      if (response.status == 200 || 201) {
         await AsyncStorage.setItem(
           "token",
           JSON.stringify(response.data.token)
         );
         await AsyncStorage.setItem("userData", JSON.stringify(response.data));
         setButtonSpinner(false);
+        Toast.show("Account created successfully", {
+          type: "success",
+          duration: 3000,
+          placement: "top",
+          style: {
+            backgroundColor: "green",
+            borderRadius: 10,
+            padding: 10,
+            marginTop: 50,
+          },
+
+        });
         router.push("/(tabs)");
-        // Toast.show("Account created successfully", {
-        //   type: "success",
-        // });
       }
     } catch (error) {
       setButtonSpinner(false);
       console.log(error);
       setButtonSpinner(false);
-      // Toast.show("An error occured", {
-      //   type: "danger",
-      // });
+      Toast.show("An error occured", {
+        type: "danger",
+      });
     }
   };
 
@@ -519,7 +528,10 @@ export default function SignUpScreen() {
                 <ActivityIndicator size="large" color="rgb(184, 196, 71)"   />
               ) : (
                 <>
-                  <TouchableOpacity
+                {
+                  otpVerified && (
+                    <TouchableOpacity
+
                     style={{
                       padding: 20,
                       borderRadius: 8,
@@ -529,8 +541,13 @@ export default function SignUpScreen() {
                     }}
                     onPress={() => handleSignUp()}
                   >
-                    <Button text="Register" width={350} height={60} />
+                    <Button  
+
+                    text="Register" width={350} height={60} />
                   </TouchableOpacity>
+                  )
+                }
+                 
                 </>
               )}
 

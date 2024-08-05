@@ -2,8 +2,11 @@ const { StatusCodes } = require("http-status-codes");
 
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
-const { User} = require("../models");
+const { User, Invoice} = require("../models");
 const { Booking } = require("../models/booking.model");
+const sendInvoiceEmail = require("../utils/mails/invoice.mail");
+
+
 
 const JWT_SECRET = "MY_SECRET_KEY";
 const BookingSchema = zod.object({
@@ -189,6 +192,73 @@ async function ConfrimBooking(req, res) {
 }
 
 
+// const generateInvoice = async (booking) => {
+//   // Create a PDF document
+//   const doc = new pdf();
+//   doc.pipe(fs.createWriteStream('invoice.pdf'));
+
+//   // Populate the PDF with invoice data
+//   doc.text(`Invoice for Booking #${booking._id}`);
+//   // Add more invoice content based on booking details
+
+//   doc.end();
+// };
+async function generateInvoice(req, res) {
+  try {
+    const { bookingId } = req.params;
+    const booking = await Booking.findById(bookingId).populate('userId').exec();
+
+    console.log("🚀 ~ generateInvoice ~ booking:", booking)
+
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+
+
+
+
+    // Create new invoice
+    const invoice = new Invoice({
+      bookingId: booking._id,
+      customerName: booking.userId.username,
+      customerEmail: booking.userId.email,
+      customerPhoneNumber: booking.userId.phoneNumber,
+      libraryId: booking.libraryId,
+      initialPrice: booking.initialPrice,
+      finalPrice: booking.finalPrice,
+      paid: booking.paid,
+      bookingDate: booking.bookingDate,
+      bookingPeriod: booking.bookingPeriod,
+      bookingStatus: booking.bookingStatus,
+      approved: booking.approved,
+      timeStamp: booking.timeStamp
+    });
+    // Save invoice to database
+    
+    // Send invoice to user
+    await sendInvoiceEmail(booking.userId.email, invoice);
+    
+    await invoice.save();
+
+
+
+    res.status(201).json({ 
+      success: true,
+      message: 'Invoice generated successfully',
+      data: invoice,
+     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate invoice',
+    message: error.message
+     });
+  }
+ 
+  
+}
+
 
 module.exports = {
   createBooking,
@@ -196,5 +266,6 @@ module.exports = {
   getUserBookings,
   getBookingById,
   getBookingByLibId,
-  ConfrimBooking
+  ConfrimBooking,
+  generateInvoice
 };

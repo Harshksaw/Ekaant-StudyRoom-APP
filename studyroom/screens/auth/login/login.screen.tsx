@@ -13,15 +13,15 @@ import {
   TouchableOpacity,
   View,
   Image,
-  KeyboardAvoidingView,
+
   SafeAreaView
 } from "react-native";
 
 import { Toast } from "react-native-toast-notifications";
 
 const LoginScreen: React.FC = () => {
-  const [email, setEmail] = useState("Usertest@gmail.com");
-  const [password, setPassword] = useState("Teatuser");
+  const [email, setEmail] = useState("indianshahishere@gmail.com");
+  const [password, setPassword] = useState("Password");
 
   const [otp, setOtp] = useState(["", "", "", ""]);
   const inputRefs = [createRef(), createRef(), createRef(), createRef()];

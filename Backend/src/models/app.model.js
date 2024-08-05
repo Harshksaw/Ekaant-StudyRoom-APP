@@ -17,6 +17,12 @@ const appSchema = new mongoose.Schema({
 
     }
   }]
+  ,
+  RegistrationFee :{
+    type: Number,
+    required: true
+
+  }
 })
 
 const App = mongoose.model('App', appSchema);

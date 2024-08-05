@@ -23,7 +23,7 @@ const ManageRooms = () => {
         }
        func()
        
-    },[lib_id,room.approved]);
+    },[lib_id, room?.approved]);
 
     const handleApprove = async (id: string, status: boolean) => {
         const res = await axios.post(`${BASEURL}/api/v1/library/updateStatus`, {id, status: !status});

@@ -1,12 +1,9 @@
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 
 import Dashboard from "./pages/Dashboard";
 import { Permission, Search } from "./components";
 import ProtectedRoute from "./components/ProtectedRoute";
-
-
 
 import ManageSeats from "./pages/ManageSeats";
 import CreateLibrary from "./components/ManageLibrary/CreateLibrary";
@@ -33,61 +30,60 @@ function App() {
   //     const response = await User
   //   }
   // }, []);
-console.log(role)
+  console.log(role);
   return (
-
-      <BrowserRouter
-      basename="/"
-
-      >
-        <Routes
-        >
+    <BrowserRouter basename="/">
+      <Routes>
         <Route path="/" element={<Auth type="signin" />} />
-          <Route path="/signup" element={<Signup/>} />
-          <Route path="/signin" element={<Auth type="signin" />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/signin" element={<Auth type="signin" />} />
+        {role === "Admin" && (
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/manage-library/create-room"
+              element={<CreateRoom />}
+            />
+            <Route
+              path="/manage-library/create-library"
+              element={<CreateLibrary />}
+            />
+            <Route path="/dashboard" element={<Dashboard />} />
 
-          {role === "Admin" && (
-            <Route element={<ProtectedRoute />}>  
-              <Route path="/manage-library/create-room" element={<CreateRoom />}/>
-              <Route path="/manage-library/create-library" element={<CreateLibrary />}/>
-              <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/manage-booking/view" element={<ViewBookings />} />
+            <Route path="manage-user/permission" element={<Permission />} />
+            <Route path="manage-user/search" element={<Search />} />
 
+            <Route
+              path="manage-library/view-library/:library_id"
+              element={<ViewLibrary />}
+            />
+            <Route path="/manage-library/my-library" element={<MyLibrary />} />
 
-              <Route path="/manage-booking/view" element={<ViewBookings />} />
-              <Route path="manage-user/permission" element={<Permission />} />
-              <Route path="manage-user/search" element={<Search />} />
-
-              <Route
-                path="manage-library/view-library/:library_id"
-                element={<ViewLibrary />}
-              />
-              <Route
-                path="/manage-library/my-library"
-                element={<MyLibrary />}
-              />
-
-              <Route path="/manage-seats" element={<ManageSeats />} />
-            </Route>
-          )}
-          {role === "Owner" && (
-            <Route element={<OwnerRoute />}>
-              <Route path="admin" element={<OwnerHome />} />
-              <Route
-                path="admin/manage-rooms/:lib_id"
-                element={<ManageRooms />}
-              />
-              <Route path="admin/manage-admin" element={<ManageAdmin />} />
-              {/* <Route path="/admin/reports" element={<Reports />} /> */}
-            </Route>
-          )}
-        </Routes>
-
-        <Route path="*" element={<>
-
-          <h1>404</h1>
-          </>} /> {/* Fallback route */}
-      </BrowserRouter>
-
+            <Route path="/manage-seats" element={<ManageSeats />} />
+          </Route>
+        )}
+        {role === "Owner" && (
+          <Route element={<OwnerRoute />}>
+            <Route path="admin" element={<OwnerHome />} />
+            <Route
+              path="admin/manage-rooms/:lib_id"
+              element={<ManageRooms />}
+            />
+            <Route path="admin/manage-admin" element={<ManageAdmin />} />
+            {/* <Route path="/admin/reports" element={<Reports />} /> */}
+          </Route>
+        )}
+        <Route
+          path="*"
+          element={
+            <>
+              <h1>404</h1>
+            </>
+          }
+        />
+      </Routes>
+      {/* Fallback route */}
+    </BrowserRouter>
   );
 }
 

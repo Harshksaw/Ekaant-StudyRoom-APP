@@ -1,5 +1,6 @@
 
-import NearBy from "@/components/NearBy"
+
+import NearBy from "@/components/Maps/NearBy"
 import store from "@/redux/store"
 import CheckoutScreen from "@/screens/library/checkout.screen"
 import { Provider } from "react-redux"
@@ -11,7 +12,7 @@ export default function CheckOutScreen() {
 
 
 
-<NearBy/>
+    <NearBy/>
 
   </Provider>
   )

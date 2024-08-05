@@ -1,6 +1,5 @@
 import { AC, Cash, CheckoutScreenLoc, Note, SeatsCheckout } from "@/assets";
-import Header from "@/components/Header";
-import Seats from "@/components/Seats";
+
 import { getDateAfterMonths } from "@/utils/date";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
