@@ -175,6 +175,8 @@ useEffect(() => {
         <Text
           style={{
             fontSize: 40,
+            fontWeight: "800",
+            letterSpacing: 5,
 
             marginBottom: 30,
             left: -100,
@@ -185,10 +187,10 @@ useEffect(() => {
         <Text
           style={{
             fontSize: 20,
-            color: "gray",
+            color:"black",
 
             marginBottom: 20,
-            left: -50,
+            left: -70,
           }}
         >
           Good to See You back
