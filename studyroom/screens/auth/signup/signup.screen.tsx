@@ -37,7 +37,7 @@ export default function SignUpScreen() {
   const [buttonSpinner, setButtonSpinner] = useState(false);
 
   const [otpVerified, setotpVerified] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
 
   const [verified, setVerified] = useState(false);
@@ -47,6 +47,7 @@ export default function SignUpScreen() {
     phone: 0,
     password: "",
   });
+  
   const [required, setRequired] = useState(false);
   const [error, setError] = useState({
     password: "",
@@ -59,9 +60,9 @@ export default function SignUpScreen() {
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
-    // if (text && index < 3) {
-    //   inputRefs[index + 1].current.focus();
-    // }
+    if (text && index < 3) {
+      inputRefs[index + 1].current.focus();
+    }
   };
 
   const [image, setImage] = useState(null);
@@ -110,12 +111,15 @@ export default function SignUpScreen() {
     try {
       console.log(userInfo.phone);
       setShowOtp(true);
+      setLoading(true);
       const response = await axios.post(`${BACKEND}/api/v1/auth/otp`, {
         phoneNumber: userInfo.phone,
       });
       console.log(response.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
