@@ -65,23 +65,9 @@ cloudinary.config({
 async function signUp(req, res) {
 
 
-  console.log(req.file, "req.file is ");
 
 
 
-
-
-
-
-
-  // if (user) {
-  //   return res.status(StatusCodes.BAD_REQUEST).json({
-  //     success: false,
-  //     message: "User already exists",
-  //     error: { 411: "User already exists" },
-  //     data: {},
-  //   });
-  // }
 
   try {
 
@@ -89,7 +75,7 @@ async function signUp(req, res) {
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: 'profileimages'
     });
-    console.log(result.secure_url, "req.file is ");
+
     const images = result.secure_url;
 
     const newUser = await User.create({
