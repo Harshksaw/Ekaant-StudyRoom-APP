@@ -153,8 +153,8 @@ async function editLocations(req, res) {
       coords: [Number(coord.lat), Number(coord.lng)]
     }
 
-    const updatedLocations = await App.findByIdAndUpdate(
-      "6693fe2eb4e16e6d87026d1d",
+    const updatedLocations = await App.findOne().sort({ createdAt: -1 }).updateOne(
+
       { $push: { locations: locationObj } },
       { new: true }
     );
