@@ -21,32 +21,42 @@ const ping = (req, res) => {
 
 async function createApp(req, res) {
   try {
-    const images = req.files.map((file) => file.path);
-    const { location } = req.body;
 
-    let parsedLocations;
-    try {
-      parsedLocations = typeof location === 'string' ? JSON.parse(location) : location;
-    } catch (error) {
-      console.error("Error parsing location: ", error);
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        success: false,
-        message: "Invalid location format",
-        error: error.message,
-      });
+
+    const images = req.files.map((file) => file.path);
+    const {
+      location,
+    } = req.body;
+
+    let parsedLocations = location;
+    if (typeof location === 'string') {
+      parsedLocations = JSON.parse(location);
     }
 
+
+    // console.log(location, "body", images);
     const app = new App({
       Banner: images,
       locations: parsedLocations,
     });
 
     const appdata = await app.save();
+
     console.log(appdata);
+
+
+
+
+
+
+
+
+    // Add code to handle file uploads using multer and cloudinary
 
     return res.status(StatusCodes.CREATED).json({
       success: true,
       message: "Room created successfully",
+
       data: app,
     });
   } catch (error) {
@@ -58,6 +68,7 @@ async function createApp(req, res) {
     });
   }
 }
+
 async function getApp(req, res) {
   try {
 
@@ -142,8 +153,8 @@ async function editLocations(req, res) {
       coords: [Number(coord.lat), Number(coord.lng)]
     }
 
-    const updatedLocations = await App.findOne().sort({ createdAt: -1 }).updateOne(
-
+    const updatedLocations = await App.findByIdAndUpdate(
+      "66e255d999bd0963775bde89",
       { $push: { locations: locationObj } },
       { new: true }
     );
