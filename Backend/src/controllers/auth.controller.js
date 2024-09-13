@@ -405,7 +405,23 @@ async function otpLogin(req, res) {
   const { phoneNumber, otp } = req.body;
 
 
-  const response = await User.find({ phoneNumber })
+  const response = await phoneotp.find({ phoneNumber }).sort({ createdAt: -1 }).limit(1);
+  // const response = await OTP.find({ email }).sort({ createdAt: -1 });
+  console.log(response[0].phoneotp, otp, "RESPONSE123");
+  if (response.length === 0) {
+    // OTP not found for the email
+    return res.status(400).json({
+      success: false,
+      message: "The OTP is not valid",
+    });
+  } else if (otp != response[0].phoneotp) {
+    // Invalid OTP
+    return res.status(400).json({
+      success: false,
+      message: "The OTP you entered is wrong !!",
+    });
+  }
+
   if(!response){
     return res.status(404).json({
       success: false,
@@ -414,23 +430,12 @@ async function otpLogin(req, res) {
   }
   console.log("🚀 ~ otpLogin ~ response:", response)
 
-  if (response.length === 0) {
-    // OTP not found for the email
-    return res.status(400).json({
-      success: false,
-      message: "The OTP is not valid",
-    });
-  }
-  else if (otp != response[0].phoneotp) {
-    // Invalid OTP
-    return res.status(400).json({
-      success: false,
-      message: "The OTP you entered is wrong !!",
-    });
-  }
 
-  if(response[0].phoneotp == otp){
+
+
     const token = jwt.sign({ user_id: response[0]._id }, JWT_SECRET);
+   
+
     return res.status(200).json({
       success: true,
       message: "User authenticated successfully",
@@ -438,7 +443,7 @@ async function otpLogin(req, res) {
       data: { User, user_id: response[0]._id },
       token: token,
     });
-  }
+
 
 }
 
