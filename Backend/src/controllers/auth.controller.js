@@ -401,11 +401,53 @@ async function getFriends(req, res) {
   }
 }
 
+async function otpLogin(req, res) {
+  const { phoneNumber, otp } = req.body;
+
+
+  const response = await User.find({ phoneNumber })
+  if(!response){
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+  console.log("🚀 ~ otpLogin ~ response:", response)
+
+  if (response.length === 0) {
+    // OTP not found for the email
+    return res.status(400).json({
+      success: false,
+      message: "The OTP is not valid",
+    });
+  }
+  else if (otp != response[0].phoneotp) {
+    // Invalid OTP
+    return res.status(400).json({
+      success: false,
+      message: "The OTP you entered is wrong !!",
+    });
+  }
+
+  if(response[0].phoneotp == otp){
+    const token = jwt.sign({ user_id: response[0]._id }, JWT_SECRET);
+    return res.status(200).json({
+      success: true,
+      message: "User authenticated successfully",
+      error: {},
+      data: { User, user_id: response[0]._id },
+      token: token,
+    });
+  }
+
+}
+
 module.exports = {
   signUp,
   signIn,
 
   pingAuthController,
+  otpLogin,
 
   verifyOtp,
   forgetPassword,

@@ -83,4 +83,6 @@ AuthRouter.post(
   AuthController.changeProfilePic
 );
 
+AuthRouter.post("/otp-login", AuthController.otpLogin);
+
 module.exports = AuthRouter;
