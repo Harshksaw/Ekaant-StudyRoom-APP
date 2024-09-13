@@ -4,16 +4,14 @@ const { AdminController } = require("../../controllers");
 const AdminRouter = express.Router();
 const multer = require("multer");
 
-const uploadPath = path.join(__dirname, "uploads");
-
-// Multer storage configuration
 const storage = multer.diskStorage({
-  destination: uploadPath,
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
-
 const upload = multer({ storage: storage });
 
 
