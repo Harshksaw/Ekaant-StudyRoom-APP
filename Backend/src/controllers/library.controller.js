@@ -6,7 +6,6 @@ const multer = require("multer");
 const express = require("express");
 const cloudinary = require("cloudinary").v2;
 
-const { upload } = require("multer");
 const { Library } = require("../models/library.model");
 const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");

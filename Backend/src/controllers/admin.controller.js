@@ -36,29 +36,8 @@ async function RegisterAdmin(req, res, next) {
     } = req.body;
 
 
-    // console.log(
-    //   phoneNumber,
-    //   email,
-    //   password,
-    //   fullName,
-    //   Dob,
-    //   AddharNumber,
-    //   PanNumber,
-    //   Address
-    // );
 
-
-    // Convert files to base64
-    //  console.log("req.files is ", req.files);
-    //  if (!req.files || !req.files.aadhar) {
-    //   return res.status(StatusCodes.BAD_REQUEST).json({
-    //     success: false,
-    //     message: "No aadhar file uploaded",
-    //   });
-    // }
-    // if (!req.file) {
-    //   return res.status(400).json({ error: "No file uploaded" });
-    // }
+   
 
     const { pancard, aadhar } = req.files;
     if (pancard) {

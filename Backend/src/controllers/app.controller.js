@@ -21,7 +21,7 @@ const ping = (req, res) => {
 
 async function createApp(req, res) {
   try {
-   
+
 
     const images = req.files.map((file) => file.path);
     const {
@@ -32,7 +32,7 @@ async function createApp(req, res) {
     if (typeof location === 'string') {
       parsedLocations = JSON.parse(location);
     }
-  
+
 
     // console.log(location, "body", images);
     const app = new App({
@@ -76,7 +76,7 @@ async function getApp(req, res) {
     // const id = req.params.id;
 
 
-    const app = await App.findById({ _id: "66acf7f64ad7bb16f6e50a1f" });
+    const app = await App.findById({ _id: "66e255d999bd0963775bde89" });
 
 
 
@@ -99,7 +99,7 @@ async function editBanner(req, res) {
   try {
 
     const images = req.files.map((file) => file.path);
-    const app = await App.findByIdAndUpdate({ _id: "6693fe2eb4e16e6d87026d1d" }, {
+    const app = await App.findByIdAndUpdate({ _id: "66e255d999bd0963775bde89" }, {
       Banner: images
     }, { new: true });
     return res.status(StatusCodes.OK).json({
@@ -154,7 +154,7 @@ async function editLocations(req, res) {
     }
 
     const updatedLocations = await App.findByIdAndUpdate(
-      "6693fe2eb4e16e6d87026d1d",
+      "66e255d999bd0963775bde89",
       { $push: { locations: locationObj } },
       { new: true }
     );

@@ -20,7 +20,7 @@ const appSchema = new mongoose.Schema({
   ,
   RegistrationFee :{
     type: Number,
-    required: true
+    required: false,
 
   }
 })
