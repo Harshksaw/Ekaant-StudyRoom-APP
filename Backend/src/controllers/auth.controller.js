@@ -185,7 +185,7 @@ async function sendOtp(req, res) {
     const otpBody = await phoneotp.create(otpPayload);
 
     await phoneotp.save();  
-    // console.log("otpBODY -> ", otpBody);
+
 
     // Send OTP via Fast2SMS
     // const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=otp&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
