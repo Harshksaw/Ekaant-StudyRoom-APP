@@ -184,7 +184,7 @@ async function sendOtp(req, res) {
     const otpPayload = { phoneNumber , phoneotp:otp };
     const otpBody = await phoneotp.create(otpPayload);
 
-    await phoneotp.save();  
+    // await phoneotp.save();  
 
 
     // Send OTP via Fast2SMS
