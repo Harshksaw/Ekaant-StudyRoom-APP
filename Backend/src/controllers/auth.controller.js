@@ -410,7 +410,7 @@ async function otpLogin(req, res) {
   const response = await phoneotp.find({ phoneNumber }).sort({ createdAt: -1 }).limit(1);
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
   console.log(response[0].phoneotp, otp, "RESPONSE123");
-  if (response.length === 0) {
+  if (otp.length == 0) {
     // OTP not found for the email
     return res.status(400).json({
       success: false,
