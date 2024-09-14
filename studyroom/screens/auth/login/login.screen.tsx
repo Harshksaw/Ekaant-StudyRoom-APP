@@ -168,6 +168,11 @@ const LoginScreen: React.FC = () => {
       }
     }
   }, [phoneNumber]);
+  const handleKeyPress = (e, index) => {
+    if (e.nativeEvent.key === 'Backspace' && otp[index] === "" && index > 0) {
+      inputRefs[index - 1].current.focus();
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -400,6 +405,7 @@ const LoginScreen: React.FC = () => {
                   maxLength={1}
                   keyboardType="numeric"
                   onChangeText={(text) => handleOtpChange(text, index)}
+                  onKeyPress={(e) => handleKeyPress(e, index)}
                   value={value}
                 />
               ))}
