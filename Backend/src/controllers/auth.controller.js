@@ -177,11 +177,11 @@ async function sendOtp(req, res) {
   console.log("OTP GENERATED => ", typeof otp);
 
   if (phoneNumber) {
-    const phoneOtp = otp;
+     otp;
 
     // Create and save email OTP
 
-    const otpPayload = { phoneNumber , phoneotp:phoneOtp };
+    const otpPayload = { phoneNumber , phoneotp:otp };
     const otpBody = await phoneotp.create(otpPayload);
 
     await phoneotp.save();  
@@ -189,7 +189,7 @@ async function sendOtp(req, res) {
 
     // Send OTP via Fast2SMS
     // const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=otp&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
-    const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=dlt&sender_id=EKAANT&message=171779&variables_values=${phoneOtp}&flash=0&numbers=${phoneNumber}`;
+    const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=dlt&sender_id=EKAANT&message=171779&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
     const response = await axios.get(url);
     console.log("🚀 ~ sendOtp ~ response:", response.status)
     
