@@ -91,22 +91,7 @@ export default function SignUpScreen() {
     }
   };
 
-  // const validatePassword = (password: string) => {
-  //   // Check if password is at least 8 characters long
-  //   if (password.length < 8) {
-  //     return "Password should be at least 8 characters";
-  //   }
-
-  //   // Add more checks as needed
-  //   // For example, check if password contains at least one number
-  //   if (!/\d/.test(password)) {
-  //     return "Password should contain at least one number";
-  //   }
-
-  //   // If all checks pass, return null
-  //   return null;
-  // };
-
+ 
   const sendOtp = async () => {
     try {
       console.log(userInfo.phone);
@@ -262,6 +247,11 @@ export default function SignUpScreen() {
       Toast.show("An error occured", {
         type: "danger",
       });
+    }
+  };
+  const handleKeyPress = (e, index) => {
+    if (e.nativeEvent.key === 'Backspace' && otp[index] === "" && index > 0) {
+      inputRefs[index - 1].current.focus();
     }
   };
 
@@ -479,6 +469,8 @@ export default function SignUpScreen() {
                       key={index}
                       // Assuming inputRefs is defined elsewhere in your component
                       ref={inputRefs[index]}
+                      onChangeText={(text) => handleOtpChange(text, index)}
+                      onKeyPress={(e) => handleKeyPress(e, index)}
                       style={{
                         width: 40,
                         height: 40,
@@ -490,7 +482,7 @@ export default function SignUpScreen() {
                       }}
                       maxLength={1}
                       keyboardType="numeric"
-                      onChangeText={(text) => handleOtpChange(text, index)}
+
                       value={value}
                     />
                   ))}

@@ -1,47 +1,16 @@
 const { z } = require("zod");
 
-
-const {GetNearestLibraries} =  require("../utils/location");
-
-
+const { LibraryController } = require(".");
+const { GetNearestLibraries } = require("../utils/location");
+const multer = require("multer");
+const express = require("express");
+const cloudinary = require("cloudinary").v2;
 
 const { Library } = require("../models/library.model");
 const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
 const { get } = require("mongoose");
 const App = require("../models/app.model");
-
-const LibrarySchema = z.object({
-  name: z.string(),
-  longDescription: z.string(),
-  shortDescription: z.string(),
-  // thumbnail: z.string(),
-
-  location: z.string(),
-  price: z.number(),
-  // tags: z.array(z.string()),
-  // reviews: z.string().uuid().optional(), // Assuming the ObjectId is a UUID; adjust as necessary
-
-  amenities: z.array(z.string()).optional(), // Marked as optional to handle the 'required: optional'
-  seatLayout: z.array(
-    z.object({
-      id: z.string(),
-      label: z.string(),
-    })
-  ),
-  seatbooked: z
-    .array(
-      z.object({
-        id: z.string(),
-        label: z.string(),
-      })
-    )
-    .optional(),
-  timeSlot: z.object({
-    from: z.string(),
-    to: z.string(),
-  }),
-});
 
 // Ping admin dummy API
 const pingAdmin = (req, res) => {
@@ -57,11 +26,11 @@ const createLibrary = async (req, res) => {
     console.log(req.files, "=================>");
 
     const cardImage = req.files.card[0].path;
-    const images = req.files.images.map((file) => file.path);
-    const gst = req.files.gst[0].path;
-    const cin = req.files.cin[0].path;
-    const tan = req.files.tan[0].path;
-    const msme = req.files.msme[0].path;
+    const images = req.files.images ? req.files.images.map((file) => file.path) : [];
+    const gst = req.files.gst ? req.files.gst[0].path : null;
+    const cin = req.files.cin ? req.files.cin[0].path : null;
+    const tan = req.files.tan ? req.files.tan[0].path : null;
+    const msme = req.files.msme ? req.files.msme[0].path : null;
 
     console.log(cardImage, images, gst, cin, tan, msme, ">>>>>uploadedFiles");
 
@@ -73,39 +42,16 @@ const createLibrary = async (req, res) => {
       longDescription,
       shortDescription,
       address,
-
       amenities,
-
       legal,
-
       gstNumber,
-
       cinNumber,
-
       tanNumber,
 
       msmeNumber,
     } = jsonData;
 
-    // const cardPath = await cardFile.save();
-
-    // console.log(
-    //   name,
-    //   longDescription,
-    //   shortDescription,
-    //   address,
-
-
-    //   amenities,
-    //   timeSlot,
-    //   cardImage,
-    //   images,
-    //   legal,
-    //   gstDetails,
-    //   cinDetails,
-    //   tanDetails,
-    //   msmeDetails
-    // );
+   
     const libraryData = {
       libraryOwner,
       name,
@@ -115,7 +61,7 @@ const createLibrary = async (req, res) => {
 
       amenities,
 
-      cardimage :cardImage,
+      cardimage: cardImage,
       images: images,
       legal,
 
@@ -131,8 +77,6 @@ const createLibrary = async (req, res) => {
       msmeNumber,
       msmeCertificateFile: msme,
     };
-
-    console.log("-----libraryr data-- ", libraryData, "------");
 
     const LibraryData = await Library.create(libraryData);
     await LibraryData.save();
@@ -154,13 +98,16 @@ const createRoom = async (req, res) => {
     const library = await Library.findById(libraryId);
 
     if (!library) {
-      return res.status(404).send({ message: 'Library not found' });
+      return res.status(404).send({ message: "Library not found" });
     }
 
     // Determine the new roomNo
     let newRoomNo = 1;
     if (library.rooms.length > 0) {
-      const maxRoomNo = library.rooms.reduce((max, room) => room.roomNo > max ? room.roomNo : max, library.rooms[0].roomNo);
+      const maxRoomNo = library.rooms.reduce(
+        (max, room) => (room.roomNo > max ? room.roomNo : max),
+        library.rooms[0].roomNo
+      );
       newRoomNo = maxRoomNo + 1;
     }
 
@@ -168,7 +115,6 @@ const createRoom = async (req, res) => {
     const newRoom = {
       roomNo: newRoomNo,
       seatLayout: req.body.seatLayout, // Assuming seatLayout is provided in the request body
-
     };
 
     // Add the new room to the library's rooms array
@@ -176,8 +122,6 @@ const createRoom = async (req, res) => {
 
     // Save the updated library document
     await library.save();
-
-
 
     res.status(201).json({
       message: "Library created successfully",
@@ -194,29 +138,29 @@ const createRoom = async (req, res) => {
 // addOrUpdateRoomDetails
 const addOrUpdateRoomDetails = async (req, res) => {
   try {
-    const { libraryId,  timeSlot, location } = req.body;
+    const { libraryId, timeSlot, location } = req.body;
 
     const library = await Library.findById(libraryId);
 
     if (!library) {
-      return res.status(404).send({ message: 'Library not found' });
+      return res.status(404).send({ message: "Library not found" });
     }
 
-    
-    const updateLibrary = await  Library.findByIdAndUpdate(libraryId, {
-
-      timeSlot: timeSlot,
-      location: location,
-    }, { new: true });
-    
-
+    const updateLibrary = await Library.findByIdAndUpdate(
+      libraryId,
+      {
+        timeSlot: timeSlot,
+        location: location,
+      },
+      { new: true }
+    );
 
     // Save the updated library document
     await updateLibrary.save();
 
     res.status(200).json({
       message: "Room details updated successfully",
-      library: updateLibrary
+      library: updateLibrary,
     });
   } catch (error) {
     console.error("Error ", error);
@@ -243,28 +187,24 @@ const getLibrary = async (req, res) => {
 
 const getAllLibrary = async (req, res) => {
   try {
-
-    const {city} = req.body;
+    const { city } = req.body;
     console.log(city);
 
     const cityCoordinates = await App.aggregate([
       { $match: {} }, // Match all documents or apply specific conditions
       { $unwind: "$locations" }, // Deconstruct the locations array
       { $match: { "locations.location": city } }, // Match the specific city
-      { $project: { _id: 0, coords: "$locations.coords" } } // Project the coordinates
+      { $project: { _id: 0, coords: "$locations.coords" } }, // Project the coordinates
     ]);
     // console.log("🚀 ~ getAllLibrary ~ cityCoordinates:", cityCoordinates[0].coords)
-    
 
-    
+    const roomsData = await Library.find({ approved: true });
 
-
-    const roomsData = await Library.find({approved: true});
-
-    const getSortedData = await  GetNearestLibraries(roomsData, cityCoordinates[0].coords)
-    console.log("🚀 ~ getAllLibrary ~ getSortedData:", getSortedData)
-
-
+    const getSortedData = await GetNearestLibraries(
+      roomsData,
+      cityCoordinates[0].coords
+    );
+    console.log("🚀 ~ getAllLibrary ~ getSortedData:", getSortedData);
 
     res.status(200).json({
       success: true,
@@ -297,12 +237,11 @@ const getLibraryById = async (req, res) => {
   }
 };
 
-
 const getLibraryByUserId = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room = await Library.findOne({libraryOwner : id});
+    const room = await Library.findOne({ libraryOwner: id });
     res.status(200).json({
       success: true,
       message: "Library data",
@@ -365,8 +304,8 @@ module.exports = {
   updateApproveStatus,
   getAdminLibraries,
   getAllBookings,
-  createRoom ,
+  createRoom,
   addOrUpdateRoomDetails,
   getLibraryByUserId,
-  getAllLibrary
+  getAllLibrary,
 };

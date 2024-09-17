@@ -8,26 +8,33 @@ import React, { createRef, useEffect, useState } from "react";
 import {
   Text,
   TextInput,
-
   StyleSheet,
   TouchableOpacity,
   View,
   Image,
-
   SafeAreaView
 } from "react-native";
 
 import { Toast } from "react-native-toast-notifications";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const LoginScreen: React.FC = () => {
-
   const [password, setPassword] = useState("Password");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(true);
-
   const [otp, setOtp] = useState(["", "", "", ""]);
   const inputRefs = [createRef(), createRef(), createRef(), createRef()];
+  const [loginOption, setLoginOption] = useState("password");
+  const [passwordVisibility, setPasswordVisibility] = useState(true);
+
+  useEffect(() => {
+    const getme = async () => {
+      const res = await axios.get(`${BACKEND}/me`);
+      if (res.status === 200) {
+        setLoading(false);
+      }
+    };
+    getme();
+  }, []);
 
   const handleOtpChange = (text, index) => {
     const newOtp = [...otp];
@@ -38,43 +45,14 @@ const LoginScreen: React.FC = () => {
     }
   };
 
-  const [loginOption, setLoginOption] = useState("password");
-  const [passwordVisibility, setPasswordVisibility] = useState(true);
-  const login = async () => {
-    if (!email || !password) {
-      return Toast.show("Please fill all fields", {
-        type: "danger",
-        placement: "top",
-        duration: 2000,
-      });
-    }
-  };
-
-useEffect(() => {
-
-  const getme = async () => {
-    const res = await axios.get(`${BACKEND}/me`);
-
-    if (res.status === 200) {
-      setLoading(false);
-    }
-
-  }
-  getme();
-}, []);
-
   const loginWithOtp = async () => {
     try {
-
-      // if(!loading){
-      //   return
-      // }
       const response = await axios.post(`${BACKEND}/api/v1/auth/otp-login`, {
         phoneNumber,
         otp: otp.join(""),
       });
 
-      if (response.data.success) {
+      if (response.status === 200) {
         await AsyncStorage.setItem("token", JSON.stringify(response.data.token));
         await AsyncStorage.setItem("userData", JSON.stringify(response.data.data));
         Toast.show("Login Successful", {
@@ -100,7 +78,7 @@ useEffect(() => {
     }
   };
 
-  const handleLogin = async () => {
+  const login = async () => {
     if (!phoneNumber || !password) {
       return Toast.show("Please fill all fields", {
         type: "danger",
@@ -140,6 +118,62 @@ useEffect(() => {
       });
     }
   };
+
+  const handleLogin = async () => {
+    if (phoneNumber.length === 10) {
+      if (loginOption === "otp") {
+        loginWithOtp();
+      } else {
+        login();
+      }
+    } else {
+      Toast.show("Please enter a valid 10-digit phone number", {
+        type: "danger",
+        placement: "top",
+        duration: 2000,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (phoneNumber.length === 10) {
+      if (loginOption === "otp") {
+          axios
+          .post(`${BACKEND}/api/v1/auth/otp`, {
+            phoneNumber,
+          })
+          .then((res) => {
+            if (res.data.success) {
+              Toast.show("OTP sent successfully", {
+                type: "success",
+                placement: "top",
+                duration: 2000,
+              });
+            } else {
+              Toast.show(res.data.message, {
+                type: "danger",
+                placement: "top",
+                duration: 2000,
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            Toast.show("Failed to send OTP", {
+              type: "danger",
+              placement: "top",
+              duration: 2000,
+            });
+          });
+      }
+    }
+  }, [phoneNumber]);
+  const handleKeyPress = (e, index) => {
+    if (e.nativeEvent.key === 'Backspace' && otp[index] === "" && index > 0) {
+      inputRefs[index - 1].current.focus();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -176,8 +210,7 @@ useEffect(() => {
           style={{
             fontSize: 40,
             fontWeight: "800",
-            letterSpacing: 5,
-
+            letterSpacing: 10,
             marginBottom: 30,
             left: -100,
           }}
@@ -187,8 +220,7 @@ useEffect(() => {
         <Text
           style={{
             fontSize: 20,
-            color:"black",
-
+            color: "black",
             marginBottom: 20,
             left: -70,
           }}
@@ -197,12 +229,35 @@ useEffect(() => {
         </Text>
 
         <View style={styles.inputContainer}>
-          <TextInput
-            style={[styles.input, { paddingLeft: 30, marginBottom: -12 }]}
-            placeholder="+91 79911684453"
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-          />
+          <View
+            style={{
+              paddingLeft: 10,
+              paddingRight: 10,
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              backgroundColor: "#fff",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 25,
+                marginHorizontal: 10,
+                color: "black",
+                marginRight: -2,
+              }}
+            >
+              🇮🇳 |
+            </Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Phone Number"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              keyboardType="phone-pad"
+            />
+          </View>
 
           <Text
             style={{
@@ -292,20 +347,19 @@ useEffect(() => {
               >
                 OTP
               </Text>
-              
             </TouchableOpacity>
           </View>
 
           {/* Conditional Input Field */}
           {loginOption === "password" ? (
-            <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-
-
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
               <TextInput
-                style={[styles.input, { width:'100%' }]} // Adjust padding as needed
+                style={[styles.input, { width: "100%" }]} // Adjust padding as needed
                 placeholder="Password"
                 secureTextEntry={passwordVisibility}
                 value={password}
@@ -313,55 +367,49 @@ useEffect(() => {
               />
               <TouchableOpacity
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   right: 20,
-                  bottom:15,
-
+                  bottom: 15,
                 }}
                 onPress={() => setPasswordVisibility(!passwordVisibility)}
               >
                 <Ionicons
-                  // name="eye-outline"
                   name={
                     passwordVisibility ? "eye-off-outline" : "eye-outline"
                   }
                   size={25}
-                  
-                  style={{
-
-                    // width: 150,
-                    // height: 150,
-                    // padding: 20,
-                  }}
                 />
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 50,
-            }}>
-             {otp.map((value, index) => (
-               <TextInput
-                 key={index}
-                 ref={inputRefs[index]}
-                 style={{
-                  width: 40,
-                  height: 40,
-                  borderWidth: 1,
-                  borderColor: 'lightgray',
-                  borderRadius:10,
-                  backgroundColor: 'white',
-                  textAlign: 'center',
-                }}
-                 maxLength={1}
-                 keyboardType="numeric"
-                 onChangeText={(text) => handleOtpChange(text, index)}
-                 value={value}
-               />
-             ))}
-           </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingHorizontal: 50,
+              }}
+            >
+              {otp.map((value, index) => (
+                <TextInput
+                  key={index}
+                  ref={inputRefs[index]}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderWidth: 1,
+                    borderColor: "lightgray",
+                    borderRadius: 10,
+                    backgroundColor: "white",
+                    textAlign: "center",
+                  }}
+                  maxLength={1}
+                  keyboardType="numeric"
+                  onChangeText={(text) => handleOtpChange(text, index)}
+                  onKeyPress={(e) => handleKeyPress(e, index)}
+                  value={value}
+                />
+              ))}
+            </View>
           )}
         </View>
 
@@ -370,12 +418,11 @@ useEffect(() => {
             padding: 16,
             borderRadius: 8,
             marginHorizontal: 16,
-
             marginTop: 35,
           }}
           onPress={handleLogin}
         >
-         <Button text="Login" width={300} height={60} onPress={handleLogin} />
+          <Button text="Login" width={300} height={60} onPress={handleLogin} />
         </TouchableOpacity>
 
         <View style={styles.signupRedirect}>
@@ -386,7 +433,6 @@ useEffect(() => {
             <Text
               style={{
                 fontSize: 18,
-
                 color: "#2467EC",
                 marginLeft: 5,
               }}
@@ -399,6 +445,7 @@ useEffect(() => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -406,24 +453,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 16,
   },
-  signupRedirect: {
-    flexDirection: "row",
-    marginTop: 30,
-  },
+ 
   inputContainer: {
     width: "100%",
-
     marginHorizontal: 16,
-    // marginTop: 30,`
     rowGap: 30,
   },
   input: {
     height: 55,
-    // marginHorizontal: 16,
     borderRadius: 8,
     paddingLeft: 35,
     fontSize: 16,
-
     backgroundColor: "white",
     color: "#A1A1A0",
   },
@@ -452,4 +492,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
 export default LoginScreen;

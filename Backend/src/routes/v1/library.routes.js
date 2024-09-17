@@ -1,5 +1,4 @@
 const express = require("express");
-
 const { LibraryController } = require("../../controllers");
 const Library = express.Router();
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
@@ -20,15 +19,18 @@ const storage = new CloudinaryStorage({
     resource_type: "auto",
   },
 });
+
+
 // const storage = multer.diskStorage({
-//   destination: function(req, file, cb) {
-//     cb(null, './uploads/');
+//   destination: (req, file, cb) => {
+//     cb(null, 'uploads/');
 //   },
-//   filename: function(req, file, cb) {
-//     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-//   }
+//   filename: (req, file, cb) => {
+//     cb(null, `${Date.now()}-${file.originalname}`);
+//   },
 // });
-const upload = multer({ dest: 'uploads/' }); // Temporary storage for uploaded files
+const upload = multer({ storage: storage });
+
 
 Library.get("/ping", LibraryController.pingAdmin);
 Library.post(

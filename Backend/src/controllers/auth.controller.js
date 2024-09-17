@@ -177,17 +177,19 @@ async function sendOtp(req, res) {
   console.log("OTP GENERATED => ", typeof otp);
 
   if (phoneNumber) {
-    const phoneOtp = otp;
+     otp;
 
     // Create and save email OTP
 
-    const otpPayload = { phoneNumber , phoneotp:phoneOtp };
+    const otpPayload = { phoneNumber , phoneotp:otp };
     const otpBody = await phoneotp.create(otpPayload);
-    // console.log("otpBODY -> ", otpBody);
+
+    // await phoneotp.save();  
+
 
     // Send OTP via Fast2SMS
     // const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=otp&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
-    const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=dlt&sender_id=EKAANT&message=171779&variables_values=&flash=0&numbers=${phoneNumber}`;
+    const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=dlt&sender_id=EKAANT&message=171779&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
     const response = await axios.get(url);
     console.log("🚀 ~ sendOtp ~ response:", response.status)
     
@@ -401,11 +403,58 @@ async function getFriends(req, res) {
   }
 }
 
+async function otpLogin(req, res) {
+  const { phoneNumber, otp } = req.body;
+
+
+  const response = await phoneotp.find({ phoneNumber }).sort({ createdAt: -1 }).limit(1);
+  // const response = await OTP.find({ email }).sort({ createdAt: -1 });
+  console.log(response[0].phoneotp, otp, "RESPONSE123");
+  if (otp.length == 0) {
+    // OTP not found for the email
+    return res.status(400).json({
+      success: false,
+      message: "The OTP is not valid",
+    });
+  } else if (otp != response[0].phoneotp) {
+    // Invalid OTP
+    return res.status(400).json({
+      success: false,
+      message: "The OTP you entered is wrong !!",
+    });
+  }
+
+  if(!response){
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+  console.log("🚀 ~ otpLogin ~ response:", response)
+
+
+
+
+    const token = jwt.sign({ user_id: response[0]._id }, JWT_SECRET);
+   
+
+    return res.status(200).json({
+      success: true,
+      message: "User authenticated successfully",
+      error: {},
+      data: { User, user_id: response[0]._id },
+      token: token,
+    });
+
+
+}
+
 module.exports = {
   signUp,
   signIn,
 
   pingAuthController,
+  otpLogin,
 
   verifyOtp,
   forgetPassword,

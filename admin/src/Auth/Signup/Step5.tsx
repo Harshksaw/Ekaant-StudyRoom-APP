@@ -81,6 +81,7 @@ export const StepFive = ({
             Select File
             <input
               type="file"
+              multiple
               id="uploadSliderImages"
               accept="image/*"
               onChange={handleFileChange}

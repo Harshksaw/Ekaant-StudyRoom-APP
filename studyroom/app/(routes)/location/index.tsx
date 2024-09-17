@@ -4,15 +4,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker } from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigation } from 'expo-router';
 
-const locations = [
-  { id: '1', name: 'Location 1', latitude: 37.78825, longitude: -122.4324 },
-  { id: '2', name: 'Location 2', latitude: 37.75825, longitude: -122.4624 },
-  { id: '3', name: 'Location 3', latitude: 37.76825, longitude: -122.4824 },
-  // Add more locations as needed
-];
 
-const LocationsScreen = ({ navigation }) => {
+
+const LocationsScreen = () => {
+
+  const navigation = useNavigation();
 
 
   const dispatch = useDispatch();
@@ -29,7 +27,7 @@ const LocationsScreen = ({ navigation }) => {
     const fetchData = async () => {
       try {
 
-        const citiesData = useSelector((state) => state.app);
+        // const citiesData = useSelector((state) => state.app);
 
         setLocations(citiesData.locations);
       } catch (error) {
@@ -67,9 +65,9 @@ const LocationsScreen = ({ navigation }) => {
           longitudeDelta: 10,
         }}
       >
-        {locations.map((location) => (
+        {locations.map((location, index) => (
           <Marker
-            key={location._id} // Ensure each Marker has a unique key
+            key={index} // Ensure each Marker has a unique key
             coordinate={{ latitude: location.coords[0], longitude: location.coords[1] }}
             title={location.location}
             onPress={() => handleLocationSelect(location)}
