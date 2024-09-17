@@ -65,9 +65,9 @@ const LocationsScreen = () => {
           longitudeDelta: 10,
         }}
       >
-        {locations.map((location) => (
+        {locations.map((location, index) => (
           <Marker
-            key={location._id} // Ensure each Marker has a unique key
+            key={index} // Ensure each Marker has a unique key
             coordinate={{ latitude: location.coords[0], longitude: location.coords[1] }}
             title={location.location}
             onPress={() => handleLocationSelect(location)}

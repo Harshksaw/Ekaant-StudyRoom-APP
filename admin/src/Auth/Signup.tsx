@@ -19,33 +19,34 @@ import Loader from "@/components/Loader";
 // Add similar components for StepThree, StepFour, and StepFive
 interface LibraryDetails {
   name: string;
-  librarySliders:string
+  librarySliders: string
   // Add other properties as needed
 }
 const FinalStep = () => {
   const navigate = useNavigate();
-  return(
-  
-  <div>
-    <h2>Final Step</h2>
-    {/* Summary or confirmation */}
-    <button onClick={()=> navigate("/signin", {
-                replace: true,
-              }) }>Back</button>
-    <button onClick={() => alert("Form Submitted")}>Submit</button>
-  </div>
-)}
+  return (
+
+    <div>
+      <h2>Final Step</h2>
+      {/* Summary or confirmation */}
+      <button onClick={() => navigate("/signin", {
+        replace: true,
+      })}>Back</button>
+      <button onClick={() => alert("Form Submitted")}>Submit</button>
+    </div>
+  )
+}
 
 function Signup() {
 
   //parent compoenent
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-// @ts-ignore
+  // @ts-ignore
   const [token, setToken] = useState("");
 
   const [userOTP, setOtpInputs] = useState("");
-  const [verfiedOtp, setVerifiedOtp] = useState({one:false,two:false});
+  const [verfiedOtp, setVerifiedOtp] = useState({ one: false, two: false });
   const [userInfo, setUserInfo] = useState({
     phone: 0,
     email: "",
@@ -118,26 +119,26 @@ function Signup() {
 
   console.log(userOTP, "userotp");
 
-    useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem("token");
     const admin = localStorage.getItem("userId")
-    if (token !== ""  && admin !== "") {
+    if (token !== "" && admin !== "") {
       setCurrentStep(4);
       setToken(token || "");
     }
     console.log(token, "token");
     console.log(currentStep, "currentstep");
 
-    if(!token){
-      console.log(token , "token");
+    if (!token) {
+      console.log(token, "token");
       setCurrentStep(1);
     }
-    }, []);
+  }, []);
 
   const sendOtp = async () => {
     const { phone } = userInfo;
     //@GourishMarkan - Add toast ike this and replace the older method
-    toast('Sent OTP', { 
+    toast('Sent OTP', {
       position: "top-right",
       autoClose: 2000,
       hideProgressBar: false,
@@ -147,7 +148,7 @@ function Signup() {
       progress: undefined,
       theme: "light",
 
-      });
+    });
 
     const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, {
       phoneNumber: phone,
@@ -167,8 +168,10 @@ function Signup() {
     }
     console.log("verfication start");
 
-    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOtp`, {phoneNumber: userInfo.phone, 
-       otp });
+    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOtp`, {
+      phoneNumber: userInfo.phone,
+      otp
+    });
     console.log(res, "res");
 
     if (res.status === 200 || res.status === 201) {
@@ -187,8 +190,8 @@ function Signup() {
         draggable: true,
         progress: undefined,
         theme: "light",
-  
-        });
+
+      });
       console.log("OTP verified successfully");
     } else {
       toast('Sent OTP', {
@@ -200,46 +203,44 @@ function Signup() {
         draggable: true,
         progress: undefined,
         theme: "light",
-  
-        });
+
+      });
     }
   };
 
   const [emailOtpInputs, setEmailOtpInputs] = useState("");
 
   const sendEmailOtp = async () => {
-   
+
     const { email } = userInfo;
     const res = await axios.post(`${BASEURL}/api/v1/auth/emailotp`, { email });
     if (res.status === 200) {
-    
+
       console.log("OTP sent successfully");
     }
   };
 
 
   const verifyEmailOTP = async () => {
-  
+
     const otp = emailOtpInputs;
     if (Number(otp) < 1000) {
       return;
     }
 
     const res = await axios.post(`${BASEURL}/api/v1/auth/verifyEmailOtp`, {
-      email: userInfo.email,  
+      email: userInfo.email,
       otp,
     });
-    console.log(res, "res");
+    // console.log(res, "res");
 
     if (res.status === 200 || res.status === 201) {
-      console.log(res.data, "res.data");
+      // console.log(res.data, "res.data");
       setVerifiedOtp(
         (prev) => ({ ...prev, two: true })
       )
-      const notify = () => toast("Verified Email OTP");
-      notify();
-    } else {
-      toast('Not verified', { 
+
+      toast('Verified  OTP', {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -248,8 +249,21 @@ function Signup() {
         draggable: true,
         progress: undefined,
         theme: "light",
-  
-        });
+
+      });
+
+    } else {
+      toast('Not verified', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+
+      });
     }
   };
 
@@ -266,34 +280,26 @@ function Signup() {
       }
     }
   };
-  // const updateLibraryDetails = (prevLibraryDetails: LibraryDetails): LibraryDetails => {
-  //   return {
-  //     ...prevLibraryDetails,
-  //     librarySliders: [...prevLibraryDetails.librarySliders, newFile], // Assuming newFile is of type File
-  //   };
-  // };
-  
-  // // Usage
-  // setLibraryDetails((prev) => updateLibraryDetails(prev));
+
 
   useEffect(() => {
 
 
-    if (Number(userOTP) > 1000) {
+    if (Number(userOTP) >= 1000) {
       {
-        currentStep ===2 && verifyOTP();
+        currentStep === 2 && verifyOTP();
       }
     }
 
-    if (Number(emailOtpInputs) > 1000) {
+    if (Number(emailOtpInputs) >= 1000) {
       {
-        currentStep ===2 &&  verifyEmailOTP();;
+        currentStep === 2 && verifyEmailOTP();;
       }
-     
+
     }
 
     // console.log(userDetails,"---");
-    console.log(libraryDetails,"---");
+    console.log(libraryDetails, "---");
   }, [userOTP, emailOtpInputs, libraryDetails]);
 
   const createUser = async () => {
@@ -318,17 +324,17 @@ function Signup() {
     formData.append("Address", JSON.stringify(userDetails.address)); // Assuming Address is an object and needs to be stringified
     formData.append("username", createUserName);
 
-   
-if (userDetails.uploadAadharCard) {
-  formData.append("aadhar", userDetails.uploadAadharCard);
-}
 
-if (userDetails.uploadPanCard) {
-  formData.append("pancard", userDetails.uploadPanCard);
-}
+    if (userDetails.uploadAadharCard) {
+      formData.append("aadhar", userDetails.uploadAadharCard);
+    }
+
+    if (userDetails.uploadPanCard) {
+      formData.append("pancard", userDetails.uploadPanCard);
+    }
 
     try {
-    
+
       const response = await axios.post(
         `${BASEURL}/api/v1/admin/registerAdmin`,
         formData
@@ -344,7 +350,7 @@ if (userDetails.uploadPanCard) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data.data._id);
 
-      
+
       }
 
       setUserDetails({
@@ -370,7 +376,7 @@ if (userDetails.uploadPanCard) {
       setLoading(false);
       setCurrentStep(1);
       console.error("Error:");
-    
+
     }
   };
 
@@ -379,8 +385,8 @@ if (userDetails.uploadPanCard) {
     // console.log(libraryDetails, "libraryDetails-----------------d------");
 
     const amenitiesArray = Object.entries(libraryDetails.amentities)
-  .filter(([ value]) => value)
-  .map(([key]) => key);
+      .filter(([value]) => value)
+      .map(([key]) => key);
 
     const AdminId = localStorage.getItem("userId");
     console.log(AdminId)
@@ -393,16 +399,16 @@ if (userDetails.uploadPanCard) {
       rawLocation: libraryDetails.libraryApp.longDescription,
       halls: libraryDetails.halls,
       amenities: amenitiesArray,
-      address:libraryDetails.libraryAddress,
-      legal : libraryDetails.libraryLegal.registration,
+      address: libraryDetails.libraryAddress,
+      legal: libraryDetails.libraryLegal.registration,
 
-      gstNumber:libraryDetails.libraryLegal.gst,
+      gstNumber: libraryDetails.libraryLegal.gst,
 
-      cinNumber:libraryDetails.libraryLegal.cin,
+      cinNumber: libraryDetails.libraryLegal.cin,
 
-      tanNumber:libraryDetails.libraryLegal.tan,
+      tanNumber: libraryDetails.libraryLegal.tan,
 
-      msmeNumber : libraryDetails.libraryLegal.msme,
+      msmeNumber: libraryDetails.libraryLegal.msme,
     };
 
     console.log(LibraryDataOBJ, "LibraryDataOBJ");
@@ -449,8 +455,8 @@ if (userDetails.uploadPanCard) {
 
       if (response.data) {
         setLoading(false);
-       
-        
+
+
         setCurrentStep(0);
 
         // setImages([]);
@@ -462,7 +468,7 @@ if (userDetails.uploadPanCard) {
   };
 
   const nextStep = async () => {
-  
+
 
 
     if (currentStep === 3) {
@@ -488,7 +494,7 @@ if (userDetails.uploadPanCard) {
             nextStep={nextStep}
             userInfo={userInfo}
             setUserInfo={setUserInfo}
-            // sendOTP={sendOtp}
+          // sendOTP={sendOtp}
           />
         );
       case 2:
@@ -511,13 +517,13 @@ if (userDetails.uploadPanCard) {
       case 3:
         return (
 
-        
+
           <StepThree
             nextStep={nextStep}
             userDetails={userDetails}
             setUserDetails={setUserDetails}
             prevStep={prevStep}
-            // createUser={createUser}
+          // createUser={createUser}
           />
         );
       case 4:
@@ -536,20 +542,21 @@ if (userDetails.uploadPanCard) {
             prevStep={prevStep}
             libraryDetails={libraryDetails}
             setLibraryDetails={setLibraryDetails}
-            handleFileChange = {handleFileChange}
+            handleFileChange={handleFileChange}
           />
         );
       case 6:
         return (
           <FinalStep
 
-            // prevStep={prevStep}
+          // prevStep={prevStep}
 
 
           />
         );
       default:
-        return <h2>Final Step</h2>;
+        return <h2 className="text-2xl text-center m-5 p-2 text-green-500
+        ">Final Step</h2>;
     }
   };
 
