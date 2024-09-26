@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const BASEURL='http://51.79.156.158:3000'
+export const BASEURL='https://api.studyekaant.com'
 
 // export const BASEURL = "https://studyroom-app.onrender.com";
 
