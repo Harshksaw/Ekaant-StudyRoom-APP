@@ -127,15 +127,15 @@ async function signIn(req, res, next) {
   //   });
   // }
   try {
-    const { email, password } = req.body;
+    const {phoneNumber, password } = req.body;
 
-    console.log(email, password);
+    console.log(phoneNumber, password);
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ phoneNumber });
 
     // Find user with requested email
     if (user) {
-      if (await user.validatePassword(password)) {
+      if (user.password === password) {
         const token = jwt.sign({ user_id: user._id }, JWT_SECRET);
         return res.status(StatusCodes.OK).json({
           success: true,

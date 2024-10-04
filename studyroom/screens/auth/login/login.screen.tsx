@@ -87,11 +87,14 @@ const LoginScreen: React.FC = () => {
       });
     }
 
+
     try {
       const response = await axios.post(`${BACKEND}/api/v1/auth/signin`, {
         phoneNumber,
         password,
       });
+      console.log("🚀 ~ login ~ response:", response)
+
 
       if (response.data.success) {
         await AsyncStorage.setItem("token", JSON.stringify(response.data.token));
@@ -120,11 +123,12 @@ const LoginScreen: React.FC = () => {
   };
 
   const handleLogin = async () => {
-    if (phoneNumber.length === 10) {
+    if (phoneNumber.length == 10) {
+      console.log(loginOption, phoneNumber);
       if (loginOption === "otp") {
         loginWithOtp();
       } else {
-        login();
+        await login();
       }
     } else {
       Toast.show("Please enter a valid 10-digit phone number", {
@@ -137,6 +141,7 @@ const LoginScreen: React.FC = () => {
 
   useEffect(() => {
     if (phoneNumber.length === 10) {
+
       if (loginOption === "otp") {
           axios
           .post(`${BACKEND}/api/v1/auth/otp`, {
@@ -173,6 +178,12 @@ const LoginScreen: React.FC = () => {
       inputRefs[index - 1].current.focus();
     }
   };
+  const handlePhoneNumberChange = (text) => {
+    // Ensure only numeric input and limit to 10 digits
+    const cleanedText = text.replace(/[^0-9]/g, '').slice(0, 10);
+    setPhoneNumber(cleanedText);
+  };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -200,7 +211,7 @@ const LoginScreen: React.FC = () => {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          marginTop: 100,
+          marginTop: 200,
           width: "100%",
           height: "100%",
           zIndex: 1,
@@ -210,7 +221,7 @@ const LoginScreen: React.FC = () => {
           style={{
             fontSize: 40,
             fontWeight: "800",
-            letterSpacing: 10,
+            letterSpacing: 5,
             marginBottom: 30,
             left: -100,
           }}
@@ -225,7 +236,7 @@ const LoginScreen: React.FC = () => {
             left: -70,
           }}
         >
-          Good to See You back
+          Good to See You back! 🖤
         </Text>
 
         <View style={styles.inputContainer}>
@@ -252,9 +263,9 @@ const LoginScreen: React.FC = () => {
 
             <TextInput
               style={styles.input}
-              placeholder="Phone Number"
+              placeholder="Your Number"
               value={phoneNumber}
-              onChangeText={setPhoneNumber}
+              onChangeText={handlePhoneNumberChange}
               keyboardType="phone-pad"
             />
           </View>
@@ -386,7 +397,7 @@ const LoginScreen: React.FC = () => {
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                paddingHorizontal: 50,
+                paddingHorizontal: 70,
               }}
             >
               {otp.map((value, index) => (
@@ -394,8 +405,8 @@ const LoginScreen: React.FC = () => {
                   key={index}
                   ref={inputRefs[index]}
                   style={{
-                    width: 40,
-                    height: 40,
+                    width: 50,
+                    height: 50,
                     borderWidth: 1,
                     borderColor: "lightgray",
                     borderRadius: 10,

@@ -157,9 +157,6 @@ export default function SignUpScreen() {
 
   //signup api
   const handleSignUp = async () => {
-    setButtonSpinner(true);
-
-    let formData = new FormData();
     if (!otpVerified) {
       Toast.show("Please verify OTP", {
         type: "danger",
@@ -172,25 +169,31 @@ export default function SignUpScreen() {
           marginTop: 50,
         },
       });
+      return;
     }
+    if (!image) {
+      Toast.show("Please upload profile picture", {
+        type: "danger",
+        duration: 3000,
+        placement: "top",
+        style: {
+          backgroundColor: "red",
+          borderRadius: 10,
+          padding: 10,
+          marginTop: 50,
+        },
+      });
+      return;
+    }
+    setButtonSpinner(true);
 
-    // console.log("signup.screen.tsx>>>>>>", userInfo);
+    let formData = new FormData();
+
+
+
     try {
-      // console.log("Image path:", typeof image  )
-      if (!image) {
-        Toast.show("Please upload profile picture", {
-          type: "danger",
-          duration: 3000,
-          placement: "top",
-          style: {
-            backgroundColor: "red",
-            borderRadius: 10,
-            padding: 10,
-            marginTop: 50,
-          },
-        });
-        return;
-      }
+
+     
       if (image) {
       formData.append("image", {
         uri: image,
