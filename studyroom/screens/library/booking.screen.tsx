@@ -40,38 +40,49 @@ const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
   const params = useRoute();
 
-  const data = JSON.parse(params.params.item);
-  const city = JSON.parse(params.params.location);
-  // console.log("Seat ----->>>>", data);
+  const data = JSON.parse(params?.params?.item);
+  const city = JSON.parse(params?.params?.location);
+
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedMonth, setselectedMonth] = useState(1);
+  const [selectedMonth, setSelectedMonth] = useState(1);
   const [selectedSlots, setSelectedSlots] = useState([]);
-  const [bookingloader, setBookingLoader] = useState(false);
+  const [bookingLoader, setBookingLoader] = useState(false);
   const [bookingId, setBookingId] = useState(null);
   const [finalPrice, setFinalPrice] = useState(0);
-
   const [currentRoomNo, setCurrentRoomNo] = useState(1);
+  const [forFriend, setForFriend] = useState(false);
+
+  const userDetails = useSelector((state: any) => state.user);
+  const bookingData = useSelector((state: any) => state.booking);
+
+  const price = bookingData.details.price || 6000;
+  const registrationFees = 1000;
+  const subtotal = Number((price + registrationFees).toFixed(2));
+  const totalAmount = subtotal;
+
+  const BookedData = {
+    seat: selectedSeat,
+    date: selectedDate,
+    months: selectedMonth,
+    room: currentRoomNo,
+    slot: selectedSlots,
+  };
+
+  useEffect(() => {
+    const totalPrice = selectedSlots.reduce((acc, slot) => acc + slot.price, 0);
+    setFinalPrice(totalPrice * selectedMonth);
+  }, [selectedSlots, selectedMonth]);
 
   const handleSeatSelect = (seatDataFromChild) => {
-    // console.log("Selected Seat-------------------:", seatDataFromChild);
-
-    setSelectedSeat(seatDataFromChild); // Update selected seats in parent state
-    // console.log("Selected Seat-------------------:>>>>>>", selectedSeat);
-    // Optionally, perform further actions on the selected seats here
+    setSelectedSeat(seatDataFromChild);
   };
 
   const handleSelectSlot = (selectedSlot) => {
-    // console.log(selectedSlots, "Selected Slot");
-    console.log(selectedSlot, "Selected Slot");
     if (selectedSlots.find((slot) => slot._id === selectedSlot._id)) {
-      // If the slot is already selected, remove it from the array
-      setSelectedSlots(
-        selectedSlots.filter((slot) => slot._id !== selectedSlot._id)
-      );
+      setSelectedSlots(selectedSlots.filter((slot) => slot._id !== selectedSlot._id));
     } else {
-      // Otherwise, add the slot to the array
       setSelectedSlots([...selectedSlots, selectedSlot]);
     }
   };
@@ -80,14 +91,7 @@ const BookingScreen: React.FC = () => {
     setIsModalVisible(!isModalVisible);
   };
 
-  interface DataItem {
-    _id: string;
-    from: string;
-    to: string;
-  }
-
   const updateRoomDetails = async () => {
-    console.log(data, "Data944");
     const details = {
       id: data._id,
       amenities: data.amenities,
@@ -99,149 +103,63 @@ const BookingScreen: React.FC = () => {
     dispatch(setBookingDetails(details));
   };
 
-  const [forFriend, setForFriend] = useState(false);
-
-  const BookedData = {
-    seat: selectedSeat,
-    date: selectedDate,
-    months: selectedMonth,
-    room: currentRoomNo,
-    slot: selectedSlots,
-  };
-
-  const handleData = (data: DataItem[]) => {
-    return data.map((item) => {
-      if (item.from === "0" && item.to === "24") {
-        // Modify the item to indicate 24/7 availability
-        // This is just an example, adjust according to your needs
-        return { ...item, availability: "24/7" };
-      }
-      return item;
-    });
-  };
-  const available = handleData(data.timeSlot);
-
-  const userDetails = useSelector((state: any) => state.user);
-
-  const bookingdata = useSelector((state: any) => state.booking);
-
-  // const location = bookingdata?.details?.location;
-
-  const price = bookingdata.details.price || 6000;
-  const RegistrationFees = 1000;
-
-  const subtotal = Number((price + RegistrationFees).toFixed(2));
-
-  const totalAmount = subtotal;
-
-  // console.log("Booked Data:", data );
-  const BookingDate = BookedData.date;
-  const BookingMonths = BookedData.months;
-  const BookingSeat = BookedData.seat;
-  const BookingSlot = BookedData.slot;
-  const RoomNo = BookedData.room || 1;
-  console.log("Booking ID254 boking", selectedSlots);
-
-  
-useEffect(() => {
-  // const price = selectedSlots.reduce((acc, slot) => {
-  //   acc.price += slot.price;
-  // }, 0);
-  let totalPrice = selectedSlots.reduce((acc, slot) => acc + slot.price, 0)
-  console.log(totalPrice, "Total Price", selectedMonth);
-  const finalPrice = totalPrice * selectedMonth;
-
-  setFinalPrice(finalPrice);
-
-
-
-
-
-},[selectedSlots, selectedMonth])
-console.log(finalPrice)
   const PreBook = async () => {
-    console.log(BookedData.slot, BookingSlot, "--------PRebook156");
     const userData = await AsyncStorage.getItem("userData");
     const userid = JSON.parse(userData || "{}");
-    const userId = userid.user._id;
-    console.log(
-      userId,
-      bookingdata.details.id,
-      finalPrice,
-      totalAmount,
-      BookingSlot,
-      RoomNo,
-      BookingSeat,
-      BookingDate,
-      BookingMonths,
+    const userId = userid.user?._id;
 
-    );
+    if (!userId) {
+      Toast.show({
+        text1: "User ID is missing",
+        type: "error",
+        position: "top",
+        visibilityTime: 3000,
+      });
+      throw new Error('User ID is missing');
+    }
+
     if (
       userId &&
-      bookingdata.details.id &&
+      bookingData.details.id &&
       finalPrice &&
       totalAmount &&
-      BookingSlot &&
-      RoomNo &&
-      BookingSeat &&
-      BookingDate &&
-      BookingMonths
+      BookedData.slot.length &&
+      BookedData.room &&
+      BookedData.seat &&
+      BookedData.date &&
+      BookedData.months
     ) {
       try {
-        // console.log(userDetails.friendDetails, "-----977");
-
         const response = await axios.post(
           `${BACKEND}/api/v1/booking/createBooking`,
           {
-            userId: userId,
-            libraryId: bookingdata.details.id,
+            userId,
+            libraryId: bookingData.details.id,
             initialPrice: price,
-            finalPrice: finalPrice,
-            timeSlot: BookingSlot,
-            roomNo: RoomNo,
-            bookedSeat: BookingSeat,
-            bookingDate: BookingDate,
-            bookingPeriod: BookingMonths,
+            finalPrice,
+            timeSlot: BookedData.slot,
+            roomNo: BookedData.room,
+            bookedSeat: BookedData.seat,
+            bookingDate: BookedData.date,
+            bookingPeriod: BookedData.months,
             forFriend: userDetails.friendDetails,
           }
         );
 
-        // console.log(response.data, "+++++------------------->");
         const bookingId = response.data.Booking._id;
         setBookingId(bookingId);
 
-        // console.log("Booking ID", bookingId);
-
-        Toast.show("Booking Successful !", {
+        Toast.show({
+          text1: "Booking Successful!",
           type: "success",
-          placement: "top",
-          animationDuration: 1000,
-          icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
-
-          duration: 3000,
+          position: "top",
+          visibilityTime: 3000,
         });
 
-        setSelectedSeat(null);
-        setSelectedDate(null);
-        setselectedMonth(1);
-        setCurrentRoomNo(1);
-        setSelectedSlots([]);
-
-        // console.log(response.data, "------------------->");
-        return response.data.Booking._id;
+        resetBookingState();
+        return bookingId;
       } catch (error) {
-        setBookingLoader(false);
-        setIsModalVisible(false);
-
-        console.log("Error:", error);
-        Toast.show("Error in Booking !", {
-          type: "error",
-          placement: "top",
-          animationDuration: 1000,
-          icon: <Ionicons name="alert-circle" size={24} color="red" />,
-
-          duration: 3000,
-        });
+        handleBookingError(error);
         return null;
       }
     }
@@ -250,25 +168,11 @@ console.log(finalPrice)
   const confirmBooking = async () => {
     setBookingLoader(true);
     await updateRoomDetails();
-    // console.log(
-    //   bookingdata.details.id,
-    //   price,
-    //   totalAmount,
-    //   BookingSlot,
-    //   RoomNo,
-    //   BookingSeat,
-    //   BookingDate,
-    //   BookingMonths,
 
-    //   "------------------->"
-    // );
     const res = await PreBook();
-
     if (res) {
-      // console.log("Booking Confirmed", BookedData);
       setBookingLoader(false);
       setIsModalVisible(false);
-      console.log("Booking ID254 boking", bookingId);
 
       const newBookingData = {
         bookedSeat: selectedSeat,
@@ -280,8 +184,6 @@ console.log(finalPrice)
       };
 
       const Bookdata = { ...newBookingData, libraryId: data };
-      // console.log("Booking ID254 boking",Bookdata);
-
       router.push({
         pathname: "/library/checkout.screen",
         params: {
@@ -290,9 +192,29 @@ console.log(finalPrice)
       });
     } else {
       setBookingLoader(false);
-
       setIsModalVisible(false);
     }
+  };
+
+  const resetBookingState = () => {
+    setSelectedSeat(null);
+    setSelectedDate(null);
+    setSelectedMonth(1);
+    setCurrentRoomNo(1);
+    setSelectedSlots([]);
+  };
+
+  const handleBookingError = (error) => {
+    setBookingLoader(false);
+    setIsModalVisible(false);
+    console.error("Error:", error);
+    Toast.show({
+      text1: "Error in Booking!",
+
+      type: "error",
+      position: "top",
+      visibilityTime: 3000,
+    });
   };
 
 
@@ -541,7 +463,7 @@ console.log(finalPrice)
                             </TouchableOpacity>
                           </View>
                         );
-                      } else if( slot?.from !== null) {
+                      } else if (slot?.from !== null) {
                         // Render regular time slots
 
                         return (
@@ -611,19 +533,19 @@ console.log(finalPrice)
                       textAlign: 'center'
 
                     }}>
-                   Price :
-                   <Text
-                   style={{
-                    fontSize: 24, // Larger font size
-                    fontWeight: 'bold', // Bold text
-                    color: '#E91E63', // A distinct color
-                    margin: 10, // Add some margin around the text
-                    textAlign: 'center'
-                   }}
-                   >
+                      Price :
+                      <Text
+                        style={{
+                          fontSize: 24, // Larger font size
+                          fontWeight: 'bold', // Bold text
+                          color: '#E91E63', // A distinct color
+                          margin: 10, // Add some margin around the text
+                          textAlign: 'center'
+                        }}
+                      >
 
-                    {finalPrice}
-                   </Text>
+                        {finalPrice}
+                      </Text>
 
                     </Text>
                   </View>
@@ -640,9 +562,9 @@ console.log(finalPrice)
                         onPress={confirmBooking}
                       >
                         {bookingloader ? (
-                          <ActivityIndicator size="small" color="#000" />
+                          <ActivityIndicator size="large" color="#000" />
                         ) : (
-                          <Text style={{ alignItems: "center", padding: 10 }}>
+                          <Text style={{ alignItems: "center", padding: 15 }}>
                             Confirm
                           </Text>
                         )}
@@ -704,7 +626,7 @@ const styles = StyleSheet.create({
     padding: 10,
     gap: 5,
     width: 300,
-    height: 500,
+    height: 600,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
