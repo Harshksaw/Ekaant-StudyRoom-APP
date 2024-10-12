@@ -131,7 +131,7 @@ export default function index() {
     require("../../assets/icons/locationcard.svg"),
   ]);
 
-  // console.log("-------------->", userDetails);
+
 
   //card listedrooms
   const renderItem = ({ item }) => (

@@ -32,6 +32,7 @@ import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
 import ToggleBookingButton from "@/components/ToggleBooking";
 import { Toast } from "react-native-toast-notifications";
+// import Toast from 'react-native-toast-message'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
@@ -48,7 +49,7 @@ const BookingScreen: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(1);
   const [selectedSlots, setSelectedSlots] = useState([]);
-  const [bookingLoader, setBookingLoader] = useState(false);
+  const [bookingloader, setBookingLoader] = useState(false);
   const [bookingId, setBookingId] = useState(null);
   const [finalPrice, setFinalPrice] = useState(0);
   const [currentRoomNo, setCurrentRoomNo] = useState(1);
@@ -100,8 +101,20 @@ const BookingScreen: React.FC = () => {
       name: data.name,
       price: finalPrice,
     };
+    console.log("🚀 ~ updateRoomDetails ~ details:", details)
     dispatch(setBookingDetails(details));
   };
+  const handleData = (data: DataItem[]) => {
+    return data.map((item) => {
+      if (item.from === "0" && item.to === "24") {
+        // Modify the item to indicate 24/7 availability
+        // This is just an example, adjust according to your needs
+        return { ...item, availability: "24/7" };
+      }
+      return item;
+    });
+  };
+  const available = handleData(data.timeSlot);
 
   const PreBook = async () => {
     const userData = await AsyncStorage.getItem("userData");
@@ -111,6 +124,7 @@ const BookingScreen: React.FC = () => {
     if (!userId) {
       Toast.show({
         text1: "User ID is missing",
+
         type: "error",
         position: "top",
         visibilityTime: 3000,
@@ -118,6 +132,15 @@ const BookingScreen: React.FC = () => {
       throw new Error('User ID is missing');
     }
 
+    console.log(      userId ,
+      bookingData.details.id ,
+      finalPrice ,
+      totalAmount ,
+      BookedData.slot.length ,
+      BookedData.room ,
+      BookedData.seat ,
+      BookedData.date ,
+      BookedData.months)
     if (
       userId &&
       bookingData.details.id &&
@@ -375,7 +398,7 @@ const BookingScreen: React.FC = () => {
                         selectedValue={selectedMonth}
                         onValueChange={(itemValue, itemIndex) => {
                           // console.log(itemValue, itemIndex);
-                          setselectedMonth(itemValue);
+                          setSelectedMonth(itemValue);
                         }}
                       >
                         {Array.from({ length: 12 }, (_, i) => (
@@ -558,6 +581,7 @@ const BookingScreen: React.FC = () => {
                           backgroundColor: "rgb(93, 223, 38)",
                           marginTop: 10,
                           borderRadius: -10,
+                          padding: 10,
                         }}
                         onPress={confirmBooking}
                       >
