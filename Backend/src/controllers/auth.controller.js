@@ -174,10 +174,14 @@ async function sendOtp(req, res) {
     lowerCaseAlphabets: false,
     specialChars: false,
   });
-  console.log("OTP GENERATED => ", typeof otp);
+  console.log("OTP GENERATED => ",  otp);
 
-  if (phoneNumber) {
-     otp;
+  if (!phoneNumber) {
+    return res.status(400).json({
+      success: false,
+      message: "Phone number is required",
+    });
+  }
 
     // Create and save email OTP
 
@@ -186,21 +190,22 @@ async function sendOtp(req, res) {
 
     // await phoneotp.save();  
 
-
-    // Send OTP via Fast2SMS
-    // const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=otp&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
     const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=dlt&sender_id=EKAANT&message=171779&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
     const response = await axios.get(url);
     console.log("🚀 ~ sendOtp ~ response:", response.status)
     
-  if (response.status == 200) {
-    return res.status(200).json({
-      success: true,
-      message: `OTP sent to ${phoneNumber}`,
-    });
-  }
-  }
-
+    if (response.status == 200) {
+      return res.status(200).json({
+        success: true,
+        message: `OTP sent to ${phoneNumber}`,
+      });
+    } else {
+      return res.status(response.status).json({
+        success: false,
+        message: "Failed to send OTP",
+      });
+    }
+  
 
 }
 
@@ -247,9 +252,10 @@ async function sendEmailOtp(req, res) {
     lowerCaseAlphabets: false,
     specialChars: false,
   });
-  console.log("OTP GENERATED => ", typeof otp);
+  console.log("OTP GENERATED => ",  otp);
 
   const otpPayload = { email, emailotp: otp };
+
 
   const otpBody = await OTP.create(otpPayload);
   console.log("otpBODY -> ", otpBody);
