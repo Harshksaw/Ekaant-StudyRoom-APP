@@ -7,7 +7,29 @@ const errorHandler = require("./utils/errorHandler");
 const connectToDB = require("./config/db.config");
 require("dotenv").config();
 
+const StatsD = require('hot-shots');
+const dogstatsd = new StatsD();
 
+// Increment a counter
+dogstatsd.increment('page.views');
+
+// Record a gauge
+dogstatsd.gauge('system.load', 0.75);
+
+// Record a timing
+dogstatsd.timing('response_time', 200);
+
+// Record a histogram
+dogstatsd.histogram('data_size', 512);
+
+// Record a set
+dogstatsd.set('unique_users', 12345);
+
+// Record an event
+dogstatsd.event('User Signup', 'A new user has signed up');
+
+// Close the connection when done
+dogstatsd.close();
 
 // const PORT
 const app = express();
@@ -72,6 +94,7 @@ app.get("/ping", (req, res) => {
 
 app.get('/health', (req, res) => {
   const uptime = Date.now() - metrics.startTime;
+  dogstatsd.gauge('system.uptime', uptime / 1000); // Example g
   res.send({
     status: 'up',
     uptime: `${uptime / 1000}s`,
