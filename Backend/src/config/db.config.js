@@ -8,13 +8,9 @@ async function connectToDB() {
       throw new Error("DB_URL is not defined. Please check your configuration.");
     }
 
-    const options = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
-    };
 
-    await mongoose.connect(DB_URL, options);
+
+    await mongoose.connect(DB_URL);
     console.log(`Successfully connected to the database in ${NODE_ENV} mode`);
   } catch (error) {
     console.error("Unable to connect to the DB server ---->");
