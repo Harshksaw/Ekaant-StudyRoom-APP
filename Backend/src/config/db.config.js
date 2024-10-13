@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
-const { DB_URL, NODE_ENV } = require("./server.config");
+const {  NODE_ENV } = require("./server.config");
 
 
 async function connectToDB() {
+  const DB_URL = process.env.DATABASE_URI;
   try {
     if (!DB_URL) {
       throw new Error("DB_URL is not defined. Please check your configuration.");
