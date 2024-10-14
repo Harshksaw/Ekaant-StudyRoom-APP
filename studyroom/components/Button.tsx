@@ -5,11 +5,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 interface ButtonProps {
     text: string;
     width: number;
+    height?: number;
+    radius?: number;
+    fontSizeR?: number;
 
 }
 
 
-    const Button: React.FC<ButtonProps> = ({ text, width, radius = 15, height = 50 }: ButtonProps) => {
+    const Button: React.FC<ButtonProps> = ({ text, width, radius = 15, height = 50 , fontSizeR = 18}: ButtonProps) => {
         return (
             <LinearGradient
                 start={{ x: 0, y: 1 }}
@@ -17,7 +20,9 @@ interface ButtonProps {
                 colors={["#0077B6", "#90E0EF"]}
                 style={[styles.buttonWrapper, { width, borderRadius: radius, height: height }]}
             >
-                <Text style={styles.buttonText}>
+                <Text style={[styles.buttonText, {
+                    fontSize: fontSizeR,
+                }]}>
                     {text}
                 </Text>
             </LinearGradient>
@@ -43,8 +48,8 @@ const styles = StyleSheet.create({
     buttonText: {
 
         color: 'white',
-        fontSize: 18,
-        letterSpacing: 2,
+
+        letterSpacing: 3,
         fontWeight:'600'
 
     },

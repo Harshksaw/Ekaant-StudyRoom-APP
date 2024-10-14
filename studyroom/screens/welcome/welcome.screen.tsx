@@ -46,8 +46,8 @@ export default function Home() {
               uri: "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597055/assets/zkh6zr51x1fmgrwai59i.png",
             }}
             style={{
-              width: 360,
-              height: 320,
+              width: 320,
+              height: 280,
             }}
           />
           <ImageBackground
@@ -76,7 +76,13 @@ export default function Home() {
       <View style={styles.view2}>
         <View style={styles.buttonBox}>
           <TouchableOpacity onPress={() => router.push("/(routes)/signup")}>
-            <Button width={250} text="Get Started" />
+            <Button width={300}  
+            text="Get Started"
+          height={60}
+            fontSizeR={22}
+
+            />
+
           </TouchableOpacity>
           {/* <linearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.buttonBox}> */}
         </View>
@@ -129,12 +135,12 @@ const styles = StyleSheet.create({
 
     fontSize: 26,
     fontWeight: "700",
-
-    lineHeight: 39,
+marginTop: 25,
+    lineHeight: 37,
     textAlign: "center",
   },
   text2: {
-    fontSize: 16,
+    fontSize: 20,
     lineHeight: 24,
     fontWeight: "400",
     textAlign: "center",
@@ -149,10 +155,12 @@ const styles = StyleSheet.create({
   buttonBox: {
     width: "80%",
     height: 50,
+    marginVertical: 10,
 
     // backgroundColor: "#007AFF",
     textAlign: "center",
     alignItems: "center",
+    fontSize: 20,
     borderRadius: 20,
     // paddingVertical: 12,
     paddingHorizontal: 24,
