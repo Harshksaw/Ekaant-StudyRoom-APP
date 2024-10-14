@@ -19,7 +19,7 @@ const signupSchema = zod.object({
   // accountType: zod.string().min(3).max(255),
 });
 let pingCounter = 0;
-
+require('dotenv').config();
 let otpTest = 0;
 let emailOtpTest;
 
