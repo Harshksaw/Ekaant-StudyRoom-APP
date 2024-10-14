@@ -9,7 +9,7 @@ const JWT_SECRET = "MY_SECRET_KEY";
 const otpGenerator = require("otp-generator");
 const phoneotp = require("../models/phoneotp");
 const apiKey = process.env.FASTSMS;
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require("cloudinary").v2;
 // signing up schema
 const signupSchema = zod.object({
   username: zod.string().min(3).max(255),
@@ -58,25 +58,20 @@ cloudinary.config({
   api_secret: "E2s6axKWvXTiJi5_DGiFuPe7Lxo",
 });
 
-
-
-
 // signup function--
 async function signUp(req, res) {
-
-
-
-
-
-
   try {
+    let images;
 
-
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'profileimages'
-    });
-
-    const images = result.secure_url;
+    if (req.file && req.file.path) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'profileimages'
+      });
+      images = result.secure_url;
+    } else {
+      // Use a default DiceBear image if no image is provided
+      images = `https://avatars.dicebear.com/api/initials/${req.body.username}.svg`;
+    }
 
     const newUser = await User.create({
       username: req.body.username,
@@ -86,17 +81,19 @@ async function signUp(req, res) {
       accountType: req.body.accountType,
       image: images,
     });
-    // hashing the password--
 
+    // Hashing the password
     const hashedPassword = await newUser.createHash(req.body.password);
     console.log("hashedpassword is ", hashedPassword);
     newUser.password = hashedPassword;
-    // saving the user--
+
+    // Saving the user
     await newUser.save();
-    // getting the user_id--
+
+    // Getting the user_id
     const user_id = newUser._id;
 
-    // generating the token--
+    // Generating the token
     const token = jwt.sign({ user_id }, JWT_SECRET);
 
     return res.status(StatusCodes.CREATED).json({
@@ -108,7 +105,12 @@ async function signUp(req, res) {
     });
   } catch (error) {
     console.log("error is ", error);
-
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "An error occurred during sign up",
+      error: error.message,
+      data: {},
+    });
   }
 }
 // signin schema
@@ -127,7 +129,7 @@ async function signIn(req, res, next) {
   //   });
   // }
   try {
-    const {phoneNumber, password } = req.body;
+    const { phoneNumber, password } = req.body;
 
     console.log(phoneNumber, password);
 
@@ -174,7 +176,7 @@ async function sendOtp(req, res) {
     lowerCaseAlphabets: false,
     specialChars: false,
   });
-  console.log("OTP GENERATED => ",  otp);
+  console.log("OTP GENERATED => ", otp);
 
   if (!phoneNumber) {
     return res.status(400).json({
@@ -183,37 +185,48 @@ async function sendOtp(req, res) {
     });
   }
 
-    // Create and save email OTP
+  if (!apiKey) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "API key for Fast2SMS is not set",
+      error: {},
+      data: {},
+    });
+  }
 
-    const otpPayload = { phoneNumber , phoneotp:otp };
-    const otpBody = await phoneotp.create(otpPayload);
+  // Create and save email OTP
 
-    // await phoneotp.save();  
 
-    const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=dlt&sender_id=EKAANT&message=171779&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
-    const response = await axios.get(url);
-    console.log("🚀 ~ sendOtp ~ response:", response.status)
-    
-    if (response.status == 200) {
-      return res.status(200).json({
-        success: true,
-        message: `OTP sent to ${phoneNumber}`,
-      });
-    } else {
-      return res.status(response.status).json({
-        success: false,
-        message: "Failed to send OTP",
-      });
-    }
-  
+  // await phoneotp.save();
 
+  const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=dlt&sender_id=EKAANT&message=171779&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
+  const response = await axios.get(url);
+  console.log("🚀 ~ sendOtp ~ response:", response.status);
+  const otpPayload = { phoneNumber, phoneotp: otp };
+  const otpBody = await phoneotp.create(otpPayload);
+  console.log("🚀 ~ sendOtp ~ otpBody:", otpBody)
+
+
+  if (response.status == 200) {
+    return res.status(200).json({
+      success: true,
+      message: `OTP sent to ${phoneNumber}`,
+    });
+  } else {
+    return res.status(response.status).json({
+      success: false,
+      message: "Failed to send OTP",
+    });
+  }
 }
-
 
 async function verifyOtp(req, res) {
   const { phoneNumber, otp } = req.body;
 
-  const response = await phoneotp.find({ phoneNumber }).sort({ createdAt: -1 }).limit(1);
+  const response = await phoneotp
+    .find({ phoneNumber })
+    .sort({ createdAt: -1 })
+    .limit(1);
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
   console.log(response[0].phoneotp, otp, "RESPONSE123");
   if (response.length === 0) {
@@ -252,10 +265,9 @@ async function sendEmailOtp(req, res) {
     lowerCaseAlphabets: false,
     specialChars: false,
   });
-  console.log("OTP GENERATED => ",  otp);
+  console.log("OTP GENERATED => ", otp);
 
   const otpPayload = { email, emailotp: otp };
-
 
   const otpBody = await OTP.create(otpPayload);
   console.log("otpBODY -> ", otpBody);
@@ -412,8 +424,10 @@ async function getFriends(req, res) {
 async function otpLogin(req, res) {
   const { phoneNumber, otp } = req.body;
 
-
-  const response = await phoneotp.find({ phoneNumber }).sort({ createdAt: -1 }).limit(1);
+  const response = await phoneotp
+    .find({ phoneNumber })
+    .sort({ createdAt: -1 })
+    .limit(1);
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
   console.log(response[0].phoneotp, otp, "RESPONSE123");
   if (otp.length == 0) {
@@ -430,29 +444,23 @@ async function otpLogin(req, res) {
     });
   }
 
-  if(!response){
+  if (!response) {
     return res.status(404).json({
       success: false,
       message: "User not found",
     });
   }
-  console.log("🚀 ~ otpLogin ~ response:", response)
+  console.log("🚀 ~ otpLogin ~ response:", response);
 
+  const token = jwt.sign({ user_id: response[0]._id }, JWT_SECRET);
 
-
-
-    const token = jwt.sign({ user_id: response[0]._id }, JWT_SECRET);
-   
-
-    return res.status(200).json({
-      success: true,
-      message: "User authenticated successfully",
-      error: {},
-      data: { User, user_id: response[0]._id },
-      token: token,
-    });
-
-
+  return res.status(200).json({
+    success: true,
+    message: "User authenticated successfully",
+    error: {},
+    data: { User, user_id: response[0]._id },
+    token: token,
+  });
 }
 
 module.exports = {
