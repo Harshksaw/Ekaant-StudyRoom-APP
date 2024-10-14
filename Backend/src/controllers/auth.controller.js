@@ -176,7 +176,7 @@ async function sendOtp(req, res) {
     lowerCaseAlphabets: false,
     specialChars: false,
   });
-  console.log("OTP GENERATED => ", otp, phoneNumber);
+  console.log("OTP GENERATED => ", otp, phoneNumber, apiKey);
 
   if (!phoneNumber) {
     return res.status(400).json({
