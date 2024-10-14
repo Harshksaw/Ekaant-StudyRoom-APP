@@ -20,7 +20,7 @@ import {
   Ionicons,
 } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { createRef, useEffect, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -31,6 +31,7 @@ import { Feather } from "@expo/vector-icons";
 import { BACKEND } from "@/utils/config";
 import Button from "@/components/Button";
 import { Toast } from "react-native-toast-notifications";
+import { spacing } from '../../../utils/theme';
 
 export default function SignUpScreen() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
@@ -47,21 +48,29 @@ export default function SignUpScreen() {
     phone: 0,
     password: "",
   });
-  
+
   const [required, setRequired] = useState(false);
   const [error, setError] = useState({
     password: "",
   });
 
   const [otp, setOtp] = useState(["", "", "", ""]);
-  const inputRefs = [createRef(), createRef(), createRef(), createRef()];
 
-  const handleOtpChange = (text, index) => {
+  const otpRefs = useRef([]);
+
+  const handleOtpChange = (value, index) => {
     const newOtp = [...otp];
-    newOtp[index] = text;
+    newOtp[index] = value;
     setOtp(newOtp);
-    if (text && index < 3) {
-      inputRefs[index + 1].current.focus();
+
+    // Move to next input if value is entered
+    if (value && index < otp.length - 1) {
+      otpRefs.current[index + 1].focus();
+    }
+
+    // Move to previous input if value is deleted
+    if (!value && index > 0) {
+      otpRefs.current[index - 1].focus();
     }
   };
 
@@ -91,7 +100,7 @@ export default function SignUpScreen() {
     }
   };
 
- 
+
   const sendOtp = async () => {
     try {
       console.log(userInfo.phone);
@@ -193,13 +202,14 @@ export default function SignUpScreen() {
 
     try {
 
-     
+
       if (image) {
-      formData.append("image", {
-        uri: image,
-        name: "image.jpg", // Replace with desired filename
-        type: "image/jpeg", // Replace with correct image type
-      });}
+        formData.append("image", {
+          uri: image,
+          name: "image.jpg", // Replace with desired filename
+          type: "image/jpeg", // Replace with correct image type
+        });
+      }
 
       // Append other user info to formData
       formData.append("username", userInfo.name);
@@ -238,7 +248,7 @@ export default function SignUpScreen() {
 
         });
 
-        if(buttonSpinner){
+        if (buttonSpinner) {
           setButtonSpinner(false);
         }
         router.push("/(tabs)");
@@ -246,39 +256,55 @@ export default function SignUpScreen() {
     } catch (error) {
       setButtonSpinner(false);
       console.log(error);
- 
+
       Toast.show("An error occured", {
         type: "danger",
       });
     }
   };
   const handleKeyPress = (e, index) => {
-    if (e.nativeEvent.key === 'Backspace' && otp[index] === "" && index > 0) {
-      inputRefs[index - 1].current.focus();
+    if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
+      otpRefs.current[index - 1].focus();
     }
   };
 
   return (
     <SafeAreaView
-      style={{
+      style={[{
         flex: 1,
         flexDirection: "column",
-        justifyContent: "center",
-        paddingTop  :50,
-        gap:50,
+        // justifyContent: "center",
+        // paddingTop  :50,
+        // gap:50,
+        backgroundColor: "#fff",
 
-      }}
+      }, styles.container]}
     >
+      <ScrollView style={{
+        flex: 1,
+        flexDirection: "column",
+        // justifyContent: "center",
+        // paddingTop  :50,
+        gap:60,
+        backgroundColor: "#fff",
+      }}>
+
+      
       <View style={styles.signInImage}>
+        <Image
+          source={require("../../../assets/icons/bubble2.png")}
+          style={styles.backgroundObject}
+        />
         <View
           style={{
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            gap: 10,
+            gap: 60,
             marginLeft: -20,
 
-            // marginTop: 100,
+
+            marginTop: 120,
             // marginLeft: 20,
             // backgroundColor: "red",
           }}
@@ -290,7 +316,7 @@ export default function SignUpScreen() {
             style={{
               width: 100,
               height: 100,
-              marginLeft: -40,
+              marginLeft: -80,
               borderRadius: 50, // This makes the border rounded
               borderWidth: 2, // This sets the width of the border
               borderColor: "#0077B6", // This sets the color of the border
@@ -328,23 +354,26 @@ export default function SignUpScreen() {
         />
       </View>
 
-      <ScrollView style={{
+      <View style={{
         flexDirection: "column",
         gap: 15,
-        marginTop:25,
+        marginTop: 45,
       }}>
         <KeyboardAvoidingView style={styles.inputContainer}>
           <View>
             <TextInput
+            
               style={[
                 styles.input,
                 {
                   paddingLeft: 40,
                   backgroundColor: "#F8F8F8",
                   borderRadius: 50,
+                  color: "#000",
                 },
               ]}
               keyboardType="email-address"
+              
               value={userInfo.email}
               placeholder="Email"
               onChangeText={(value) =>
@@ -364,6 +393,7 @@ export default function SignUpScreen() {
                 styles.input,
                 {
                   paddingLeft: 40,
+                  color: "#000",
                   marginBottom: -12,
                   borderRadius: 50,
                   backgroundColor: "#F8F8F8",
@@ -415,19 +445,20 @@ export default function SignUpScreen() {
                   marginLeft: 10,
                 }}
               ></View>
-              <TextInput
-                style={{ paddingLeft: 20 }}
-                keyboardType="phone-pad"
-                value={userInfo.phone.toString()} // Convert phone number to string for the value prop
-                placeholder="phone"
-                onChangeText={
-                  (value) =>
-                    setUserInfo({
-                      ...userInfo,
-                      phone: parseInt(value, 10) || 0,
-                    }) // Convert input value to number; use 0 as fallback
-                }
-              />
+        <TextInput
+
+        autoComplete="sms-otp" 
+  style={{ paddingLeft: 20,     color: "#000",}}
+  keyboardType="phone-pad"
+  value={userInfo.phone ? userInfo.phone.toString() : ''} // Conditionally render value
+  placeholder="Your Number"
+  onChangeText={(value) =>
+    setUserInfo({
+      ...userInfo,
+      phone: value ? parseInt(value, 10) : 0, // Convert input value to number; use 0 as fallback
+    })
+  }
+/>
 
               <Feather
                 style={{
@@ -449,12 +480,15 @@ export default function SignUpScreen() {
                   alignItems: "center",
                   gap: 5,
                   marginTop: 10,
+
                 }}
               >
                 <Text
                   style={{
                     fontSize: 18,
+
                     fontWeight: "400",
+                    textAlign: "center",marginVertical:10
                   }}
                 >
                   Enter OTP
@@ -471,14 +505,16 @@ export default function SignUpScreen() {
                     <TextInput
                       key={index}
                       // Assuming inputRefs is defined elsewhere in your component
-                      ref={inputRefs[index]}
+                      ref={(ref) => otpRefs.current[index] = ref}
                       onChangeText={(text) => handleOtpChange(text, index)}
                       onKeyPress={(e) => handleKeyPress(e, index)}
                       style={{
-                        width: 40,
-                        height: 40,
+                        width: 45,
+                        height: 45,
                         borderWidth: 1,
-                        borderColor: "lightgray",
+
+                        marginHorizontal: 8,
+                        borderColor: "rgb(199, 196, 196)",
                         borderRadius: 10,
                         backgroundColor: "white",
                         textAlign: "center",
@@ -501,11 +537,12 @@ export default function SignUpScreen() {
                   borderRadius: 50,
                   borderRadius: 50,
                   backgroundColor: "#F8F8F8",
+                  color: "#000",
                 },
               ]}
               secureTextEntry
               value={userInfo.password}
-              placeholder="password"
+              placeholder="Password"
               onChangeText={(value) => {
                 setUserInfo({ ...userInfo, password: value });
               }}
@@ -528,29 +565,29 @@ export default function SignUpScreen() {
               }}
             >
               {buttonSpinner ? (
-                <ActivityIndicator size="large" color="rgb(184, 196, 71)"   />
+                <ActivityIndicator size="large" color="rgb(184, 196, 71)" />
               ) : (
                 <>
-                {
-                  otpVerified && (
-                    <TouchableOpacity
+                  {
+                    otpVerified && (
+                      <TouchableOpacity
 
-                    style={{
-                      padding: 20,
-                      borderRadius: 8,
-                      marginHorizontal: 16,
+                        style={{
+                          padding: 20,
+                          borderRadius: 8,
+                          marginHorizontal: 16,
 
-                      marginTop: 15,
-                    }}
-                    onPress={() => handleSignUp()}
-                  >
-                    <Button  
+                          marginTop: 15,
+                        }}
+                        onPress={() => handleSignUp()}
+                      >
+                        <Button
 
-                    text="Register" width={350} height={60} />
-                  </TouchableOpacity>
-                  )
-                }
-                 
+                          text="Register" width={350} height={60} />
+                      </TouchableOpacity>
+                    )
+                  }
+
                 </>
               )}
 
@@ -578,16 +615,34 @@ export default function SignUpScreen() {
             </View>
           </View>
         </KeyboardAvoidingView>
+      </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
+  content: {
+    flex: 1,
+  },
+  backgroundObject: {
+    position: 'absolute',
+    width: 259.33,
+    height: 213.44,
+    left: -100,
+    top: 0,
+    // backgroundColor: 'rgba(0, 0, 0, 0.1)', // Adjust the color as needed
+  },
   signInImage: {
     width: "60%",
-    height: 250,
-    marginBottom: 20,
+    height: 300,
+    marginBottom: 80,
+    paddingTop:30,
+
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
@@ -597,11 +652,12 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     flexDirection: "row",
-    maxWidth: 200,
+    maxWidth: 250,
+    height: 150,
     fontWeight: "700",
 
     textAlign: "left",
-    fontSize: 40,
+    fontSize: 50,
     marginLeft: -20,
 
     marginTop: 50,

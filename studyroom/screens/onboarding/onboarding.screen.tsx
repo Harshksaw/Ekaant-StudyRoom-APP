@@ -26,9 +26,9 @@ import { useAssets } from "expo-asset";
 
 export default function OnBoardingScreen() {
   const { user, error, loading } = useUser();
-  useEffect(() => {
-    console.log(user, error, loading);
-  }, []);
+  // useEffect(() => {
+  //   console.log(user, error, loading);
+  // }, []);
 
   // const [assets] = useAssets([
   //   require("../../assets/icons/Slide1.svg"),
@@ -46,6 +46,14 @@ export default function OnBoardingScreen() {
   ]
   return (
     <Carousel
+    paginationConfig={{
+
+      dotSize: 12,
+      activeColor: "rgba(0, 119, 182, 1)",
+      color: "rgba(217, 217, 217, 1)",
+      bottomOffset: 400,
+      
+    }}
       data={[
         {
           key: "1",
@@ -97,6 +105,7 @@ export default function OnBoardingScreen() {
       ]}
       buttonsConfig={{
         disabled: true,
+
       }}
       renderItem={({ item, index }, goToSlide) => {
         // Define a variable to hold custom styles or components based on item.key
@@ -180,18 +189,20 @@ export default function OnBoardingScreen() {
                         flexDirection: "column",
                         gap: 5,
                         marginVertical: 10,
+                        marginBottom: 10,
+                        marginTop:-20
                       }}>
 
                       <ImageBackground source={{uri: arr[3]}}
                       style={{
-                        width: 360,
-                        height: 320,
+                        width: 300,
+                        height: 280,
                       }}
                       />
                       <ImageBackground source={{uri: arr[4]}}
                       style={{
                         width:'auto',
-                        height:50,
+                        height:60,
                         // width: 320,
                         // height: 5 0,
                       }}
@@ -209,8 +220,11 @@ export default function OnBoardingScreen() {
                   style={{
                     fontSize: 30,
                     fontWeight: "bold",
-                    margin: 20,
+                    margin: 40,
+                    marginBottom: 20,
                     textAlign: "center",
+                    // marginLeft: item.title === "Welcome" ?30 : 0,
+
                   }}
                 >
                   {item.title}
@@ -219,6 +233,8 @@ export default function OnBoardingScreen() {
                   style={{
                     fontSize: 20,
                     color: "background: rgba(0, 0, 0, 1)",
+                    maxWidth: 300,
+fontStyle:"normal",
 
 
                     lineHeight:30,
@@ -316,6 +332,7 @@ export default function OnBoardingScreen() {
         );
       }}
     />
+
   );
 }
 const styles = StyleSheet.create({
