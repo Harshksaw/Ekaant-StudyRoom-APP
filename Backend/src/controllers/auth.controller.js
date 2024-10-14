@@ -186,6 +186,7 @@ async function sendOtp(req, res) {
   }
 
   if (!apiKey) {
+    console.log("API key for Fast2SMS is not set");
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "API key for Fast2SMS is not set",
