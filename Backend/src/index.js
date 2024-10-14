@@ -5,7 +5,9 @@ const { PORT } = require("./config/server.config");
 const apiRouter = require("./routes");
 const errorHandler = require("./utils/errorHandler");
 const connectToDB = require("./config/db.config");
-require("dotenv").config();
+const path = require('path'); 
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+
 
 const StatsD = require('hot-shots');
 const dogstatsd = new StatsD();
