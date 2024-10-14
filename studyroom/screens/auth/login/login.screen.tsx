@@ -25,7 +25,7 @@ const LoginScreen: React.FC = () => {
   const inputRefs = [createRef(), createRef(), createRef(), createRef()];
   const [loginOption, setLoginOption] = useState("password");
   const [passwordVisibility, setPasswordVisibility] = useState(true);
-
+  const [isBlocked, setIsBlocked] = useState(false);
   useEffect(() => {
     const getme = async () => {
       const res = await axios.get(`${BACKEND}/me`);
@@ -139,40 +139,40 @@ const LoginScreen: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (phoneNumber.length === 10) {
+  // useEffect(() => {
+  //   if (phoneNumber.length === 10) {
 
-      if (loginOption === "otp") {
-          axios
-          .post(`${BACKEND}/api/v1/auth/otp`, {
-            phoneNumber,
-          })
-          .then((res) => {
-            if (res.data.success) {
-              Toast.show("OTP sent successfully", {
-                type: "success",
-                placement: "top",
-                duration: 2000,
-              });
-            } else {
-              Toast.show(res.data.message, {
-                type: "danger",
-                placement: "top",
-                duration: 2000,
-              });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            Toast.show("Failed to send OTP", {
-              type: "danger",
-              placement: "top",
-              duration: 2000,
-            });
-          });
-      }
-    }
-  }, [phoneNumber]);
+  //     if (loginOption === "otp") {
+  //         axios
+  //         .post(`${BACKEND}/api/v1/auth/otp`, {
+  //           phoneNumber,
+  //         })
+  //         .then((res) => {
+  //           if (res.data.success) {
+  //             Toast.show("OTP sent successfully", {
+  //               type: "success",
+  //               placement: "top",
+  //               duration: 2000,
+  //             });
+  //           } else {
+  //             Toast.show(res.data.message, {
+  //               type: "danger",
+  //               placement: "top",
+  //               duration: 2000,
+  //             });
+  //           }
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //           Toast.show("Failed to send OTP", {
+  //             type: "danger",
+  //             placement: "top",
+  //             duration: 2000,
+  //           });
+  //         });
+  //     }
+  //   }
+  // }, [phoneNumber]);
   const handleKeyPress = (e, index) => {
     if (e.nativeEvent.key === 'Backspace' && otp[index] === "" && index > 0) {
       inputRefs[index - 1].current.focus();
@@ -183,6 +183,59 @@ const LoginScreen: React.FC = () => {
     const cleanedText = text.replace(/[^0-9]/g, '').slice(0, 10);
     setPhoneNumber(cleanedText);
   };
+
+
+  const sendOtp = () => {
+    if (isBlocked) {
+      Toast.show("You have reached the maximum number of attempts. Please try again later.", {
+        type: "danger",
+        placement: "top",
+        duration: 2000,
+      });
+      return;
+    }
+
+    if (phoneNumber.length === 10) {
+      axios
+        .post(`${BACKEND}/api/v1/auth/otp`, {
+          phoneNumber,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            Toast.show("OTP sent successfully", {
+              type: "success",
+              placement: "top",
+              duration: 2000,
+            });
+            setAttempts(attempts + 1);
+            if (attempts + 1 >= 3) {
+              setIsBlocked(true);
+            }
+          } else {
+            Toast.show(res.data.message, {
+              type: "danger",
+              placement: "top",
+              duration: 2000,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          Toast.show("Failed to send OTP", {
+            type: "danger",
+            placement: "top",
+            duration: 2000,
+          });
+        });
+    } else {
+      Toast.show("Please enter a valid 10-digit phone number", {
+        type: "danger",
+        placement: "top",
+        duration: 2000,
+      });
+    }
+  };
+
 
 
   return (
@@ -244,6 +297,7 @@ const LoginScreen: React.FC = () => {
             style={{
               paddingLeft: 10,
               paddingRight: 10,
+              borderRadius: 20,
               flexDirection: "row",
               justifyContent: "flex-start",
               alignItems: "center",
@@ -261,13 +315,40 @@ const LoginScreen: React.FC = () => {
               🇮🇳 |
             </Text>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Your Number"
-              value={phoneNumber}
-              onChangeText={handlePhoneNumberChange}
-              keyboardType="phone-pad"
-            />
+            <View style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent:'space-between',
+              paddingRight: 10,
+
+            }
+            }>
+      <TextInput
+        style={styles.input}
+        keyboardType="numeric"
+        maxLength={10}
+        value={phoneNumber}
+        onChangeText={handlePhoneNumberChange}
+        placeholder="Enter your phone number"
+      />
+      <TouchableOpacity onPress={sendOtp}>
+
+      {loginOption === 'otp' && (
+        
+        <Ionicons name="send" size={24} color="black" onPress={sendOtp} 
+        
+        style={{
+          
+          
+          
+          
+        }}
+        />
+      )}
+      </TouchableOpacity>
+      {/* Add other components and logic here */}
+    </View>
           </View>
 
           <Text
@@ -472,7 +553,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 55,
-    borderRadius: 8,
+    borderRadius: 20,
     paddingLeft: 35,
     fontSize: 16,
     backgroundColor: "white",
