@@ -7,7 +7,7 @@ const errorHandler = require("./utils/errorHandler");
 const connectToDB = require("./config/db.config");
 const path = require('path'); 
 require('dotenv').config({ path: path.join(__dirname, '.env') });
-
+require("dotenv").config();
 
 const StatsD = require('hot-shots');
 const dogstatsd = new StatsD();

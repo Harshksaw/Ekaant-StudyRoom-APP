@@ -39,8 +39,8 @@ export default function OnBoardingScreen() {
 
   const arr =[
     "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722596840/assets/z98t3eznkwvgenvmpoxy.png",
-    "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597034/assets/lnnhcojmsp2uw8gazs4m.png",
     "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597025/assets/aihull3sq2a6hsx4dy0h.png",
+    "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597034/assets/lnnhcojmsp2uw8gazs4m.png",
     "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597055/assets/zkh6zr51x1fmgrwai59i.png",
     "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597083/assets/cwdjhddyzahxbbp0vaqf.png"
   ]

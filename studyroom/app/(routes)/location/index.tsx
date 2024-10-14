@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker } from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -56,30 +56,15 @@ const LocationsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Select a location</Text>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: 23.3449,
-          longitude: 85.3117,
-          latitudeDelta: 10,
-          longitudeDelta: 10,
-        }}
-      >
-        {locations.map((location, index) => (
-          <Marker
-            key={index} // Ensure each Marker has a unique key
-            coordinate={{ latitude: location.coords[0], longitude: location.coords[1] }}
-            title={location.location}
-            onPress={() => handleLocationSelect(location)}
-          />
-        ))}
-      </MapView>
+  
       <FlatList
         data={locations}
         keyExtractor={(item) => item._id} // Ensure each item has a unique key
+        numColumns={3}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleLocationSelect(item)}>
-            <Text style={styles.locationItem}>{item.location}</Text>
+          <TouchableOpacity style={styles.gridItem} onPress={() => handleLocationSelect(item)}>
+            <Image source={{ uri: item?.image || "https://th.bing.com/th/id/OIP.m78y_Nupeq-RtHFEeNk5PwHaH5?rs=1&pid=ImgDetMain" }} style={styles.image} />
+            <Text style={styles.locationItem}>{item?.location}</Text>
           </TouchableOpacity>
         )}
       />
@@ -90,22 +75,30 @@ const LocationsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 10,
+    paddingTop: 40,
   },
   title: {
-    fontSize: 20,
+    fontSize: 26,
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 10,
   },
-  map: {
-    width: '100%',
-    height: '50%',
+  gridItem: {
+    flex: 1,
+    margin: 5,
+    padding: 10,
+    alignItems: 'center',
+  },
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 5,
   },
   locationItem: {
-    padding: 10,
-    fontSize: 18,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 
