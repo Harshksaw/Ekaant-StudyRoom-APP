@@ -185,16 +185,27 @@ async function sendOtp(req, res) {
     });
   }
 
+  if (!apiKey) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "API key for Fast2SMS is not set",
+      error: {},
+      data: {},
+    });
+  }
+
   // Create and save email OTP
 
-  const otpPayload = { phoneNumber, phoneotp: otp };
-  const otpBody = await phoneotp.create(otpPayload);
 
   // await phoneotp.save();
 
   const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=dlt&sender_id=EKAANT&message=171779&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
   const response = await axios.get(url);
   console.log("🚀 ~ sendOtp ~ response:", response.status);
+  const otpPayload = { phoneNumber, phoneotp: otp };
+  const otpBody = await phoneotp.create(otpPayload);
+  console.log("🚀 ~ sendOtp ~ otpBody:", otpBody)
+
 
   if (response.status == 200) {
     return res.status(200).json({
