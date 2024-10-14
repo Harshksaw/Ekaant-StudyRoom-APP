@@ -180,20 +180,7 @@ export default function SignUpScreen() {
       });
       return;
     }
-    if (!image) {
-      Toast.show("Please upload profile picture", {
-        type: "danger",
-        duration: 3000,
-        placement: "top",
-        style: {
-          backgroundColor: "red",
-          borderRadius: 10,
-          padding: 10,
-          marginTop: 50,
-        },
-      });
-      return;
-    }
+ 
     setButtonSpinner(true);
 
     let formData = new FormData();
