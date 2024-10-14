@@ -224,14 +224,14 @@ async function verifyOtp(req, res) {
 
   const response = await phoneotp.findOne({ phoneNumber }).sort({ createdAt: -1 });
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
-  console.log(response[0].phoneotp, otp, "RESPONSE123");
+  console.log(response.phoneotp, otp, "RESPONSE123");
   if (response.length === 0) {
     // OTP not found for the email
     return res.status(400).json({
       success: false,
       message: "The OTP is not valid",
     });
-  } else if (otp != response[0].phoneotp) {
+  } else if (otp != response.phoneotp) {
     // Invalid OTP
     return res.status(400).json({
       success: false,
