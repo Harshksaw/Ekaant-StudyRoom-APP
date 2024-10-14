@@ -184,7 +184,7 @@ async function sendOtp(req, res) {
       message: "Phone number is required",
     });
   }
-
+  const apiKey = process.env.FASTSMS;
   if (!apiKey) {
     console.log("API key for Fast2SMS is not set");
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
