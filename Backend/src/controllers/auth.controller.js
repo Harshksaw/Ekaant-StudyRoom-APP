@@ -223,9 +223,8 @@ async function verifyOtp(req, res) {
   const { phoneNumber, otp } = req.body;
 
   const response = await phoneotp
-    .find({ phoneNumber })
-    .sort({ createdAt: -1 })
-    .limit(1);
+  .findOne({ phoneNumber }) // Use findOne to get a single document
+  .sort({ createdAt: -1 }); 
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
   console.log(response[0].phoneotp, otp, "RESPONSE123");
   if (response.length === 0) {
@@ -280,7 +279,7 @@ async function sendEmailOtp(req, res) {
 async function verifyEmailOtp(req, res) {
   const { email, otp } = req.body;
 
-  const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
+  const response = await OTP.findOne({ email }).sort({ createdAt: -1 })
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
   console.log(response[0].emailotp, otp, "RESPONSE123");
   if (response.length === 0) {

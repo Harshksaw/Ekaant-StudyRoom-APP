@@ -20,8 +20,6 @@ const ping = (req, res) => {
 
 async function RegisterAdmin(req, res, next) {
   try {
-    console.log("eeee");
-    console.log(req.body);
     const {
       phoneNumber,
       email,
@@ -32,21 +30,16 @@ async function RegisterAdmin(req, res, next) {
       PanNumber,
       Address,
       username,
-
     } = req.body;
 
-
-
-   
-
     const { pancard, aadhar } = req.files;
-    if (pancard) {
-      console.log(pancard[0]); // Access the first (and only) pancard file
+
+    if (!pancard || !pancard[0]) {
+      return res.status(400).json({ message: 'Pancard file is required' });
     }
 
-    // Access aadhar file
-    if (aadhar) {
-      console.log(aadhar[0]); // Access the first (and only) aadhar file
+    if (!aadhar || !aadhar[0]) {
+      return res.status(400).json({ message: 'Aadhar file is required' });
     }
 
     const pancardFile = new File({
@@ -62,12 +55,7 @@ async function RegisterAdmin(req, res, next) {
     const pancardPath = await pancardFile.save();
     const addharCardPath = await aadharFile.save();
 
-
-    // console.log("pancardPath is ", pancardPath._id);
-    // console.log("addharCardPath is ", addharCardPath._id);
-
     const hashedPassword = await bcrypt.hash(password, 10);
-
 
     const newAdmin = await Admin.create({
       phoneNumber,
@@ -89,25 +77,20 @@ async function RegisterAdmin(req, res, next) {
       },
     });
 
-    await newAdmin.save();
-
-    // Generate token
     const token = jwt.sign({ admin_id: newAdmin._id }, JWT_SECRET);
 
-
-    // Respond with token
     return res.status(201).json({
-
       success: true,
-      message: "Admin created successfully",
+      message: 'Admin created successfully',
       data: newAdmin,
       token,
     });
   } catch (error) {
-    console.log("error is ", error);
+    console.error('Error in RegisterAdmin:', error);
     next(error);
   }
 }
+
 // login--
 async function LoginAdmin(req, res) {
   const { email, password } = req.body;
