@@ -5,7 +5,8 @@ export const StepThree = ({
   setUserDetails,
   // createUser,
 }: any) => (
-  //images  - Register 3
+
+  
   <div className="flex  flex-1 overflow-y-auto px-10 py-6 bg-white rounded-lg">
     {/* Form fields for step 2 */}
 

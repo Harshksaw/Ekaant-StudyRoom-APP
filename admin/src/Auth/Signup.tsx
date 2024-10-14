@@ -52,7 +52,7 @@ function Signup() {
     email: "",
     password: "",
   });
-
+  const [adminId, setAdminId] = useState(null); // State to store admin ID
   const [userDetails, setUserDetails] = useState({
     fullName: "",
     dob: "",
@@ -341,7 +341,7 @@ function Signup() {
       );
       console.log("Success:", response.data);
 
-      if (response.data) {
+      if (response.status === 201) {
         setLoading(false);
 
         console.log(response.data, "response.data");
@@ -349,7 +349,7 @@ function Signup() {
         localStorage.setItem("role", "ADMIN");
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data.data._id);
-
+          setAdminId(response.data.data._id);
 
       }
 
@@ -388,11 +388,11 @@ function Signup() {
       .filter(([value]) => value)
       .map(([key]) => key);
 
-    const AdminId = localStorage.getItem("userId");
-    console.log(AdminId)
+    const AdminIdE = localStorage.getItem("userId");
+    console.log(AdminIdE)
 
     const LibraryDataOBJ = {
-      libraryOwner: AdminId,
+      libraryOwner: AdminIdE || adminId,
       name: libraryDetails.libraryName,
       shortDescription: libraryDetails.libraryApp.shortDescription,
       longDescription: libraryDetails.libraryApp.longDescription,
@@ -471,10 +471,16 @@ function Signup() {
 
 
 
-    if (currentStep === 3) {
+    if (currentStep === 2) {
       createUser();
     }
     if (currentStep === 5) {
+      const AdminId = localStorage.getItem("userId");
+      if(!AdminId){
+        toast('Please login again')
+        return
+
+      }
       await createInitialLib();
     }
     if (currentStep === 1) {
@@ -527,6 +533,15 @@ function Signup() {
           />
         );
       case 4:
+        if (!adminId) {
+          // Redirect to Step 3 or show an error message
+          return (
+            <div>
+              <p>Error: Admin ID is required to proceed to this step.</p>
+              <button onClick={prevStep}>Go Back</button>
+            </div>
+          );
+        }
         return (
           <StepFour
             nextStep={nextStep}
@@ -597,7 +612,7 @@ function Signup() {
 
         <div className="w-full  bg-blue-100 flex flex-1  justify-center items-center">
           {loading && <Loader />}
-          {renderStep()}
+          {!loading &&  renderStep()}
         </div>
       </div>
     </div>
