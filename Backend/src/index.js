@@ -9,29 +9,29 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 require("dotenv").config();
 
-const StatsD = require('hot-shots');
-const dogstatsd = new StatsD();
+// const StatsD = require('hot-shots');
+// const dogstatsd = new StatsD();
 
-// Increment a counter
-dogstatsd.increment('page.views');
+// // Increment a counter
+// dogstatsd.increment('page.views');
 
-// Record a gauge
-dogstatsd.gauge('system.load', 0.75);
+// // Record a gauge
+// dogstatsd.gauge('system.load', 0.75);
 
-// Record a timing
-dogstatsd.timing('response_time', 200);
+// // Record a timing
+// dogstatsd.timing('response_time', 200);
 
-// Record a histogram
-dogstatsd.histogram('data_size', 512);
+// // Record a histogram
+// dogstatsd.histogram('data_size', 512);
 
-// Record a set
-dogstatsd.set('unique_users', 12345);
+// // Record a set
+// dogstatsd.set('unique_users', 12345);
 
-// Record an event
-dogstatsd.event('User Signup', 'A new user has signed up');
+// // Record an event
+// dogstatsd.event('User Signup', 'A new user has signed up');
 
-// Close the connection when done
-dogstatsd.close();
+// // Close the connection when done
+// dogstatsd.close();
 
 // const PORT
 const app = express();
