@@ -31,7 +31,17 @@ async function RegisterAdmin(req, res, next) {
       Address,
       username,
     } = req.body;
-
+    const existingAdmin = await Admin.findOne({ email });
+    if (existingAdmin) {
+      const token = jwt.sign({ admin_id: existingAdmin._id }, JWT_SECRET);
+      return res.status(200).json({
+        success: true,
+        message: 'Admin already registered',
+        data: existingAdmin,
+        token,
+      });
+    }
+    
     const { pancard, aadhar } = req.files;
 
     if (!pancard || !pancard[0]) {
