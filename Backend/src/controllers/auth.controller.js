@@ -199,14 +199,12 @@ async function sendOtp(req, res) {
 
 
   const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=dlt&sender_id=EKAANT&message=171779&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
-  // const response = await axios.get(url);
+  const response = await axios.get(url);
   const otpPayload = { phoneNumber, phoneotp: otp };
   const otpBody = await phoneotp.create(otpPayload);
-  console.log("🚀 ~ sendOtp ~ response:", apiKey, otp);
 
-  const response = {status: 200}
 
-  if (response.status == 200|| true) {
+  if (response.status == 200) {
     return res.status(200).json({
       success: true,
       message: `OTP sent to ${phoneNumber}`,
