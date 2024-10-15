@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const BASEURL='https://app.studyekaant.com:3000'
+export const BASEURL='https://app.studyekaant.com'
 
 // export const BASEURL = "http://127.0.0.1:3000";
 
