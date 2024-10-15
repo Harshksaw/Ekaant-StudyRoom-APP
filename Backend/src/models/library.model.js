@@ -21,7 +21,20 @@ const librarySchema = new mongoose.Schema({
 
   reviews: { type: String, required: false }, 
   deleted: { type: String, required: false, default: false },
-  amenities: [{ type: String }], // Not required by default
+  amenities: {
+    coldWater: { type: Boolean, default: false },
+    wifi: { type: Boolean, default: false },
+    ac: { type: Boolean, default: false },
+    locker: { type: Boolean, default: false },
+    separateWashroom: { type: Boolean, default: false },
+    News: { type: Boolean, default: false },
+    discussionArea: { type: Boolean, default: false },
+    LunchArea: { type: Boolean, default: false },
+    MovingChair: { type: Boolean, default: false },
+    FloorMat: { type: Boolean, default: false },
+    SeparateParking: { type: Boolean, default: false },
+    CommonParking: { type: Boolean, default: false },
+  },
   commingSoon:{
     type: Boolean,
     default: false,
