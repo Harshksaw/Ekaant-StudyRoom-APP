@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { BASEURL } from '../../lib/utils';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
 interface Room {
@@ -28,9 +28,9 @@ interface Room {
 const ManageRooms = () => {
     const { lib_id } = useParams();
     const [room, setRoom] = React.useState<Room | null>(null);
-    const [modalOpen, setModalOpen] = React.useState(false);
-    const [selectedRoom, setSelectedRoom] = React.useState<Room | null>(null);
-    const navigate = useNavigate();
+
+
+
     const [position, setPosition] = useState<[number, number] | null>(null);
     React.useEffect(() => {
         const fetchLibrary = async () => {
@@ -50,7 +50,7 @@ const ManageRooms = () => {
             console.log(res.data);
             setRoom(res.data.data);
         }
-        setModalOpen(false); // Close modal after action
+
     };
 
 
