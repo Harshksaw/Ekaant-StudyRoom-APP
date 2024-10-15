@@ -278,7 +278,7 @@ async function verifyEmailOtp(req, res) {
 
   const response = await OTP.findOne({ email }).sort({ createdAt: -1 });
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
-  console.log(response.emailotp, otp, "RESPONSE123");
+  // console.log(response.emailotp, otp, "RESPONSE123");
   if (response.length === 0) {
     // OTP not found for the email
     return res.status(400).json({
