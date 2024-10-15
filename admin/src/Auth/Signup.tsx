@@ -310,7 +310,9 @@ function Signup() {
     const createUserName = `${userDetails.fullName
       .split(" ")
       .join("")
-      .toLowerCase()}${userDetails.dob}`;
+      .toLowerCase()}${userDetails.dob.split("-").join("")
+      }${Math.floor(Math.random() * 1000)
+      }`;
 
     const formData = new FormData();
 
@@ -340,7 +342,21 @@ function Signup() {
         formData
       );
       console.log("Success:", response.data);
+ if(response.status !== 201){
 
+        toast(`${response.data.message}`, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+
+        });
+        return;
+ }
       if (response.status === 201) {
         setLoading(false);
 
@@ -451,16 +467,33 @@ function Signup() {
         `${BASEURL}/api/v1/library/createLibrary`,
         formData
       );
-      console.log("Success:", response.data);
+      // console.log("Success:", response.data);
+
+      if(response.status === 201){
+
+        localStorage.clear();
+        toast(`${response.data.message}`, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+
+        });
+      }
 
       if (response.data) {
         setLoading(false);
 
 
-        setCurrentStep(0);
+        // setCurrentStep(0);
 
         // setImages([]);
       }
+      
     } catch (error) {
       setLoading(false);
       console.error("Error:");
@@ -471,7 +504,7 @@ function Signup() {
 
 
 
-    if (currentStep === 2) {
+    if (currentStep === 3) {
       createUser();
     }
     if (currentStep === 5) {

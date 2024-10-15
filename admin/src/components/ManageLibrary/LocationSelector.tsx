@@ -17,7 +17,11 @@ const LocationSelector = ({ onLocationSelect }: any) => {
 
     if (
       !hasBeenAsked &&
-      window.confirm("Do you want to share your location?")
+      setTimeout(() => {
+        window.confirm("Do you want to share your location?")
+
+      }, 2000) 
+      
     ) {
       // Step 3: Update Local Storage
       localStorage.setItem("hasBeenAskedForLocation", "true");

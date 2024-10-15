@@ -9,6 +9,7 @@ import { BASEURL } from "@/lib/utils";
 // import { Activity, Send } from "lucide-react";
 // import { set } from "react-hook-form";
 import Loader from "@/components/Loader";
+import { toast } from "react-toastify";
 
 const Auth = ({ type }: { type: "signin" }) => {
 
@@ -61,6 +62,8 @@ const Auth = ({ type }: { type: "signin" }) => {
 
             //@ts-ignore
           if (!response?.hasRooms) {
+            toast.info("You don't have any rooms yet. Please create a room to continue.");
+
             navigate("/manage-library/create-room");
           } else {
 
