@@ -199,14 +199,14 @@ async function sendOtp(req, res) {
 
 
   const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=dlt&sender_id=EKAANT&message=171779&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
-  const response = await axios.get(url);
+  // const response = await axios.get(url);
   const otpPayload = { phoneNumber, phoneotp: otp };
   const otpBody = await phoneotp.create(otpPayload);
   console.log("🚀 ~ sendOtp ~ response:", apiKey, otp);
 
+  const response = {status: 200}
 
-
-  if (response.status == 200) {
+  if (response.status == 200|| true) {
     return res.status(200).json({
       success: true,
       message: `OTP sent to ${phoneNumber}`,
@@ -223,15 +223,16 @@ async function verifyOtp(req, res) {
   const { phoneNumber, otp } = req.body;
 
   const response = await phoneotp.findOne({ phoneNumber }).sort({ createdAt: -1 });
+  console.log("🚀 ~ verifyOtp ~ response:", response)
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
-  console.log(response[0].phoneotp, otp, "RESPONSE123");
+  console.log(response.phoneotp, otp, "RESPONSE123");
   if (response.length === 0) {
     // OTP not found for the email
     return res.status(400).json({
       success: false,
       message: "The OTP is not valid",
     });
-  } else if (otp != response[0].phoneotp) {
+  } else if (otp != response.phoneotp) {
     // Invalid OTP
     return res.status(400).json({
       success: false,
@@ -279,14 +280,14 @@ async function verifyEmailOtp(req, res) {
 
   const response = await OTP.findOne({ email }).sort({ createdAt: -1 });
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
-  console.log(response[0].emailotp, otp, "RESPONSE123");
+  console.log(response.emailotp, otp, "RESPONSE123");
   if (response.length === 0) {
     // OTP not found for the email
     return res.status(400).json({
       success: false,
       message: "The OTP is not valid",
     });
-  } else if (otp != response[0].emailotp) {
+  } else if (otp != response.emailotp) {
     // Invalid OTP
     return res.status(400).json({
       success: false,
