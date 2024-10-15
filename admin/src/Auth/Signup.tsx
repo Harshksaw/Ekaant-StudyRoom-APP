@@ -342,7 +342,7 @@ function Signup() {
         formData
       );
       console.log("Success:", response.data);
- if(response.status !== 201){
+ if(response.status !== 201 || response.status !== 200){
 
         toast(`${response.data.message}`, {
           position: "top-right",
@@ -357,7 +357,7 @@ function Signup() {
         });
         return;
  }
-      if (response.status === 201) {
+      if (response.status === 201 || response.status === 200) {
         setLoading(false);
 
         console.log(response.data, "response.data");
