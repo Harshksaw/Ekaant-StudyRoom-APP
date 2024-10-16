@@ -243,6 +243,16 @@ async function verifyOtp(req, res) {
 
 async function sendEmailOtp(req, res) {
   const { email } = req.body;
+  const existingAdmin = await Admin.findOne({ email });
+  if (existingAdmin) {
+    const token = jwt.sign({ admin_id: existingAdmin._id }, JWT_SECRET);
+    return res.status(200).json({
+      success: true,
+      message: 'Admin already registered',
+      data: existingAdmin,
+      token,
+    });
+  }
 
   //check if user already present..
   const checkUserPresent = await User.findOne({ email });
