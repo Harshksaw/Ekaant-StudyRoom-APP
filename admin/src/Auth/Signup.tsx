@@ -218,6 +218,27 @@ function Signup() {
 
       console.log("OTP sent successfully");
     }
+    if(res.status === 201){
+      setLoading(false);
+      setVerifiedOtp({
+        ...verfiedOtp,
+        one: true,
+        two: true
+      })
+
+   
+
+
+
+      localStorage.setItem("role", "ADMIN");
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("userId", res.data.data._id);
+        setAdminId(res.data.data._id);
+
+    
+    }
+    setCurrentStep(4);
+
   };
 
 
