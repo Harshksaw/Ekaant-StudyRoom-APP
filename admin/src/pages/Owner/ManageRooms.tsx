@@ -84,21 +84,27 @@ const ManageRooms = () => {
         }
 
     };
-    const renderUserDetails = () => (
-      <div>
-        <h2 className='text-xl font-bold text-gray-800'>User Details</h2>
-        {room ? (
-          <>
-            <p className='text-gray-600'>Username: {room.libraryOwner.username}</p>
-            <p className='text-gray-600'>Email: {room.libraryOwner.email}</p>
-            <p className='text-gray-600'>Phone Number: {room.libraryOwner.phoneNumber}</p>
-            <p className='text-gray-600'>Address: {room.libraryOwner.address}</p>
-          </>
-        ) : (
-          <p className='text-gray-600'>No user details available.</p>
-        )}
-      </div>
-    );
+ 
+    const renderUserDetails = () => {
+      const address = room ? JSON.parse(room.libraryOwner.address) : null;
+      return (
+        <div>
+          <h2 className='text-xl font-bold text-gray-800'>User Details</h2>
+          {room ? (
+            <>
+              <p className='text-gray-600'>Username: {room.libraryOwner.username}</p>
+              <p className='text-gray-600'>Email: {room.libraryOwner.email}</p>
+              <p className='text-gray-600'>Phone Number: {room.libraryOwner.phoneNumber}</p>
+              <p className='text-gray-600'>
+                Address: {address.line1}, {address.line2}, {address.city}, {address.pincode}
+              </p>
+            </>
+          ) : (
+            <p className='text-gray-600'>Loading...</p>
+          )}
+        </div>
+      );
+    };
     
     const renderLibraryDetails = () => (
       <div className='overflow-y-auto'>
