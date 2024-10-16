@@ -33,57 +33,57 @@ function App() {
   console.log(role);
   return (
     <BrowserRouter basename="/">
-      <Routes>
-        <Route path="/" element={<Auth type="signin" />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/signin" element={<Auth type="signin" />} />
-        {role === "Admin" && (
-          <Route element={<ProtectedRoute />}>
-            <Route
-              path="/manage-library/create-room"
-              element={<CreateRoom />}
-            />
-            <Route
-              path="/manage-library/create-library"
-              element={<CreateLibrary />}
-            />
-            <Route path="/dashboard" element={<Dashboard />} />
+    <Routes>
+      <Route path="/" element={<Auth type="signin" />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/signin" element={<Auth type="signin" />} />
+      {role === "Admin" && (
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="/manage-library/create-room"
+            element={<CreateRoom />}
+          />
+          <Route
+            path="/manage-library/create-library"
+            element={<CreateLibrary />}
+          />
+          <Route path="/dashboard" element={<Dashboard />} />
 
-            <Route path="/manage-booking/view" element={<ViewBookings />} />
-            <Route path="manage-user/permission" element={<Permission />} />
-            <Route path="manage-user/search" element={<Search />} />
+          <Route path="/manage-booking/view" element={<ViewBookings />} />
+          <Route path="/manage-user/permission" element={<Permission />} />
+          <Route path="/manage-user/search" element={<Search />} />
 
-            <Route
-              path="manage-library/view-library/:library_id"
-              element={<ViewLibrary />}
-            />
-            <Route path="/manage-library/my-library" element={<MyLibrary />} />
+          <Route
+            path="/manage-library/view-library/:library_id"
+            element={<ViewLibrary />}
+          />
+          <Route path="/manage-library/my-library" element={<MyLibrary />} />
 
-            <Route path="/manage-seats" element={<ManageSeats />} />
-          </Route>
-        )}
-        {role === "Owner" && (
-          <Route element={<OwnerRoute />}>
-            <Route path="admin" element={<OwnerHome />} />
-            <Route
-              path="admin/manage-rooms/:lib_id"
-              element={<ManageRooms />}
-            />
-            <Route path="admin/manage-admin" element={<ManageAdmin />} />
-            {/* <Route path="/admin/reports" element={<Reports />} /> */}
-          </Route>
-        )}
-        <Route
-          path="*"
-          element={
-            <>
-              <h1>404</h1>
-            </>
-          }
-        />
-      </Routes>
-      {/* Fallback route */}
-    </BrowserRouter>
+          <Route path="/manage-seats" element={<ManageSeats />} />
+        </Route>
+      )}
+      {role === "Owner" && (
+        <Route element={<OwnerRoute />}>
+          <Route path="/admin" element={<OwnerHome />} />
+          <Route
+            path="/admin/manage-rooms/:lib_id"
+            element={<ManageRooms />}
+          />
+          <Route path="/admin/manage-admin" element={<ManageAdmin />} />
+          {/* <Route path="/admin/reports" element={<Reports />} /> */}
+        </Route>
+      )}
+      <Route
+        path="*"
+        element={
+          <div className=" bg-black text-white flex items-center justify-center">
+            <h1 className="text-3xl">404</h1>
+          </div>
+        }
+      />
+    </Routes>
+    {/* Fallback route */}
+  </BrowserRouter>
   );
 }
 

@@ -56,7 +56,8 @@ const Auth = ({ type }: { type: "signin" }) => {
           setLoading(false);
 
           if(role === "Owner"){
-            navigate("/admin", { replace: true });
+            navigate("/admin");
+            window.location.reload();
             return;
           }
 

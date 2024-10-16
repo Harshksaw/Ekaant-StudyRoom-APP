@@ -225,7 +225,7 @@ const getLibraryById = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room = await Library.findById(id);
+    const room = await Library.findById(id).populate("libraryOwner");
     res.status(200).json({
       success: true,
       message: "Library data",

@@ -27,12 +27,24 @@ const FinalStep = () => {
   return (
 
     <div>
-      <h2>Final Step</h2>
-      {/* Summary or confirmation */}
-      <button onClick={() => navigate("/signin", {
-        replace: true,
-      })}>Back</button>
-      <button onClick={() => alert("Form Submitted")}>Submit</button>
+      <h2 className="text-2xl font-bold mb-4">Final Step</h2>
+      <p className="mb-6 text-gray-700 text-2xl px-2">
+        NOw login and create Your first room and wait for the approval from the admin
+      </p>
+      <div className="flex justify-between">
+        <button
+          onClick={() => navigate("/signin", { replace: true })}
+          className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+        >
+          Back
+        </button>
+        <button
+          onClick={() => alert("Form Submitted")}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Submit
+        </button>
+      </div>
     </div>
   )
 }
@@ -210,7 +222,7 @@ function Signup() {
 
   const [emailOtpInputs, setEmailOtpInputs] = useState("");
 
-  const  sendEmailOtp = async () => {
+  const sendEmailOtp = async () => {
 
     const { email } = userInfo;
     const res = await axios.post(`${BASEURL}/api/v1/auth/emailotp`, { email });
@@ -218,7 +230,7 @@ function Signup() {
 
       console.log("OTP sent successfully");
     }
-    if(res.status === 201){
+    if (res.status === 201) {
       setLoading(false);
       setVerifiedOtp({
         ...verfiedOtp,
@@ -226,16 +238,16 @@ function Signup() {
         two: true
       })
 
-   
+
 
 
 
       localStorage.setItem("role", "ADMIN");
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.data._id);
-        setAdminId(res.data.data._id);
+      setAdminId(res.data.data._id);
 
-    
+
     }
     setCurrentStep(4);
 
@@ -372,10 +384,10 @@ function Signup() {
         localStorage.setItem("role", "ADMIN");
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data.data._id);
-          setAdminId(response.data.data._id);
+        setAdminId(response.data.data._id);
 
       }
-      if(response.status !== 201 ){
+      if (response.status !== 201) {
 
         toast(`${response.data.message}`, {
           position: "top-right",
@@ -389,7 +401,7 @@ function Signup() {
 
         });
         return;
- }
+      }
 
       setUserDetails({
         fullName: "",
@@ -491,7 +503,7 @@ function Signup() {
       );
       // console.log("Success:", response.data);
 
-      if(response.status === 201){
+      if (response.status === 201) {
 
         localStorage.clear();
         toast(`${response.data.message}`, {
@@ -515,7 +527,7 @@ function Signup() {
 
         // setImages([]);
       }
-      
+
     } catch (error) {
       setLoading(false);
       console.error("Error:");
@@ -531,7 +543,7 @@ function Signup() {
     }
     if (currentStep === 5) {
       const AdminId = localStorage.getItem("userId");
-      if(!AdminId){
+      if (!AdminId) {
         toast('Please login again')
         return
 
@@ -593,11 +605,11 @@ function Signup() {
           return (
             <div className="flex flex-col gap-20 bg-blue-100">
               <button
-              className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full h-20 rounded-sm"
-              onClick={() => {
-                localStorage.clear();
-                window.location.reload();
-              }}>Restart everything</button>
+                className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full h-20 rounded-sm"
+                onClick={() => {
+                  localStorage.clear();
+                  window.location.reload();
+                }}>Restart everything</button>
               <p>Error: Admin ID is required to proceed to this step.</p>
               <button className="
               mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full h-20 rounded-sm
@@ -675,7 +687,7 @@ function Signup() {
 
         <div className="w-full  bg-blue-100 flex flex-1  justify-center items-center">
           {loading && <Loader />}
-          {!loading &&  renderStep()}
+          {!loading && renderStep()}
         </div>
       </div>
     </div>
