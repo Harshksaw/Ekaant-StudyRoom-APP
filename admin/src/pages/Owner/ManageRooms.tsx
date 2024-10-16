@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { BASEURL } from '../../lib/utils';
 import axios from 'axios';
 
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+
 interface Room {
     _id: string;
     libraryOwner: string;
