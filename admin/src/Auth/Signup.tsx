@@ -569,9 +569,17 @@ function Signup() {
         if (!adminId) {
           // Redirect to Step 3 or show an error message
           return (
-            <div>
+            <div className="flex flex-col gap-20 bg-blue-100">
+              <button
+              className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full h-20 rounded-sm"
+              onClick={() => {
+                localStorage.clear();
+                window.location.reload();
+              }}>Restart everything</button>
               <p>Error: Admin ID is required to proceed to this step.</p>
-              <button onClick={prevStep}>Go Back</button>
+              <button className="
+              mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full h-20 rounded-sm
+              " onClick={prevStep}>Go Back</button>
             </div>
           );
         }
