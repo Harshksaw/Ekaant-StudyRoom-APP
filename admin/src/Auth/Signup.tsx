@@ -210,7 +210,7 @@ function Signup() {
 
   const [emailOtpInputs, setEmailOtpInputs] = useState("");
 
-  const sendEmailOtp = async () => {
+  const  sendEmailOtp = async () => {
 
     const { email } = userInfo;
     const res = await axios.post(`${BASEURL}/api/v1/auth/emailotp`, { email });

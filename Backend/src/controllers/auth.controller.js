@@ -246,7 +246,7 @@ async function sendEmailOtp(req, res) {
   const existingAdmin = await Admin.findOne({ email });
   if (existingAdmin) {
     const token = jwt.sign({ admin_id: existingAdmin._id }, JWT_SECRET);
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
       message: 'Admin already registered',
       data: existingAdmin,
@@ -287,8 +287,7 @@ async function verifyEmailOtp(req, res) {
   const { email, otp } = req.body;
 
   const response = await OTP.findOne({ email }).sort({ createdAt: -1 });
-  // const response = await OTP.find({ email }).sort({ createdAt: -1 });
-  // console.log(response.emailotp, otp, "RESPONSE123");
+
   if (response.length === 0) {
     // OTP not found for the email
     return res.status(400).json({
