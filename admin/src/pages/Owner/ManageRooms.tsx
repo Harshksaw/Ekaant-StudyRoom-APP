@@ -6,7 +6,12 @@ import axios from 'axios';
 
 interface Room {
     _id: string;
-    libraryOwner: string;
+    libraryOwner: {
+      username: string;
+      email: string;
+      phoneNumber: string;
+      address: string;
+    }
     name: string;
     longDescription: string;
     shortDescription: string;
@@ -63,27 +68,20 @@ const ManageRooms = () => {
     const [activeTab, setActiveTab] = useState('userDetails');
 
 
-    const [position, setPosition] = useState<[number, number] | null>(null);
+    // const [position, setPosition] = useState<[number, number] | null>(null);
     React.useEffect(() => {
         const fetchLibrary = async () => {
             const res = await axios.post(`${BASEURL}/api/v1/library/getLibraryById`, { id: lib_id });
             if (res.data.success) {
                 console.log("🚀 ~ fetchLibrary ~ res:", res.data);
                 setRoom(res.data.data);
-                setPosition([res.data.data.location[0], res.data.data.location[1]]);
+                // setPosition([res.data.data.location[0], res.data.data.location[1]]);
             }
         };
         fetchLibrary();
     }, [lib_id]);
 
-    const handleApprove = async (id: string, status: boolean) => {
-        const res = await axios.post(`${BASEURL}/api/v1/library/updateStatus`, { id, status: !status });
-        if (res.data.success) {
-            console.log(res.data);
-            setRoom(res.data.data);
-        }
 
-    };
  
     const renderUserDetails = () => {
       const address = room ? JSON.parse(room.libraryOwner.address) : null;
