@@ -248,8 +248,8 @@ function Signup() {
       setAdminId(res.data.data._id);
 
 
+      setCurrentStep(4);
     }
-    setCurrentStep(4);
 
   };
 
