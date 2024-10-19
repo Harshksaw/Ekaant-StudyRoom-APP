@@ -64,6 +64,8 @@ function Signup() {
     email: "",
     password: "",
   });
+  
+  const [emailOtpInputs, setEmailOtpInputs] = useState("");
   const [adminId, setAdminId] = useState(null); // State to store admin ID
   const [userDetails, setUserDetails] = useState({
     fullName: "",
@@ -129,7 +131,17 @@ function Signup() {
 
 
 
-  console.log(userOTP, "userotp");
+  useEffect(() => {
+    // Clear OTP state on component mount
+    setOtpInputs("");
+    setEmailOtpInputs("");
+
+    // Clear OTP state on unmount or when navigating away
+    return () => {
+      setOtpInputs("");
+      setEmailOtpInputs("");
+    };
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -171,29 +183,25 @@ function Signup() {
   };
   const verifyOTP = async () => {
     console.log("verfication start user OTP");
-    // const { otp1, otp2, otp3, otp4 } = userOTP;
-    // Assuming verifyUserOTP is the function you want to call
-    // const otp = `${otp1}${otp2}${otp3}${otp4}`;
     const otp = userOTP;
     if (Number(otp) < 1000) {
       return;
     }
     console.log("verfication start");
 
-    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOtp`, {
-      phoneNumber: userInfo.phone,
-      otp
-    });
-    console.log(res, "res");
+ 
+    try {
 
+      const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOtp`, {
+        phoneNumber: userInfo.phone,
+        otp
+      });
     if (res.status === 200 || res.status === 201) {
       console.log(res.data, "res.data");
       setVerifiedOtp(
         (prev) => ({ ...prev, one: true })
       )
-
-
-      toast('Verified  OTP', {
+      toast('Verified Phone  OTP', {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -204,9 +212,12 @@ function Signup() {
         theme: "light",
 
       });
-      console.log("OTP verified successfully");
-    } else {
-      toast('Sent OTP', {
+
+
+    }
+
+    } catch (error) {
+      toast.error('Phone Otp Not Verified ', {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -220,7 +231,7 @@ function Signup() {
     }
   };
 
-  const [emailOtpInputs, setEmailOtpInputs] = useState("");
+
 
   const sendEmailOtp = async () => {
 
@@ -260,12 +271,12 @@ function Signup() {
     if (Number(otp) < 1000) {
       return;
     }
-
+try{
     const res = await axios.post(`${BASEURL}/api/v1/auth/verifyEmailOtp`, {
       email: userInfo.email,
       otp,
     });
-    // console.log(res, "res");
+
 
     if (res.status === 200 || res.status === 201) {
       // console.log(res.data, "res.data");
@@ -284,9 +295,9 @@ function Signup() {
         theme: "light",
 
       });
-
-    } else {
-      toast('Not verified', {
+    }
+    } catch (error) {
+      toast('Email Otp not verified', {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -316,24 +327,16 @@ function Signup() {
 
 
   useEffect(() => {
-
-
-    if (Number(userOTP) >= 1000) {
-      {
-        currentStep === 2 && verifyOTP();
-      }
+    if (Number(userOTP) >= 1000 && currentStep === 2 && !verfiedOtp.one) {
+      verifyOTP();
     }
 
-    if (Number(emailOtpInputs) >= 1000) {
-      {
-        currentStep === 2 && verifyEmailOTP();;
-      }
-
+    if (Number(emailOtpInputs) >= 1000 && currentStep === 2 && !verfiedOtp.two) {
+      verifyEmailOTP();
     }
 
-    // console.log(userDetails,"---");
     console.log(libraryDetails, "---");
-  }, [userOTP, emailOtpInputs, libraryDetails]);
+  }, [userOTP, emailOtpInputs, libraryDetails, currentStep]);
 
   const createUser = async () => {
     setLoading(true);
@@ -553,6 +556,7 @@ function Signup() {
     if (currentStep === 1) {
       sendOtp();
       sendEmailOtp();
+      
     }
 
     setCurrentStep(currentStep + 1);
