@@ -76,13 +76,17 @@ const AdminBookings = ({ libraryId, roomNo }) => {
   }, [selectedLibrary]);
 
 
-  const bookSeat = async (seatId) => {
+  const bookSeat = async (seatId,selectedRoom, label) => {
     try {
-      const response = await axios.post("/api/bookSeat", {
-        libraryId,
-        roomNo,
+      console.log("🚀 ~ bookSeat ~ seatId", 
+
+        selectedLibrary)
+      const response = await axios.post(`${BASEURL}/api/v1/admin/bookSeat`, {
+        libraryId : selectedLibrary,
+        roomNo: selectedRoom,
         seatId,
         adminId,
+        label
       });
       toast.success(response.data.message);
       setSeats(seats.map(seat => seat.id === seatId ? { ...seat, booked: true, bookedBy: adminId, bookingSource: "admin" } : seat));
@@ -117,7 +121,7 @@ const AdminBookings = ({ libraryId, roomNo }) => {
   const groupedSeats = seats.reduce((acc, seat) => {
     const [row, col] = seat.id.split('-').map(Number);
     if (!acc[row]) acc[row] = [];
-    acc[row][col] = seat;
+    acc[row][col] = { ...seat, id: seat.id };
     return acc;
   }, {});
 
@@ -182,7 +186,7 @@ const AdminBookings = ({ libraryId, roomNo }) => {
                       {seat.booked ? (
                         <button onClick={() => removeSeatBooking(seat.id)}>Remove Booking</button>
                       ) : (
-                        <button onClick={() => bookSeat(seat.id)}>Book Seat</button>
+                        <button onClick={() => bookSeat(seat.id, selectedRoom, seat.label)}>Book Seat</button>
                       )}
                     </div>
                   ))}

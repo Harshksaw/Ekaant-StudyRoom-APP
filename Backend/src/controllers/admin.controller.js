@@ -36,6 +36,7 @@ async function RegisterAdmin(req, res, next) {
       Address,
       username,
     } = req.body;
+    console.log("🚀 ~ RegisterAdmin ~ req.body:", req.body)
 
     const existingAdmin = await Admin.findOne({ email });
     if (existingAdmin) {
@@ -122,6 +123,7 @@ async function RegisterAdmin(req, res, next) {
 // login--
 async function LoginAdmin(req, res) {
   const { email, password } = req.body;
+  console.log("🚀 ~ LoginAdmin ~ req.body:", req.body)
 
 
 
@@ -203,6 +205,7 @@ async function LoginAdmin(req, res) {
 // async function ChangeAdminPassword(req, res, next) {
 //   try {
 //     const { oldPassword, newPassword, confirmPassword } = req.body;
+
 //     const admin = await Admin.findById(req.admin.admin_id); //can be a problem
 //     //validation of oldPass
 //     if (!admin.validatePassword(oldPassword)) {
@@ -258,6 +261,7 @@ async function LoginAdmin(req, res) {
 //
 async function ResetAdminPassword(req, res, next) {
   const { email, password, confirmPassword } = req.body;
+  console.log("🚀 ~ ResetAdminPassword ~ req.body:", req.body)
   if (password !== confirmPassword) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
@@ -286,12 +290,32 @@ async function ResetAdminPassword(req, res, next) {
 }
 
 async function BookSeat(req, res) {
-  const { libraryId, roomNo, seatId, adminId } = req.body;
+  const { libraryId, roomNo, seatId, adminId,label } = req.body;
+  console.log("🚀 ~ BookSeat ~ req.body:", req.body)
 
   try {
     const library = await Library.findById(libraryId);
-    const room = library.rooms.find(room => room.roomNo === roomNo);
+    if (!library) {
+      console.error(`Library with ID ${libraryId} not found`);
+      return res.status(404).json({ message: "Library not found" });
+    }
+
+    const room = library.rooms.find(room => room.roomNo === Number(roomNo));
+    if (!room) {
+      console.error(`Room with number ${roomNo} not found in library ${libraryId}`);
+      return res.status(404).json({ message: "Room not found" });
+    }
+
     const seat = room.seatLayout.find(seat => seat.id === seatId);
+    if (!seat) {
+      console.error(`Seat with ID ${seatId} not found in room ${roomNo}`);
+      return res.status(404).json({ message: "Seat not found" });
+    }
+
+    if (seat.booked) {
+      console.error(`Seat with ID ${seatId} is already booked`);
+      return res.status(400).json({ message: "Seat is already booked" });
+    }
 
     if (seat.booked) {
       return res.status(400).json({ message: "Seat is already booked" });
@@ -300,6 +324,7 @@ async function BookSeat(req, res) {
     seat.booked = true;
     seat.bookedBy = adminId;
     seat.bookingSource = "admin";
+    seat.label = label;
 
     await library.save();
     res.status(200).json({ message: "Seat booked successfully" });
@@ -312,6 +337,7 @@ async function BookSeat(req, res) {
 
 async function RemoveSeatBooking(req, res) {
   const { libraryId, roomNo, seatId } = req.body;
+  console.log("🚀 ~ RemoveSeatBooking ~ req.body:", req.body)
 
   try {
     const library = await Library.findById(libraryId);
