@@ -32,20 +32,13 @@ const ManageBookings = () => {
                 View
               </Link>
             </AccordionContent>
+    
             <AccordionContent>
               <Link
-                to="/manage-booking/permission"
+                to="/manage-booking/adminbookings"
                 className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
               >
-                Permission
-              </Link>
-            </AccordionContent>
-            <AccordionContent>
-              <Link
-                to="/manage-booking/search"
-                className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
-              >
-                Search
+               Book Seat
               </Link>
             </AccordionContent>
           </AccordionItem>

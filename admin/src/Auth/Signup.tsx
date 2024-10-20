@@ -434,6 +434,42 @@ try{
   };
 
   const createInitialLib = async () => {
+    if (!libraryDetails.libraryName) {
+      toast.error("Library name is required");
+      return;
+    }
+    if (!libraryDetails.libraryApp.shortDescription) {
+      toast.error("Short description is required");
+      return;
+    }
+    if (!libraryDetails.libraryApp.longDescription) {
+      toast.error("Long description is required");
+      return;
+    }
+    if (!libraryDetails.libraryAddress) {
+      toast.error("Library address is required");
+      return;
+    }
+    if (!libraryDetails.libraryLegal.registration) {
+      toast.error("Legal registration is required");
+      return;
+    }
+    if (!libraryDetails.libraryLegal.gst) {
+      toast.error("GST number is required");
+      return;
+    }
+    if (!libraryDetails.libraryLegal.cin) {
+      toast.error("CIN number is required");
+      return;
+    }
+    if (!libraryDetails.libraryLegal.tan) {
+      toast.error("TAN number is required");
+      return;
+    }
+    if (!libraryDetails.libraryLegal.msme) {
+      toast.error("MSME number is required");
+      return;
+    }
 
     // console.log(libraryDetails, "libraryDetails-----------------d------");
 
