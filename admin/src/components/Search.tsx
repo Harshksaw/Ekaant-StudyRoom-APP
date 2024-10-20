@@ -4,9 +4,11 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { BASEURL } from '@/lib/utils';
 
+import ClipLoader from "react-spinners/ClipLoader";
 
 
-const AdminBookings = ({ libraryId, roomNo }) => {
+
+const AdminBookings = () => {
   const [seats, setSeats] = useState([]);
   const adminId = localStorage.getItem("userId");
   const [selectedLibrary, setSelectedLibrary] = useState('');
@@ -77,6 +79,7 @@ const AdminBookings = ({ libraryId, roomNo }) => {
 
 
   const bookSeat = async (seatId,selectedRoom, label) => {
+    setLoading(true);
     try {
       console.log("🚀 ~ bookSeat ~ seatId", 
 
@@ -88,15 +91,18 @@ const AdminBookings = ({ libraryId, roomNo }) => {
         adminId,
         label
       });
-      toast.success(response.data.message);
       setSeats(seats.map(seat => seat.id === seatId ? { ...seat, booked: true, bookedBy: adminId, bookingSource: "admin" } : seat));
+      setLoading(false);
+      toast.success(response.data.message);
+
     } catch (error) {
       toast.error("Error booking seat");
       console.error("Error booking seat:", error);
     }
   };
 
-  const removeSeatBooking = async (seatId,selectedRoom, label) => {
+  const removeSeatBooking = async (seatId,selectedRoom) => {
+    setLoading(true)
     try {
       const response = await axios.post(`${BASEURL}/api/v1/admin/removeSeatBooking`, {
         libraryId : selectedLibrary,
@@ -104,8 +110,9 @@ const AdminBookings = ({ libraryId, roomNo }) => {
         seatId,
 
       });
-      toast.success(response.data.message);
       setSeats(seats.map(seat => seat.id === seatId ? { ...seat, booked: false, bookedBy: null, bookingSource: null } : seat));
+      toast.success(response.data.message);
+      setLoading(false);
     } catch (error) {
       toast.error("Error removing seat booking");
       console.error("Error removing seat booking:", error);
@@ -114,9 +121,11 @@ const AdminBookings = ({ libraryId, roomNo }) => {
 
 
   if (Loading) {
-    return <div className='
-    flex justify-center items-center text-2xl font-bold text-gray-800'>Loading...</div>
-
+    return (
+      <div className='flex justify-center items-center h-screen'>
+        <ClipLoader color="#4A90E2" size={50} />
+      </div>
+    );
   }
 
   const groupedSeats = seats.reduce((acc, seat) => {
