@@ -299,14 +299,28 @@ async function getAllBookings(req, res) {
 
 async function EditLibrary(req, res) {
   try {
-    const library = await Library.findById(req.params.libraryId);
+    console.log(req.body, "reqqq");
+    const { name, longDescription, shortDescription, amenities } = req.body;
+    const { libraryId } = req.body;
+    console.log("🚀 ~ EditLibrary ~ data:", name, longDescription, shortDescription, amenities);
+    console.log("🚀 ~ EditLibrary ~ libraryId:", libraryId)
+   
+    console.log("🚀 ~ EditLibrary ~ data:",    name,
+      longDescription,
+      shortDescription,
+
+      amenities,)
+
+    return;
+    const library = await Library.findByIdAndUpdate(libraryId, {})
     if (!library) {
       return res.status(404).json({ message: 'Library not found' });
     }
-    library.rooms = library.rooms.filter(room => room._id.toString() !== req.params.roomId);
+    library.rooms = library.rooms.filter(room => room._id.toString() !== roomId);
     await library.save();
     res.status(200).json({ message: 'Room deleted successfully' });
   } catch (error) {
+    console.error('Error deleting room:', error);
     res.status(500).json({ message: 'Error deleting room', error });
   }
 }
@@ -323,4 +337,5 @@ module.exports = {
   addOrUpdateRoomDetails,
   getLibraryByUserId,
   getAllLibrary,
+  EditLibrary
 };
