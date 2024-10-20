@@ -66,11 +66,12 @@ const Auth = ({ type }: { type: "signin" }) => {
             toast.info("You don't have any rooms yet. Please create a room to continue.");
 
             navigate("/manage-library/create-room");
+            window.location.reload();
           } else {
 
 
             role && role === "Admin"
-              ? navigate("/dashboard", { replace: true })
+              ? navigate("/dashboard")
               : navigate("/admin", { replace: true });
           }
         } else {
