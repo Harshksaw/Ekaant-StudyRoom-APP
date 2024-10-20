@@ -18,9 +18,9 @@ const ping = (req, res) => {
 // Function to encrypt file data
 // Function to encrypt data using AES-256
 const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION
+  accessKeyId: process.env.AWS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+  region: process.env.REGION
 });
 
 async function RegisterAdmin(req, res, next) {
@@ -50,7 +50,7 @@ async function RegisterAdmin(req, res, next) {
     }
        const uploadToS3 = (file, folder) => {
         const params = {
-          Bucket: process.env.AWS_BUCKET_NAME,
+          Bucket: process.env.S3_BUCKET_NAME,
           Key: `${folder}/${file.originalname}`,
           Body: file.buffer,
           ContentType: file.mimetype
