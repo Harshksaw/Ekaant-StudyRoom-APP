@@ -296,6 +296,21 @@ async function getAllBookings(req, res) {
   }
 }
 
+
+async function EditLibrary(req, res) {
+  try {
+    const library = await Library.findById(req.params.libraryId);
+    if (!library) {
+      return res.status(404).json({ message: 'Library not found' });
+    }
+    library.rooms = library.rooms.filter(room => room._id.toString() !== req.params.roomId);
+    await library.save();
+    res.status(200).json({ message: 'Room deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting room', error });
+  }
+}
+
 module.exports = {
   pingAdmin,
   createLibrary,

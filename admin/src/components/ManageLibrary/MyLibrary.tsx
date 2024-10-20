@@ -1,6 +1,7 @@
 import { getLibraryDataById } from "@/hooks/libraryData";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
 interface LibraryItem {
   images: string[];
@@ -14,6 +15,7 @@ interface LibraryItem {
 interface LibraryItem {
   // other properties
   approved?: boolean;
+  id: string;
 }
 export function BadgeDestructive() {
   return (
@@ -50,6 +52,7 @@ export default function MyLibrary() {
 
   // const location = getLocationName(item.location[0], item.location[1])
 
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col gap-20 p-5 w-full h-full bg-gray-200 rounded-lg shadow-md">
       <div
@@ -72,7 +75,8 @@ export default function MyLibrary() {
           data?.map((item: LibraryItem, index: number) => (
             <div
               key={index}
-              className="border border-gray-200 p-4 rounded-lg shadow-md bg-white flex flex-row justify-between gap-5 items-center"
+              className="border-1 border-gray-400 p-4 rounded-lg shadow-md bg-gray-50 flex flex-row justify-between gap-5 items-center"
+              onClick={()=> navigate(`/manage-library/edit-library/${item._id}`)}
             >
               <img
                 src={item.images[0]}
@@ -80,11 +84,15 @@ export default function MyLibrary() {
                 width={200}
                 height={200}
               />
-              <div>
-                <h3>{item.name}</h3>
-                <p>{item?.longDescription.split("").slice(0, 50)}</p>
-                <p>Pricing: {item.price}/month</p>
-              </div>
+          <div style={{ border: '1px solid #ccc', borderRadius: '8px', padding: '16px', margin: '12px 0', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+    <h3 style={{ color: '#333', marginBottom: '8px' }}>{item.name}</h3>
+    <p style={{ color: '#555', fontSize: '14px', lineHeight: '1.5' }}>
+        {item?.longDescription.split("").slice(0, 50).join("")}...
+    </p>
+    <p style={{ fontWeight: 'bold', marginTop: '8px' }}>
+        Pricing: <span style={{ color: '#007bff' }}>{item.price}</span>/month
+    </p>
+</div>
 
               <div>
                 <div>
