@@ -337,11 +337,11 @@ async function BookSeat(req, res) {
 
 async function RemoveSeatBooking(req, res) {
   const { libraryId, roomNo, seatId } = req.body;
-  console.log("🚀 ~ RemoveSeatBooking ~ req.body:", req.body)
+
 
   try {
     const library = await Library.findById(libraryId);
-    const room = library.rooms.find(room => room.roomNo === roomNo);
+    const room = library.rooms.find(room => room.roomNo === Number(roomNo));
     const seat = room.seatLayout.find(seat => seat.id === seatId);
 
     if (!seat.booked) {

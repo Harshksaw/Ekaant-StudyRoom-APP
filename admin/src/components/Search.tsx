@@ -96,12 +96,13 @@ const AdminBookings = ({ libraryId, roomNo }) => {
     }
   };
 
-  const removeSeatBooking = async (seatId) => {
+  const removeSeatBooking = async (seatId,selectedRoom, label) => {
     try {
-      const response = await axios.post("/api/removeSeatBooking", {
-        libraryId,
-        roomNo,
+      const response = await axios.post(`${BASEURL}/api/v1/admin/removeSeatBooking`, {
+        libraryId : selectedLibrary,
+        roomNo: selectedRoom,
         seatId,
+
       });
       toast.success(response.data.message);
       setSeats(seats.map(seat => seat.id === seatId ? { ...seat, booked: false, bookedBy: null, bookingSource: null } : seat));
@@ -184,7 +185,7 @@ const AdminBookings = ({ libraryId, roomNo }) => {
                     >
                       <span>Seat {seat.label}</span>
                       {seat.booked ? (
-                        <button onClick={() => removeSeatBooking(seat.id)}>Remove Booking</button>
+                        <button onClick={() => removeSeatBooking(seat.id, selectedRoom, seat.label)}>Remove Booking</button>
                       ) : (
                         <button onClick={() => bookSeat(seat.id, selectedRoom, seat.label)}>Book Seat</button>
                       )}
