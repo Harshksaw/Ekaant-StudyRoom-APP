@@ -1,10 +1,19 @@
+import StateDropdown from "@/components/StateSelector";
+import DatePicker from "react-datepicker";
 export const StepThree = ({
   nextStep,
   prevStep,
   userDetails,
   setUserDetails,
   // createUser,
-}: any) => (
+}: any) => 
+{
+  const handleDateChange = (date) => {
+    setUserDetails({ ...userDetails, dob: date });
+  };
+
+  
+  return(
 
   
   <div className="flex  flex-1 overflow-y-auto px-10 py-6 bg-white rounded-lg">
@@ -38,7 +47,15 @@ export const StepThree = ({
         >
           DOB
         </label>
-        <input
+        <DatePicker
+          selected={userDetails.dob}
+          onChange={handleDateChange}
+          dateFormat="yyyy/MM/dd"
+          placeholderText="Select your date of birth"
+          className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          id="adminDob"
+        />
+        {/* <input
           className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="adminDob"
@@ -48,7 +65,7 @@ export const StepThree = ({
             setUserDetails({ ...userDetails, dob: e.target.value })
           }
           placeholder="DOB"
-        />
+        /> */}
       </div>
       {/* Aadhar Card */}
 
@@ -62,6 +79,7 @@ export const StepThree = ({
         <input
           className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
+          maxLength={12}
           id="adminAadharCard"
           name="adminAadharCard"
           value={userDetails.aadharCard}
@@ -116,6 +134,7 @@ export const StepThree = ({
         <input
           className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
+          maxLength={10}
           id="adminPanCard"
           name="adminPanCard"
           value={userDetails.panCard}
@@ -179,11 +198,23 @@ export const StepThree = ({
                 line1: e.target.value,
               },
             });
-          }}
-          placeholder="Address Line 1"
-        />
+            }}
+            placeholder="Address Line 1"
+          />
+          <StateDropdown
+            value={userDetails.address.line2}
+            onChange={(e) =>
+            setUserDetails({
+              ...userDetails,
+              address: {
+              ...userDetails.address,
+              line2: e.target.value,
+              },
+            })
+            }
+          />
         {/* line 2 */}
-        <input
+        {/* <input
           className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="adminAddressLine2"
@@ -198,7 +229,7 @@ export const StepThree = ({
             });
           }}
           placeholder="Address Line 2"
-        />
+        /> */}
 
         {/* city */}
         <div className="w-2/3">
@@ -256,3 +287,4 @@ export const StepThree = ({
     </div>
   </div>
 );
+}

@@ -138,13 +138,16 @@ const Seats = ({ onSeatSelect }: SeatsProps) => {
         </button>
       </form>
 
+<div>
+  <p>Above 5 columns , is not recommended as wont fit on Mobile screen properly</p>
+</div>
       <div
         className="seats-container 
         bg-blue-100
         
         flex flex-col justify-center items-center w-full h-full border border-gray-200 rounded-md p-4"
       >
-        <div className="flex-col justify-center h-60">
+        <div className="flex-col justify-center px-auto h-auto max-h-96  w-auto max-w-[60vw] pb-20  px-10 pr-10 overflow-auto  border border-gray-800">
           {seatRows.length === 0 && (
 
             <div>

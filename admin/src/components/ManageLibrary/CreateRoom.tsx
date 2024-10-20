@@ -88,6 +88,8 @@ const CreateRoom: React.FC = () => {
 
   const createRoom = async () => {
     console.log("Creating Room", libraryId, seatLayout, selectedRoom, selectedLibrary);
+
+  
     try {
       setLoading(true);
       const response = await axios.post(
@@ -98,6 +100,7 @@ const CreateRoom: React.FC = () => {
           seatLayout: seatLayout,
         }
       );
+      console.log(seatLayout, typeof seatLayout)
       console.log(response.data, "Room Created");
     } catch (error) {
       console.error("Error creating room:", error);
@@ -144,6 +147,20 @@ const CreateRoom: React.FC = () => {
       if (!libraryId) {
         toast.error("Please relogin, NO library Exists")
       }
+      if (Object.keys(seatLayout).length === 0) {
+        toast.error("Please select a seat layout and save it!");
+        return;
+      }
+      if(location === null) {
+        toast.error("Please select a location");
+        return;
+      }
+      const filledTimeSlots = timeSlots.filter((timeSlot) => timeSlot.from || timeSlot.to);
+    if (filledTimeSlots.length > 0 && filledTimeSlots.some((timeSlot) => !timeSlot.from || !timeSlot.to)) {
+      toast.error("Please select a time range for all filled time slots");
+      return;
+    }
+
 
 
       await createRoom();
@@ -200,7 +217,7 @@ const CreateRoom: React.FC = () => {
 
       </div>
 
-      <div className="mt-20 mb-32  h-96">
+      <div className="mt-20 mb-48  h-[60vh] ">
 
         <Seats onSeatSelect={handleSeatSelect} />
 
@@ -210,7 +227,7 @@ const CreateRoom: React.FC = () => {
       </div>
 
       <div className="w-[90%] mx-20 mt-60">
-        <h2 className="text-center">Select Time Slots</h2>
+        <h2 className="text-center bg-blue-200 p-2  rounded-md">Select Time Slots</h2>
         {timeSlots.map((timeRange, index) => (
           <div className="flex-col  justify-center items-center">
             <div
