@@ -8,7 +8,7 @@ export const StepThree = ({
   // createUser,
 }: any) => 
 {
-  const handleDateChange = (date) => {
+  const handleDateChange = (date :any) => {
     setUserDetails({ ...userDetails, dob: date });
   };
 
@@ -203,7 +203,7 @@ export const StepThree = ({
           />
           <StateDropdown
             value={userDetails.address.line2}
-            onChange={(e) =>
+            onChange={(e :any) =>
             setUserDetails({
               ...userDetails,
               address: {

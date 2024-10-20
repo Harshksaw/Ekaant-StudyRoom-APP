@@ -1,5 +1,5 @@
 
-const StateDropdown = ({ value, onChange }) => {
+const StateDropdown = ({ value, onChange }:any) => {
   const statesOfIndia = [
     'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 
     'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 
