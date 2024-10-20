@@ -63,7 +63,15 @@ const librarySchema = new mongoose.Schema({
             label: { type: String, required: false },
           }
         ],
-        seatLayout: {},
+        seatLayout: [
+          {
+            id: { type: String, required: true },
+            label: { type: String, required: true },
+            booked: { type: Boolean, default: false },
+            bookedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin", required: false },
+            bookingSource: { type: String, enum: ["app", "admin"], required: false,default:"app" },
+          }
+        ],
   },
 
   ],

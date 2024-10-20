@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 
 import Dashboard from "./pages/Dashboard";
-import { Permission, Search } from "./components";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import ManageSeats from "./pages/ManageSeats";
@@ -19,6 +19,7 @@ import Auth from "./Auth/Auth";
 import CreateRoom from "./components/ManageLibrary/CreateRoom";
 import ViewBookings from "./components/ManageBookings/ViewBookings";
 import Signup from "./Auth/Signup";
+import AdminBookings from "./components/Search";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -50,8 +51,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
 
           <Route path="/manage-booking/view" element={<ViewBookings />} />
-          <Route path="/manage-user/permission" element={<Permission />} />
-          <Route path="/manage-user/search" element={<Search />} />
+
+          <Route path="/manage-booking/adminbookings" element={<AdminBookings />} />
 
           <Route
             path="/manage-library/view-library/:library_id"

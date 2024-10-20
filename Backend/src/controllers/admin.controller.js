@@ -49,7 +49,7 @@ async function RegisterAdmin(req, res, next) {
     }
        const uploadToS3 = (file, folder) => {
         const params = {
-          Bucket: process.env.AWS_BUCKET_NAME,,
+          Bucket: process.env.AWS_BUCKET_NAME,
           Key: `${folder}/${file.originalname}`,
           Body: file.buffer,
           ContentType: file.mimetype
@@ -284,11 +284,61 @@ async function ResetAdminPassword(req, res, next) {
     });
   }
 }
+
+async function BookSeat(req, res) {
+  const { libraryId, roomNo, seatId, adminId } = req.body;
+
+  try {
+    const library = await Library.findById(libraryId);
+    const room = library.rooms.find(room => room.roomNo === roomNo);
+    const seat = room.seatLayout.find(seat => seat.id === seatId);
+
+    if (seat.booked) {
+      return res.status(400).json({ message: "Seat is already booked" });
+    }
+
+    seat.booked = true;
+    seat.bookedBy = adminId;
+    seat.bookingSource = "admin";
+
+    await library.save();
+    res.status(200).json({ message: "Seat booked successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error booking seat", error });
+  }
+
+
+}
+
+async function RemoveSeatBooking(req, res) {
+  const { libraryId, roomNo, seatId } = req.body;
+
+  try {
+    const library = await Library.findById(libraryId);
+    const room = library.rooms.find(room => room.roomNo === roomNo);
+    const seat = room.seatLayout.find(seat => seat.id === seatId);
+
+    if (!seat.booked) {
+      return res.status(400).json({ message: "Seat is not booked" });
+    }
+
+    seat.booked = false;
+    seat.bookedBy = null;
+    seat.bookingSource = null;
+
+    await library.save();
+    res.status(200).json({ message: "Seat booking removed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error removing seat booking", error });
+  }
+}
 module.exports = {
   pingAdminController: ping,
   RegisterAdmin,
   LoginAdmin,
   ResetAdminPassword,
+  BookSeat,
+  RemoveSeatBooking,
   // ChangeAdminPassword,
 };
 
