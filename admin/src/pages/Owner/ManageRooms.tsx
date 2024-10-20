@@ -2,194 +2,278 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { BASEURL } from '../../lib/utils';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 
 interface Room {
-    _id: string;
-    libraryOwner: {
-      username: string;
-      email: string;
-      phoneNumber: string;
-      address: string;
-    }
-    name: string;
-    longDescription: string;
-    shortDescription: string;
-    thumbnail: string[];
-    cardimage: string;
-    images: string[];
-    location: number[];
-    address: {
-      line1: string;
-      line2: string;
-      city: string;
-      state: string;
-      pincode: string;
-    };
-    deleted: boolean;
-    amenities: {
-      coldWater: boolean;
-      wifi: boolean;
-      ac: boolean;
-      locker: boolean;
-      separateWashroom: boolean;
-      News: boolean;
-      discussionArea: boolean;
-      LunchArea: boolean;
-      MovingChair: boolean;
-      FloorMat: boolean;
-      SeparateParking: boolean;
-      CommonParking: boolean;
-    };
-    commingSoon: boolean;
-    approved: boolean;
-    legal: string;
-    RegistrationFees: number;
-    timeSlot: {
-      from: string | null;
-      to: string | null;
-      price: number;
-      _id: string;
-    }[];
-    rooms: {
-      roomNo: number;
-      seatLayout: {
-        id: string;
-        label: string;
-      }[];
-      _id: string;
-      seatbooked: any[];
-    }[];
-    __v: number;
+  _id: string;
+  libraryOwner: {
+    username: string;
+    email: string;
+    phoneNumber: string;
+    address: string;
   }
+  name: string;
+  longDescription: string;
+  shortDescription: string;
+  thumbnail: string[];
+  cardimage: string;
+  images: string[];
+  location: number[];
+  address: {
+    line1: string;
+    line2: string;
+    city: string;
+    state: string;
+    pincode: string;
+  };
+  deleted: boolean;
+  amenities: {
+    coldWater: boolean;
+    wifi: boolean;
+    ac: boolean;
+    locker: boolean;
+    separateWashroom: boolean;
+    News: boolean;
+    discussionArea: boolean;
+    LunchArea: boolean;
+    MovingChair: boolean;
+    FloorMat: boolean;
+    SeparateParking: boolean;
+    CommonParking: boolean;
+  };
+  commingSoon: boolean;
+  approved: boolean;
+  legal: string;
+  RegistrationFees: number;
+  timeSlot: {
+    from: string | null;
+    to: string | null;
+    price: number;
+    _id: string;
+  }[];
+  rooms: {
+    roomNo: number;
+    seatLayout: {
+      id: string;
+      label: string;
+    }[];
+    _id: string;
+    seatbooked: any[];
+  }[];
+  __v: number;
+}
 const ManageRooms = () => {
-    const { lib_id } = useParams();
-    const [room, setRoom] = React.useState<Room | null>(null);
-    const [activeTab, setActiveTab] = useState('userDetails');
+  const { lib_id } = useParams();
+  const [room, setRoom] = React.useState<Room | null>(null);
+  const [activeTab, setActiveTab] = useState('userDetails');
+  const [showAadhaar, setShowAadhaar] = useState(false);
+  const [showPanCard, setShowPanCard] = useState(false);
+  const [loading , setLoading] = useState(false); 
 
-
-    // const [position, setPosition] = useState<[number, number] | null>(null);
-    React.useEffect(() => {
-        const fetchLibrary = async () => {
-            const res = await axios.post(`${BASEURL}/api/v1/library/getLibraryById`, { id: lib_id });
-            if (res.data.success) {
-                console.log("🚀 ~ fetchLibrary ~ res:", res.data);
-                setRoom(res.data.data);
-                // setPosition([res.data.data.location[0], res.data.data.location[1]]);
-            }
-        };
-        fetchLibrary();
-    }, [lib_id]);
-
-
- 
-    const renderUserDetails = () => {
-      const address = room ? JSON.parse(room.libraryOwner.address) : null;
-      return (
-        <div>
-          <h2 className='text-xl font-bold text-gray-800'>User Details</h2>
-          {room ? (
-            <>
-              <p className='text-gray-600'>Username: {room.libraryOwner.username}</p>
-              <p className='text-gray-600'>Email: {room.libraryOwner.email}</p>
-              <p className='text-gray-600'>Phone Number: {room.libraryOwner.phoneNumber}</p>
-              <p className='text-gray-600'>
-                Address: {address.line1}, {address.line2}, {address.city}, {address.pincode}
-              </p>
-            </>
-          ) : (
-            <p className='text-gray-600'>Loading...</p>
-          )}
-        </div>
-      );
+  // const [position, setPosition] = useState<[number, number] | null>(null);
+  React.useEffect(() => {
+    const fetchLibrary = async () => {
+      setLoading(true);
+      const res = await axios.post(`${BASEURL}/api/v1/library/getLibraryById`, { id: lib_id });
+      if (res.data.success) {
+        console.log("🚀 ~ fetchLibrary ~ res:", res.data.data?._id);
+        setRoom(res.data.data);
+        // setPosition([res.data.data.location[0], res.data.data.location[1]]);
+        setLoading(false);
+      }
     };
-    
-    const renderLibraryDetails = () => (
-      <div className='overflow-y-auto'>
-        <h2 className='text-xl font-bold text-gray-800'>Library Details</h2>
+
+    fetchLibrary();
+  }, [lib_id]);
+  const handleApprove = async (id: string, status: boolean) => {
+
+    const res = await axios.post(`${BASEURL}/api/v1/library/updateStatus`, { id, status: !status });
+    if (res.data.success) {
+        console.log(res.data);
+        toast.success(`Library ${!status ? 'approved' : 'disapproved'} successfully.`);
+        window.location.reload();
+        // setRoom(res.data.data);
+    }
+
+};
+
+if(loading){
+  return (
+    <div className="flex justify-center items-center h-full">
+      <div className="loader ease-linear rounded-full border-20 border-t-8 border-blue-800 h-32 w-32"></div>
+    </div>
+  );
+}
+  const renderUserDetails = () => {
+    const address = room ? JSON.parse(room.libraryOwner.address) : null;
+    return (
+      <div>
+        <h2 className='text-xl font-bold text-gray-800'>User Details</h2>
         {room ? (
           <>
-          <div className='p-8 flex flex-col gap-4 h-full overflow-y-auto'>
-  {/* Top Banner Section */}
-  <div className='flex flex-col items-center mb-6'>
-    <div className='flex w-full'>
-      <div className='w-1/2 pr-2'>
-        <img
-          src={room?.cardimage || "defaultCardImage.jpg"} // Default image if `cardimage` is unavailable
-          alt={room?.name || "Library Card Image"}
-          className='h-64 w-full object-cover rounded-lg mb-4'
-        />
-        <p className='text-sm text-gray-500'>This is the card image / thumbnail.</p>
-      </div>
-      <div className='w-1/2 pl-2 grid grid-cols-2 gap-2'>
-        {room?.images?.slice(0, 4).map((image, index) => (
-          <img
-            key={index}
-            src={image}
-            alt={`Room Image ${index + 1}`}
-            className='h-32 w-full object-cover rounded-lg'
-          />
-        ))}
-      </div>
-    </div>
-    <h1 className='text-3xl font-bold text-gray-800'>{room?.name || "Library Name"}</h1>
-    <p className='text-lg text-gray-600'>{room?.shortDescription || "Short description of the library."}</p>
-  </div>
+            <div className="grid grid-cols-2 gap-4 ">
+              <p className="text-gray-600">Username: {room.libraryOwner.username}</p>
+              <p className="text-gray-600">Email: {room.libraryOwner.email}</p>
+              <p className="text-gray-600">Phone Number: {room.libraryOwner.phoneNumber}</p>
+              <p className="text-gray-600">Other Properties Length: {Object.keys(room.libraryOwner).length}</p>
+            </div>
 
-  {/* Main Content Section */}
-  <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-    <div>
-      <h2 className='text-xl font-bold text-gray-800'>Long Description</h2>
-      <p className='text-gray-600'>{room?.longDescription || "No long description available."}</p>
-    </div>
-    <div>
-      <h2 className='text-xl font-bold text-gray-800'>Address</h2>
-      <p className='text-gray-600'>{room?.address?.line1}</p>
-      <p className='text-gray-600'>{room?.address?.line2}</p>
-      <p className='text-gray-600'>
-        {room?.address?.city}, {room?.address?.state} - {room?.address?.pincode}
-      </p>
-    </div>
 
-    <div>
-      <h2 className='text-xl font-bold text-gray-800'>Amenities</h2>
-      <ul className='list-disc list-inside text-gray-600'>
-      {Object.entries(room?.amenities || {})
-          .filter(([_, value]) => value)
-          .map(([key]) => (
-            <li key={key}>{key.replace(/([A-Z])/g, ' $1')}</li>
-          )) || <li className='text-2xl text-black'>No amenities listed.</li>}
-      </ul>
-    </div>
+            <div className='flex gap-5 justify-around items-center'>
 
-    <div>
-      <h2 className='text-xl font-bold text-gray-800'>Legal</h2>
-      <p className='text-gray-600'>{room?.legal || "No legal information available."}</p>
-    </div>
-    <div>
-      <h2 className='text-xl font-bold text-gray-800'>Registration Fees</h2>
-      <p className='text-gray-600'>{room?.RegistrationFees}</p>
-    </div>
-    <div>
-      <h2 className='text-xl font-bold text-gray-800'>Status</h2>
-      <p className={`font-bold ${room?.approved ? 'text-green-600' : 'text-red-600'}`}>
-        {room?.approved ? 'Approved' : 'Pending'}
-      </p>
-    </div>
-  </div>
 
-</div>
+              {/* Aadhaar Card Section */}
+              <div className="mt-6">
+                <h2 className="text-lg font-semibold">Aadhaar Card</h2>
+                <div className="flex items-center mt-2">
+                  <button
+                    onClick={() => setShowAadhaar(!showAadhaar)}
+                    className="px-4 py-2 bg-blue-500 text-white rounded"
+                  >
+                    {showAadhaar ? 'Hide Aadhaar' : 'Show Aadhaar'}
+                  </button>
+                  {showAadhaar && (
+                    <div className="ml-4">
+                      <img
+                        src="/path-to-aadhaar-image.jpg"
+                        alt="Aadhaar Card"
+                        className="w-24 h-16"
+                      />
+                      <p className="text-gray-600">1234-5678-9101</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* PAN Card Section */}
+              <div className="mt-6">
+                <h2 className="text-lg font-semibold">PAN Card</h2>
+                <div className="flex items-center mt-2">
+                  <button
+
+                    onClick={() => setShowPanCard(!showPanCard)}
+                    className="px-4 py-2 bg-blue-500 text-white rounded"
+                  >
+                    {showPanCard ? 'Hide PAN' : 'Show PAN'}
+                  </button>
+                  {showPanCard && (
+                    <div className="ml-4">
+                      <img
+                        src="/path-to-pan-image.jpg"
+                        alt="PAN Card"
+                        className="w-24 h-16"
+                      />
+                      <p className="text-gray-600">ABCDE1234F</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Address Details */}
+
+            </div>
+            <div className="mt-6">
+              <h2 className="text-lg font-semibold">Address</h2>
+              <p className="text-gray-600">
+                {address.line1}, {address.line2}, {address.city}, {address.pincode}
+              </p>
+            </div>
+
           </>
         ) : (
-          <p className='text-gray-600'>No library details available.</p>
+          <p className='text-gray-600'>Loading...</p>
         )}
       </div>
     );
-    
-    const renderRoomDetails = () => (
-      <div>
-        <h2 className='text-xl font-bold text-gray-800'>Room Details</h2>
-        {room?.rooms.length ? (
+  };
+
+  const renderLibraryDetails = () => (
+    <div className='overflow-y-auto'>
+      <h2 className='text-xl font-bold text-gray-800'>Library Details</h2>
+      {room ? (
+        <>
+          <div className='p-8 flex flex-col gap-4 h-full overflow-y-auto'>
+            {/* Top Banner Section */}
+            <div className='flex flex-col items-center mb-6'>
+              <div className='flex w-full'>
+                <div className='w-1/2 pr-2'>
+                  <img
+                    src={room?.cardimage || "defaultCardImage.jpg"} // Default image if `cardimage` is unavailable
+                    alt={room?.name || "Library Card Image"}
+                    className='h-64 w-full object-cover rounded-lg mb-4'
+                  />
+                  <p className='text-sm text-gray-500'>This is the card image / thumbnail.</p>
+                </div>
+                <div className='w-1/2 pl-2 grid grid-cols-2 gap-2'>
+                  {room?.images?.slice(0, 4).map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`Room Image ${index + 1}`}
+                      className='h-32 w-full object-cover rounded-lg'
+                    />
+                  ))}
+                </div>
+              </div>
+              <h1 className='text-3xl font-bold text-gray-800'>{room?.name || "Library Name"}</h1>
+              <p className='text-lg text-gray-600'>{room?.shortDescription || "Short description of the library."}</p>
+            </div>
+
+            {/* Main Content Section */}
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+              <div>
+                <h2 className='text-xl font-bold text-gray-800'>Long Description</h2>
+                <p className='text-gray-600'>{room?.longDescription || "No long description available."}</p>
+              </div>
+              <div>
+                <h2 className='text-xl font-bold text-gray-800'>Address</h2>
+                <p className='text-gray-600'>{room?.address?.line1}</p>
+                <p className='text-gray-600'>{room?.address?.line2}</p>
+                <p className='text-gray-600'>
+                  {room?.address?.city}, {room?.address?.state} - {room?.address?.pincode}
+                </p>
+              </div>
+
+              <div>
+                <h2 className='text-xl font-bold text-gray-800'>Amenities</h2>
+                <ul className='list-disc list-inside text-gray-600'>
+                  {Object.entries(room?.amenities || {})
+                    .filter(([_, value]) => value)
+                    .map(([key]) => (
+                      <li key={key}>{key.replace(/([A-Z])/g, ' $1')}</li>
+                    )) || <li className='text-2xl text-black'>No amenities listed.</li>}
+                </ul>
+              </div>
+
+              <div>
+                <h2 className='text-xl font-bold text-gray-800'>Legal</h2>
+                <p className='text-gray-600'>{room?.legal || "No legal information available."}</p>
+              </div>
+              <div>
+                <h2 className='text-xl font-bold text-gray-800'>Registration Fees</h2>
+                <p className='text-gray-600'>{room?.RegistrationFees}</p>
+              </div>
+              <div>
+                <h2 className='text-xl font-bold text-gray-800'>Status</h2>
+                <p className={`font-bold ${room?.approved ? 'text-green-600' : 'text-red-600'}`}>
+                  {room?.approved ? 'Approved' : 'Pending'}
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </>
+      ) : (
+        <p className='text-gray-600'>No library details available.</p>
+      )}
+    </div>
+  );
+
+  const renderRoomDetails = () => (
+    <div>
+      <h2 className='text-xl font-bold text-gray-800'>Room Details</h2>
+      {/* {room?.rooms.length ? (
           room.rooms.map((roomDetail, index) => (
             <div key={index}>
               <p className='text-gray-600'>Room No: {roomDetail.roomNo}</p>
@@ -198,45 +282,56 @@ const ManageRooms = () => {
           ))
         ) : (
           <p className='text-gray-600'>No room details available.</p>
-        )}
-      </div>
-    );
-    
-    
+        )} */}
+    </div>
+  );
 
-    return (
-      <div className='p-8 flex flex-col gap-4 h-full '>
+
+  return (
+    <div className='p-8 flex flex-col gap-4  '>
       {/* Tabs */}
       <div className='flex justify-center mb-4 rounded-lg'>
-  <button
-    className={`px-4 py-2 mx-2 rounded-t-lg ${activeTab === 'userDetails' ? 'bg-blue-600 text-white border-b-4 border-blue-800' : 'bg-gray-200 text-gray-800'}`}
-    onClick={() => setActiveTab('userDetails')}
-  >
-    User Details
-  </button>
-  <button
-    className={`px-4 py-2 mx-2 rounded-t-lg ${activeTab === 'libraryDetails' ? 'bg-blue-600 text-white border-b-4 border-blue-800' : 'bg-gray-200 text-gray-800'}`}
-    onClick={() => setActiveTab('libraryDetails')}
-  >
-    Library Details
-  </button>
-  <button
-    className={`px-4 py-2 mx-2 rounded-t-lg ${activeTab === 'roomDetails' ? 'bg-blue-600 text-white border-b-4 border-blue-800' : 'bg-gray-200 text-gray-800'}`}
-    onClick={() => setActiveTab('roomDetails')}
-  >
-    Room Details
-  </button>
-</div>
+        <button
+          className={`px-4 py-2 mx-2 rounded-t-lg ${activeTab === 'userDetails' ? 'bg-blue-600 text-white border-b-4 border-blue-800' : 'bg-gray-200 text-gray-800'}`}
+          onClick={() => setActiveTab('userDetails')}
+        >
+          User Details
+        </button>
+        <button
+          className={`px-4 py-2 mx-2 rounded-t-lg ${activeTab === 'libraryDetails' ? 'bg-blue-600 text-white border-b-4 border-blue-800' : 'bg-gray-200 text-gray-800'}`}
+          onClick={() => setActiveTab('libraryDetails')}
+        >
+          Library Details
+        </button>
+        <button
+          className={`px-4 py-2 mx-2 rounded-t-lg ${activeTab === 'roomDetails' ? 'bg-blue-600 text-white border-b-4 border-blue-800' : 'bg-gray-200 text-gray-800'}`}
+          onClick={() => setActiveTab('roomDetails')}
+        >
+          Room Details
+        </button>
+      </div>
 
+      {room && (
+          <div className="col-span-2 flex justify-end gap-4">
+          <button
+            onClick={() => handleApprove(room._id, room?.approved)}
+            className={`px-4 py-2 rounded-lg ${room.approved ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}
+          >
+            {room.approved ? 'Disapprove' : 'Approve'}
+          </button>
+        </div>
+
+      )}
+    
 
       {/* Content */}
       <div className='bg-white p-6 rounded-lg shadow-md'>
-            {activeTab === 'userDetails' && renderUserDetails()}
-            {activeTab === 'libraryDetails' && renderLibraryDetails()}
-            {activeTab === 'roomDetails' && renderRoomDetails()}
-        </div>
-    </div>     
-    );
+        {activeTab === 'userDetails' && renderUserDetails()}
+        {activeTab === 'libraryDetails' && renderLibraryDetails()}
+        {activeTab === 'roomDetails' && renderRoomDetails()}
+      </div>
+    </div>
+  );
 };
 
 export default ManageRooms;
