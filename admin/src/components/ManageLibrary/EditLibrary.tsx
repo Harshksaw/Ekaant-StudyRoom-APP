@@ -169,6 +169,7 @@ const EditLibrary = () => {
 
           toast.success('Images updated successfully');
         }
+        setLibrary(response.data.data);
 
     } catch (error) {
       toast.error('Error updating images');
@@ -186,7 +187,7 @@ const EditLibrary = () => {
         libraryId : LibraryId.id, 
         roomId
       });
-      
+
       setLibrary(res.data.data);
       toast.success('Room deleted successfully');
     } catch (error) {
@@ -259,6 +260,7 @@ const EditLibrary = () => {
         <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='images'>
           Images
         </label>
+        <p>Upto 5 Images only</p>
         <div className='grid grid-cols-2 gap-4 border border-1 border-gray-800'>
 
         {library.images.map((image, index) => (
