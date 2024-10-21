@@ -20,6 +20,7 @@ import CreateRoom from "./components/ManageLibrary/CreateRoom";
 import ViewBookings from "./components/ManageBookings/ViewBookings";
 import Signup from "./Auth/Signup";
 import AdminBookings from "./components/Search";
+import EditLibrary from "./components/ManageLibrary/EditLibrary";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -59,6 +60,7 @@ function App() {
             element={<ViewLibrary />}
           />
           <Route path="/manage-library/my-library" element={<MyLibrary />} />
+          <Route path="/manage-library/edit-library/:id" element={<EditLibrary />} />
 
           <Route path="/manage-seats" element={<ManageSeats />} />
         </Route>

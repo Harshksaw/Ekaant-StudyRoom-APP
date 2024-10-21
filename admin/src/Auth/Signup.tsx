@@ -500,7 +500,6 @@ try{
       msmeNumber: libraryDetails.libraryLegal.msme,
     };
 
-    console.log(LibraryDataOBJ, "LibraryDataOBJ");
 
     const formData = new FormData();
 
