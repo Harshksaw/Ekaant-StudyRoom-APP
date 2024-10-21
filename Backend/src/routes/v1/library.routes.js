@@ -38,6 +38,13 @@ Library.post(
 
   LibraryController.createLibrary
 );
+
+Library.post("/updateAdminLibrary", LibraryController.EditAdminLibrary);
+Library.post("/updateLibraryImage/:id",upload.fields([
+  {name: "cardImage", maxCount: 1},
+  {name: "images", maxCount: 5},
+]) ,LibraryController.updateLibraryImages);
+
 Library.post("/createRoom", LibraryController.createRoom);
 Library.post("/updateRoom", LibraryController.addOrUpdateRoomDetails);
 Library.get("/getLibrary", LibraryController.getLibrary);
@@ -47,7 +54,8 @@ Library.post("/updateStatus", LibraryController.updateApproveStatus);
 Library.post("/getLibraryById", LibraryController.getLibraryById);
 Library.post("/getAdminLibraries", LibraryController.getAdminLibraries);
 Library.post("/getAllBookings", LibraryController.getAllBookings);
-Library.post("/UpdateLibrary", LibraryController.EditLibrary);
+Library.post("/deleteRoomLib", LibraryController.deleteRoom);
 
+// libraryId, roomId
 
 module.exports = Library;

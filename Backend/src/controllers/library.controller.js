@@ -1,6 +1,7 @@
 const { z } = require("zod");
 
 
+
 const { GetNearestLibraries } = require("../utils/location");
 const multer = require("multer");
 const express = require("express");
@@ -296,27 +297,31 @@ async function getAllBookings(req, res) {
   }
 }
 
-
-async function EditLibrary(req, res) {
+const EditAdminLibrary = async(req, res)=> {
   try {
-    console.log(req.body, "reqqq");
-    const { name, longDescription, shortDescription, amenities } = req.body;
-    const { libraryId } = req.body;
-    console.log("🚀 ~ EditLibrary ~ data:", name, longDescription, shortDescription, amenities);
-    console.log("🚀 ~ EditLibrary ~ libraryId:", libraryId)
-   
-    console.log("🚀 ~ EditLibrary ~ data:",    name,
-      longDescription,
-      shortDescription,
 
-      amenities,)
 
-    return;
-    const library = await Library.findByIdAndUpdate(libraryId, {})
+      const { name, shortDescription, longDescription, amenities, libraryId, address } = req.body;
+  
+
+
+
+
+      const library = await Library.findByIdAndUpdate(
+        libraryId,
+        {
+          name,
+          shortDescription,
+          longDescription,
+          amenities,
+          address
+        },
+        { new: true } // Return the updated document
+      );
     if (!library) {
       return res.status(404).json({ message: 'Library not found' });
     }
-    library.rooms = library.rooms.filter(room => room._id.toString() !== roomId);
+
     await library.save();
     res.status(200).json({ message: 'Room deleted successfully' });
   } catch (error) {
@@ -325,6 +330,72 @@ async function EditLibrary(req, res) {
   }
 }
 
+const updateLibraryImages = async (req, res) => {
+  try {
+    const  libraryId = req.params.id;
+
+    console.log('---', req.files);
+
+
+    const cardImage = req.files?.cardImage ? req.files.cardImage[0].path : null;
+    const images = req.files?.images ? req.files.images.map(file => file.path) : [];
+    // const images = req.files?.images 
+    console.log("🚀 ~ updateLibraryImages ~ images:", images)
+
+    const library = await Library.findById(libraryId);
+    if (!library) {
+      return res.status(404).json({ message: 'Library not found' });
+    }
+
+    if (cardImage) {
+      library.cardimage = cardImage;
+    }
+
+    if (images.length > 0) {
+      library.images = images;
+    }
+
+    await library.save();
+    res.status(200).json({ message: 'Library images updated successfully', data: library });
+  } catch (error) {
+    console.error('Error updating library images:', error);
+    res.status(500).json({ message: 'Error updating library images', error });
+  }
+};
+
+const deleteRoom = async (req, res) => {
+  try {
+    const { libraryId, roomId } = req.body;
+    console.log("🚀 ~ deleteRoom ~ libraryId:", libraryId)
+    console.log("🚀 ~ deleteRoom ~ roomId:", roomId)
+
+    const library = await Library.findById(libraryId);
+    if (!library) {
+      return res.status(404).json({ message: 'Library not found' });
+    }
+
+    const roomIndex = library.rooms.findIndex(room => room._id.toString() === roomId);
+    console.log("🚀 ~ deleteRoom ~ roomIndex:", roomIndex)
+    if (roomIndex === -1) {
+      return res.status(404).json({ message: 'Room not found' });
+    }
+    library.rooms.splice(roomIndex, 1);
+
+// Update room numbers for the remaining rooms (assuming roomNo is a simple 1-based index)
+library.rooms.forEach((room, index) => {
+  room.roomNo = index + 1; // Room numbers start from 1
+});
+
+// Save the updated library
+
+
+    await library.save();
+    res.status(200).json({ message: 'Room deleted successfully' , data: library});
+  } catch (error) {
+    console.error('Error deleting room:', error);
+    res.status(500).json({ message: 'Error deleting room', error });
+  }
+};
 module.exports = {
   pingAdmin,
   createLibrary,
@@ -337,5 +408,7 @@ module.exports = {
   addOrUpdateRoomDetails,
   getLibraryByUserId,
   getAllLibrary,
-  EditLibrary
+  EditAdminLibrary,
+  updateLibraryImages,
+  deleteRoom
 };

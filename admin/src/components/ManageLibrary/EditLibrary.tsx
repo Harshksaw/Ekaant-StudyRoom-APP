@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { BASEURL } from '@/lib/utils';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { useParams } from 'react-router-dom';
+import { set } from 'react-datepicker/dist/date_utils';
 
 interface Room {
   _id: string;
@@ -33,7 +34,17 @@ interface Amenities {
     separateWashroom: boolean;
     wifi: boolean;
   }
-const EditLibrary = ({ libraryId }: { libraryId: string }) => {
+  interface Address {
+    line1: string;
+    line2: string;
+    city: string;
+    state: string;
+    pincode: string;
+  }
+  
+const EditLibrary = () => {
+
+
     const [cardImage, setCardImage] = useState<any>(null);
     const [images, setImages] = useState<any>([]);
 
@@ -43,6 +54,13 @@ const EditLibrary = ({ libraryId }: { libraryId: string }) => {
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [longdescription, setLongDescription] = useState<string>('');
+  const [address, setAddress] = useState<Address>({
+    line1: '',
+    line2: '',
+    city: '',
+    state: '',
+    pincode: '',
+  });
 
   const [amenities, setAmenities] = useState<Amenities>({
     CommonParking: false,
@@ -59,6 +77,7 @@ const EditLibrary = ({ libraryId }: { libraryId: string }) => {
     wifi: false,
   });
   const LibraryId = useParams();
+  console.log("🚀 ~ EditLibrary ~ LibraryId:", LibraryId)
 
 
   useEffect(() => {
@@ -68,12 +87,13 @@ const EditLibrary = ({ libraryId }: { libraryId: string }) => {
         const response = await axios.post(`${BASEURL}/api/v1/library/getLibraryById`, {
             id : LibraryId.id
         });
-        console.log("🚀 ~ fetchLibrary ~ response:", response.data.data)
+
         setLibrary(response.data.data);
         setName(response.data.data.name);
         setDescription(response.data.data?.shortDescription);
         setLongDescription(response.data.data?.longDescription);
         setAmenities(response.data.data.amenities);
+        setAddress(response.data.data.address);
         // setImages(response.data.images);
       } catch (error) {
         toast.error('Error fetching library data');
@@ -84,41 +104,32 @@ const EditLibrary = ({ libraryId }: { libraryId: string }) => {
     };
 
     fetchLibrary();
-  }, [libraryId]);
+  }, []);
 
+
+ 
   const handleUpdateLibrary = async () => {
     setLoading(true);
 
 
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('shortDescription', description);
-    formData.append('longDescription', longdescription);
-    formData.append('amenities', JSON.stringify(amenities));
+    console.log("🚀 ~ handleUpdateLibrary ~ data:", name, description, longdescription, amenities);
+    console.log("🚀 ~ handleUpdateLibrary ~ LibraryId:", LibraryId.id);
 
-    formData.append('libraryId', libraryId);
+    const payload = {
+      libraryId: LibraryId.id,
+      name,
+      shortDescription: description,
+      longDescription: longdescription,
+      amenities,
+      address,
+    };
+
     try {
-
-
-        console.log(formData, "formData")
-        // if (cardImage) {
-        //   formData.append('cardImage', cardImage);
-        // }
-  
-        // if (images && images.length > 0) {
-        //     images.forEach((image, index) => {
-        //       formData.append('images', image);
-        //     });
-        //   }
-          for (let [key, value] of formData.entries()) {
-            console.log(`${key}:`, value);
-        }
-    
-        const response = await axios.post(`${BASEURL}/api/v1/library/UpdateLibrary`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+      const response = await axios.post(`${BASEURL}/api/v1/library/updateAdminLibrary`, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       setLibrary(response.data);
       toast.success('Library updated successfully');
     } catch (error) {
@@ -129,17 +140,54 @@ const EditLibrary = ({ libraryId }: { libraryId: string }) => {
     }
   };
 
+ 
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setAddress((prevAddress) => ({
+      ...prevAddress,
+      [name]: value,
+    }));
+  };
+
+  const updateLibraryImages = async () => {
+    setLoading(true);
+    const formData = new FormData();
+
+
+    if (cardImage) {
+        formData.append('cardImage', cardImage);
+      }
+  
+      if (images.length > 0) {
+        images.forEach((image, index) => {
+          formData.append('images', image);
+        });
+      }
+    try {
+      const response = await axios.post(`${BASEURL}/api/v1/library/updateLibraryImage/${LibraryId.id}`, formData);
+      if(response.status === 200) {
+
+          toast.success('Images updated successfully');
+        }
+
+    } catch (error) {
+      toast.error('Error updating images');
+      console.error('Error updating images:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
   const handleDeleteRoom = async (roomId: string) => {
+    console.log("🚀 ~ handleDeleteRoom ~ roomId:", roomId)
     setLoading(true);
     try {
-      await axios.delete(`${BASEURL}/api/library/${libraryId}/room/${roomId}`);
-      setLibrary((prevLibrary) => {
-        if (!prevLibrary) return null;
-        return {
-          ...prevLibrary,
-          rooms: prevLibrary.rooms.filter((room) => room._id !== roomId),
-        };
+      const res = await axios.post(`${BASEURL}/api/v1/library/deleteRoomLib`,{
+
+        libraryId : LibraryId.id, 
+        roomId
       });
+      
+      setLibrary(res.data.data);
       toast.success('Room deleted successfully');
     } catch (error) {
       toast.error('Error deleting room');
@@ -173,14 +221,69 @@ const EditLibrary = ({ libraryId }: { libraryId: string }) => {
     }
   };
 
-  const handleImageChange = (event) => {
-    const files = Array.from(event.target.files);
-    const imageFiles = files.map((file) => URL.createObjectURL(file)); // Create image URLs for preview
-    setImages((prevImages) => prevImages.concat(imageFiles)); // Add new images to the existing state
+
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    if (event.target.files) {
+      const files = Array.from(event.target.files);
+      if (files.length > 0) {
+     
+        setImages((prevImages) => [...prevImages, ...files]);
+      }
+    }
   };
+
   return (
     <div className='w-full h-full flex-1 p-6'>
       <h2 className='text-2xl font-bold mb-4'>Edit Library</h2>
+
+
+      <div>
+
+      <div className='mb-6'>
+        <label className='flex flex-row justify-center items-center text-gray-700 text-sm font-bold mb-2' htmlFor='cardImage'>
+          Card Image
+        </label>
+        {library.cardimage && <img src={library.cardimage} alt='Card' className='mb-4 w-96 h-72' />}
+        <input
+          id='cardImage'
+          type='file'
+          
+          onChange={handleCardImageChange}
+          className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+        />
+      </div>
+
+      <div className='mb-6'>
+        <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='images'>
+          Images
+        </label>
+        <div className='grid grid-cols-2 gap-4 border border-1 border-gray-800'>
+
+        {library.images.map((image, index) => (
+            <img key={index} src={image} alt={`Library ${index}`} className='mb-4 w-60 h-60' />
+        ))}
+        </div>
+        <input
+          id='images'
+          type='file'
+          multiple
+          onChange={handleImageChange}
+          className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+        />
+
+       
+      </div>
+      <button 
+      className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-10'
+      onClick={updateLibraryImages}>
+            Update ImageS
+        </button>
+
+      </div>
+
+
       <div className='mb-6'>
         <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='name'>
           Name
@@ -236,36 +339,71 @@ const EditLibrary = ({ libraryId }: { libraryId: string }) => {
       </div>
     
       <div className='mb-6'>
-        <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='cardImage'>
-          Card Image
+        <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='line1'>
+          Address Line 1
         </label>
-        {library.cardimage && <img src={library.cardimage} alt='Card' className='mb-4 w-96 h-72' />}
         <input
-          id='cardImage'
-          type='file'
-          onChange={handleCardImageChange}
+          id='line1'
+          name='line1'
+          type='text'
+          value={address.line1}
+          onChange={handleAddressChange}
           className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
         />
       </div>
-
       <div className='mb-6'>
-        <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='images'>
-          Images
+        <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='line2'>
+          Address Line 2
         </label>
-        <div className='grid grid-cols-2 gap-4 border border-1 border-gray-800'>
-
-        {library.images.map((image, index) => (
-            <img key={index} src={image} alt={`Library ${index}`} className='mb-4 w-60 h-60' />
-        ))}
-        </div>
         <input
-          id='images'
-          type='file'
-          multiple
-          onChange={handleImageChange}
+          id='line2'
+          name='line2'
+          type='text'
+          value={address.line2}
+          onChange={handleAddressChange}
           className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
         />
       </div>
+      <div className='mb-6'>
+        <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='city'>
+          City
+        </label>
+        <input
+          id='city'
+          name='city'
+          type='text'
+          value={address.city}
+          onChange={handleAddressChange}
+          className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+        />
+      </div>
+      <div className='mb-6'>
+        <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='state'>
+          State
+        </label>
+        <input
+          id='state'
+          name='state'
+          type='text'
+          value={address.state}
+          onChange={handleAddressChange}
+          className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+        />
+      </div>
+      <div className='mb-6'>
+        <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='pincode'>
+          Pincode
+        </label>
+        <input
+          id='pincode'
+          name='pincode'
+          type='text'
+          value={address.pincode}
+          onChange={handleAddressChange}
+          className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+        />
+      </div>
+    
 
 
       <button
