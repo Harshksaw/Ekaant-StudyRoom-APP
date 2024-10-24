@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 
-// Define the library schema
-
-//admin -> CreatRoom -> For review -> Approve/Disapprove(Admin) -> Room is live
+// Define the Booking schema
 
 const bookingSchema = new mongoose.Schema({
   userId: {
@@ -28,39 +26,36 @@ const bookingSchema = new mongoose.Schema({
     default: false,
     required: false,
   },
-  timeSlot: {
-    from: { type: String, required: false },
-    to: { type: String, required: false },
+  timeSlot: { // Suggesting Date format for more flexible queries
+    from: { type: String, required: false }, // You could switch this to Date if needed
+    to: { type: String, required: false },   // You could switch this to Date if needed
   },
   roomNo: {
     type: Number,
     required: true,
   },
-  bookedSeat: {
-    id: { type: String, required: false },
-    label: { type: String, required: false },
+  bookedSeat: { // Always provide seat info (id and label)
+    id: { type: String, required: true },    // Ensuring seatId is required for a valid booking
+    label: { type: String, required: true }, // Ensuring seatLabel is required
   },
   bookingDate: {
     type: Date,
-    // default: Date.now,
-    required: true,
+    required: true, // Assuming this is the date the booking is for
   },
-  forFriend:{
-    type: {
-      name: String,
-      email: String,
-      phoneNumber: String,
-    },
-    required: false,
+  forFriend: { // Structured as a sub-schema for clarity
+    name: { type: String, required: false },
+    email: { type: String, required: false },
+    phoneNumber: { type: String, required: false },
   },
-  bookingPeriod: {
+  bookingPeriod: { // Consider defining what the number represents (days, weeks, months)
     type: Number,
-    default: 1,
+    default: 1, // Default booking period (in months?)
     required: false,
   },
-  transactionDetails: {
-    type: {},
-    required: false,
+  transactionDetails: { // Structure for transaction details (optional, can be extended later)
+    transactionId: { type: String, required: false },
+    paymentMethod: { type: String, required: false }, // e.g., "card", "paypal", etc.
+    paymentStatus: { type: String, required: false }, // e.g., "completed", "failed", etc.
   },
   bookingStatus: {
     type: String,
@@ -73,13 +68,12 @@ const bookingSchema = new mongoose.Schema({
     default: false,
     required: false,
   },
-
   timeStamp: {
     type: Date,
-    default: Date.now,
+    default: Date.now, // When the booking was created
   },
 });
 
 module.exports = {
-  Booking : mongoose.model("Booking", bookingSchema),
+  Booking: mongoose.model("Booking", bookingSchema),
 };
