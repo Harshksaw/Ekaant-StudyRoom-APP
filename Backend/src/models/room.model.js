@@ -20,4 +20,8 @@ const roomSchema = new mongoose.Schema({
     ],
   });
   
+  module.exports = {
+    Library: mongoose.model("Room", roomSchema),
+  
+  };
   

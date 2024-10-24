@@ -56,39 +56,10 @@ const librarySchema = new mongoose.Schema({
   registrationFees: { type: Number, default: 500 },
 });
 
-// Define the booking schema to handle bookings
-const bookingSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  library: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Library",
-    required: true,
-  },
-  room: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Room", // Assuming you have a separate Room model
-    required: true,
-  },
-  seat: {
-    seatId: { type: String, required: true },
-    seatLabel: { type: String, required: true },
-  },
-  timeSlot: {
-    from: { type: String, required: true },
-    to: { type: String, required: true },
-  },
-  bookingDate: {
-    type: Date,
-    default: Date.now,
-  },
-});
+
 
 // Export the models
 module.exports = {
   Library: mongoose.model("Library", librarySchema),
-  Booking: mongoose.model("Booking", bookingSchema),
+
 };
