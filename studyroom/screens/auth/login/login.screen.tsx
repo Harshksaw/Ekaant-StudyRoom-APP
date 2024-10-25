@@ -26,6 +26,7 @@ const LoginScreen: React.FC = () => {
   const [loginOption, setLoginOption] = useState("password");
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
+  const [attempts, setAttempts] = useState(0);
   useEffect(() => {
     const getme = async () => {
       const res = await axios.get(`${BACKEND}/me`);
@@ -185,7 +186,7 @@ const LoginScreen: React.FC = () => {
   };
 
 
-  const sendOtp = () => {
+  const sendOtp = async() => {
     if (isBlocked) {
       Toast.show("You have reached the maximum number of attempts. Please try again later.", {
         type: "danger",
@@ -196,7 +197,13 @@ const LoginScreen: React.FC = () => {
     }
 
     if (phoneNumber.length === 10) {
-      axios
+      Toast.show("Sending OTP...", {
+        type: "info",
+        placement: "top",
+        duration: 2000,
+      });
+
+       await axios
         .post(`${BACKEND}/api/v1/auth/otp`, {
           phoneNumber,
         })

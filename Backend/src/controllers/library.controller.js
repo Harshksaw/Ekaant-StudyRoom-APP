@@ -251,7 +251,7 @@ const getLibraryById = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room = await Library.findById(id).populate("libraryOwner");
+    const room = await Library.findById(id).populate("libraryOwner").populate("rooms");
     res.status(200).json({
       success: true,
       message: "Library data",
@@ -267,7 +267,7 @@ const getLibraryByUserId = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room = await Library.findOne({ libraryOwner: id });
+    const room = await Library.findOne({ libraryOwner: id }).populate("rooms");
     res.status(200).json({
       success: true,
       message: "Library data",
@@ -301,7 +301,7 @@ const getAdminLibraries = async (req, res) => {
   try {
     const { userId } = req.body; // Assuming the userId is passed as a URL parameter
     console.log(userId, "userId");
-    const libraries = await Library.find({ libraryOwner: userId });
+    const libraries = await Library.find({ libraryOwner: userId })
     console.log(libraries, "libraries");
     res.json({
       message: "Libraries retrieved successfully",
