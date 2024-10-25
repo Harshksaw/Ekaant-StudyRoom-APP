@@ -1,4 +1,5 @@
 // Define the library schema
+const mongoose = require("mongoose");
 const librarySchema = new mongoose.Schema({
   libraryOwner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -10,8 +11,8 @@ const librarySchema = new mongoose.Schema({
   thumbnail: [{ type: String, required: false }],
   cardImage: { type: String, required: false },
   images: [{ type: String }],
-  location: { type: String, required: true },
-  address: { type: String, required: true },
+  location: [],
+  address: {},
 
   rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Room" }],
 

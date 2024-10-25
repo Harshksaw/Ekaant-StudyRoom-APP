@@ -1,13 +1,14 @@
 const { z } = require("zod");
 
 
-
+const { v4: uuidv4 } = require('uuid');
 const { GetNearestLibraries } = require("../utils/location");
 const multer = require("multer");
 const express = require("express");
 const cloudinary = require("cloudinary").v2;
 
 const { Library } = require("../models/library.model");
+const { Room } = require("../models/room.model");
 const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
 const { get } = require("mongoose");
@@ -95,8 +96,15 @@ const createLibrary = async (req, res) => {
 // createRoom
 const createRoom = async (req, res) => {
   try {
+    console.log(req.body, "=================>");
     const libraryId = req.body.libraryId; // Assuming you're getting the library ID from the request parameters
     const library = await Library.findById(libraryId);
+
+    if (!library) {
+      return res.status(404).send({ message: "Library not found" });
+    }
+
+    const {seatLayout, timeSlot, location} = req.body;
 
     if (!library) {
       return res.status(404).send({ message: "Library not found" });
@@ -105,21 +113,38 @@ const createRoom = async (req, res) => {
     // Determine the new roomNo
     let newRoomNo = 1;
     if (library.rooms.length > 0) {
-      const maxRoomNo = library.rooms.reduce(
-        (max, room) => (room.roomNo > max ? room.roomNo : max),
-        library.rooms[0].roomNo
-      );
+      const maxRoomNo = library.rooms.length
       newRoomNo = maxRoomNo + 1;
     }
+    console.log(newRoomNo, "newRoomNo");
 
     // Create the new room with the provided seatLayout
-    const newRoom = {
+    const newRoom = new Room({
+      library: libraryId,
       roomNo: newRoomNo,
-      seatLayout: req.body.seatLayout, // Assuming seatLayout is provided in the request body
-    };
+      seats: seatLayout.map(seat => ({
+        seatId: seat.id,
+        seatLabel: seat.label,
+        timeSlots: timeSlot.filter(slot => slot.from && slot.to).map(slot => ({
+          slotId: uuidv4(), // Generate a unique slotId
+          from: slot.from,
+          to: slot.to,
+          price : slot.price,
 
-    // Add the new room to the library's rooms array
-    library.rooms.push(newRoom);
+        })),
+      })),
+
+    });
+
+    // Save the new room document
+    await newRoom.save();
+
+    if (location) {
+      library.location = location;
+    }
+
+
+    library.rooms.push(newRoom._id);
 
     // Save the updated library document
     await library.save();

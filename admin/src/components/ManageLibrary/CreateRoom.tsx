@@ -87,9 +87,13 @@ const CreateRoom: React.FC = () => {
 
 
   const createRoom = async () => {
-    console.log("Creating Room", libraryId, seatLayout, selectedRoom, selectedLibrary);
 
-  
+    const formattedTimeSlots = timeSlots.map((timeSlot) => ({
+      ...timeSlot,
+      from: timeSlot.from ? dayjs(timeSlot.from).format("hh:mm A") : null,
+      to: timeSlot.to ? dayjs(timeSlot.to).format("hh:mm A") : null,
+    }));
+    console.log("Creating Room", libraryId, seatLayout, selectedRoom, selectedLibrary);
     try {
       setLoading(true);
       const response = await axios.post(
@@ -98,6 +102,8 @@ const CreateRoom: React.FC = () => {
           libraryId: libraryId,
 
           seatLayout: seatLayout,
+          timeSlot: formattedTimeSlots,
+          location: location,
         }
       );
       console.log(seatLayout, typeof seatLayout)
@@ -109,35 +115,35 @@ const CreateRoom: React.FC = () => {
   };
 
 
-  const addDetails = async () => {
+  // const addDetails = async () => {
 
-    const formattedTimeSlots = timeSlots.map((timeSlot) => ({
-      ...timeSlot,
-      from: timeSlot.from ? dayjs(timeSlot.from).format("hh:mm A") : null,
-      to: timeSlot.to ? dayjs(timeSlot.to).format("hh:mm A") : null,
-    }));
+  //   const formattedTimeSlots = timeSlots.map((timeSlot) => ({
+  //     ...timeSlot,
+  //     from: timeSlot.from ? dayjs(timeSlot.from).format("hh:mm A") : null,
+  //     to: timeSlot.to ? dayjs(timeSlot.to).format("hh:mm A") : null,
+  //   }));
 
-    console.log(formattedTimeSlots);
-    // console.log(seatLayout);
+  //   console.log(formattedTimeSlots);
+  //   // console.log(seatLayout);
 
-    console.log("Adding Details", libraryId,  location);
-    try {
-         await axios.post(
-        `${BASEURL}/api/v1/library/updateRoom`,
-        {
-          libraryId: libraryId,
+  //   console.log("Adding Details", libraryId,  location);
+  //   try {
+  //        await axios.post(
+  //       `${BASEURL}/api/v1/library/updateRoom`,
+  //       {
+  //         libraryId: libraryId,
 
-          timeSlot: formattedTimeSlots,
-          location: location,
-        }
-      );
-      toast.success("Room Created/updated Successfully")
-      setLoading(false);
-    } catch (error) {
-      console.error("Error creating room:", error);
-      // Handle error
-    }
-  };
+  //         timeSlot: formattedTimeSlots,
+  //         location: location,
+  //       }
+  //     );
+  //     toast.success("Room Created/updated Successfully")
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error("Error creating room:", error);
+  //     // Handle error
+  //   }
+  // };
 
 
 
@@ -165,7 +171,7 @@ const CreateRoom: React.FC = () => {
 
       await createRoom();
 
-      await addDetails();
+      // await addDetails();
       toast.success("Room Created/updated Successfully")
       // window.location.reload();
 
