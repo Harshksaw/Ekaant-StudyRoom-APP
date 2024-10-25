@@ -11,9 +11,13 @@ const appSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    locationImage: {
+      type: String,
+      required: false,
+    },
     coords: {
       type: [Number],
-      required: true,
+      required: false,
 
     }
   }]
