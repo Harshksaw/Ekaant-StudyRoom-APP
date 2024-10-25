@@ -1,5 +1,8 @@
 import StateDropdown from "@/components/StateSelector";
+
 import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 export const StepThree = ({
   nextStep,
   prevStep,
@@ -50,9 +53,9 @@ export const StepThree = ({
         <DatePicker
           selected={userDetails.dob}
           onChange={handleDateChange}
-          dateFormat="yyyy/MM/dd"
+          dateFormat="Pp"
           placeholderText="Select your date of birth"
-          className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          // className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           id="adminDob"
         />
         {/* <input

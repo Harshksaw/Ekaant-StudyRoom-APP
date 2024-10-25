@@ -11,6 +11,8 @@ import { StepFour } from "./Signup/Step4";
 import { StepOne } from "./Signup/Step1";
 import { StepFive } from "./Signup/Step5";
 
+
+import "react-datepicker/dist/react-datepicker.css";
 import { BASEURL } from "@/lib/utils";
 import axios from "axios";
 // @ts-ignore
@@ -346,7 +348,7 @@ try{
     const createUserName = `${userDetails.fullName
       .split(" ")
       .join("")
-      .toLowerCase()}${userDetails.dob.split("-").join("")
+      .toLowerCase()}${userDetails.dob
       }${Math.floor(Math.random() * 1000)
       }`;
 
@@ -596,7 +598,7 @@ try{
 
     setCurrentStep(currentStep + 1);
   };
-  const prevStep = () => setCurrentStep(currentStep - 1);
+  const prevStep = () =>  setCurrentStep(currentStep - 1);
 
   const renderStep = () => {
     switch (currentStep) {
