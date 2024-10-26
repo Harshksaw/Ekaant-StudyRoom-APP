@@ -418,8 +418,8 @@ const deleteRoom = async (req, res) => {
 
 
 
-    await library.save();
-    res.status(200).json({ message: 'Room deleted successfully' , data: library});
+    const lib = await library.save();
+    res.status(200).json({ message: 'Room deleted successfully' , data: lib});
   } catch (error) {
     console.error('Error deleting room:', error);
     res.status(500).json({ message: 'Error deleting room', error });
