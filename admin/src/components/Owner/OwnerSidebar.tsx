@@ -1,5 +1,5 @@
 
-import { FaRegSun, FaStickyNote } from "react-icons/fa";
+import { FaReact, FaRegSun, FaStickyNote } from "react-icons/fa";
 import dashboard from "../../assets/images/chart-pie.png";
 
 
@@ -13,16 +13,9 @@ const OwnerSidebar = () => {
           <img src={dashboard} alt="" className="w-4 h-4 cursor-pointer" />
           <p className="text-base font-bold text-green-600">Dashboard</p>
         </div>
-        <div className="">
-          <div className="flex items-center justify-between cursor-pointer">
-            {/* <div className="flex items-center gap-2 ">
-              <FaRegSun color="black" />
+        <div className="flex flex-col   cursor-pointer gap-10 ">
 
-              <p className="text-[16px] leading-5 font-normal text-black">
-                <Link to="admin/manage-rooms">Manage Room</Link>
-              </p>
-            </div> */}
-          </div>
+
 
           <div className="flex items-center justify-between cursor-pointer">
             <div className="flex items-center gap-2 bg-slate-300 p-2 rounded-xl">
@@ -33,8 +26,17 @@ const OwnerSidebar = () => {
             </div>
           </div>
 
-          
+          <div className="flex items-center justify-between cursor-pointer w-full ">
+            <div className="flex items-center gap-2 bg-slate-300 p-2 rounded-xl ">
+              <FaReact color="black" />
+              <p className="text-[16px] leading-5 font-normal text-black">
+                <Link to="/admin/app-config">APP Config</Link>
+              </p>
+            </div>
+          </div>
+
         </div>
+
         <div className="pt-4 border-b border-black pb-4 gap-5">
           <div className="flex items-center justify-between gap-[10px] py-[15px] cursor-pointer">
             <div className="flex items-center gap-[10px]">

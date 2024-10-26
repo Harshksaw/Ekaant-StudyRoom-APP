@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const { string } = require("zod");
 
 const AdminSchema = new mongoose.Schema({
   username: {
@@ -17,6 +18,9 @@ const AdminSchema = new mongoose.Schema({
     required: true,
     maxLength: 10,
     minLength: 10,
+  },
+  Dob: {
+    
   },
   password: {
     type: String,
@@ -43,8 +47,7 @@ const AdminSchema = new mongoose.Schema({
     },
 
     adhaarCardFile: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'File',
+      type:String,
       required: true,
     }
 
@@ -57,8 +60,7 @@ const AdminSchema = new mongoose.Schema({
     },
 
     panCardFile: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'File',
+      type:String,
       required: true,
     }
 

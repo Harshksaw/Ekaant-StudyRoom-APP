@@ -44,9 +44,12 @@ Library.post("/updateLibraryImage/:id",upload.fields([
   {name: "cardImage", maxCount: 1},
   {name: "images", maxCount: 5},
 ]) ,LibraryController.updateLibraryImages);
-
+//Create Room
 Library.post("/createRoom", LibraryController.createRoom);
+
+
 Library.post("/updateRoom", LibraryController.addOrUpdateRoomDetails);
+
 Library.get("/getLibrary", LibraryController.getLibrary);
 Library.post("/getAllLibrary", LibraryController.getAllLibrary);
 Library.get("/getLibrarybyUserId", LibraryController.getLibraryByUserId);
