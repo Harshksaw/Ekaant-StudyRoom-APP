@@ -222,6 +222,7 @@ const getAllLibrary = async (req, res) => {
       { $match: { "locations.location": city } }, // Match the specific city
       { $project: { _id: 0, coords: "$locations.coords" } }, // Project the coordinates
     ]);
+
     // console.log("🚀 ~ getAllLibrary ~ cityCoordinates:", cityCoordinates[0].coords)
 
     const roomsData = await Library.find({ approved: true });
