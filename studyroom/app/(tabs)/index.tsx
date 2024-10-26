@@ -54,7 +54,7 @@ export default function index() {
   const [bannerImage, setBannerImage] = useState([]);
   const [locationData, setLocationData] = useState(null);
 
-  const [selectedLocation, setSelectedLocation] = useState("Delhi");
+  const [selectedLocation, setSelectedLocation] = useState("");
 
   const handleLocationChange = (location) => {
     setSelectedLocation(location);
@@ -90,9 +90,17 @@ export default function index() {
     // const data = JSON.parse(res);
     return res;
   };
+
+  const fetchSelectedLocation = async () => {
+    const location = await AsyncStorage.getItem("selectedLocation");
+    setSelectedLocation(location);
+  };
+
   const fetchLibraryDate = async () => {
     const res = await getUserData();
-    // console.log("User Data:", res);
+
+ 
+
     dispatch(setUserDetails(res));
 
     setIsLoading(true);
@@ -131,12 +139,16 @@ export default function index() {
   };
 
   useEffect(() => {
+    fetchSelectedLocation();
     getAppData();
 
   
     // getTokenAndPrintIt();
 
-    fetchLibraryDate();
+    if(selectedLocation){
+
+      fetchLibraryDate();
+    }
   }, [reload, selectedLocation]);
 
   const [assets, error] = useAssets([

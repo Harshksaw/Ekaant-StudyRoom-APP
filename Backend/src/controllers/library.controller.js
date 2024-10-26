@@ -392,31 +392,34 @@ const updateLibraryImages = async (req, res) => {
 const deleteRoom = async (req, res) => {
   try {
     const { libraryId, roomId } = req.body;
-    console.log("🚀 ~ deleteRoom ~ libraryId:", libraryId)
-    console.log("🚀 ~ deleteRoom ~ roomId:", roomId)
 
-    const library = await Library.findById(libraryId);
+
+    const library = await Library.findById(libraryId).populate('rooms');
     if (!library) {
       return res.status(404).json({ message: 'Library not found' });
     }
 
     const roomIndex = library.rooms.findIndex(room => room._id.toString() === roomId);
-    console.log("🚀 ~ deleteRoom ~ roomIndex:", roomIndex)
+
     if (roomIndex === -1) {
       return res.status(404).json({ message: 'Room not found' });
     }
     library.rooms.splice(roomIndex, 1);
 
-// Update room numbers for the remaining rooms (assuming roomNo is a simple 1-based index)
-library.rooms.forEach((room, index) => {
-  room.roomNo = index + 1; // Room numbers start from 1
-});
 
-// Save the updated library
+    await Room.findByIdAndDelete(roomId);
+    for (let i = 0; i < library.rooms.length; i++) {
+      const room = await Room.findById(library.rooms[i]._id);
+      if (room) {
+        room.roomNo = i + 1; // Room numbers start from 1
+        await room.save();
+      }
+    }
 
 
-    await library.save();
-    res.status(200).json({ message: 'Room deleted successfully' , data: library});
+
+    const lib = await library.save();
+    res.status(200).json({ message: 'Room deleted successfully' , data: lib});
   } catch (error) {
     console.error('Error deleting room:', error);
     res.status(500).json({ message: 'Error deleting room', error });
