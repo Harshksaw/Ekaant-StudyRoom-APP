@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDropzone } from 'react-dropzone';
-import { FaEdit, FaTrash } from "react-icons/fa";
+import {  FaTrash } from "react-icons/fa";
 
 
 interface BannerFile extends File {
@@ -82,7 +82,7 @@ const LocationForm1 = () => {
   const [locationImage, setLocationImage] = useState<any>(null);
   const [locations , setLocations] = useState<any>([]);
 
-  const [editingLocation, setEditingLocation] = useState<any>(null);
+
   const fetchLocations = async () => {
     try {
       const response = await axios.get(`${BASEURL}/api/v1/app/getLocations`);
@@ -145,9 +145,7 @@ const LocationForm1 = () => {
       onSubmit={handleSubmit}
       className="bg-white shadow-md rounded-lg p-8 w-full md:w-1/2 mb-4 md:mb-0 md:mr-4"
     >
-      <h2 className="text-2xl font-semibold text-center mb-6">
-        {editingLocation ? 'Edit Location' : 'Add New Location'}
-      </h2>
+    
       <div className="mb-4">
         <label htmlFor="location" className="block text-gray-700">
           City Name:
@@ -172,12 +170,7 @@ const LocationForm1 = () => {
           <p className="text-gray-500">Drag 'n' drop a location image here, or click to select one</p>
         )}
       </div>
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 transition duration-200"
-      >
-        {editingLocation ? 'Update Location' : 'Add Location'}
-      </button>
+     
     </form>
   
     <div className="bg-white shadow-md rounded-lg p-8 w-full md:w-1/2 mb-32 md:mt-0 max-h-[800px] overflow-y-auto">
