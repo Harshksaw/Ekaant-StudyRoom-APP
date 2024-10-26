@@ -128,6 +128,12 @@ const LocationForm1 = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+
+      if(response.status === 200){
+        toast.success("Location added successfully");
+        fetchLocations();
+
+      }
       console.log('Location added successfully:', response.data);
     } catch (error) {
       console.error('Error adding location:', error);
@@ -169,7 +175,13 @@ const LocationForm1 = () => {
         ) : (
           <p className="text-gray-500">Drag 'n' drop a location image here, or click to select one</p>
         )}
+
       </div>
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 transition duration-200">
+          Submit
+          </button>
      
     </form>
   
