@@ -10,6 +10,7 @@ import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { useAssets } from "expo-asset";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from 'expo-router';
 
 const { width, height } = Dimensions.get("window");
 
@@ -23,21 +24,22 @@ const Header = ({ color }: any) => {
     require("../assets/icons/Headerloc.svg"),
   ]);
 
-  useEffect(() => {
-    const fetchLocation = async () => {
-      try {
-        const location = await AsyncStorage.getItem('selectedLocation');
-        if (location) {
-          setSelectedLocation(location);
-        }
-      } catch (error) {
-        console.error('Failed to fetch location from AsyncStorage', error);
+  const fetchLocation = async () => {
+    try {
+      const location = await AsyncStorage.getItem('selectedLocation');
+      if (location) {
+        setSelectedLocation(location);
       }
-    };
+    } catch (error) {
+      console.error('Failed to fetch location from AsyncStorage', error);
+    }
+  };
 
-    fetchLocation();
-  }, []);
-
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchLocation();
+    }, [])
+  );
   return (
     <View style={styles.header}>
       <View style={styles.citySelector}>
