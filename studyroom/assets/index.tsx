@@ -10,7 +10,8 @@ import Svg, {
   Use,
   Image,
   Circle,
-  Text as SvgText
+  Text as SvgText,
+  ClipPath
 } from "react-native-svg";
 const Profile = (props: SvgProps) => (
   <Svg
@@ -63,46 +64,53 @@ const Home = (props: SvgProps) => (
 
 const Jobs = (props: SvgProps) => (
   <Svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlnsXlink="http://www.w3.org/1999/xlink"
-    width={40}
-    height={40}
-    color="blue"
-
-
-  fill={"#0077B6"}
-  style={{
-
-
-  }}
-    // fill={props?.focused ? "#0077B6" : "#263238"}
     {...props}
+    xmlns="http://www.w3.org/2000/svg"
+    width={42}
+    height={42}
+    viewBox="0 0 50 50"
+
+    stroke={props.focused ? "#0077B6" : "#263238"}
+    fill={props.focused ? "#0077B6" : "#263238"}
   >
-    <Path fill="url(#a)" d="M0 0h40v40H0z"  />
-    <Defs
-    
+    <Defs 
+
     >
-      <Pattern
-        id="a"
-        width={4}
-        height={4}
-        patternContentUnits="objectBoundingBox"
-
-      >
-        <Use xlinkHref="#b" transform="scale(.00781)" />
-      </Pattern>
-      <Image
-        xlinkHref="data:image/png;base64,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"
-        id="b"
-
-
-
-
-        width={128}
-        height={128}
-
-      />
+      <ClipPath id="a">
+        <Path d="M10 3.2h28V15H10Zm0 0" />
+      </ClipPath>
+      <ClipPath id="b">
+        <Path d="M.488 12h47.02v32.34H.488Zm0 0" />
+      </ClipPath>
+      <ClipPath id="c">
+        <Path d="M27 22h20.508v3H27Zm0 0" />
+      </ClipPath>
+      <ClipPath id="d">
+        <Path d="M.488 22H21v3H.488Zm0 0" />
+      </ClipPath>
     </Defs>
+    <G clipPath="url(#a)">
+      <Path 
+          stroke={props.focused ? "#0077B6" : "#263238"}
+
+      fill={props.focused ? "#0077B6" : "#263238"}
+      d="M37.332 14.227H11.715c-.25 0-.461-.09-.637-.266a.867.867 0 0 1-.265-.637V7.938c0-.313.03-.622.093-.926.059-.305.149-.602.27-.887.12-.29.265-.563.441-.82a4.734 4.734 0 0 1 1.313-1.309c.258-.172.535-.316.82-.437.29-.118.586-.207.895-.27.304-.062.617-.094.93-.094h16.898c.312 0 .62.032.93.094.304.063.6.152.89.27.289.12.562.265.824.437.258.176.5.371.719.59.223.219.418.46.594.719.172.258.32.53.437.82a4.66 4.66 0 0 1 .367 1.813v5.386c0 .25-.09.461-.265.637a.874.874 0 0 1-.637.266Zm-23.715-1.801h22.809V7.937a2.919 2.919 0 0 0-.864-2.082 2.949 2.949 0 0 0-.96-.636 2.938 2.938 0 0 0-1.13-.223H15.575a2.958 2.958 0 0 0-2.09.86 2.883 2.883 0 0 0-.64.957c-.153.359-.227.734-.227 1.125Zm0 0" />
+    </G>
+    <Path
+   stroke={props.focused ? "#0077B6" : "#263238"}
+
+   fill={props.focused ? "#0077B6" : "#263238"}
+    d="M33.227 14.227h-18.41c-.25 0-.462-.09-.637-.266a.867.867 0 0 1-.266-.637V8.25c0-.262.05-.512.152-.75a1.956 1.956 0 0 1 1.825-1.215h16.265c.262 0 .516.05.758.149.242.101.453.242.64.425.184.188.325.399.426.641.102.238.153.488.153.75v5.074c0 .25-.09.461-.266.637a.876.876 0 0 1-.64.266Zm-17.508-1.801h16.605V8.25c0-.113-.054-.168-.168-.168h-16.27c-.113 0-.167.055-.167.168Zm0 0" />
+    <G clipPath="url(#b)">
+      <Path d="M43.855 44.34H4.191c-.484 0-.945-.09-1.39-.278a3.637 3.637 0 0 1-1.18-.78c-.34-.34-.601-.731-.789-1.177a3.568 3.568 0 0 1-.277-1.382V16.047a3.601 3.601 0 0 1 1.066-2.559c.34-.34.734-.601 1.18-.785a3.606 3.606 0 0 1 1.39-.277h39.664a3.62 3.62 0 0 1 2.567 1.062 3.601 3.601 0 0 1 1.066 2.559v24.676c0 .48-.093.941-.277 1.382a3.62 3.62 0 0 1-1.965 1.957 3.55 3.55 0 0 1-1.39.278ZM4.191 14.227c-.242 0-.476.043-.699.136a1.83 1.83 0 0 0-.992.984c-.094.227-.14.458-.14.7v24.676c0 .242.046.472.14.695.094.223.227.422.398.59.172.172.368.304.594.394.223.094.457.141.7.141h39.663c.243 0 .477-.047.7-.14.222-.09.422-.223.593-.395.172-.168.305-.367.395-.59a1.77 1.77 0 0 0 .14-.695V16.047c0-.242-.046-.473-.14-.7a1.759 1.759 0 0 0-.395-.59 1.9 1.9 0 0 0-.593-.394 1.785 1.785 0 0 0-.7-.136Zm0 0" />
+    </G>
+    <G clipPath="url(#c)">
+      <Path d="M46.586 24.266H27.965c-.25 0-.461-.09-.637-.266a.865.865 0 0 1-.265-.633c0-.25.09-.46.265-.637a.864.864 0 0 1 .637-.261h18.62c.25 0 .462.086.642.261a.864.864 0 0 1 .261.637.861.861 0 0 1-.261.633.882.882 0 0 1-.641.266Zm0 0" />
+    </G>
+    <G clipPath="url(#d)">
+      <Path d="M20.078 24.266H1.457A.874.874 0 0 1 .82 24a.865.865 0 0 1-.265-.633c0-.25.09-.46.265-.637a.87.87 0 0 1 .637-.261h18.621c.25 0 .465.086.64.261a.867.867 0 0 1 .266.637c0 .246-.09.457-.265.633a.876.876 0 0 1-.64.266Zm0 0" />
+    </G>
+    <Path d="M27.965 27.469h-7.887a.87.87 0 0 1-.637-.262.867.867 0 0 1-.265-.637v-6.406c0-.25.09-.46.265-.637a.874.874 0 0 1 .637-.265h7.887c.25 0 .46.09.637.265.18.176.265.387.265.637v6.406c0 .25-.086.461-.265.637a.864.864 0 0 1-.637.262Zm-6.98-1.797h6.078v-4.61h-6.079Zm0 0" />
   </Svg>
 );
 

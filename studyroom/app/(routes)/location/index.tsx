@@ -6,6 +6,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from 'expo-router';
 
+import axios from 'axios';
+import { BACKEND } from '@/utils/config';
+
+
 
 
 const LocationsScreen = () => {
@@ -29,6 +33,10 @@ const LocationsScreen = () => {
 
         // const citiesData = useSelector((state) => state.app);
 
+        const res = await axios.get(`${BACKEND}/api/v1/app/getApp`);
+        const citiesData = res.data.data;
+        console.log("🚀 ~ fetchData ~ res:", res.data.data.locations)
+
         setLocations(citiesData.locations);
       } catch (error) {
         console.error('Failed to fetch data', error);
@@ -40,7 +48,7 @@ const LocationsScreen = () => {
   }, []);
 
   const handleLocationSelect = async (location) => {
-    console.log('Selected location:', location);
+
     setSelectedLocation(location);
 
     try {
@@ -63,7 +71,7 @@ const LocationsScreen = () => {
         numColumns={3}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.gridItem} onPress={() => handleLocationSelect(item)}>
-            <Image source={{ uri: item?.image || "https://th.bing.com/th/id/OIP.m78y_Nupeq-RtHFEeNk5PwHaH5?rs=1&pid=ImgDetMain" }} style={styles.image} />
+            <Image source={{ uri: item?.locationImage || "https://th.bing.com/th/id/OIP.m78y_Nupeq-RtHFEeNk5PwHaH5?rs=1&pid=ImgDetMain" }} style={styles.image} />
             <Text style={styles.locationItem}>{item?.location}</Text>
           </TouchableOpacity>
         )}
