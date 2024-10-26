@@ -38,6 +38,8 @@ import axios from "axios";
 import { set } from "react-native-reanimated";
 import { setAppDetails } from "@/redux/appSlice";
 import CustomLoader from "@/components/CustomLoader";
+import { Toast } from "react-native-toast-notifications";
+import { Success } from '@/assets';
 export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
@@ -79,7 +81,7 @@ export default function index() {
       console.error("Failed to fetch banner image data:", error);
     }
   };
-  //TODO tanstackquery , redux save in Appslice
+
 
   dispatch(setAppDetails(locationData || []));
 
@@ -88,34 +90,50 @@ export default function index() {
     // const data = JSON.parse(res);
     return res;
   };
+  const fetchLibraryDate = async () => {
+    const res = await getUserData();
+    // console.log("User Data:", res);
+    dispatch(setUserDetails(res));
+
+    setIsLoading(true);
+    setReload(false);
+
+    // console.log("Selected Location:109", selectedLocation);
+    try {
+      const fetchedData = await fetchRoomData({ selectedLocation });
+      setData(fetchedData || []);
+
+      Toast.show(" fetched room data", {
+        type: "Success",
+
+          successColor: "#00ff55",
+
+        duration: 3000,
+
+        
+      });
+      // console.log("Fetched Data:________", fetchedData);
+    } catch (error) {
+      Toast.show("Failed to fetch room data", {
+        type: "error",
+        duration: 3000,
+
+      });
+      console.error("Failed to fetch room data:", error);
+      setData(null);
+
+      setNotAvailable(true);
+      // Handle the error as needed, e.g., set an error state, show a message, etc.
+      // For example, setError("Failed to load data. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     getAppData();
 
-    const fetchLibraryDate = async () => {
-      const res = await getUserData();
-      // console.log("User Data:", res);
-      dispatch(setUserDetails(res));
-
-      setIsLoading(true);
-      setReload(false);
-
-      // console.log("Selected Location:109", selectedLocation);
-      try {
-        const fetchedData = await fetchRoomData({ selectedLocation });
-        setData(fetchedData || []);
-        // console.log("Fetched Data:________", fetchedData);
-      } catch (error) {
-        console.error("Failed to fetch room data:", error);
-        setData(null);
-
-        setNotAvailable(true);
-        // Handle the error as needed, e.g., set an error state, show a message, etc.
-        // For example, setError("Failed to load data. Please try again later.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  
     // getTokenAndPrintIt();
 
     fetchLibraryDate();
@@ -297,20 +315,21 @@ export default function index() {
     setStickyHeight(event.nativeEvent.layout.height);
   };
 
+
+  const userDetails = useSelector((state: any) => state.user);
+
+  const userData = JSON.parse(userDetails.details)?.data?.username;
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     getAppData();
+    fetchLibraryDate();
+    
 
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
-
-  const userDetails = useSelector((state: any) => state.user);
-
-  const userData = JSON.parse(userDetails.details)?.data?.username;
-  // console.log("🚀 ~ index ~ userData:", userData)
-
   return (
     <SafeAreaView
       style={{
@@ -377,9 +396,7 @@ export default function index() {
               <View
                 style={{
                   flex: 1,
-                  // borderWidth: 1,
-
-                  justifyContent: "center",
+justifyContent: "center",
                   alignItems: "center",
 
                   padding: 30,

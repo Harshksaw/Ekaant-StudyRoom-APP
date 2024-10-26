@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker } from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,7 +20,8 @@ const LocationsScreen = () => {
   const dispatch = useDispatch();
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [locations, setLocations] = useState([]);
-
+  const [filteredLocations, setFilteredLocations] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const citiesData = useSelector((state) => state.app);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ const LocationsScreen = () => {
         console.log("🚀 ~ fetchData ~ res:", res.data.data.locations)
 
         setLocations(citiesData.locations);
+        setFilteredLocations(citiesData.locations);
       } catch (error) {
         console.error('Failed to fetch data', error);
       }
@@ -48,11 +50,12 @@ const LocationsScreen = () => {
   }, []);
 
   const handleLocationSelect = async (location) => {
+  console.log("🚀 ~ handleLocationSelect ~ location:", location)
 
     setSelectedLocation(location);
 
     try {
-        console.log("🚀 ~ handleLocationSelect ~ location.name:", location.location)
+
       await AsyncStorage.setItem('selectedLocation', location.location);
     } catch (error) {
       console.error('Failed to save location to AsyncStorage', error);
@@ -60,13 +63,29 @@ const LocationsScreen = () => {
 
     navigation.goBack();
   };
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setFilteredLocations(
+        locations.filter((location) =>
+          location.location.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    }, 400); // Delay of 300ms
 
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, locations]);
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Select a location</Text>
-  
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search locations..."
+        value={searchQuery}
+
+        onChangeText={(text) => setSearchQuery(text)}
+      />
       <FlatList
-        data={locations}
+         data={filteredLocations}
         keyExtractor={(item) => item._id} // Ensure each item has a unique key
         numColumns={3}
         renderItem={({ item }) => (
@@ -97,6 +116,15 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     alignItems: 'center',
+  },
+  searchBar: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginHorizontal: 20,
+    paddingHorizontal:20,
+    marginBottom: 16,
   },
   image: {
     width: 80,
