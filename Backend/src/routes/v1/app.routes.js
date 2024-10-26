@@ -34,6 +34,9 @@ AppRouter.post("/editLocations",upload.single('locationImage'), appController.ed
 AppRouter.post("/getcityCoordinates", appController.getCityCoord);
 
 
+AppRouter.get('/getLocations', appController.getLocations);
+AppRouter.delete('/getLocations/:locationId', appController.deleteLocations);
+
 
 
 module.exports = AppRouter;

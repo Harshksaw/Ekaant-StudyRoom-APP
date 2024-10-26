@@ -179,7 +179,55 @@ async function editLocations(req, res) {
 }
 
 
+async function getLocations(req, res) {
 
+  try {
+
+    const app = await App.findById({ _id: "66e255d999bd0963775bde89" });
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      message: "App details fetched successfully",
+      data: app.locations,
+    });
+    
+  } catch (error) {
+    console.error("Error fetching app details: ", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Error fetching app details",
+      error: error.message,
+    });
+    
+  }
+}
+
+
+
+async function deleteLocations(req, res) {
+  try {
+    const { locationId } = req.params;
+    console.log("🚀 ~ deleteLocations ~ locationId:", locationId)
+
+    const updatedLocations = await App.findByIdAndUpdate(
+      "66e255d999bd0963775bde89",
+      { $pull: { locations: { _id: locationId } } },
+      { new: true }
+    );
+
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Locations deleted successfully",
+      data: updatedLocations,
+    })
+  } catch (error) {
+    console.error("Error deleting locations: ", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Error deleting locations",
+      error: error.message,
+    });
+  }
+}
 
 
 
@@ -189,6 +237,8 @@ module.exports = {
   getApp,
   editBanner,
   editLocations,
-  getCityCoord
+  getCityCoord,
+  getLocations,
+  deleteLocations
 };
 
