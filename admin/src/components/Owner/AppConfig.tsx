@@ -173,7 +173,7 @@ const LocationForm1 = () => {
      
     </form>
   
-    <div className="bg-white shadow-md rounded-lg p-8 w-full md:w-1/2 mb-32 md:mt-0 max-h-[800px] overflow-y-auto">
+    <div className="bg-white shadow-md rounded-lg p-8 w-full md:w-1/2 mb-32 md:mt-0 max-h-[600px] overflow-y-auto">
       <h2 className="text-2xl font-semibold text-center mb-6">Locations</h2>
       <ul className="space-y-4">
         {locations.map((location: any) => (
