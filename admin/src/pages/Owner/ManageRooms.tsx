@@ -6,73 +6,21 @@ import { toast } from 'react-toastify';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 
-interface Room {
-  _id: string;
-  libraryOwner: {
-    username: string;
-    email: string;
-    phoneNumber: string;
-    address: string;
-  }
-  name: string;
-  longDescription: string;
-  shortDescription: string;
-  thumbnail: string[];
-  cardimage: string;
-  images: string[];
-  location: number[];
-  address: {
-    line1: string;
-    line2: string;
-    city: string;
-    state: string;
-    pincode: string;
-  };
-  deleted: boolean;
-  amenities: {
-    coldWater: boolean;
-    wifi: boolean;
-    ac: boolean;
-    locker: boolean;
-    separateWashroom: boolean;
-    News: boolean;
-    discussionArea: boolean;
-    LunchArea: boolean;
-    MovingChair: boolean;
-    FloorMat: boolean;
-    SeparateParking: boolean;
-    CommonParking: boolean;
-  };
-  commingSoon: boolean;
-  approved: boolean;
-  legal: string;
-  RegistrationFees: number;
-  timeSlot: {
-    from: string | null;
-    to: string | null;
-    price: number;
-    _id: string;
-  }[];
-  rooms: {
-    roomNo: number;
-    seatLayout: {
-      id: string;
-      label: string;
-    }[];
-    _id: string;
-    seatbooked: any[];
-  }[];
-  __v: number;
-}
+
+
+
+
+
+
 const ManageRooms = () => {
   const { lib_id } = useParams();
-  const [room, setRoom] = React.useState<Room | null>(null);
-  const [activeTab, setActiveTab] = useState('userDetails');
-  const [showAadhaar, setShowAadhaar] = useState(false);
-  const [showPanCard, setShowPanCard] = useState(false);
-  const [loading , setLoading] = useState(false); 
-  const [roomData, setRoomData] = useState<Room[]>([]);
-  const [expandedRoom, setExpandedRoom] = useState<string | null>(null); // Track expanded room
+  const [room, setRoom] = React.useState<any>(null);
+  const [activeTab, setActiveTab] = useState<any>('userDetails');
+  const [showAadhaar, setShowAadhaar] = useState<any>(false);
+  const [showPanCard, setShowPanCard] = useState<any>(false);
+  const [loading , setLoading] = useState<any>(false); 
+  const [roomData, setRoomData] = useState<any>([]);
+  const [expandedRoom, setExpandedRoom] = useState<any>(null); // Track expanded room
   // const [position, setPosition] = useState<[number, number] | null>(null);
   React.useEffect(() => {
     const fetchLibrary = async () => {
@@ -209,11 +157,11 @@ if(loading){
                   <p className='text-sm text-gray-500'>This is the card image / thumbnail.</p>
                 </div>
                 <div className='w-1/2 pl-2 grid grid-cols-2 gap-2'>
-                  {room?.images?.slice(0, 4).map((image, index) => (
+                  {room?.images?.slice(0, 4).map((image: string | undefined, index: React.Key | Number) => (
                     <img
-                      key={index}
+
                       src={image}
-                      alt={`Room Image ${index + 1}`}
+                      alt={`Room Image ${Number(index) + 1}`}
                       className='h-32 w-full object-cover rounded-lg'
                     />
                   ))}
@@ -280,7 +228,7 @@ const renderRoomDetails = () => (
   <div>
     <h2 className='text-xl font-bold text-gray-800'>Room Details</h2>
     {roomData.length > 0 ? (
-      roomData.map((roomDetail, index) => (
+      roomData.map((roomDetail: { _id: string; roomNo: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; seats: any[]; }, index: React.Key | null | undefined) => (
         <div key={index} className="border-b border-gray-200 py-4">
           <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleRoomExpansion(roomDetail._id)}>
             <p className='text-gray-600'>Room No: {roomDetail.roomNo}</p>
@@ -289,10 +237,10 @@ const renderRoomDetails = () => (
           {expandedRoom === roomDetail._id && (
               <div className="mt-2">
                 <div className="grid grid-cols-2 gap-4">
-                  {roomDetail.seats.map((seat, seatIndex) => (
+                  {roomDetail.seats.map((seat: { seatLabel: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; timeSlots: any[]; }, seatIndex: React.Key | null | undefined) => (
                     <div key={seatIndex} className="border p-2">
                       <p className='text-gray-600'>Seat: {seat.seatLabel}</p>
-                      {seat.timeSlots.map((slot, slotIndex) => (
+                      {seat.timeSlots.map((slot :any, slotIndex :any) => (
                         <div key={slotIndex} className="ml-4">
                           <p className='text-gray-600'>Time Slot: {slot.from} - {slot.to}</p>
                           <p className='text-gray-600'>Booked: {slot.booked ? 'Yes' : 'No'}</p>

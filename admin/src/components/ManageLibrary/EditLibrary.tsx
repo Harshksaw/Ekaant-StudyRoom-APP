@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { BASEURL } from '@/lib/utils';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { useParams } from 'react-router-dom';
-import { set } from 'react-datepicker/dist/date_utils';
+
 
 interface Room {
   _id: string;
@@ -159,7 +159,7 @@ const EditLibrary = () => {
       }
   
       if (images.length > 0) {
-        images.forEach((image, index) => {
+        images.forEach((image: string | Blob) => {
           formData.append('images', image);
         });
       }
@@ -230,7 +230,7 @@ const EditLibrary = () => {
       const files = Array.from(event.target.files);
       if (files.length > 0) {
      
-        setImages((prevImages) => [...prevImages, ...files]);
+        setImages((prevImages: any) => [...prevImages, ...files]);
       }
     }
   };
