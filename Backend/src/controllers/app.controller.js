@@ -75,7 +75,7 @@ async function getApp(req, res) {
     //6693fe2eb4e16e6d87026d1d
     // const id = req.params.id;
 
-
+    console.log(req.file, "file");
     const app = await App.findById({ _id: "66e255d999bd0963775bde89" });
 
 
@@ -99,6 +99,7 @@ async function editBanner(req, res) {
   try {
 
     const images = req.files.map((file) => file.path);
+    console.log("🚀 ~ editBanner ~ images:", images)
     const app = await App.findByIdAndUpdate({ _id: "66e255d999bd0963775bde89" }, {
       Banner: images
     }, { new: true });
@@ -142,6 +143,7 @@ async function getCityCoord(req, res) {
 async function editLocations(req, res) {
   try {
     const { location } = req.body;
+    const locationImage = req.file.path;
 
     // console.log("🚀 ~ editLocations ~ locations:", location)
     const coord = await getCityCoordinates(location);
@@ -149,9 +151,11 @@ async function editLocations(req, res) {
 
     const locationObj = {
       location,
+      locationImage,
 
       coords: [Number(coord.lat), Number(coord.lng)]
     }
+    console.log("🚀 ~ editLocations ~ locationObj:", locationObj)
 
     const updatedLocations = await App.findByIdAndUpdate(
       "66e255d999bd0963775bde89",

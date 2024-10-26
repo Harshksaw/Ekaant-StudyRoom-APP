@@ -21,6 +21,7 @@ import ViewBookings from "./components/ManageBookings/ViewBookings";
 import Signup from "./Auth/Signup";
 import AdminBookings from "./components/Search";
 import EditLibrary from "./components/ManageLibrary/EditLibrary";
+import LocationForm from "./components/Owner/AppConfig";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -73,7 +74,8 @@ function App() {
             element={<ManageRooms />}
           />
           <Route path="/admin/manage-admin" element={<ManageAdmin />} />
-          {/* <Route path="/admin/reports" element={<Reports />} /> */}
+          <Route path="/admin/app-config" element={<LocationForm />} />
+          
         </Route>
       )}
       <Route
