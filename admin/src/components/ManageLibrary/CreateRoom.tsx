@@ -27,7 +27,10 @@ const CreateRoom: React.FC = () => {
     { from: null, to: null, price: 0 },
     { from: null, to: null, price: 0 },
     { from: null, to: null, price: 0 },
+    { from: null, to: null, price: 0 },
   ]);
+  const [autoFill24Hr, setAutoFill24Hr] = useState(false);
+  const [price24Hr, setPrice24Hr] = useState<number | null>(null);
   useEffect(() => {
     const fetchLibrary = async () => {
       try {
@@ -47,24 +50,24 @@ const CreateRoom: React.FC = () => {
   useEffect(() => {
     const libraryObject = libraryData.find(library => library?._id === libraryId);
     setSelectedLibrary(libraryObject);
-  
+
   }, [libraryId]);
-  console.log(selectedLibrary);
+
 
 
   const handleLocationSelect = (location: any) => {
-    console.log("Selected Location:", location);
+
     setLocation(location);
   };
 
-  const handleSeatSelect = (seat:any) => {
-    console.log(seat)
+  const handleSeatSelect = (seat: any) => {
+
 
     setSeatLayout(seat);
     // console.log(seatLayout);
     // setSeatLayout((prev) => [...prev, seat]);
   };
-  const handleTimeChange = (index :any, type:any, newValue:any) => {
+  const handleTimeChange = (index: any, type: any, newValue: any) => {
     const updatedTimeSlots = [...timeSlots];
     updatedTimeSlots[index][type] = newValue;
     setTimeSlots(updatedTimeSlots);
@@ -77,7 +80,7 @@ const CreateRoom: React.FC = () => {
     // setRooms(libraryData?.rooms)
 
   };
-  function handlePriceChange(index : any, newValue : any) {
+  function handlePriceChange(index: any, newValue: any) {
 
     const updatedTimeSlots = [...timeSlots];
     updatedTimeSlots[index].price = newValue;
@@ -150,6 +153,10 @@ const CreateRoom: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
+      if (autoFill24Hr && (price24Hr === null || price24Hr <= 0)) {
+        alert("Please enter a valid price for the 24-hour time slot.");
+        return;
+      }
       if (!libraryId) {
         toast.error("Please relogin, NO library Exists")
       }
@@ -157,15 +164,15 @@ const CreateRoom: React.FC = () => {
         toast.error("Please select a seat layout and save it!");
         return;
       }
-      if(location === null) {
+      if (location === null) {
         toast.error("Please select a location");
         return;
       }
       const filledTimeSlots = timeSlots.filter((timeSlot) => timeSlot.from || timeSlot.to);
-    if (filledTimeSlots.length > 0 && filledTimeSlots.some((timeSlot) => !timeSlot.from || !timeSlot.to)) {
-      toast.error("Please select a time range for all filled time slots");
-      return;
-    }
+      if (filledTimeSlots.length > 0 && filledTimeSlots.some((timeSlot) => !timeSlot.from || !timeSlot.to)) {
+        toast.error("Please select a time range for all filled time slots");
+        return;
+      }
 
 
 
@@ -191,7 +198,20 @@ const CreateRoom: React.FC = () => {
     return <Progress value={progress} className="w-[60%]" />
   }
 
-  // console.log("----->", selectedLibrary.rooms, selectedLibrary.rooms.length )
+  const handleAutoFill24HrChange = ({price}:Number) => {
+    setAutoFill24Hr(!autoFill24Hr);
+    if (!autoFill24Hr) {
+      const updatedTimeSlots = [...timeSlots];
+      updatedTimeSlots[4] = { from: dayjs().startOf('day'), to: dayjs().endOf('day'), price: price24Hr || 0 };// Set 24-hour period
+      setTimeSlots(updatedTimeSlots);
+    } else {
+      const updatedTimeSlots = [...timeSlots];
+      updatedTimeSlots[4] = { from: null, to: null, price: 0 }; // Reset the fifth time slot
+      setTimeSlots(updatedTimeSlots);
+    }
+  };
+
+
   return (
     <div className="flex flex-col bg-gray-100 items-center  gap-y-25 overflow-y-scroll h-screen mb-20">
       <div className="mt-20 ">
@@ -212,12 +232,12 @@ const CreateRoom: React.FC = () => {
       <div className="mt-10 flex-col 
       justify-center items-center  gap-y-5
       ">
-     <h2 style={{ fontSize: '24px', color: '#333', textAlign: 'center', margin: '20px 10px' }}>
-  You are creating Room no 
-  <span style={{ background: '#4CAF50', color: '#fff', padding: '5px 15px', borderRadius: '5px' }}>
-    {selectedLibrary?.rooms.length + 1}
-  </span>
-</h2>
+        <h2 style={{ fontSize: '24px', color: '#333', textAlign: 'center', margin: '20px 10px' }}>
+          You are creating Room no
+          <span style={{ background: '#4CAF50', color: '#fff', padding: '5px 15px', borderRadius: '5px' }}>
+            {selectedLibrary?.rooms.length + 1}
+          </span>
+        </h2>
 
 
 
@@ -232,8 +252,34 @@ const CreateRoom: React.FC = () => {
 
       </div>
 
-      <div className="w-[90%] mx-20 mt-60">
-        <h2 className="text-center bg-blue-200 p-2  rounded-md">Select Time Slots</h2>
+      <div className="w-[90%] mx-20 mt-60 flex flex-col  ">
+      <h2 className="text-center bg-blue-200 p-2  rounded-md text-3xl">Select Time Slots</h2>
+          <div className="flex  justify-center items-center gap-10 ">
+          <label className="flex justify-center items-center ">
+          <input
+          className="mr-2 text-2xl "
+            type="checkbox"
+            checked={autoFill24Hr}
+            onChange={handleAutoFill24HrChange}
+          />
+          <h2 className="text-2xl">
+
+          Auto-fill 24-hour time slot
+          </h2>
+        </label>
+        {autoFill24Hr && (
+          <label className=" flex flex-row justify-center items-center gap-5">
+            Price 
+            <input
+              type="number"
+              value={price24Hr || ""}
+              onChange={(e) => setPrice24Hr(Number(e.target.value))}
+              required
+            />
+          </label>
+        )}
+          </div>
+
         {timeSlots.map((timeRange, index) => (
           <div className="flex-col  justify-center items-center">
             <div
