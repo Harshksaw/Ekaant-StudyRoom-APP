@@ -1,23 +1,21 @@
 import { BASEURL } from "@/lib/utils";
-import { toast } from "react-toastify";
+import { Toast } from "@radix-ui/react-toast";
 import axios from "axios";
 import { useState } from "react";
 import { useDropzone } from 'react-dropzone';
 
 
-interface BannerFile extends File {
-  preview: string;
-}
-const BannerUploadForm = () => {
-  const [banners, setBanners] = useState<BannerFile[]>([]);
 
-  const onDropBanner = (acceptedFiles: any[]) => {
+const BannerUploadForm = () => {
+  const [banners, setBanners] = useState([]);
+
+  const onDropBanner = (acceptedFiles) => {
     setBanners(acceptedFiles.map(file => Object.assign(file, {
       preview: URL.createObjectURL(file)
     })));
   };
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -33,7 +31,7 @@ const BannerUploadForm = () => {
       });
 
       if(response.status === 200){
-        toast.success("Banners uploaded successfully");
+      Toast.show('Banners uploaded successfully');
 
       }
       console.log('Banners uploaded successfully:', response.data);
@@ -44,7 +42,7 @@ const BannerUploadForm = () => {
 
   const { getRootProps: getRootPropsBanner, getInputProps: getInputPropsBanner } = useDropzone({
     onDrop: onDropBanner,
-
+    accept: ['image/*'],
     multiple: true, // Allow multiple files
   });
 
@@ -76,20 +74,22 @@ const BannerUploadForm = () => {
 
 
 const LocationForm1 = () => {
-  const [location, setLocation] = useState<any>('');
-  const [locationImage, setLocationImage] = useState<any>(null);
+  const [location, setLocation] = useState('');
+  const [locationImage, setLocationImage] = useState(null);
+  const [coords, setCoords] = useState([0, 0]); // Default coordinates
 
-
-  const onDropLocationImage = (acceptedFiles: any[]) => {
+  const onDropLocationImage = (acceptedFiles) => {
     setLocationImage(acceptedFiles[0]);
   };
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
     formData.append('location', location);
-    formData.append('locationImage', locationImage);
+    if (locationImage) {
+      formData.append('locationImage', locationImage);
+    }
 
 
     try {
@@ -106,7 +106,7 @@ const LocationForm1 = () => {
 
   const { getRootProps: getRootPropsLocationImage, getInputProps: getInputPropsLocationImage } = useDropzone({
     onDrop: onDropLocationImage,
-
+    accept: 'image/*',
   });
 
   return (
