@@ -395,7 +395,7 @@ const deleteRoom = async (req, res) => {
     console.log("🚀 ~ deleteRoom ~ libraryId:", libraryId)
     console.log("🚀 ~ deleteRoom ~ roomId:", roomId)
 
-    const library = await Library.findById(libraryId);
+    const library = await Library.findById(libraryId).populate('rooms');
     if (!library) {
       return res.status(404).json({ message: 'Library not found' });
     }
