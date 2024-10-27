@@ -60,11 +60,15 @@ const librarySchema = new mongoose.Schema({
 
 librarySchema.methods.calculateLowestPrice = async function () {
   const library = this;
-  await library.populate('rooms').execPopulate();
+  await library.populate({
+    path: 'rooms',
+    populate: {
+      path: 'seats',
+    },
+  });
   let lowestPrice = Infinity;
 
   for (const room of library.rooms) {
-    await room.populate('seats').execPopulate();
     for (const seat of room.seats) {
       if (seat.price < lowestPrice) {
         lowestPrice = seat.price;
