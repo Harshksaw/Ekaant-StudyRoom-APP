@@ -198,7 +198,7 @@ const CreateRoom: React.FC = () => {
     return <Progress value={progress} className="w-[60%]" />
   }
 
-  const handleAutoFill24HrChange = ({price}:Number) => {
+  const handleAutoFill24HrChange = () => {
     setAutoFill24Hr(!autoFill24Hr);
     if (!autoFill24Hr) {
       const updatedTimeSlots = [...timeSlots];

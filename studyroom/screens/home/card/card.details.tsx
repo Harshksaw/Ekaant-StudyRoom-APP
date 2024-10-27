@@ -86,7 +86,10 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     // params: { params.item.seatLayout },
     // });
   };
-  // console.log(data)
+  const amenities = data.amenities || {};
+  const trueAmenities = Object.keys(amenities).filter(key => amenities[key]);
+
+  const price = data.timeSlot[0]?.price != null ? data.timeSlot[0]?.price : 0;
   return (
     <SafeAreaView style={styles.container}>
       {/* <View
@@ -156,7 +159,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 }}
               >
 
-                ₹{data?.timeSlot[0]?.price}/month
+                ₹{price }/month
 
               </Text>
             </View>
@@ -215,24 +218,15 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
                 }}
               >
-                {data.amenities.map((amenity: string, index: any) => (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      marginTop: 5,
-                      borderColor: "#dfdfdf",
-                      borderWidth: 1,
-                      borderRadius: 20,
-                      padding: 7,
-                      alignSelf: "flex-start",
-                    }}
-                  >
-                    {/* Your text here */}
-                    <Text style={{ color: "#606060" }}>{amenity}</Text>
-                  </View>
-                ))}
+               {trueAmenities.length > 0 ? (
+            trueAmenities.map((amenity, index) => (
+              <Text key={index} style={styles.amenityItem}>
+                {amenity}
+              </Text>
+            ))
+          ) : (
+            <Text style={styles.noAmenities}>No amenities available</Text>
+          )}
               </View>
             </View>
 
