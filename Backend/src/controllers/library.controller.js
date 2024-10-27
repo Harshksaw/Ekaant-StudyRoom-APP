@@ -1,7 +1,6 @@
 const { z } = require("zod");
 
-
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 const { GetNearestLibraries } = require("../utils/location");
 const multer = require("multer");
 const express = require("express");
@@ -22,13 +21,49 @@ const pingAdmin = (req, res) => {
   });
 };
 
+const calculateLowestPrice = async (libraryId) => {
+
+  const library = await Library.findById(libraryId).populate({
+    path: "rooms",
+    populate: {
+      path: "seats",
+      populate: {
+        path: "timeSlots",
+      },
+    },
+  });
+
+  if (!library) {
+    throw new Error(`Library with ID ${libraryId} not found`);
+  }
+
+  let lowestPrice = Infinity;
+
+  library.rooms.forEach(room => {
+    room.seats.forEach(seat => {
+      seat.timeSlots.forEach(slot => {
+        const price = parseFloat(slot.price);
+        console.log("🚀 ~ calculateLowestPrice ~ price:", price)
+        if (price < lowestPrice && price > 0) {
+          lowestPrice = price;
+        }
+      });
+    });
+  });
+
+  library.Price = lowestPrice === Infinity ? 0 : lowestPrice;
+  await library.save();
+};
+
 // Assuming LibraryController.createLibrary is an async function
 const createLibrary = async (req, res) => {
   try {
     console.log(req.files, "=================>");
 
     const cardImage = req.files.card[0].path;
-    const images = req.files.images ? req.files.images.map((file) => file.path) : [];
+    const images = req.files.images
+      ? req.files.images.map((file) => file.path)
+      : [];
     const gst = req.files.gst ? req.files.gst[0].path : null;
     const cin = req.files.cin ? req.files.cin[0].path : null;
     const tan = req.files.tan ? req.files.tan[0].path : null;
@@ -53,7 +88,6 @@ const createLibrary = async (req, res) => {
       msmeNumber,
     } = jsonData;
 
-   
     const libraryData = {
       libraryOwner,
       name,
@@ -83,6 +117,7 @@ const createLibrary = async (req, res) => {
     const LibraryData = await Library.create(libraryData);
     await LibraryData.save();
 
+    calculateLowestPrice(LibraryData._id);
     res.status(201).json({
       message: "Library created successfully",
       library: LibraryData,
@@ -104,7 +139,7 @@ const createRoom = async (req, res) => {
       return res.status(404).send({ message: "Library not found" });
     }
 
-    const {seatLayout, timeSlot, location} = req.body;
+    const { seatLayout, timeSlot, location } = req.body;
 
     if (!library) {
       return res.status(404).send({ message: "Library not found" });
@@ -113,7 +148,7 @@ const createRoom = async (req, res) => {
     // Determine the new roomNo
     let newRoomNo = 1;
     if (library.rooms.length > 0) {
-      const maxRoomNo = library.rooms.length
+      const maxRoomNo = library.rooms.length;
       newRoomNo = maxRoomNo + 1;
     }
     console.log(newRoomNo, "newRoomNo");
@@ -122,32 +157,34 @@ const createRoom = async (req, res) => {
     const newRoom = new Room({
       library: libraryId,
       roomNo: newRoomNo,
-      seats: seatLayout.map(seat => ({
+      seats: seatLayout.map((seat) => ({
         seatId: seat.id,
         seatLabel: seat.label,
-        timeSlots: timeSlot.filter(slot => slot.from && slot.to).map(slot => ({
-          slotId: uuidv4(), // Generate a unique slotId
-          from: slot.from,
-          to: slot.to,
-          price : slot.price,
-
-        })),
+        timeSlots: timeSlot
+          .filter((slot) => slot.from && slot.to)
+          .map((slot) => ({
+            slotId: uuidv4(), // Generate a unique slotId
+            from: slot.from,
+            to: slot.to,
+            price: slot.price,
+          })),
       })),
-
     });
 
     // Save the new room document
+
     await newRoom.save();
 
     if (location) {
       library.location = location;
     }
 
-
     library.rooms.push(newRoom._id);
 
     // Save the updated library document
     await library.save();
+
+    await calculateLowestPrice(libraryId);
 
     res.status(201).json({
       message: "Library created successfully",
@@ -184,6 +221,7 @@ const addOrUpdateRoomDetails = async (req, res) => {
     // Save the updated library document
     await updateLibrary.save();
 
+    await calculateLowestPrice(libraryId);
     res.status(200).json({
       message: "Room details updated successfully",
       library: updateLibrary,
@@ -252,7 +290,9 @@ const getLibraryById = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room = await Library.findById(id).populate("libraryOwner").populate("rooms");
+    const room = await Library.findById(id)
+      .populate("libraryOwner")
+      .populate("rooms");
     res.status(200).json({
       success: true,
       message: "Library data",
@@ -302,7 +342,7 @@ const getAdminLibraries = async (req, res) => {
   try {
     const { userId } = req.body; // Assuming the userId is passed as a URL parameter
     console.log(userId, "userId");
-    const libraries = await Library.find({ libraryOwner: userId })
+    const libraries = await Library.find({ libraryOwner: userId });
     console.log(libraries, "libraries");
     res.json({
       message: "Libraries retrieved successfully",
@@ -323,58 +363,61 @@ async function getAllBookings(req, res) {
   }
 }
 
-const EditAdminLibrary = async(req, res)=> {
+const EditAdminLibrary = async (req, res) => {
   try {
+    const {
+      name,
+      shortDescription,
+      longDescription,
+      amenities,
+      libraryId,
+      address,
+    } = req.body;
 
-
-      const { name, shortDescription, longDescription, amenities, libraryId, address } = req.body;
-  
-
-
-
-
-      const library = await Library.findByIdAndUpdate(
-        libraryId,
-        {
-          name,
-          shortDescription,
-          longDescription,
-          amenities,
-          address
-        },
-        { new: true } // Return the updated document
-      );
+    const library = await Library.findByIdAndUpdate(
+      libraryId,
+      {
+        name,
+        shortDescription,
+        longDescription,
+        amenities,
+        address,
+      },
+      { new: true } // Return the updated document
+    );
     if (!library) {
-      return res.status(404).json({ message: 'Library not found' });
+      return res.status(404).json({ message: "Library not found" });
     }
 
     await library.save();
-    res.status(200).json({ message: 'Room deleted successfully' });
+    await calculateLowestPrice(libraryId);
+    res.status(200).json({ message: "Room deleted successfully" });
   } catch (error) {
-    console.error('Error deleting room:', error);
-    res.status(500).json({ message: 'Error deleting room', error });
+    console.error("Error deleting room:", error);
+    res.status(500).json({ message: "Error deleting room", error });
   }
-}
+};
 
 const updateLibraryImages = async (req, res) => {
   try {
-    const  libraryId = req.params.id;
+    const libraryId = req.params.id;
 
-    console.log('---', req.files);
-
+    console.log("---", req.files);
 
     const cardImage = req.files?.cardImage ? req.files.cardImage[0].path : null;
-    const images = req.files?.images ? req.files.images.map(file => file.path) : [];
-    // const images = req.files?.images 
-    console.log("🚀 ~ updateLibraryImages ~ images:", images)
+    const images = req.files?.images
+      ? req.files.images.map((file) => file.path)
+      : [];
+    // const images = req.files?.images
+    console.log("🚀 ~ updateLibraryImages ~ images:", images);
 
     const library = await Library.findById(libraryId);
     if (!library) {
-      return res.status(404).json({ message: 'Library not found' });
+      return res.status(404).json({ message: "Library not found" });
     }
 
     if (cardImage) {
-      library.cardimage = cardImage;
+      library.cardImage = cardImage;
     }
 
     if (images.length > 0) {
@@ -382,10 +425,13 @@ const updateLibraryImages = async (req, res) => {
     }
 
     await library.save();
-    res.status(200).json({ message: 'Library images updated successfully', data: library });
+
+    res
+      .status(200)
+      .json({ message: "Library images updated successfully", data: library });
   } catch (error) {
-    console.error('Error updating library images:', error);
-    res.status(500).json({ message: 'Error updating library images', error });
+    console.error("Error updating library images:", error);
+    res.status(500).json({ message: "Error updating library images", error });
   }
 };
 
@@ -393,19 +439,19 @@ const deleteRoom = async (req, res) => {
   try {
     const { libraryId, roomId } = req.body;
 
-
-    const library = await Library.findById(libraryId).populate('rooms');
+    const library = await Library.findById(libraryId).populate("rooms");
     if (!library) {
-      return res.status(404).json({ message: 'Library not found' });
+      return res.status(404).json({ message: "Library not found" });
     }
 
-    const roomIndex = library.rooms.findIndex(room => room._id.toString() === roomId);
+    const roomIndex = library.rooms.findIndex(
+      (room) => room._id.toString() === roomId
+    );
 
     if (roomIndex === -1) {
-      return res.status(404).json({ message: 'Room not found' });
+      return res.status(404).json({ message: "Room not found" });
     }
     library.rooms.splice(roomIndex, 1);
-
 
     await Room.findByIdAndDelete(roomId);
     for (let i = 0; i < library.rooms.length; i++) {
@@ -416,13 +462,12 @@ const deleteRoom = async (req, res) => {
       }
     }
 
-
-
     const lib = await library.save();
-    res.status(200).json({ message: 'Room deleted successfully' , data: lib});
+    await calculateLowestPrice(libraryId);
+    res.status(200).json({ message: "Room deleted successfully", data: lib });
   } catch (error) {
-    console.error('Error deleting room:', error);
-    res.status(500).json({ message: 'Error deleting room', error });
+    console.error("Error deleting room:", error);
+    res.status(500).json({ message: "Error deleting room", error });
   }
 };
 module.exports = {
@@ -439,5 +484,5 @@ module.exports = {
   getAllLibrary,
   EditAdminLibrary,
   updateLibraryImages,
-  deleteRoom
+  deleteRoom,
 };

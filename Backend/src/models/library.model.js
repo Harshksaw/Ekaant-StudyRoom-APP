@@ -58,34 +58,7 @@ const librarySchema = new mongoose.Schema({
   Price: { type: Number, default: 0 }
 });
 
-librarySchema.methods.calculateLowestPrice = async function () {
-  const library = this;
-  await library.populate({
-    path: 'rooms',
-    populate: {
-      path: 'seats',
-    },
-  });
-  let lowestPrice = Infinity;
 
-  for (const room of library.rooms) {
-    for (const seat of room.seats) {
-      if (seat.price < lowestPrice) {
-        lowestPrice = seat.price;
-      }
-    }
-  }
-
-  library.lowestPrice = lowestPrice === Infinity ? 0 : lowestPrice;
-  await library.save();
-};
-librarySchema.post('save', async function (doc) {
-  await doc.calculateLowestPrice();
-});
-
-librarySchema.post('remove', async function (doc) {
-  await doc.calculateLowestPrice();
-});
 
 // Export the models
 module.exports = {
