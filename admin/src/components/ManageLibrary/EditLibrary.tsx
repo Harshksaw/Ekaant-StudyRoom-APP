@@ -130,8 +130,13 @@ const EditLibrary = () => {
           'Content-Type': 'application/json',
         },
       });
-      setLibrary(response.data);
-      toast.success('Library updated successfully');
+
+      if(response.status === 200) {
+        toast.success('Library updated successfully');
+
+        setLibrary(response.data);
+      }
+
     } catch (error) {
       toast.error('Error updating library');
       console.error('Error updating library:', error);
