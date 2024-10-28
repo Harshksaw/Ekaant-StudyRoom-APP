@@ -1,10 +1,9 @@
-import { ThemeProvider } from '@react-navigation/native';
+
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { View, useColorScheme } from 'react-native';
-import TabsIndex from './index';
-import CardDetailScreen from '@/screens/home/card/card.details';
+import {  useColorScheme } from 'react-native';
+
 import { ToastProvider } from "react-native-toast-notifications";
 
 import { Provider } from 'react-redux';

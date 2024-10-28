@@ -1,15 +1,12 @@
 import Button from "@/components/Button";
-import Header from "@/components/Header";
+
 import Seats from "@/components/Seats";
-import TimeSlot from "@/components/TimeSlot";
+
 import Calendar from "@/components/calendar/calendar";
 import { Ionicons } from "@expo/vector-icons";
 
 import {
-  router,
-  useGlobalSearchParams,
-  useLocalSearchParams,
-  useRouter,
+  router
 } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,8 +25,7 @@ import { setBookingDetails } from "@/redux/bookingSlice";
 import { useRoute } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
 import { Month } from "@/assets";
-import { useAssets } from "expo-asset";
-import { Image } from "expo-image";
+
 import ToggleBookingButton from "@/components/ToggleBooking";
 import { Toast } from "react-native-toast-notifications";
 // import Toast from 'react-native-toast-message'
@@ -43,6 +39,8 @@ const BookingScreen: React.FC = () => {
 
   const data = JSON.parse(params?.params?.item);
   const city = JSON.parse(params?.params?.location);
+  console.log("🚀 ~ city:", city)
+  console.log("🚀 ~ data:", data)
 
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -54,7 +52,7 @@ const BookingScreen: React.FC = () => {
   const [finalPrice, setFinalPrice] = useState(0);
   const [currentRoomNo, setCurrentRoomNo] = useState(1);
   const [forFriend, setForFriend] = useState(false);
-
+const[Loading, setLoading]=useState(true);
   const userDetails = useSelector((state: any) => state.user);
   const bookingData = useSelector((state: any) => state.booking);
 
@@ -240,7 +238,9 @@ const BookingScreen: React.FC = () => {
     });
   };
 
-
+if(Loading){
+  return <ActivityIndicator size="large" color="#000" />
+}
   return (
     <SafeAreaView
       style={{

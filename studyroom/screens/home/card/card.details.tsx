@@ -1,5 +1,5 @@
 import Avatar from "@/components/AvatarComponent";
-import Header from "@/components/Header";
+
 import StarRating from "@/components/Ratinstar";
 
 import { useRoute } from "@react-navigation/native";
@@ -22,7 +22,7 @@ import {
 
 import Carousel from "react-native-reanimated-carousel";
 
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import Button from "@/components/Button";
 import getLocationName from "@/utils/location";
 import { SafeAreaView } from "react-native-safe-area-context";

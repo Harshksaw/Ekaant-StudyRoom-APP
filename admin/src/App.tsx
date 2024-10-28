@@ -33,7 +33,7 @@ function App() {
   //     const response = await User
   //   }
   // }, []);
-  console.log(role);
+
   return (
     <BrowserRouter basename="/">
     <Routes>

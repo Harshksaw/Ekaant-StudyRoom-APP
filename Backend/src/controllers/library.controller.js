@@ -291,8 +291,8 @@ const getLibraryById = async (req, res) => {
   console.log(id);
   try {
     const room = await Library.findById(id)
+    .populate("rooms")
       .populate("libraryOwner")
-      .populate("rooms");
     res.status(200).json({
       success: true,
       message: "Library data",

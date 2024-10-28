@@ -35,7 +35,7 @@ const librarySchema = new mongoose.Schema({
   comingSoon: { type: Boolean, default: false },
   approved: { type: Boolean, default: false },
 
-  rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Room" }],
+
 
   legal: { type: String, required: false },
   gstDetails: {

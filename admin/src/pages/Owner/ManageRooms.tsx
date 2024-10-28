@@ -25,7 +25,7 @@ const ManageRooms = () => {
   React.useEffect(() => {
     const fetchLibrary = async () => {
       setLoading(true);
-      const res = await axios.post(`${BASEURL}/api/v1/library/getLibraryById`, { id: lib_id });
+      const res = await axios.post(`${BASEURL}/api/v1/library/getLibraryById`, { id: lib_id })
       if (res.data.success) {
         console.log("🚀 ~ fetchLibrary ~ res:", res.data.data);
         setRoom(res.data.data);
