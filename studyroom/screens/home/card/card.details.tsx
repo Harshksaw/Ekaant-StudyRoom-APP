@@ -89,7 +89,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const amenities = data.amenities || {};
   const trueAmenities = Object.keys(amenities).filter(key => amenities[key]);
 
-  const price = data.timeSlot[0]?.price != null ? data.timeSlot[0]?.price : 0;
+  const price = data.Price || 0;
   return (
     <SafeAreaView style={styles.container}>
       {/* <View
@@ -220,9 +220,21 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               >
                {trueAmenities.length > 0 ? (
             trueAmenities.map((amenity, index) => (
+              <View style={{
+                // backgroundColor: "#d0cdcd",
+                borderWidth: 1,
+                borderColor: "#d0cdcd",
+                borderRadius: 20,
+                padding: 5,
+                paddingHorizontal: 10,
+                margin: 5,
+              }}>
+
+
               <Text key={index} style={styles.amenityItem}>
-                {amenity}
+                {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
               </Text>
+              </View>
             ))
           ) : (
             <Text style={styles.noAmenities}>No amenities available</Text>

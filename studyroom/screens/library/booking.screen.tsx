@@ -94,7 +94,7 @@ const BookingScreen: React.FC = () => {
 
   const updateRoomDetails = async () => {
     const details = {
-      id: data._id,
+      id: data?._id,
       amenities: data.amenities,
       images: data.images,
       location: city,
@@ -105,7 +105,7 @@ const BookingScreen: React.FC = () => {
     dispatch(setBookingDetails(details));
   };
   const handleData = (data: DataItem[]) => {
-    return data.map((item) => {
+    return data?.map((item) => {
       if (item.from === "0" && item.to === "24") {
         // Modify the item to indicate 24/7 availability
         // This is just an example, adjust according to your needs
@@ -446,7 +446,7 @@ const BookingScreen: React.FC = () => {
                       maxWidth: 300,
                     }}
                   >
-                    {available.map((slot, index) => {
+                    {available?.map((slot, index) => {
                       if (slot?.availability && slot?.from !== null) {
                         return (
                           <View
