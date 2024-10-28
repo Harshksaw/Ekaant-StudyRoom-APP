@@ -37,11 +37,12 @@ const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
   const params = useRoute();
 
-  const data = JSON.parse(params?.params?.item);
+  const dataK = JSON.parse(params?.params?.item);
+
   const city = JSON.parse(params?.params?.location);
 
-  console.log("🚀 ~ data:", data)
 
+  const [data, setData] = useState(null);
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -112,7 +113,7 @@ const[Loading, setLoading]=useState(true);
       return item;
     });
   };
-  const available = handleData(data.timeSlot);
+  const available = handleData(data?.timeSlot);
 
   const PreBook = async () => {
     const userData = await AsyncStorage.getItem("userData");
@@ -238,7 +239,35 @@ const[Loading, setLoading]=useState(true);
     });
   };
 
-if(Loading){
+
+  const fetchRooms = async () => {
+    try {
+      const response = await axios.post(
+        `${BACKEND}/api/v1/library/getLibraryRooms`,{
+          id : dataK._id
+        }
+      );
+      console.log("🚀 ~ response--->:", response.data.data.rooms)
+      return response.data.data.rooms;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  useEffect(() => {
+
+    fetchRooms().then((data) => {
+      console.log("🚀 ~ data:", data)
+      setData(data)
+      setLoading(false)
+    })
+    
+  }, []);
+
+  // console.log("🚀 ~ data:", data[currentRoomNo-1].seats)
+
+
+if(Loading || data === null){
   return <ActivityIndicator size="large" color="#000" />
 }
   return (
@@ -297,7 +326,7 @@ if(Loading){
           }}
           mode="dropdown"
         >
-          {data?.rooms.map((item, index) => (
+          {data?.map((item, index) => (
             <Picker.Item
               key={index}
               style={{
@@ -324,12 +353,17 @@ if(Loading){
         }}
       >
         {/* //seating arrangement */}
+        {
+          data && data[currentRoomNo-1].seats.length !== 0 && (
+            <Seats  
+            onSeatSelect={handleSeatSelect}
+            SeatLayout={data[currentRoomNo-1].seats}
+            currentRoom={currentRoomNo}
+          />
+          )
 
-        <Seats
-          onSeatSelect={handleSeatSelect}
-          SeatLayout={data?.rooms}
-          currentRoom={currentRoomNo}
-        />
+        }
+    
       </ScrollView>
 
       <TouchableOpacity
