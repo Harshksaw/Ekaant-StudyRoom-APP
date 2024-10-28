@@ -290,9 +290,16 @@ const getLibraryById = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room = await Library.findById(id)
-    .populate("rooms")
-      .populate("libraryOwner")
+    const room = await Library.findById(id).populate({
+      path: 'rooms',
+      populate: {
+        path: 'seats',
+        populate: {
+          path: 'timeSlots',
+        },
+      },
+    });
+
     res.status(200).json({
       success: true,
       message: "Library data",
