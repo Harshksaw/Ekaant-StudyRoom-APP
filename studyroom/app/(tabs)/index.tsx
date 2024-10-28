@@ -22,20 +22,17 @@ const { height } = Dimensions.get("window");
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NotListedModal from "@/components/NotListedModal";
-import { LinearGradient } from "expo-linear-gradient";
+
 import { fetchRoomData } from "../../hooks/api/library";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserDetails } from "@/redux/userSlice";
 import { useAssets } from "expo-asset";
-
-// import * as Location from 'expo-location';
-// import {Picker} from '@react-native-picker/picker';
 import { Image } from "expo-image";
 import StarRating from "@/components/Ratinstar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BACKEND } from "@/utils/config";
 import axios from "axios";
-import { set } from "react-native-reanimated";
+
 import { setAppDetails } from "@/redux/appSlice";
 import CustomLoader from "@/components/CustomLoader";
 import { Toast } from "react-native-toast-notifications";

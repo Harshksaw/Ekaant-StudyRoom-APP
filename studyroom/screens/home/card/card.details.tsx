@@ -40,7 +40,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const [city, setCity] = useState("Delhi");
 
   const seat = data.seatLayout;
-  console.log(data, "----card.details--45", seat);
+  // console.log(data, "----card.details--45", seat);
   const locationData = async () => {
     try {
       // Assuming data.location might be null or undefined, leading to issues when accessed
@@ -68,7 +68,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
   useEffect(() => {
     locationData();
-  }, []); // Ensure locationData is called within useEffect to avoid infinite loops
+  }, []); 
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 

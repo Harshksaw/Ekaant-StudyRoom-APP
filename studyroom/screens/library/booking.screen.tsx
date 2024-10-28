@@ -39,7 +39,7 @@ const BookingScreen: React.FC = () => {
 
   const data = JSON.parse(params?.params?.item);
   const city = JSON.parse(params?.params?.location);
-  console.log("🚀 ~ city:", city)
+
   console.log("🚀 ~ data:", data)
 
   const [selectedSeat, setSelectedSeat] = useState(null);

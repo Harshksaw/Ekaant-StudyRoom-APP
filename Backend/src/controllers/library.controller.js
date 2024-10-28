@@ -290,7 +290,25 @@ const getLibraryById = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room = await Library.findById(id).populate({
+    const room = await Library.findById(id)
+    .populate("rooms")
+      .populate("libraryOwner")
+    res.status(200).json({
+      success: true,
+      message: "Library data",
+      data: room,
+    });
+  } catch (error) {
+    console.error("Error ", error);
+    res.status(500).json({ error: "cannot get room" });
+  }
+};
+
+const getLibraryRooms = async (req, res) => {
+  const { id } = req.body;
+  console.log(id);
+  try {
+    const room =   await Library.findById(id).populate({
       path: 'rooms',
       populate: {
         path: 'seats',
@@ -299,7 +317,6 @@ const getLibraryById = async (req, res) => {
         },
       },
     });
-
     res.status(200).json({
       success: true,
       message: "Library data",
@@ -492,4 +509,5 @@ module.exports = {
   EditAdminLibrary,
   updateLibraryImages,
   deleteRoom,
+  getLibraryRooms
 };
