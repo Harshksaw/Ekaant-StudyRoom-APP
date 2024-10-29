@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Image, Text } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Image, Text, ScrollView } from "react-native";
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect }) => {
   return (
@@ -65,21 +65,48 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
     ));
   };
 
-  return <View style={styles.container}>{createSeatGrid()}</View>;
+  return(
+    <ScrollView horizontal={true}
+    showsHorizontalScrollIndicator={false}
+    >
+      <View style={styles.container}>{createSeatGrid()}</View>
+    </ScrollView>
+  );
+
 };
 
+
+
+export default function Seats({ onSeatSelect, SeatLayout, currentRoom }) {
+  console.log("🚀 ~ Seats ~ SeatLayout:", SeatLayout);
+
+  const handleSeatSelect = (selectedSeat) => {
+    onSeatSelect(selectedSeat);
+    console.log("Selected Seat:", selectedSeat);
+  };
+
+  return (
+    <ScrollView showsVerticalScrollIndicator={false}>
+    <SeatsComponent
+      layout={SeatLayout}
+      bookedSeats={[]}
+      onSeatSelect={handleSeatSelect}
+      currentRoom={currentRoom}
+    />
+    </ScrollView>
+
+  );
+}
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: "center",
-    gap: 20,
-    marginHorizontal: 20,
+    flexDirection: "column",
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
   seatRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    flexWrap: "nowrap",
   },
   seat: (isBooked, isSelected) => ({
     width: 70,
@@ -96,21 +123,3 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
 });
-
-export default function Seats({ onSeatSelect, SeatLayout, currentRoom }) {
-  console.log("🚀 ~ Seats ~ SeatLayout:", SeatLayout);
-
-  const handleSeatSelect = (selectedSeat) => {
-    onSeatSelect(selectedSeat);
-    console.log("Selected Seat:", selectedSeat);
-  };
-
-  return (
-    <SeatsComponent
-      layout={SeatLayout}
-      bookedSeats={[]}
-      onSeatSelect={handleSeatSelect}
-      currentRoom={currentRoom}
-    />
-  );
-}

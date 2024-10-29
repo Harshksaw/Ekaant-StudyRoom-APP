@@ -178,6 +178,7 @@ function Signup() {
 
     const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, {
       phoneNumber: phone,
+      Admin: true,
     });
     if (res.status === 200) {
       console.log("OTP sent successfully");

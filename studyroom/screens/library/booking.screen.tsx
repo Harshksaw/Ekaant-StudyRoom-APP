@@ -343,14 +343,21 @@ if(Loading || data === null){
       </View>
 
       <ScrollView
-        showsVerticalScrollIndicator={false}
-        // horizontal={true}
-        style={{
-          flex: 1,
 
-          marginBottom: 10,
-          // justifyContent: "center",
+        // horizontal={true}
+        showsHorizontalScrollIndicator={false}
+
+        contentContainerStyle={{
+          flexDirection: 'row', // Ensures the seats are laid out in rows
+          flexWrap: 'wrap',     // Allows wrapping into multiple lines if needed
+          justifyContent: 'center',
         }}
+        // style={{
+        //   flex: 1,
+
+        //   marginBottom: 10,
+        //   // justifyContent: "center",
+        // }}
       >
         {/* //seating arrangement */}
         {
