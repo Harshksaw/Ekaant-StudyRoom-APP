@@ -145,9 +145,9 @@ const createRoom = async (req, res) => {
       return res.status(404).send({ message: "Library not found" });
     }
 
-    if(ac){
-      library.Ac = true;
-    }
+
+
+
     // Determine the new roomNo
     let newRoomNo = 1;
     if (library.rooms.length > 0) {
@@ -172,6 +172,7 @@ const createRoom = async (req, res) => {
             price: slot.price,
           })),
       })),
+      Ac: ac,
     });
 
     // Save the new room document
