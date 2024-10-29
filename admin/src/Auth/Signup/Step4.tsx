@@ -1,11 +1,29 @@
 // import { InfoIcon } from "lucide-react";
 
+import { useState } from "react";
+
 export const StepFour = ({
   nextStep,
   prevStep,
   libraryDetails,
   setLibraryDetails,
 }: any) => {
+  const [errors, setErrors] = useState<any>({});
+
+  const validateFields = () => {
+    const newErrors: any = {};
+    if (!libraryDetails.libraryName) newErrors.libraryName = "Library Name is required";
+    if (!libraryDetails.libraryApp.shortDescription) newErrors.shortDescription = "Short Description is required";
+    // Add more validation checks as needed
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNextStep = () => {
+    if (validateFields()) {
+      nextStep();
+    }
+  };
   console.log(libraryDetails.libraryLegal.showGst);
   return (
     //images  - Register 4
@@ -30,6 +48,7 @@ export const StepFour = ({
             });
           }}
         />
+        {errors.libraryName && <p className="text-red-500">{errors.libraryName}</p>}
         {/* App name */}
         <label>App</label>
         {/* Short description */}
@@ -56,11 +75,12 @@ export const StepFour = ({
                 <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"></path>
               </svg>
               <span className="absolute  w-40 h-12  -top-8 text-white rounded-xl  p-2 opacity-0 group-hover:opacity-100 group-hover:-translate-y-7 duration-700 text-xs">
-                Information from thids buicdiocd
+                Information from Will be displayed on Library Card
               </span>
             </div>
           </section>
         </div>
+        {errors.shortDescription && <p className="text-red-500">{errors.shortDescription}</p>}
         {/* Long description */}
         <div className="relative ">
           <input
@@ -79,6 +99,7 @@ export const StepFour = ({
               });
             }}
           />
+          {errors.longDescription && <p className="text-red-500">{errors.longDescription}</p>}
           <section className="absolute right-2 top-1/4 flex justify-center items-center">
             <div className="group flex justify-center transition-all rounded-full bg-gray-200 p-1">
               <svg viewBox="0 0 320 512" className="w-4 h-4">
@@ -109,6 +130,7 @@ export const StepFour = ({
             });
           }}
         />
+
         {/* Line 2 */}
         <input
           className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -639,7 +661,10 @@ export const StepFour = ({
         </button>
         <button
           className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
-          onClick={nextStep}
+          onClick={()=>{
+            handleNextStep();
+            
+          }}
         >
           Next
         </button>

@@ -60,6 +60,6 @@ Library.post("/getAllBookings", LibraryController.getAllBookings);
 Library.post("/deleteRoomLib", LibraryController.deleteRoom);
 Library.post("/getLibraryRooms", LibraryController.getLibraryRooms);
 
-// libraryId, roomId
+
 
 module.exports = Library;

@@ -6,6 +6,7 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import { useParams } from 'react-router-dom';
 
 
+
 interface Room {
   _id: string;
   roomNo: number;
@@ -77,7 +78,7 @@ const EditLibrary = () => {
     wifi: false,
   });
   const LibraryId = useParams();
-  console.log("🚀 ~ EditLibrary ~ LibraryId:", LibraryId)
+
 
 
   useEffect(() => {
@@ -94,6 +95,7 @@ const EditLibrary = () => {
         setLongDescription(response.data.data?.longDescription);
         setAmenities(response.data.data.amenities);
         setAddress(response.data.data.address);
+
         // setImages(response.data.images);
       } catch (error) {
         toast.error('Error fetching library data');
@@ -325,6 +327,9 @@ const EditLibrary = () => {
         className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
       />
     </div>
+
+
+
 
     <div className='mb-6'>
         <h3 className='text-lg font-bold mb-2'>Amenities</h3>
