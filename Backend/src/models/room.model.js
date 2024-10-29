@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const roomSchema = new mongoose.Schema({
     library: { type: mongoose.Schema.Types.ObjectId, ref: 'Library' },
     roomNo: { type: Number, required: true },
+    Ac: { type: Boolean, default: false },
     seats: [
       {
         seatId: { type: String, required: true },

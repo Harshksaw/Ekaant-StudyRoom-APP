@@ -29,6 +29,9 @@ const CreateRoom: React.FC = () => {
     { from: null, to: null, price: 0 },
     { from: null, to: null, price: 0 },
   ]);
+
+  const [Ac, setAc] = useState(false);
+
   const [autoFill24Hr, setAutoFill24Hr] = useState(false);
   const [price24Hr, setPrice24Hr] = useState<number | null>(null);
   useEffect(() => {
@@ -107,6 +110,7 @@ const CreateRoom: React.FC = () => {
           seatLayout: seatLayout,
           timeSlot: formattedTimeSlots,
           location: location,
+          ac: Ac,
         }
       );
       console.log(seatLayout, typeof seatLayout)
@@ -239,6 +243,21 @@ const CreateRoom: React.FC = () => {
           </span>
         </h2>
 
+
+<div>
+        <label className="flex justify-center items-center p-10">
+          <input
+            className="mr-2 text-2xl p-10 "
+            size={30}
+            type="checkbox"
+            checked={Ac}
+            onChange={() => setAc(!Ac)}
+          />
+          <h2 className="text-2xl">
+            AC
+          </h2>
+          </label>  
+</div>
 
 
       </div>

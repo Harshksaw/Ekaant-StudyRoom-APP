@@ -139,12 +139,15 @@ const createRoom = async (req, res) => {
       return res.status(404).send({ message: "Library not found" });
     }
 
-    const { seatLayout, timeSlot, location } = req.body;
+    const { seatLayout, timeSlot, location, ac } = req.body;
 
     if (!library) {
       return res.status(404).send({ message: "Library not found" });
     }
 
+    if(ac){
+      library.Ac = true;
+    }
     // Determine the new roomNo
     let newRoomNo = 1;
     if (library.rooms.length > 0) {
