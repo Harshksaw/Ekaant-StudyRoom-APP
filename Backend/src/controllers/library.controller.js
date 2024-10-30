@@ -336,7 +336,7 @@ const getLibraryByUserId = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room = await Library.findOne({ libraryOwner: id }).populate("rooms");
+    const room = await Library.findOne({ libraryOwner: id }).populate("rooms").populate("libraryOwner");
     res.status(200).json({
       success: true,
       message: "Library data",

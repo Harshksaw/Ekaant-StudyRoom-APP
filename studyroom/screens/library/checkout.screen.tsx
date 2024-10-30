@@ -77,7 +77,7 @@ const CheckoutScreen: React.FC = () => {
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
 
   useEffect(() => {
-    console.log(BookedData, "71 Data");
+
     setBookingId(bookingid);
     const getLibraryData = async () => {
       const loc = await getLocationName(
@@ -247,6 +247,13 @@ const CheckoutScreen: React.FC = () => {
     }
   };
 
+  console.log(BookedData, "Booked Data");
+
+  return(
+    <View>
+      <Text>Checkout Screen</Text>
+    </View>
+  )
   return (
     <SafeAreaView
       style={{
@@ -269,7 +276,7 @@ const CheckoutScreen: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <View style={{}}>
+          {/* <View style={{}}>
             <Image
               source={{ uri: BookedData?.libraryId?.images[0] }}
               style={{
@@ -278,7 +285,7 @@ const CheckoutScreen: React.FC = () => {
                 borderRadius: 10,
               }}
             />
-          </View>
+          </View> */}
           <View
             style={{
               flexDirection: "column",
