@@ -120,11 +120,11 @@ const [libraryDetails , setLibraryDetails] = useState(null)
 
   const PreBook = async () => {
     const userData = await AsyncStorage.getItem("userData");
-    console.log("🚀 ~ PreBook ~ userData:", userData)
+
     const userid = JSON.parse(userData);
     console.log("🚀 ~ PreBook ~ userid:", userid)
 
-    const userId = userid.data;
+    const userId = userid.data.user_id._id;
     console.log("🚀 ~ PreBook ~ userId:", userId)
 
     if (!userId) {
@@ -133,7 +133,24 @@ const [libraryDetails , setLibraryDetails] = useState(null)
       });
 
     }
+console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
+  "-----",
+  bookingData.details.id ,
+  "-----",
+  finalPrice ,
+  "-----",
+  totalAmount ,
+  "-----",
+  BookedData.slot ,
+  "-----",
 
+  BookedData.room ,
+  "-----",
+  BookedData.seat ,
+  "-----",
+  BookedData.date ,
+  "-----",
+  BookedData.months)
 
     if (
       userId &&

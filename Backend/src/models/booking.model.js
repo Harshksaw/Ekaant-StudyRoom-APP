@@ -26,17 +26,34 @@ const bookingSchema = new mongoose.Schema({
     default: false,
     required: false,
   },
-  timeSlot: { // Suggesting Date format for more flexible queries
-    from: { type: String, required: false }, // You could switch this to Date if needed
-    to: { type: String, required: false },   // You could switch this to Date if needed
-  },
+  timeSlotDetails: [{ // Details of the booked time slot
+    _id: { type: String, required: true },
+    booked: { type: Boolean, default: false },
+    bookingSource: { type: String, required: true },
+    from: { type: String, required: true },
+    to: { type: String, required: true },
+    price: { type: String, required: true },
+    slotId: { type: String, required: true },
+  }],
   roomNo: {
     type: Number,
     required: true,
   },
-  bookedSeat: { // Always provide seat info (id and label)
-    id: { type: String, required: true },    // Ensuring seatId is required for a valid booking
-    label: { type: String, required: true }, // Ensuring seatLabel is required
+  bookedSeat: {
+    _id: { type: String, required: true },
+    seatId: { type: String, required: true },
+    seatLabel: { type: String, required: true },
+    timeSlots: [
+      {
+        _id: { type: String, required: true },
+        booked: { type: Boolean, default: false },
+        bookingSource: { type: String, required: true },
+        from: { type: String, required: true },
+        to: { type: String, required: true },
+        price: { type: String, required: true },
+        slotId: { type: String, required: true },
+      }
+    ]
   },
   bookingDate: {
     type: Date,
