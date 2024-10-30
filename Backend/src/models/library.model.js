@@ -6,14 +6,14 @@ const librarySchema = new mongoose.Schema({
     ref: "Admin",
   },
   name: { type: String, required: true },
-  longDescription: { type: String, required: true },
+  longDescription: { type: String, required: false },
   shortDescription: { type: String, required: true },
   thumbnail: [{ type: String, required: false }],
   cardImage: { type: String, required: false },
   images: [{ type: String }],
   location: [],
   address: {},
-commingSoonMessage: { type:String, default: false },
+  commingSoonMessage: { type: String, default: false },
   rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Room" }],
 
   reviews: [{ type: String, required: false }],
@@ -35,8 +35,6 @@ commingSoonMessage: { type:String, default: false },
   comingSoon: { type: Boolean, default: false },
   approved: { type: Boolean, default: false },
 
-
-
   legal: { type: String, required: false },
   gstDetails: {
     gstNumber: { type: String, required: false },
@@ -55,13 +53,10 @@ commingSoonMessage: { type:String, default: false },
     msmeCertificateFile: { type: String, required: false },
   },
   registrationFees: { type: Number, default: 500 },
-  Price: { type: Number, default: 0 }
+  Price: { type: Number, default: 0 },
 });
-
-
 
 // Export the models
 module.exports = {
   Library: mongoose.model("Library", librarySchema),
-
 };

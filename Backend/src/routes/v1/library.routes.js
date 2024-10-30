@@ -20,9 +20,7 @@ const storage = new CloudinaryStorage({
   },
 });
 
-
 const upload = multer({ storage: storage });
-
 
 Library.get("/ping", LibraryController.pingAdmin);
 Library.post(
@@ -40,13 +38,16 @@ Library.post(
 );
 
 Library.post("/updateAdminLibrary", LibraryController.EditAdminLibrary);
-Library.post("/updateLibraryImage/:id",upload.fields([
-  {name: "cardImage", maxCount: 1},
-  {name: "images", maxCount: 5},
-]) ,LibraryController.updateLibraryImages);
+Library.post(
+  "/updateLibraryImage/:id",
+  upload.fields([
+    { name: "cardImage", maxCount: 1 },
+    { name: "images", maxCount: 5 },
+  ]),
+  LibraryController.updateLibraryImages
+);
 //Create Room
 Library.post("/createRoom", LibraryController.createRoom);
-
 
 Library.post("/updateRoom", LibraryController.addOrUpdateRoomDetails);
 
@@ -61,9 +62,13 @@ Library.post("/deleteRoomLib", LibraryController.deleteRoom);
 
 Library.post("/getLibraryRooms", LibraryController.getLibraryRooms);
 
-Library.post("/createDummyLibrary", LibraryController.createDummyLibrary);
-Library.delete("/getDummyLibrary/:id", LibraryController.deleteDummy);
-Library.get("/getLibraryByRoom", LibraryController.getDummy);
-
+Library.post(
+  "/createDummyLibrary",
+  // upload.fields([{ name: "cardImage", maxCount: 1 }]),
+  upload.single("cardImage"),
+  LibraryController.createDummyLibrary
+);
+Library.delete("/deleteDummyLibrary/:id", LibraryController.deleteDummy);
+Library.get("/getDummyLibrary", LibraryController.getDummy);
 
 module.exports = Library;
