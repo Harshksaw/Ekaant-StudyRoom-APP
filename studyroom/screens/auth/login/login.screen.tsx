@@ -55,7 +55,7 @@ const LoginScreen: React.FC = () => {
 
       if (response.status === 200) {
         await AsyncStorage.setItem("token", JSON.stringify(response.data.token));
-        await AsyncStorage.setItem("userData", JSON.stringify(response.data.data));
+        await AsyncStorage.setItem("userData", JSON.stringify(response.data.data.user_id));
         Toast.show("Login Successful", {
           type: "success",
           placement: "top",
