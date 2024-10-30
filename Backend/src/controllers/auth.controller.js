@@ -468,7 +468,7 @@ async function otpLogin(req, res) {
   return res.status(200).json({
     success: true,
     message: "User authenticated successfully",
-    error: {},
+
     data: {  user_id: user },
     token: token,
   });
