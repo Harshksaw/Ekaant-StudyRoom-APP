@@ -462,7 +462,7 @@ async function otpLogin(req, res) {
   console.log("🚀 ~ otpLogin ~ response:", response);
 
   const token = jwt.sign({ user_id: response[0]._id }, JWT_SECRET);
-  const user = await User.findById({
+  const user = await User.find({
     phoneNumber:phoneNumber
   });
 
