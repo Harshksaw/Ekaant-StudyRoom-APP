@@ -68,8 +68,6 @@ const CheckoutScreen: React.FC = () => {
   const [RegistrationFees, setRegistrationFees] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
 
-  console.log(BookedData, "Booked Date");
-
   const [paymentStatus, setPaymentStatus] = useState(false);
   const [paymentData, setPaymentData] = useState(null); // Payment data
   const [paymentId, setPaymentId] = useState(null); // Payment data
@@ -113,11 +111,11 @@ const CheckoutScreen: React.FC = () => {
     };
     getLibraryData();
   }, []);
-  console.log(BookedData, libraryData, "Booked Data/////////////////");
+
 
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
 
-  console.log(endDate, "End Date");
+
   // const location = getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
 
   useEffect(() => {
@@ -249,11 +247,11 @@ const CheckoutScreen: React.FC = () => {
 
   console.log(BookedData, "Booked Data");
 
-  return(
-    <View>
-      <Text>Checkout Screen</Text>
-    </View>
-  )
+  // return(
+  //   <View>
+  //     <Text>Checkout Screen</Text>
+  //   </View>
+  // )
   return (
     <SafeAreaView
       style={{
@@ -306,13 +304,8 @@ const CheckoutScreen: React.FC = () => {
                 marginRight: 10,
               }}
             >
-              {userDetails.bookingsForFriend ? (
-                <View
-                  style={{
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
+          {userDetails.bookingsForFriend ? (
+                <View style={{ flexDirection: "column", alignItems: "center" }}>
                   <Text>Booking for friend</Text>
                   <Text>{userDetails?.friendDetails?.name}</Text>
                 </View>
@@ -320,250 +313,73 @@ const CheckoutScreen: React.FC = () => {
                 <Text>Booking for SELF</Text>
               )}
             </View>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "bold",
-              }}
-            >
-              {BookedData?.libraryId?.name}
+
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              {BookedData?.libraryId?.[0]?.library || "Library Name"}
             </Text>
 
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 10,
-                alignItems: "center",
-              }}
-            >
+            <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
               <Ionicons name="time-outline" size={24} color="black" />
-              <Text>
-                Period - {BookedData.months}
-                {BookedData.months > 1 ? "Months" : "Month"}{" "}
-              </Text>
+              <Text>Period - {BookedData.bookingPeriod} Month{BookedData.bookingPeriod > 1 ? 's' : ''}</Text>
             </View>
 
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 10,
-                alignItems: "center",
-              }}
-            >
-              <AC />
 
-              <Text>A/C Rooms - Yes</Text>
+            <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+              <Text>A/C Rooms - {BookedData?.libraryId[0]?.Ac ? "Yes" : "No"}</Text>
             </View>
           </View>
         </View>
 
         {/* Image and Side Details */}
-        <View
-          style={{
-            flexDirection: "row",
-            marginHorizontal: 20,
-            marginTop: 20,
-            // justifyContent: "space-between",
-            alignItems: "center",
-            height: 100,
-            gap: 40,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 10,
-              alignItems: "center",
-              width: 150,
-            }}
-          >
+        <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 20, alignItems: "center", gap: 40 }}>
+          <View style={{ flexDirection: "row", gap: 10, alignItems: "center", width: 150 }}>
             <Ionicons name="calendar-outline" size={50} color="black" />
-            <View
-              style={{
-                flexDirection: "column",
-                // alignItems: "center",
-                gap: 10,
-              }}
-            >
-              <Text
-                style={{
-                  flexDirection: "column",
-                  alignItems: "center",
-                  fontSize: 15,
-                  fontWeight: "500",
-                }}
-              >
-                {" "}
-                {BookedDate}
-                {"  "} -
-              </Text>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "500",
-                }}
-              >
-                {" "}
-                {endDate.toISOString().split("T")[0]}
-              </Text>
+            <View style={{ flexDirection: "column", gap: 10 }}>
+              <Text style={{ fontSize: 15, fontWeight: "500" }}>{BookedDate} -</Text>
+              <Text style={{ fontSize: 15, fontWeight: "500" }}>{endDate.toISOString().split("T")[0]}</Text>
             </View>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 10,
-              alignItems: "center",
-            }}
-          >
-            <SeatsCheckout />
-
-            <Text>{BookedData?.bookedSeat?.label} Seat</Text>
+          <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+            <Text>{BookedData?.bookedSeat?.seatLabel} Seat</Text>
           </View>
         </View>
+        <View style={{ height: 1, backgroundColor: "black", marginHorizontal: 20 }} />
 
-        <View
-          style={{
-            height: 1, // Thin line
-            backgroundColor: "black", // Line color
-            marginHorizontal: 20, // Match the margin you have set in the parent View
-          }}
-        ></View>
-        <View
-          style={{
-            marginHorizontal: 20,
-            marginTop: 20,
-            flexDirection: "column",
-            gap: 15,
-          }}
-        >
-          <View style={styles.summary}>
-            <Cash />
-            <View
-              style={{
-                flexDirection: "column",
-                gap: 10,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  gap: 10,
-                }}
-              >
-                <Text style={{ fontSize: 20, fontWeight: "400" }}>
-                  Registration Fee{" "}
-                </Text>
-                <Text style={{ fontSize: 20, fontWeight: "400" }}>
-                  - ₹{RegistrationFees}
-                </Text>
+{/* Payment Summary */}
+<View style={{ marginHorizontal: 20, marginTop: 20, flexDirection: "column", gap: 15 }}>
+  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+    <Text style={{ fontSize: 20, fontWeight: "400" }}>Registration Fee</Text>
+    <Text style={{ fontSize: 20, fontWeight: "400" }}>- ₹{RegistrationFees}</Text>
+  </View>
+  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+    <Text style={{ fontSize: 20, fontWeight: "500" }}>Sub Total</Text>
+    <Text style={{ fontSize: 20, fontWeight: "500" }}>- ₹{initialPrice}</Text>
+  </View>
+  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            {BookedData?.libraryId?.[0]?.timeSlot?.map((slot, index) => (
+              <View key={index} style={{ flexDirection: "row", gap: 5 }}>
+                <Text>{slot.from || ''} - {slot.to || ''}</Text>
               </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                  Sub Total{" "}
-                </Text>
-                <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                  - ₹{initialPrice}
-                </Text>
-              </View>
-            </View>
+            ))}
           </View>
 
-          {/* //location */}
-          <View style={styles.summary}>
-            <CheckoutScreenLoc />
-
-            <View
-              style={{
-                flexDirection: "column",
-                gap: 10,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  gap: 10,
-                }}
-              >
-                <Text style={{ fontSize: 20, fontWeight: "500" }}>
-                  {(location && location?.split(" ").slice(0, 2).join(" ")) ||
-                    "undisclosed"}{" "}
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text style={{ fontSize: 15, fontWeight: "300" }}>
-                  {(location && location?.split(" ").slice(1, 5).join(" ")) ||
-                    "undisclosed"}{" "}
-                </Text>
-              </View>
-            </View>
+          {/* Display Location */}
+          <View style={{ flexDirection: "column", gap: 10 }}>
+            <Text style={{ fontSize: 20, fontWeight: "500" }}>{location || "undisclosed"}</Text>
           </View>
-
-          {/* //slot */}
-          <View style={styles.summary}>
-            <Note />
-            <View
-              style={{
-                flexDirection: "column",
-                gap: 10,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  gap: 10,
-                }}
-              >
-                <View
-                  style={{
-                    fontSize: 18,
-                    fontWeight: "400",
-                    flexDirection: "row",
-                    gap: 10,
-                  }}
-                >
-{BookedData?.libraryId?.timeSlot?.length > 0 && BookedData.libraryId.timeSlot.map((slot) => (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        // justifyContent: "space-between",
-                        gap: 2,
-                      }}
-                    >
-                      <Text>{slot.from ? slot.from: ""} {"-"}</Text>
-
-                      <Text>{slot.to}</Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            </View>
-          </View>
-
-          {/* //payment */}
         </View>
       </View>
+          
+
+
       {/* Summary */}
 
-      <TouchableOpacity onPress={() => PaymentScreen()}>
+      <TouchableOpacity onPress={PaymentScreen}>
         <View
           style={{
             flexDirection: "row",
             position: "absolute",
             bottom: 25,
-
             width: "90%",
             justifyContent: "space-between",
             marginHorizontal: 20,
@@ -571,20 +387,11 @@ const CheckoutScreen: React.FC = () => {
             padding: 20,
             backgroundColor: "#0077B6",
             borderRadius: 10,
-            // marginTop: 20,
           }}
         >
-          <Text
-            style={{
-              color: "#FFFFF5",
-              fontSize: 18,
-              fontWeight: "700",
-              letterSpacing: 2,
-            }}
-          >
-            Total Amount : ₹{finalAmount}
+          <Text style={{ color: "#FFFFF5", fontSize: 18, fontWeight: "700", letterSpacing: 2 }}>
+            Total Amount: ₹{finalAmount}
           </Text>
-
           <Ionicons name="arrow-forward" size={25} color="white" />
         </View>
       </TouchableOpacity>
