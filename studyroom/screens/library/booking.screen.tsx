@@ -122,8 +122,9 @@ const [libraryDetails , setLibraryDetails] = useState(null)
     const userData = await AsyncStorage.getItem("userData");
     console.log("🚀 ~ PreBook ~ userData:", userData)
     const userid = JSON.parse(userData);
+    console.log("🚀 ~ PreBook ~ userid:", userid)
 
-    const userId = userid.user_id;
+    const userId = userid.data;
     console.log("🚀 ~ PreBook ~ userId:", userId)
 
     if (!userId) {
