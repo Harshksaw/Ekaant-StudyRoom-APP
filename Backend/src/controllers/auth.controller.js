@@ -469,7 +469,7 @@ async function otpLogin(req, res) {
     success: true,
     message: "User authenticated successfully",
     error: {},
-    data: { User, user_id: user._id },
+    data: {  user_id: user },
     token: token,
   });
 }
