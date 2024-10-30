@@ -22,7 +22,6 @@ const pingAdmin = (req, res) => {
 };
 
 const calculateLowestPrice = async (libraryId) => {
-
   const library = await Library.findById(libraryId).populate({
     path: "rooms",
     populate: {
@@ -39,11 +38,11 @@ const calculateLowestPrice = async (libraryId) => {
 
   let lowestPrice = Infinity;
 
-  library.rooms.forEach(room => {
-    room.seats.forEach(seat => {
-      seat.timeSlots.forEach(slot => {
+  library.rooms.forEach((room) => {
+    room.seats.forEach((seat) => {
+      seat.timeSlots.forEach((slot) => {
         const price = parseFloat(slot.price);
-        console.log("🚀 ~ calculateLowestPrice ~ price:", price)
+        console.log("🚀 ~ calculateLowestPrice ~ price:", price);
         if (price < lowestPrice && price > 0) {
           lowestPrice = price;
         }
@@ -145,9 +144,6 @@ const createRoom = async (req, res) => {
       return res.status(404).send({ message: "Library not found" });
     }
 
-
-
-
     // Determine the new roomNo
     let newRoomNo = 1;
     if (library.rooms.length > 0) {
@@ -203,12 +199,16 @@ const createRoom = async (req, res) => {
 // get all rooms
 const createDummyLibrary = async (req, res) => {
   try {
-    const { name, shortDescription, cardImage, comingSoonMessage } = req.body;
-
+    const { name, shortDescription, comingSoonMessage } = req.body;
+    console.log(req.body, "=================>");
+    // const { cardImage } = req.files;
+    const cardImage = req.file.path;
+    console.log("card image of dummy library", cardImage);
     if (!name || !shortDescription || !cardImage || !comingSoonMessage) {
       return res.status(400).json({
         success: false,
-        message: "Please provide name, shortDescription, cardImage, and comingSoonMessage.",
+        message:
+          "Please provide name, shortDescription, cardImage, and comingSoonMessage.",
       });
     }
 
@@ -217,7 +217,7 @@ const createDummyLibrary = async (req, res) => {
       shortDescription,
       cardImage,
       comingSoon: true,
-      commingSoonMessage : comingSoonMessage,
+      commingSoonMessage: comingSoonMessage,
     });
 
     await newLibrary.save();
@@ -327,8 +327,8 @@ const getLibraryById = async (req, res) => {
   console.log(id);
   try {
     const room = await Library.findById(id)
-    .populate("rooms")
-      .populate("libraryOwner")
+      .populate("rooms")
+      .populate("libraryOwner");
     res.status(200).json({
       success: true,
       message: "Library data",
@@ -344,12 +344,12 @@ const getLibraryRooms = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room =   await Library.findById(id).populate({
-      path: 'rooms',
+    const room = await Library.findById(id).populate({
+      path: "rooms",
       populate: {
-        path: 'seats',
+        path: "seats",
         populate: {
-          path: 'timeSlots',
+          path: "timeSlots",
         },
       },
     });
@@ -368,7 +368,9 @@ const getLibraryByUserId = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room = await Library.findOne({ libraryOwner: id }).populate("rooms").populate("libraryOwner");
+    const room = await Library.findOne({ libraryOwner: id })
+      .populate("rooms")
+      .populate("libraryOwner");
     res.status(200).json({
       success: true,
       message: "Library data",
@@ -551,17 +553,17 @@ const deleteDummy = async (req, res) => {
 const getDummy = async (req, res) => {
   try {
     const dummyLibrary = await Library.find({ comingSoon: true });
-    
+
     if (!dummyLibrary) {
       return res.status(404).json({ message: "No coming soon library found." });
     }
-    
+
     res.status(200).json({ dummyLibrary });
   } catch (error) {
     console.error("Error fetching coming soon library:", error);
     res.status(500).json({ message: "Server error" });
   }
-}
+};
 module.exports = {
   pingAdmin,
   createLibrary,
@@ -580,5 +582,5 @@ module.exports = {
   getLibraryRooms,
   createDummyLibrary,
   deleteDummy,
-  getDummy
+  getDummy,
 };
