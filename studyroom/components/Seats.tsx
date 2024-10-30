@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Image, Text, ScrollView } from "react-native";
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect }) => {
   return (
@@ -7,7 +7,8 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect }) => {
       onPress={() => onSeatSelect(seatData)}
       style={styles.seat(isBooked, isSelected)}
     >
-      <Image source={require('../assets/icons/desk2.png')} style={{width: 50, height: 50}} />
+      <Image source={require('../assets/icons/desk2.png')} style={{ width: 50, height: 50 }} />
+      <Text>{seatData.seatLabel}</Text>
     </TouchableOpacity>
   );
 };
@@ -25,40 +26,87 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
     }
   };
 
-
   const createSeatGrid = () => {
-    return layout.map((seat, index) => {
-      const isSelected = selectedSeat && seat.seatId === selectedSeat.seatId;
-      const isBooked = bookedSeats.some(bookedSeat => bookedSeat.seatId === seat.seatId);
+    // Find matrix dimensions based on the max row and column in layout
+    const maxRow = Math.max(...layout.map(seat => parseInt(seat.seatId.split('-')[0])));
+    const maxCol = Math.max(...layout.map(seat => parseInt(seat.seatId.split('-')[1])));
+    
+    // Create a matrix filled with null to start
+    const matrix = Array.from({ length: maxRow + 1 }, () => Array(maxCol + 1).fill(null));
 
-
-      return (
-        <Seat
-      key={index}
-      seatData={seat}
-      isSelected={isSelected}
-      isBooked={isBooked}
-      onSeatSelect={handleSelect}
-    />
-      );
+    // Populate matrix with seat objects
+    layout.forEach((seat) => {
+      const [row, col] = seat.seatId.split('-').map(Number);
+      matrix[row][col] = seat;
     });
+
+    // Generate the seat grid view
+    return matrix.map((row, rowIndex) => (
+      <View key={`row-${rowIndex}`} style={styles.seatRow}>
+        {row.map((seat, colIndex) => {
+          if (seat) {
+            const isSelected = selectedSeat && seat.seatId === selectedSeat.seatId;
+            const isBooked = bookedSeats.some(bookedSeat => bookedSeat.seatId === seat.seatId);
+
+            return (
+              <Seat
+                key={`${rowIndex}-${colIndex}`}
+                seatData={seat}
+                isSelected={isSelected}
+                isBooked={isBooked}
+                onSeatSelect={handleSelect}
+              />
+            );
+          }
+          // Render an invisible placeholder for empty seats
+          return <View key={`${rowIndex}-${colIndex}`} style={styles.emptySeat} />;
+        })}
+      </View>
+    ));
   };
 
-  return <View style={styles.container}>{createSeatGrid()}</View>;
+  return(
+    <ScrollView horizontal={true}
+    showsHorizontalScrollIndicator={false}
+    >
+      <View style={styles.container}>{createSeatGrid()}</View>
+    </ScrollView>
+  );
+
 };
 
+
+
+export default function Seats({ onSeatSelect, SeatLayout, currentRoom }) {
+  console.log("🚀 ~ Seats ~ SeatLayout:", SeatLayout);
+
+  const handleSeatSelect = (selectedSeat) => {
+    onSeatSelect(selectedSeat);
+    console.log("Selected Seat:", selectedSeat);
+  };
+
+  return (
+    <ScrollView showsVerticalScrollIndicator={false}>
+    <SeatsComponent
+      layout={SeatLayout}
+      bookedSeats={[]}
+      onSeatSelect={handleSeatSelect}
+      currentRoom={currentRoom}
+    />
+    </ScrollView>
+
+  );
+}
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: "center",
-    gap: 20,
-    marginHorizontal: 20,
+    flexDirection: "column",
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
   seatRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    flexWrap: "nowrap",
   },
   seat: (isBooked, isSelected) => ({
     width: 70,
@@ -68,24 +116,10 @@ const styles = StyleSheet.create({
     margin: 5,
     backgroundColor: isBooked ? "red" : isSelected ? "blue" : "transparent",
   }),
+  emptySeat: {
+    width: 70,
+    height: 70,
+    margin: 5,
+    backgroundColor: "transparent",
+  },
 });
-
-export default function Seats({ onSeatSelect, SeatLayout , currentRoom}) {
-  console.log("🚀 ~ Seats ~ SeatLayout:", SeatLayout)
-  
-
-  const handleSeatSelect = (selectedSeat) => {
-    onSeatSelect(selectedSeat); // Now expects a single seat object or null
-    console.log("Selected Seat:", selectedSeat); // Log the selected seat to verify
-
-  };
-
-  return (
-    <SeatsComponent
-      layout={SeatLayout}
-      bookedSeats={[]}
-      onSeatSelect={handleSeatSelect}
-      currentRoom={currentRoom}
-    />
-  );
-}

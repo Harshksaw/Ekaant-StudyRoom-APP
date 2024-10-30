@@ -5,9 +5,7 @@ import Seats from "@/components/Seats";
 import Calendar from "@/components/calendar/calendar";
 import { Ionicons } from "@expo/vector-icons";
 
-import {
-  router
-} from "expo-router";
+import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -41,7 +39,6 @@ const BookingScreen: React.FC = () => {
 
   const city = JSON.parse(params?.params?.location);
 
-
   const [data, setData] = useState(null);
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -53,10 +50,10 @@ const BookingScreen: React.FC = () => {
   const [finalPrice, setFinalPrice] = useState(0);
   const [currentRoomNo, setCurrentRoomNo] = useState(1);
   const [forFriend, setForFriend] = useState(false);
-const[Loading, setLoading]=useState(true);
+  const [Loading, setLoading] = useState(true);
   const userDetails = useSelector((state: any) => state.user);
   const bookingData = useSelector((state: any) => state.booking);
-
+const [libraryDetails , setLibraryDetails] = useState(null)
   const price = bookingData.details.price || 6000;
   const registrationFees = 1000;
   const subtotal = Number((price + registrationFees).toFixed(2));
@@ -70,8 +67,11 @@ const[Loading, setLoading]=useState(true);
     slot: selectedSlots,
   };
 
+  console.log("SELECT", selectedSlots);
   useEffect(() => {
-    const totalPrice = selectedSlots.reduce((acc, slot) => acc + slot.price, 0);
+
+    const totalPrice = selectedSlots.reduce((acc, slot) => acc + Number(slot.price), 0);
+
     setFinalPrice(totalPrice * selectedMonth);
   }, [selectedSlots, selectedMonth]);
 
@@ -81,7 +81,9 @@ const[Loading, setLoading]=useState(true);
 
   const handleSelectSlot = (selectedSlot) => {
     if (selectedSlots.find((slot) => slot._id === selectedSlot._id)) {
-      setSelectedSlots(selectedSlots.filter((slot) => slot._id !== selectedSlot._id));
+      setSelectedSlots(
+        selectedSlots.filter((slot) => slot._id !== selectedSlot._id)
+      );
     } else {
       setSelectedSlots([...selectedSlots, selectedSlot]);
     }
@@ -93,14 +95,14 @@ const[Loading, setLoading]=useState(true);
 
   const updateRoomDetails = async () => {
     const details = {
-      id: data?._id,
-      amenities: data.amenities,
-      images: data.images,
+      id: libraryDetails?._id,
+      amenities: libraryDetails.amenities,
+      images: libraryDetails.images,
       location: city,
-      name: data.name,
+      name: libraryDetails.name,
       price: finalPrice,
     };
-    console.log("🚀 ~ updateRoomDetails ~ details:", details)
+    console.log("🚀 ~ updateRoomDetails ~ details:", details);
     dispatch(setBookingDetails(details));
   };
   const handleData = (data: DataItem[]) => {
@@ -113,33 +115,25 @@ const[Loading, setLoading]=useState(true);
       return item;
     });
   };
-  const available = handleData(data?.timeSlot);
+
+  const available = handleData(selectedSeat?.timeSlots);
 
   const PreBook = async () => {
     const userData = await AsyncStorage.getItem("userData");
-    const userid = JSON.parse(userData || "{}");
-    const userId = userid.user?._id;
+    console.log("🚀 ~ PreBook ~ userData:", userData)
+    const userid = JSON.parse(userData);
+
+    const userId = userid.user_id;
+    console.log("🚀 ~ PreBook ~ userId:", userId)
 
     if (!userId) {
-      Toast.show({
-        text1: "User ID is missing",
-
+      Toast.show("Error is App , Relogin", {
         type: "error",
-        position: "top",
-        visibilityTime: 3000,
       });
-      throw new Error('User ID is missing');
+
     }
 
-    console.log(      userId ,
-      bookingData.details.id ,
-      finalPrice ,
-      totalAmount ,
-      BookedData.slot.length ,
-      BookedData.room ,
-      BookedData.seat ,
-      BookedData.date ,
-      BookedData.months)
+
     if (
       userId &&
       bookingData.details.id &&
@@ -171,12 +165,12 @@ const[Loading, setLoading]=useState(true);
         const bookingId = response.data.Booking._id;
         setBookingId(bookingId);
 
-        Toast.show({
-          text1: "Booking Successful!",
-          type: "success",
-          position: "top",
-          visibilityTime: 3000,
-        });
+        console.log(response, "111");
+        if (response.status === 200 || response.status === 201) {
+          Toast.show("Booking Successful", {
+            type: "success",
+          });
+        }
 
         resetBookingState();
         return bookingId;
@@ -230,46 +224,39 @@ const[Loading, setLoading]=useState(true);
     setBookingLoader(false);
     setIsModalVisible(false);
     console.error("Error:", error);
-    Toast.show({
-      text1: "Error in Booking!",
-
-      type: "error",
-      position: "top",
-      visibilityTime: 3000,
-    });
+    Toast.show("Error booking");
   };
-
 
   const fetchRooms = async () => {
     try {
       const response = await axios.post(
-        `${BACKEND}/api/v1/library/getLibraryRooms`,{
-          id : dataK._id
+        `${BACKEND}/api/v1/library/getLibraryRooms`,
+        {
+          id: dataK._id,
         }
       );
-      console.log("🚀 ~ response--->:", response.data.data.rooms)
+      console.log("🚀 ~ response--->:", response.data.data.rooms);
+      setLibraryDetails(response.data.data)
       return response.data.data.rooms;
     } catch (error) {
       console.error("Error:", error);
     }
-  }
+  };
 
   useEffect(() => {
-
     fetchRooms().then((data) => {
-      console.log("🚀 ~ data:", data)
-      setData(data)
-      setLoading(false)
-    })
-    
+      console.log("🚀 ~ data:", data);
+      setData(data);
+      setLoading(false);
+    });
   }, []);
 
-  // console.log("🚀 ~ data:", data[currentRoomNo-1].seats)
 
 
-if(Loading || data === null){
-  return <ActivityIndicator size="large" color="#000" />
-}
+  if (Loading || data === null) {
+    return <ActivityIndicator size="large" color="#000" />;
+  }
+
   return (
     <SafeAreaView
       style={{
@@ -343,27 +330,28 @@ if(Loading || data === null){
       </View>
 
       <ScrollView
-        showsVerticalScrollIndicator={false}
         // horizontal={true}
-        style={{
-          flex: 1,
-
-          marginBottom: 10,
-          // justifyContent: "center",
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          flexDirection: "row", // Ensures the seats are laid out in rows
+          flexWrap: "wrap", // Allows wrapping into multiple lines if needed
+          justifyContent: "center",
         }}
+        // style={{
+        //   flex: 1,
+
+        //   marginBottom: 10,
+        //   // justifyContent: "center",
+        // }}
       >
         {/* //seating arrangement */}
-        {
-          data && data[currentRoomNo-1].seats.length !== 0 && (
-            <Seats  
+        {data && data[currentRoomNo - 1].seats.length !== 0 && (
+          <Seats
             onSeatSelect={handleSeatSelect}
-            SeatLayout={data[currentRoomNo-1].seats}
+            SeatLayout={data[currentRoomNo - 1].seats}
             currentRoom={currentRoomNo}
           />
-          )
-
-        }
-    
+        )}
       </ScrollView>
 
       <TouchableOpacity
@@ -480,6 +468,7 @@ if(Loading || data === null){
                       maxWidth: 300,
                     }}
                   >
+                    {/* //Time Slots */}
                     {available?.map((slot, index) => {
                       if (slot?.availability && slot?.from !== null) {
                         return (
@@ -580,30 +569,28 @@ if(Loading || data === null){
                     marginTop: 10,
                   }}
                 >
-
                   <View>
-                    <Text style={{
-                      fontSize: 20,
-                      fontWeight: 'bold',
-                      color: '#000',
-                      margin: 10,
-                      textAlign: 'center'
-
-                    }}>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        fontWeight: "bold",
+                        color: "#000",
+                        margin: 10,
+                        textAlign: "center",
+                      }}
+                    >
                       Price :
                       <Text
                         style={{
                           fontSize: 24, // Larger font size
-                          fontWeight: 'bold', // Bold text
-                          color: '#E91E63', // A distinct color
+                          fontWeight: "bold", // Bold text
+                          color: "#E91E63", // A distinct color
                           margin: 10, // Add some margin around the text
-                          textAlign: 'center'
+                          textAlign: "center",
                         }}
                       >
-
                         {finalPrice}
                       </Text>
-
                     </Text>
                   </View>
                   {selectedDate &&
@@ -614,15 +601,24 @@ if(Loading || data === null){
                         style={{
                           backgroundColor: "rgb(93, 223, 38)",
                           marginTop: 10,
-                          borderRadius: -10,
-                          padding: 10,
+                          borderRadius: 15,
+                          paddingHorizontal: 10,
                         }}
                         onPress={confirmBooking}
                       >
                         {bookingloader ? (
                           <ActivityIndicator size="large" color="#000" />
                         ) : (
-                          <Text style={{ alignItems: "center", padding: 15 }}>
+                          <Text
+                            style={{
+                              alignItems: "center",
+                              padding: 15,
+                              borderRadius: 20,
+                              fontSize: 15,
+
+                              fontWeight: "bold",
+                            }}
+                          >
                             Confirm
                           </Text>
                         )}
