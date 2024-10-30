@@ -52,7 +52,7 @@ async function createBooking(req, res) {
       bookingPeriod,
     } = req.body;
     console.log(forFriend)
-    const user = await User.findOne({ _id: userId });
+    const user = await User.findById( userId );
     // console.log(user);
 
     if (!user) {
