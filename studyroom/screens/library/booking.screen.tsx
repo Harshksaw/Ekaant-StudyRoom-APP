@@ -217,7 +217,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
         price: finalPrice,
       };
 
-      const Bookdata = { ...newBookingData, libraryId: data };
+      const Bookdata = { ...newBookingData, libraryId: libraryDetails };
       router.push({
         pathname: "/library/checkout.screen",
         params: {
@@ -255,7 +255,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
       );
       console.log("🚀 ~ response--->:", response.data.data.rooms);
       setLibraryDetails(response.data.data)
-      return response.data.data.rooms;
+      return response.data.data;
     } catch (error) {
       console.error("Error:", error);
     }
@@ -264,11 +264,10 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
   useEffect(() => {
     fetchRooms().then((data) => {
       console.log("🚀 ~ data:", data);
-      setData(data);
+      setData(data.rooms);
       setLoading(false);
     });
   }, []);
-
 
 
   if (Loading || data === null) {

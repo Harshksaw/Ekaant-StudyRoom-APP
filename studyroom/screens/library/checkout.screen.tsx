@@ -4,7 +4,7 @@ import { getDateAfterMonths } from "@/utils/date";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 
-import { Image } from "expo-image";
+
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -15,6 +15,7 @@ import {
   Touchable,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -86,6 +87,7 @@ const CheckoutScreen: React.FC = () => {
       try {
         const userDataId = await AsyncStorage.getItem("userData");
         const userid = JSON.parse(userDataId);
+        console.log("🚀 ~ getLibraryData ~ userid:", userid)
         setUserData(userid);
 
         const res = await axios.post(
@@ -244,14 +246,24 @@ const CheckoutScreen: React.FC = () => {
       }
     }
   };
+  function formatSeatLabel(seatLabel) {
+    const [row, column] = seatLabel.split('-');
+    return `Row ${row}, Column ${column}`;
+  }
+  function formatTimeSlots(timeSlots) {
+    return timeSlots.map(slot => {
+      const { from, to } = slot;
 
-  console.log(BookedData, "Booked Data");
+      const formatTime = (time) => {
+        const [hour, minute] = time.split(':');
 
-  // return(
-  //   <View>
-  //     <Text>Checkout Screen</Text>
-  //   </View>
-  // )
+        return `${hour % 12 || 12} ${minute.slice(2,)} `;
+      };
+
+      return `${formatTime(from)} - ${formatTime(to)}`;
+    }).join(', ');
+  }
+  console.log("BOoked Data",BookedData)
   return (
     <SafeAreaView
       style={{
@@ -274,7 +286,7 @@ const CheckoutScreen: React.FC = () => {
             alignItems: "center",
           }}
         >
-          {/* <View style={{}}>
+          <View style={{}}>
             <Image
               source={{ uri: BookedData?.libraryId?.images[0] }}
               style={{
@@ -283,7 +295,7 @@ const CheckoutScreen: React.FC = () => {
                 borderRadius: 10,
               }}
             />
-          </View> */}
+          </View>
           <View
             style={{
               flexDirection: "column",
@@ -304,7 +316,7 @@ const CheckoutScreen: React.FC = () => {
                 marginRight: 10,
               }}
             >
-          {userDetails.bookingsForFriend ? (
+              {userDetails.bookingsForFriend ? (
                 <View style={{ flexDirection: "column", alignItems: "center" }}>
                   <Text>Booking for friend</Text>
                   <Text>{userDetails?.friendDetails?.name}</Text>
@@ -315,7 +327,7 @@ const CheckoutScreen: React.FC = () => {
             </View>
 
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-              {BookedData?.libraryId?.[0]?.library || "Library Name"}
+              {BookedData?.libraryId?.name || "Library Name"}
             </Text>
 
             <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
@@ -340,22 +352,32 @@ const CheckoutScreen: React.FC = () => {
             </View>
           </View>
           <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-            <Text>{BookedData?.bookedSeat?.seatLabel} Seat</Text>
+            < SeatsCheckout />
+            <Text style={{
+              fontSize: 15,
+              fontWeight: "500",
+              color: "black",
+              textTransform: "uppercase",
+              flexDirection: "column",
+              flexWrap: "wrap"
+
+
+            }}>{formatSeatLabel(BookedData?.bookedSeat?.seatLabel)} </Text>
           </View>
         </View>
-        <View style={{ height: 1, backgroundColor: "black", marginHorizontal: 20 }} />
+        <View style={{ height: 1, backgroundColor: "black", marginHorizontal: 20, marginVertical: 10 }} />
 
-{/* Payment Summary */}
-<View style={{ marginHorizontal: 20, marginTop: 20, flexDirection: "column", gap: 15 }}>
-  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-    <Text style={{ fontSize: 20, fontWeight: "400" }}>Registration Fee</Text>
-    <Text style={{ fontSize: 20, fontWeight: "400" }}>- ₹{RegistrationFees}</Text>
-  </View>
-  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-    <Text style={{ fontSize: 20, fontWeight: "500" }}>Sub Total</Text>
-    <Text style={{ fontSize: 20, fontWeight: "500" }}>- ₹{initialPrice}</Text>
-  </View>
-  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        {/* Payment Summary */}
+        <View style={{ marginHorizontal: 20, marginTop: 20, flexDirection: "column", gap: 15 }}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Text style={{ fontSize: 20, fontWeight: "400" }}>Registration Fee</Text>
+            <Text style={{ fontSize: 20, fontWeight: "400" }}>- ₹{RegistrationFees}</Text>
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Text style={{ fontSize: 20, fontWeight: "500" }}>Sub Total</Text>
+            <Text style={{ fontSize: 20, fontWeight: "500" }}>- ₹{initialPrice}</Text>
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             {BookedData?.libraryId?.[0]?.timeSlot?.map((slot, index) => (
               <View key={index} style={{ flexDirection: "row", gap: 5 }}>
                 <Text>{slot.from || ''} - {slot.to || ''}</Text>
@@ -364,12 +386,46 @@ const CheckoutScreen: React.FC = () => {
           </View>
 
           {/* Display Location */}
-          <View style={{ flexDirection: "column", gap: 10 }}>
-            <Text style={{ fontSize: 20, fontWeight: "500" }}>{location || "undisclosed"}</Text>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <CheckoutScreenLoc />
+            <View
+              style={{
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  gap: 10,
+                }}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "500" }}>
+                  {location?.split(" ").slice(0, 2).join(" ")}{" "}
+                </Text>
+              </View>
+              <View
+                style={{ flexDirection: "row", justifyContent: "space-between" }}
+              >
+                <Text style={{ fontSize: 15, fontWeight: "300" }}>
+                  {location?.split(" ").slice(3, 5).join(" ")}{" "}
+                </Text>
+              </View>
+            </View>
           </View>
+          {/* <View style={styles.summary}>
+            <Note />
+            <View style={{ flexDirection: 'column', gap: 10 }}>
+              <Text style={{ fontSize: 20, fontWeight: '400', maxWidth: '80%' }}>
+                Slot Time - {formatTimeSlots(BookedData?.timeSlot)}
+              </Text>
+            </View>
+          </View> */}
+
         </View>
       </View>
-          
+
 
 
       {/* Summary */}
