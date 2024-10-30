@@ -152,8 +152,7 @@ function Signup() {
       setCurrentStep(4);
       setToken(token || "");
     }
-    console.log(token, "token");
-    console.log(currentStep, "currentstep");
+
 
     if (!token) {
       console.log(token, "token");
@@ -580,6 +579,25 @@ try{
 
 
     if (currentStep === 3) {
+      if(userDetails.aadharCard.length !== 12 || 
+        userDetails.panCard.length !== 10 || userDetails.fullName === "" ||
+         userDetails.dob === "" || userDetails.address.line1 === "" || 
+         userDetails.address.line2 === "" || userDetails.address.city === "" ||
+          userDetails.address.pincode === "" || !userDetails.uploadAadharCard ||
+           !userDetails.uploadPanCard || userDetails.uploadAadharCard === null || 
+           userDetails.uploadPanCard === null){
+        toast.error("Please fill all the fields",{
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      )
+           }
       createUser();
     }
     if (currentStep === 5) {

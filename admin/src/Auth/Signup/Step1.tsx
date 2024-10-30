@@ -11,6 +11,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }:any) => (
           <span className="text-3xl">🇮🇳</span>
         </label>
         <input
+         required={true}
           type="number"
           // className="px-4 py-2 w-[410px] border-2 border-black  text-base bg-white text-gray-400"
           className="focus:ring-0 focus:ring-offset-0 focus:outline-0 focus:outline-offset-0 "
@@ -39,7 +40,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }:any) => (
       <div className="">
         <label className="font-bold">Enter Email ID</label>
 
-        <input
+        <input required
           type="email"
           value={userInfo.email}
           id="AdminEmail"
@@ -52,7 +53,8 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }:any) => (
       {/* password */}
       <div>
         <label className="font-bold">Enter Password</label>
-        <input
+        <input required
+
           type="password"
           value={userInfo.password}
           placeholder="Password"
