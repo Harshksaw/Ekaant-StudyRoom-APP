@@ -13,10 +13,10 @@ const librarySchema = new mongoose.Schema({
   images: [{ type: String }],
   location: [],
   address: {},
-
+commingSoonMessage: { type:String, default: false },
   rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Room" }],
 
-  reviews: { type: String, required: false },
+  reviews: [{ type: String, required: false }],
   deleted: { type: Boolean, default: false },
   amenities: {
     coldWater: { type: Boolean, default: false },

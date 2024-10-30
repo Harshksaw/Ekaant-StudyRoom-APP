@@ -201,7 +201,39 @@ const createRoom = async (req, res) => {
 };
 
 // get all rooms
+const createDummyLibrary = async (req, res) => {
+  try {
+    const { name, shortDescription, cardImage, comingSoonMessage } = req.body;
 
+    if (!name || !shortDescription || !cardImage || !comingSoonMessage) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide name, shortDescription, cardImage, and comingSoonMessage.",
+      });
+    }
+
+    const newLibrary = new Library({
+      name,
+      shortDescription,
+      cardImage,
+      comingSoon: true,
+      commingSoonMessage : comingSoonMessage,
+    });
+
+    await newLibrary.save();
+    return res.status(201).json({
+      success: true,
+      message: "Library created successfully.",
+      data: newLibrary,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create library.",
+      error: error.message,
+    });
+  }
+};
 // addOrUpdateRoomDetails
 const addOrUpdateRoomDetails = async (req, res) => {
   try {
@@ -498,6 +530,38 @@ const deleteRoom = async (req, res) => {
     res.status(500).json({ message: "Error deleting room", error });
   }
 };
+
+const deleteDummy = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedLibrary = await Library.findByIdAndDelete(id);
+
+    if (!deletedLibrary) {
+      return res.status(404).json({ message: "Library not found." });
+    }
+
+    res.status(200).json({ message: "Library deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting library:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getDummy = async (req, res) => {
+  try {
+    const dummyLibrary = await Library.find({ comingSoon: true });
+    
+    if (!dummyLibrary) {
+      return res.status(404).json({ message: "No coming soon library found." });
+    }
+    
+    res.status(200).json({ dummyLibrary });
+  } catch (error) {
+    console.error("Error fetching coming soon library:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
 module.exports = {
   pingAdmin,
   createLibrary,
@@ -513,5 +577,8 @@ module.exports = {
   EditAdminLibrary,
   updateLibraryImages,
   deleteRoom,
-  getLibraryRooms
+  getLibraryRooms,
+  createDummyLibrary,
+  deleteDummy,
+  getDummy
 };

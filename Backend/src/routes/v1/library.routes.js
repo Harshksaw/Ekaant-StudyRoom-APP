@@ -58,8 +58,12 @@ Library.post("/getLibraryById", LibraryController.getLibraryById);
 Library.post("/getAdminLibraries", LibraryController.getAdminLibraries);
 Library.post("/getAllBookings", LibraryController.getAllBookings);
 Library.post("/deleteRoomLib", LibraryController.deleteRoom);
+
 Library.post("/getLibraryRooms", LibraryController.getLibraryRooms);
 
+Library.post("/createDummyLibrary", LibraryController.createDummyLibrary);
+Library.delete("/getDummyLibrary/:id", LibraryController.deleteDummy);
+Library.get("/getLibraryByRoom", LibraryController.getDummy);
 
 
 module.exports = Library;
