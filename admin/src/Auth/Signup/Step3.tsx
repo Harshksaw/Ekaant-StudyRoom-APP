@@ -1,8 +1,10 @@
 import StateDropdown from "@/components/StateSelector";
 
-import DatePicker from "react-datepicker";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/style.css";
 
 import "react-datepicker/dist/react-datepicker.css";
+import { useState } from "react";
 export const StepThree = ({
   nextStep,
   prevStep,
@@ -14,7 +16,7 @@ export const StepThree = ({
   const handleDateChange = (date :any) => {
     setUserDetails({ ...userDetails, dob: date });
   };
-
+  const [showDatePicker, setShowDatePicker] = useState(false);
   
   return(
 
@@ -44,20 +46,35 @@ export const StepThree = ({
       </div>
       {/* DOB */}
       <div className="flex-col items-center justify-start">
-        <label
+        {/* <label
           htmlFor="adminDob"
           className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
         >
-          DOB
-        </label>
-        <DatePicker
+          
+        </label> */}
+        <div>
+      <label>Date of Birth:</label>
+      <input
+        type="text"
+        value={userDetails.dob ? userDetails.dob.toLocaleDateString() : ""}
+        placeholder="Select your DOB"
+        readOnly
+        onClick={() => setShowDatePicker(!showDatePicker)} // Toggle date picker on click
+      />
+
+      {showDatePicker && (
+        <DayPicker
+          mode="single"
           selected={userDetails.dob}
-          onChange={handleDateChange}
-          dateFormat="Pp"
-          placeholderText="Select your date of birth"
-          // className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          id="adminDob"
+          onSelect={handleDateChange}
+       
+
+          captionLayout="dropdown" 
         />
+      )}
+    </div>
+    
+   
         {/* <input
           className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
