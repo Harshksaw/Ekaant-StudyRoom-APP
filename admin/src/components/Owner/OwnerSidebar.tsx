@@ -34,6 +34,14 @@ const OwnerSidebar = () => {
               </p>
             </div>
           </div>
+          <div className="flex items-center justify-between cursor-pointer w-full ">
+            <div className="flex items-center gap-2 bg-slate-300 p-2 rounded-xl ">
+              <FaReact color="black" />
+              <p className="text-[16px] leading-5 font-normal text-black">
+                <Link to="/admin/dummy">Dummy Library</Link>
+              </p>
+            </div>
+          </div>
 
         </div>
 
