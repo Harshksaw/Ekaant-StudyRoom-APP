@@ -43,6 +43,7 @@ const CheckoutScreen: React.FC = () => {
   const params = useRoute();
 
   const BookedData = JSON.parse(params.params.item);
+  console.log("🚀 ~ BookedData:", BookedData)
 
   if (!BookedData) {
     return (
@@ -119,20 +120,20 @@ const CheckoutScreen: React.FC = () => {
 
 
   // const location = getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
+  const getFinalPrice = async () => {
+    const price = BookedData?.price || BookedData?.initialPrice;
+    console.log(price, "Price++++");
+    setInitialPrice(price);
 
+    //registion fee from libary only
+    const RegistrationFees =
+      (await AsyncStorage.getItem("RegistrationFee")) || 1000;
+    setRegistrationFees(RegistrationFees);
+    const finalAmount = price + parseInt(RegistrationFees);
+    setFinalAmount(finalAmount);
+  };
   useEffect(() => {
-    const getFinalPrice = async () => {
-      const price = BookedData?.price;
-      console.log(price, "Price++++");
-      setInitialPrice(price);
 
-      //registion fee from libary only
-      const RegistrationFees =
-        (await AsyncStorage.getItem("RegistrationFee")) || 1000;
-      setRegistrationFees(RegistrationFees);
-      const finalAmount = price + parseInt(RegistrationFees);
-      setFinalAmount(finalAmount);
-    };
     getFinalPrice();
   }, []);
   const PaymentPrice = finalAmount;
@@ -263,7 +264,7 @@ const CheckoutScreen: React.FC = () => {
       return `${formatTime(from)} - ${formatTime(to)}`;
     }).join(', ');
   }
-  console.log("BOoked Data",BookedData)
+  console.log("BOoked Data11",BookedData.bookedSeat.timeSlots)
   return (
     <SafeAreaView
       style={{
@@ -414,14 +415,14 @@ const CheckoutScreen: React.FC = () => {
               </View>
             </View>
           </View>
-          {/* <View style={styles.summary}>
+          <View style={styles.summary}>
             <Note />
             <View style={{ flexDirection: 'column', gap: 10 }}>
-              <Text style={{ fontSize: 20, fontWeight: '400', maxWidth: '80%' }}>
-                Slot Time - {formatTimeSlots(BookedData?.timeSlot)}
+              <Text style={{ fontSize: 20, fontWeight: '400', maxWidth: '90%' }}>
+                Slot Time - {formatTimeSlots(BookedData?.timeSlots || BookedData.bookedSeat.timeSlots)}
               </Text>
             </View>
-          </View> */}
+          </View>
 
         </View>
       </View>
