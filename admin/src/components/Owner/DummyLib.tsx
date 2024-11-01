@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { BASEURL } from "@/lib/utils";
+import LocationSelector from "../ManageLibrary/LocationSelector";
 
 interface Library {
   _id: string;
@@ -17,6 +18,7 @@ const LibraryPage = () => {
     shortDescription: "",
     cardImage: null as File | null,
     comingSoonMessage: "",
+    location:[],
   });
 
   // Fetch Libraries
@@ -79,13 +81,18 @@ const LibraryPage = () => {
   useEffect(() => {
     fetchLibraries();
   }, []);
+  const handleLocationSelect = (location: any) => {
 
+    setFormData({...formData, location});
+  };
+  console.log("Location:", formData.location);
   return (
-    <div className="flex min-h-screen bg-gray-100 p-8">
-      {/* Form Column */}
-      <div className="w-1/2 p-6 bg-white shadow-lg rounded-md mr-4">
-        <h2 className="text-2xl font-semibold mb-6">Create New Library</h2>
-        <form onSubmit={handleCreateLibrary} className="space-y-4">
+    <div className="flex  w-full min-h-screen bg-gray-100 p-8 overflow-y-auto">
+    {/* Form Column */}
+
+      <div className="overflow-y-auto max-h-screen w-7/12">
+        <form onSubmit={handleCreateLibrary} className="flex flex-col gap-10 pb-96">
+      <h2 className="text-2xl font-semibold mb-6">Create New Library</h2>
           <input
             type="text"
             placeholder="Library Name"
@@ -103,7 +110,7 @@ const LibraryPage = () => {
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             required
           />
-          <input
+  <input
             type="file"
             placeholder="Card Image URL"
             // value={formData.cardImage}
@@ -116,20 +123,27 @@ const LibraryPage = () => {
                 setFormData({ ...formData, cardImage: file });
               }
             }}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            className="w-full p-2 border border-gray-300 mt-20 rounded-md focus:outline-none focus:border-indigo-500"
           />
+<div className=" w-full h-96 mt-20 mb-32 flex justify-center items-center rounded-lg">
+        <LocationSelector onLocationSelect={handleLocationSelect} />
+      </div>
+
+        
           <textarea
             placeholder="Coming Soon Message"
             value={formData.comingSoonMessage}
             onChange={(e) =>
               setFormData({ ...formData, comingSoonMessage: e.target.value })
             }
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            className="w-full p-2 border mt-32 border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             required
           />
+
+
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+            className="w-full bg-blue-600 mt-60 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
           >
             Create Library
           </button>

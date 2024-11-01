@@ -22,6 +22,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Toast } from "react-native-toast-notifications";
 
 interface ApprovalStatusProps {
   isApproved: boolean;
@@ -42,12 +43,21 @@ export default function Bookings() {
 
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
+    console.log("🚀 ~ getBookings ~ userId:", userId)
 
     if (userId) {
       // Check if userId is not null
       const res = await axios.get(
         `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
       );
+
+      if(res.status === 200) {
+        Toast.show("Bookings Fetched", {
+          type: "success",
+          duration: 2000,
+          
+        })
+      }
       console.log("userID---->", res.data.bookings);
 
       setData(res.data.bookings);
@@ -74,7 +84,7 @@ export default function Bookings() {
       setRefreshing(false);
     }, 2000);
   }, []);
-
+console.log("---d",data)
   return (
     <SafeAreaView
       style={{

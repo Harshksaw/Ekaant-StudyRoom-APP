@@ -199,7 +199,7 @@ const createRoom = async (req, res) => {
 // get all rooms
 const createDummyLibrary = async (req, res) => {
   try {
-    const { name, shortDescription, comingSoonMessage } = req.body;
+    const { name, shortDescription, comingSoonMessage, location } = req.body;
     console.log(req.body, "=================>");
     // const { cardImage } = req.files;
     const cardImage = req.file.path;
@@ -218,6 +218,7 @@ const createDummyLibrary = async (req, res) => {
       cardImage,
       comingSoon: true,
       commingSoonMessage: comingSoonMessage,
+      location
     });
 
     await newLibrary.save();

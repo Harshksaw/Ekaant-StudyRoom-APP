@@ -99,7 +99,7 @@ async function getUserBookings(req, res) {
 
     const bookings = await Booking.find({userId: id}).populate("libraryId").exec();
 
-    console.log(bookings)
+
     return res.status(StatusCodes.OK).json({ bookings });
   } catch (error) {
     console.error(error);
