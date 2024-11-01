@@ -134,26 +134,32 @@ async function signIn(req, res, next) {
     console.log(phoneNumber, password);
 
     const user = await User.findOne({ phoneNumber });
-
+    const inputPassword = req.body.password;
+    const storedHashedPassword = user.password;
     // Find user with requested email
     if (user) {
-      if (user.password === password) {
-        const token = jwt.sign({ user_id: user._id }, JWT_SECRET);
-        return res.status(StatusCodes.OK).json({
-          success: true,
-          message: "User authenticated successfully",
-          error: {},
-          data: { user, user_id: user._id },
-          token: token,
-        });
-      } else {
-        return res.status(StatusCodes.UNAUTHORIZED).json({
-          success: false,
-          message: "Invalid credentials",
-          error: { 411: "Invalid credentials" },
-          data: {},
-        });
-      }
+      // Compare the input password with the stored hashed password
+      bcrypt.compare(inputPassword, storedHashedPassword, function(err, result) {
+        if (err) {
+          console.error('Error comparing passwords:', err);
+          return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Internal server error');
+        }
+    
+        if (result) {
+          // Passwords match
+          const token = jwt.sign({ user_id: user._id }, JWT_SECRET);
+          return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "User authenticated successfully",
+            error: {},
+            data: { user, user_id: user._id },
+            token: token,
+          });
+        } else {
+          // Passwords do not match
+          return res.status(StatusCodes.UNAUTHORIZED).send('Invalid credentials');
+        }
+      });
     } else {
       return res.status(StatusCodes.UNAUTHORIZED).json({
         success: false,
