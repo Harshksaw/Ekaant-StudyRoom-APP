@@ -87,11 +87,12 @@ const LibraryPage = () => {
   };
   console.log("Location:", formData.location);
   return (
-    <div className="flex min-h-screen bg-gray-100 p-8">
-      {/* Form Column */}
-      <div className="w-1/2 p-6 bg-white shadow-lg rounded-md mr-4">
-        <h2 className="text-2xl font-semibold mb-6">Create New Library</h2>
-        <form onSubmit={handleCreateLibrary} className="space-y-4 flex  flex-col gap-10 overflow-y-scroll">
+    <div className="flex  w-full min-h-screen bg-gray-100 p-8 overflow-y-auto">
+    {/* Form Column */}
+
+      <div className="overflow-y-auto max-h-screen w-7/12">
+        <form onSubmit={handleCreateLibrary} className="flex flex-col gap-10 pb-96">
+      <h2 className="text-2xl font-semibold mb-6">Create New Library</h2>
           <input
             type="text"
             placeholder="Library Name"
