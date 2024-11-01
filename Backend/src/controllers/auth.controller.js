@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const axios = require("axios");
-const { bcrypt } = require("bcrypt");
+const bcrypt = require('bcrypt');
 const zod = require("zod");
 const { User, Admin } = require("../models");
 const jwt = require("jsonwebtoken");
