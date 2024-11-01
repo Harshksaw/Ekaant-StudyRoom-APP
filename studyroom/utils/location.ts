@@ -10,7 +10,7 @@ import Constants from 'expo-constants'
 
 export default async function getLocationName(latitude, longitude) {
   console.log("API", latitude, longitude)
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+  const apiKey = "AIzaSyDm4MaXZtOvvug8_TOpfeSSNi-nEXufV-E";
   // console.log(apiKey, "---apiKey
   const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
