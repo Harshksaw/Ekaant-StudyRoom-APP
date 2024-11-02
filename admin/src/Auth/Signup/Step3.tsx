@@ -1,5 +1,5 @@
 import StateDropdown from "@/components/StateSelector";
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 
@@ -45,7 +45,7 @@ export const StepThree = ({
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+e.preventDefault();
     if (validateFields()) {
       // Proceed with form submission
       console.log("Form submitted successfully", userDetails);
@@ -61,7 +61,9 @@ export const StepThree = ({
   <div className="flex  flex-1 overflow-y-auto px-10 py-6 bg-white rounded-lg">
     {/* Form fields for step 2 */}
 
-    <div className=" flex-col w-full  mb-100 gap-25 ">
+    <form className=" flex-col w-full  mb-100 gap-25 "
+    onSubmit={handleSubmit}
+    >
       <div className="flex-col items-center justify-start">
         <label
           htmlFor="adminFullName"
@@ -342,12 +344,13 @@ export const StepThree = ({
         </button>
         <button
           className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
-          onClick={handleSubmit}
+          type="submit"
+          // onClick={handleSubmit}
         >
           Next
         </button>
       </div>
-    </div>
+    </form>
   </div>
 );
 }
