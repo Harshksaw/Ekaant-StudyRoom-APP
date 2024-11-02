@@ -1,10 +1,11 @@
 import StateDropdown from "@/components/StateSelector";
-
+import { ToastContainer, toast } from 'react-toastify';
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 
 import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
+
 export const StepThree = ({
   nextStep,
   prevStep,
@@ -13,11 +14,47 @@ export const StepThree = ({
   // createUser,
 }: any) => 
 {
+
+  const [errors, setErrors] = useState<any>({});
   const handleDateChange = (date :any) => {
     setUserDetails({ ...userDetails, dob: date });
   };
   const [showDatePicker, setShowDatePicker] = useState(false);
-  
+  const validateFields = () => {
+    const newErrors: any = {};
+    if (!userDetails.fullName) newErrors.fullName = "Full Name is required";
+    if (!userDetails.dob) newErrors.dob = "Date of Birth is required";
+    if (!userDetails.aadharCard) newErrors.aadharCard = "Aadhar Card is required";
+    if (!userDetails.panCard) newErrors.panCard = "Pan Card is required";
+    if (!userDetails.uploadAadharCard) {
+      newErrors.uploadAadharCard = "Aadhar Card is required";
+      toast.error("Please upload Aadhar Card");
+    }
+    if (!userDetails.uploadPanCard) {
+      newErrors.uploadPanCard = "Pan Card is required";
+      toast.error("Please upload PAN Card");
+    }
+    if (!userDetails.address.line1) newErrors.addressLine1 = "Address Line 1 is required";
+    if (!userDetails.address.line2) newErrors.addressLine2 = "Address Line 2 is required";
+    if (!userDetails.address.city) newErrors.city = "City is required";
+    if(!userDetails.address.pincode) newErrors.pincode = "Pincode is required";
+
+    // Add more validation checks as needed
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (validateFields()) {
+      // Proceed with form submission
+      console.log("Form submitted successfully", userDetails);
+      nextStep()
+    } else {
+      console.log("Validation failed");
+    }
+  };
+
   return(
 
   
@@ -43,6 +80,7 @@ export const StepThree = ({
           }
           placeholder="Full Name"
         />
+        {errors.fullName && <p className="text-red-500">{errors.fullName}</p>}
       </div>
       {/* DOB */}
       <div className="flex-col items-center justify-start">
@@ -61,7 +99,7 @@ export const StepThree = ({
         readOnly
         onClick={() => setShowDatePicker(!showDatePicker)} // Toggle date picker on click
       />
-
+{errors.dob && <p className="text-red-500">{errors.dob}</p>}
       {showDatePicker && (
         <DayPicker
           mode="single"
@@ -103,11 +141,14 @@ export const StepThree = ({
           id="adminAadharCard"
           name="adminAadharCard"
           value={userDetails.aadharCard}
-          onChange={(e) =>
+          onChange={(e) =>{
+
             setUserDetails({ ...userDetails, aadharCard: e.target.value })
+          }
           }
           placeholder="Aadhar Card Number"
         />
+        {errors.aadharCard && <p className="text-red-500">{errors.aadharCard}</p>}
       </div>
       {/* Upload Aadhar */}
 
@@ -137,6 +178,7 @@ export const StepThree = ({
             ...userDetails,
             uploadAadharCard   : file,
           });
+          toast.success("Aadhar Card uploaded")
           console.log(userDetails.uploadAadharCard);
         }
       }}
@@ -192,6 +234,7 @@ export const StepThree = ({
                   ...userDetails,
                   uploadPanCard : file,
                 });
+                toast.success("Pan Card uploaded")
                 console.log(userDetails.uploadPanCard);
               }
             }}
@@ -299,7 +342,7 @@ export const StepThree = ({
         </button>
         <button
           className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
-          onClick={nextStep}
+          onClick={handleSubmit}
         >
           Next
         </button>

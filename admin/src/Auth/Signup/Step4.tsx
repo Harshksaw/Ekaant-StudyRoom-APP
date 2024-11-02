@@ -14,6 +14,13 @@ export const StepFour = ({
     const newErrors: any = {};
     if (!libraryDetails.libraryName) newErrors.libraryName = "Library Name is required";
     if (!libraryDetails.libraryApp.shortDescription) newErrors.shortDescription = "Short Description is required";
+    if(!libraryDetails.libraryApp.longDescription) newErrors.longDescription = "Long Description is required";
+    if (!libraryDetails.libraryAddress.line1) newErrors.line1 = "Address Line 1 is required";
+    if (!libraryDetails.libraryAddress.city) newErrors.city = "City is required";
+    if (!libraryDetails.libraryAddress.state) newErrors.state = "State is required";
+    if (!libraryDetails.libraryAddress.pincode) newErrors.pincode = "Pincode is required";
+
+
     // Add more validation checks as needed
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
