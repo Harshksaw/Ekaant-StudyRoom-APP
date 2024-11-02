@@ -61,6 +61,7 @@ const LibraryPage = () => {
         shortDescription: "",
         cardImage: null as File | null,
         comingSoonMessage: "",
+        location:[],
       });
       fetchLibraries();
     } catch (error) {
