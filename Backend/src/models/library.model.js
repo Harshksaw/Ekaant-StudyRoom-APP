@@ -16,7 +16,7 @@ const librarySchema = new mongoose.Schema({
   commingSoonMessage: { type: String, default: false },
   rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Room" }],
 
-  reviews: [{ type: String, required: false }],
+  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
   deleted: { type: Boolean, default: false },
   amenities: {
     coldWater: { type: Boolean, default: false },

@@ -5,6 +5,7 @@ const { GetNearestLibraries } = require("../utils/location");
 const multer = require("multer");
 const express = require("express");
 const cloudinary = require("cloudinary").v2;
+const Review = require("../models/review.model");
 
 const { Library } = require("../models/library.model");
 const { Room } = require("../models/room.model");
@@ -565,6 +566,39 @@ const getDummy = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+// Controller to create a review
+const createReview = async (req, res) => {
+  try {
+    const { libraryId } = req.params;
+    const { user, review, stars } = req.body;
+
+    const newReview = new Review({ user, review, stars });
+    await newReview.save();
+
+    await Library.findByIdAndUpdate(libraryId, { $push: { reviews: newReview._id } });
+
+    res.status(201).json(newReview);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Controller to get reviews for a library
+const getReviews = async (req, res) => {
+  try {
+    const { libraryId } = req.params;
+
+    const library = await Library.findById(libraryId).populate('reviews');
+    if (!library) {
+      return res.status(404).json({ message: 'Library not found' });
+    }
+
+    res.status(200).json(library.reviews);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   pingAdmin,
   createLibrary,
@@ -584,4 +618,6 @@ module.exports = {
   createDummyLibrary,
   deleteDummy,
   getDummy,
+  createReview,
+  getReviews,
 };
