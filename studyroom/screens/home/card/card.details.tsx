@@ -26,6 +26,13 @@ import { router } from "expo-router";
 import Button from "@/components/Button";
 import getLocationName from "@/utils/location";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Toast } from "react-native-toast-notifications";
+import axios from "axios";
+import { BACKEND } from "@/utils/config";
+
+
+
+
 
 interface CardDetailScreenProps {
   // Define your params here
@@ -33,7 +40,7 @@ interface CardDetailScreenProps {
 
 const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const width = Dimensions.get("window").width;
-
+  const [userReviews , setUserReviews] = useState([]);
   const params = useRoute();
   const data = JSON.parse(params.params.item);
 
@@ -66,8 +73,26 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     }
   };
 
+  const getUserReviews = async () => {
+    // Fetch user reviews here
+    try {
+      
+      console.log("🚀 ~ getUserReviews ~ data._id:", data)
+      const res = await axios.post(`${BACKEND}/api/v1/library/getReviews/${data._id}`);
+      console.log(res.data, "---------------112--");
+      setUserReviews(res.data);
+
+
+    } catch (error ) {
+      console.log(error)
+      Toast.show("Error fetching user reviews");
+      
+    }
+  }
+
   useEffect(() => {
     locationData();
+    getUserReviews();
   }, []); 
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -381,6 +406,9 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 </View>
               </View>
             </View>
+
+
+
           </View>
 
           <View

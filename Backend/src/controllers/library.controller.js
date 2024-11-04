@@ -593,7 +593,7 @@ const getReviews = async (req, res) => {
       return res.status(404).json({ message: 'Library not found' });
     }
 
-    res.status(200).json(library.reviews);
+    res.status(200).json({data : library.reviews});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

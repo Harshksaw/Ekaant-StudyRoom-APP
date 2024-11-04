@@ -61,7 +61,7 @@ const LoginScreen: React.FC = () => {
           placement: "top",
           duration: 2000,
         });
-        router.push("/(tabs)");
+        router.push("/(routes)/location");
       } else {
         Toast.show(response.data.message, {
           type: "danger",
