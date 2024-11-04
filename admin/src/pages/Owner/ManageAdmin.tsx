@@ -46,7 +46,7 @@ const ManageAdmin = () => {
             <th className="py-2 px-4 border-b">Approved Status</th>
           </tr>
         </thead>
-        <tbody className="overflow-y-auto">
+        <tbody className="overflow-y-auto h-[50%] pb-20">
           {library?.map((lib: Lib) => (
             <tr
               key={lib?._id}
@@ -60,9 +60,9 @@ const ManageAdmin = () => {
                   className="h-36 w-52 object-cover rounded-md"
                 />
               </td>
-              <td className="py-2 px-4 border-b">{lib?.name}</td>
+              <td className="py-2 px-4 border-b">{lib?.name.slice(0,10)}</td>
               <td className="py-2 px-4 border-b">
-                {lib?.libraryOwner?.username}
+                {lib?.libraryOwner?.username.slice(0,10)}
               </td>
               <td className="py-2 px-4 border-b">{`${lib?.address?.city}, ${lib.address?.state}`}</td>
               <td className="py-2 px-4 border-b">

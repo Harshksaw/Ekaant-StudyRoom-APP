@@ -18,7 +18,7 @@ import axios from "axios";
 // @ts-ignore
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from "@/components/Loader";
-// Add similar components for StepThree, StepFour, and StepFive
+
 interface LibraryDetails {
   name: string;
   librarySliders: string
@@ -452,26 +452,8 @@ try{
       toast.error("Library address is required");
       return;
     }
-    if (!libraryDetails.libraryLegal.registration) {
-      toast.error("Legal registration is required");
-      return;
-    }
-    if (!libraryDetails.libraryLegal.gst) {
-      toast.error("GST number is required");
-      return;
-    }
-    if (!libraryDetails.libraryLegal.cin) {
-      toast.error("CIN number is required");
-      return;
-    }
-    if (!libraryDetails.libraryLegal.tan) {
-      toast.error("TAN number is required");
-      return;
-    }
-    if (!libraryDetails.libraryLegal.msme) {
-      toast.error("MSME number is required");
-      return;
-    }
+
+
 
     // console.log(libraryDetails, "libraryDetails-----------------d------");
 

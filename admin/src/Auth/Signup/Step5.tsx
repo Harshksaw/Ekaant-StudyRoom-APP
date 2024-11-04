@@ -1,5 +1,8 @@
 // import { set } from "react-hook-form";
 
+import { useState } from "react";
+import { toast } from "react-toastify";
+
 export const StepFive = ({
   nextStep,
   prevStep,
@@ -18,9 +21,39 @@ export const StepFive = ({
       },
     }));
   };
+  const [errors, setErrors] = useState<any>({});
+  const validateFields = () => {
+    const newErrors: any = {};
+    if (!libraryDetails.libraryName) newErrors.libraryName = "Library Name is required";
+    if (!libraryDetails.libraryApp.shortDescription) newErrors.shortDescription = "Short Description is required";
+    if (!libraryDetails.libraryApp.longDescription) newErrors.longDescription = "Long Description is required";
+    if (!libraryDetails.libraryAddress.line1) newErrors.line1 = "Address Line 1 is required";
+    if (!libraryDetails.libraryAddress.city) newErrors.city = "City is required";
+    if (!libraryDetails.libraryAddress.state) newErrors.state = "State is required";
+    if (!libraryDetails.libraryAddress.pincode) newErrors.pincode = "Pincode is required";
+    if (!libraryDetails.librayCardImage) {
+      newErrors.uploadLibraryCard = "Library Card is required";
+      toast.error("Please upload Library Card");
+    }
+
+    // Add more validation checks as needed
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (validateFields()) {
+      // Proceed with form submission
+      console.log("Form submitted successfully", libraryDetails);
+      nextStep();
+    } else {
+      console.log("Validation failed");
+    }
+  };
 
   return (
-    <div className="flex  flex-1 flex-col gap-10  h-full overflow-y-auto px-10 py-6 bg-white rounded-lg">
+    <form onSubmit={handleSubmit} className="flex  flex-1 flex-col gap-10  h-full overflow-y-auto px-10 py-6 bg-white rounded-lg">
       <div className="flex-col flex  gap-5  justify-start">
         <h2 className="text-md text-bold">Library Details</h2>
 
@@ -37,11 +70,12 @@ export const StepFive = ({
             className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
           text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
           >
-            Select File
+            Select File    </label>
             <input
               type="file"
               id="uploadLibraryCard" // ID to be renamed - tofix
               accept="image/*"
+                 name="uploadLibraryCard"
               multiple
               onChange={(e) => {
                 const file = e.target.files ? e.target.files[0] : null;
@@ -50,12 +84,14 @@ export const StepFive = ({
                     ...libraryDetails,
                     librayCardImage  : file,
                   });
+                  toast.success("Library Card uploaded");
                   console.log(libraryDetails.libraryCardImage);
                 }
               }}
               style={{ display: "none", justifyContent: "center" }} // Hide the actual input
             />
-          </label>
+
+      
         </div>
       </div>
 
@@ -194,11 +230,11 @@ export const StepFive = ({
         </button>
         <button
           className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
-          onClick={nextStep}
+          type="submit"
         >
           Next
         </button>
       </div>
-    </div>
+    </form>
   );
 };
