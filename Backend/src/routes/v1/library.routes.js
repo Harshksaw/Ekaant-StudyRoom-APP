@@ -72,5 +72,6 @@ Library.delete("/deleteDummyLibrary/:id", LibraryController.deleteDummy);
 Library.get("/getDummyLibrary", LibraryController.getDummy);
 
 
-Library.post("/createReview", LibraryController.createReview);
+Library.post("/createReview/:libraryId", LibraryController.createReview);
+Library.post("/getReviews/:libraryId", LibraryController.getReviews);
 module.exports = Library;
