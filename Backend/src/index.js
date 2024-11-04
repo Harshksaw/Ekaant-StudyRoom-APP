@@ -44,10 +44,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.text());
 
 app.use(express.json({ limit: "50mb" }));
-<<<<<<< HEAD
-=======
 
->>>>>>> 14dcae2 (main)
 const metrics = {
   totalCalls: 0,
   failures: 0,
