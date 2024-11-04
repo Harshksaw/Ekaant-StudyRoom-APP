@@ -1,6 +1,7 @@
+
+
 // import { set } from "react-hook-form";
 
-import { useState } from "react";
 import { toast } from "react-toastify";
 
 export const StepFive = ({
@@ -8,12 +9,12 @@ export const StepFive = ({
   prevStep,
   libraryDetails,
   setLibraryDetails,
-  handleFileChange 
+  handleFileChange,
 }: any) => {
   //images  - Register 5
 
-  const handleAmenityChange = (amenityKey:any, newValue:any) => {
-    setLibraryDetails((prevDetails:any) => ({
+  const handleAmenityChange = (amenityKey: any, newValue: any) => {
+    setLibraryDetails((prevDetails: any) => ({
       ...prevDetails,
       amentities: {
         ...prevDetails.amentities,
@@ -21,39 +22,9 @@ export const StepFive = ({
       },
     }));
   };
-  const [errors, setErrors] = useState<any>({});
-  const validateFields = () => {
-    const newErrors: any = {};
-    if (!libraryDetails.libraryName) newErrors.libraryName = "Library Name is required";
-    if (!libraryDetails.libraryApp.shortDescription) newErrors.shortDescription = "Short Description is required";
-    if (!libraryDetails.libraryApp.longDescription) newErrors.longDescription = "Long Description is required";
-    if (!libraryDetails.libraryAddress.line1) newErrors.line1 = "Address Line 1 is required";
-    if (!libraryDetails.libraryAddress.city) newErrors.city = "City is required";
-    if (!libraryDetails.libraryAddress.state) newErrors.state = "State is required";
-    if (!libraryDetails.libraryAddress.pincode) newErrors.pincode = "Pincode is required";
-    if (!libraryDetails.librayCardImage) {
-      newErrors.uploadLibraryCard = "Library Card is required";
-      toast.error("Please upload Library Card");
-    }
-
-    // Add more validation checks as needed
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (validateFields()) {
-      // Proceed with form submission
-      console.log("Form submitted successfully", libraryDetails);
-      nextStep();
-    } else {
-      console.log("Validation failed");
-    }
-  };
 
   return (
-    <form onSubmit={handleSubmit} className="flex  flex-1 flex-col gap-10  h-full overflow-y-auto px-10 py-6 bg-white rounded-lg">
+    <div className="flex  flex-1 flex-col gap-10  h-full overflow-y-auto px-10 py-6 bg-white rounded-lg">
       <div className="flex-col flex  gap-5  justify-start">
         <h2 className="text-md text-bold">Library Details</h2>
 
@@ -68,30 +39,30 @@ export const StepFive = ({
           <label
             // htmlFor="uploadAadharCard"
             className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
-          text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+            text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
           >
-            Select File    </label>
+            Select File
             <input
               type="file"
               id="uploadLibraryCard" // ID to be renamed - tofix
               accept="image/*"
-                 name="uploadLibraryCard"
               multiple
               onChange={(e) => {
+                toast.loading("Uploading File...");
                 const file = e.target.files ? e.target.files[0] : null;
                 if (file) {
                   setLibraryDetails({
                     ...libraryDetails,
-                    librayCardImage  : file,
+                    librayCardImage: file,
                   });
-                  toast.success("Library Card uploaded");
                   console.log(libraryDetails.libraryCardImage);
                 }
+                toast.dismiss();
+                toast.success("File Uploaded Successfully!");
               }}
               style={{ display: "none", justifyContent: "center" }} // Hide the actual input
             />
-
-      
+          </label>
         </div>
       </div>
 
@@ -99,49 +70,45 @@ export const StepFive = ({
         <h2 className="text-md text-bold mb-5">Library Slider Images</h2>
 
         <div>
-        <div className="flex  items-center justify-start">
+          <div className="flex  items-center justify-start">
+            <label
+              htmlFor="uploadPanCard"
+              className="w-60 h-[50px] pl-1 flex items-center text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight  border-2"
+            >
+              Upload Slider Images
+            </label>
 
-   
-          <label
-            htmlFor="uploadPanCard"
-            className="w-60 h-[50px] pl-1 flex items-center text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight  border-2"
-          >
-            Upload Slider Images
-          </label>
-
-          <label
-            htmlFor="uploadSliderImages"
-            className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
-          text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
-          >
-            Select File
-            <input
-              type="file"
-              multiple
-              id="uploadSliderImages"
-              accept="image/*"
-              onChange={handleFileChange}
-              style={{ display: "none", justifyContent: "center" }} // Hide the actual input
-            />
-          </label>
+            <label
+              htmlFor="uploadSliderImages"
+              className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
+            text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+            >
+              Select File
+              <input
+                type="file"
+                multiple
+                id="uploadSliderImages"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{ display: "none", justifyContent: "center" }} // Hide the actual input
+              />
+            </label>
           </div>
 
-          <div
-          className="w-full flex flex-col gap-2"
-          >
-              <h3>Uploaded Files:</h3>
-              <ul>
-                {libraryDetails.librarySliders.map((file:any, index:any) => (
-                  <li key={index}>{file.name.slice(0, 35)}</li>
-                ))}
-              </ul>
-            </div>
+          <div className="w-full flex flex-col gap-2">
+            <h3>Uploaded Files:</h3>
+            <ul>
+              {libraryDetails.librarySliders.map((file: any, index: any) => (
+                <li key={index}>{file.name.slice(0, 35)}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
 
       <div
         className="flex flex-col gap-1 w-full
-       items-center justify-start"
+        items-center justify-start"
       >
         <label
           htmlFor="halls"
@@ -230,11 +197,11 @@ export const StepFive = ({
         </button>
         <button
           className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
-          type="submit"
+          onClick={nextStep}
         >
           Next
         </button>
       </div>
-    </form>
+    </div>
   );
 };

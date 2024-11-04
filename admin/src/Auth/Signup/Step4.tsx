@@ -1,6 +1,10 @@
+
+
 // import { InfoIcon } from "lucide-react";
 
+import StateDropdown from "@/components/StateSelector";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export const StepFour = ({
   nextStep,
@@ -12,15 +16,10 @@ export const StepFour = ({
 
   const validateFields = () => {
     const newErrors: any = {};
-    if (!libraryDetails.libraryName) newErrors.libraryName = "Library Name is required";
-    if (!libraryDetails.libraryApp.shortDescription) newErrors.shortDescription = "Short Description is required";
-    if(!libraryDetails.libraryApp.longDescription) newErrors.longDescription = "Long Description is required";
-    if (!libraryDetails.libraryAddress.line1) newErrors.line1 = "Address Line 1 is required";
-    if (!libraryDetails.libraryAddress.city) newErrors.city = "City is required";
-    if (!libraryDetails.libraryAddress.state) newErrors.state = "State is required";
-    if (!libraryDetails.libraryAddress.pincode) newErrors.pincode = "Pincode is required";
-
-
+    if (!libraryDetails.libraryName)
+      newErrors.libraryName = "Library Name is required";
+    if (!libraryDetails.libraryApp.shortDescription)
+      newErrors.shortDescription = "Short Description is required";
     // Add more validation checks as needed
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -31,7 +30,6 @@ export const StepFour = ({
       nextStep();
     }
   };
-  console.log(libraryDetails.libraryLegal.showGst);
   return (
     //images  - Register 4
 
@@ -55,7 +53,9 @@ export const StepFour = ({
             });
           }}
         />
-        {errors.libraryName && <p className="text-red-500">{errors.libraryName}</p>}
+        {errors.libraryName && (
+          <p className="text-red-500">{errors.libraryName}</p>
+        )}
         {/* App name */}
         <label>App</label>
         {/* Short description */}
@@ -87,7 +87,9 @@ export const StepFour = ({
             </div>
           </section>
         </div>
-        {errors.shortDescription && <p className="text-red-500">{errors.shortDescription}</p>}
+        {errors.shortDescription && (
+          <p className="text-red-500">{errors.shortDescription}</p>
+        )}
         {/* Long description */}
         <div className="relative ">
           <input
@@ -106,7 +108,9 @@ export const StepFour = ({
               });
             }}
           />
-          {errors.longDescription && <p className="text-red-500">{errors.longDescription}</p>}
+          {errors.longDescription && (
+            <p className="text-red-500">{errors.longDescription}</p>
+          )}
           <section className="absolute right-2 top-1/4 flex justify-center items-center">
             <div className="group flex justify-center transition-all rounded-full bg-gray-200 p-1">
               <svg viewBox="0 0 320 512" className="w-4 h-4">
@@ -177,13 +181,9 @@ export const StepFour = ({
           </div>
           {/* State */}
           <div className="w-2/5">
-            <input
-              className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              type="text"
-              id="adminLibraryAddressState"
-              placeholder="State"
+            <StateDropdown
               value={libraryDetails.libraryAddress.state}
-              onChange={(e) => {
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 setLibraryDetails({
                   ...libraryDetails,
                   libraryAddress: {
@@ -193,6 +193,7 @@ export const StepFour = ({
                 });
               }}
             />
+            <input />
           </div>
         </div>
         {/* Pincode */}
@@ -214,25 +215,48 @@ export const StepFour = ({
             }}
           />
         </div>
-        {/* Legal */}
-        <label>Legal</label>
-        {/* Registration */}
-        <input
-          className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          type="text"
-          id="adminLibraryLegalRegistration"
-          placeholder="Registration Type"
-          value={libraryDetails.libraryLegal.registration}
-          onChange={(e) => {
-            setLibraryDetails({
-              ...libraryDetails,
-              libraryLegal: {
-                ...libraryDetails.libraryLegal,
-                registration: e.target.value,
-              },
-            });
-          }}
-        />
+        <div className="flex justify-center items-start my-3 gap-3 flex-col">
+          <label>Legal</label>
+          <select
+            className="w-full px-3 py-2 border border-gray-800  rounded-2xl focus:outline-none focus:ring-1 focus:ring-blue-500"
+            id="adminLibraryLegalRegistration"
+            value={libraryDetails.libraryLegal.registration}
+            onChange={(e) => {
+              setLibraryDetails({
+                ...libraryDetails,
+                libraryLegal: {
+                  ...libraryDetails.libraryLegal,
+                  registration: e.target.value,
+                },
+              });
+            }}
+          >
+            <option value="" disabled>
+              Select Registration Type
+            </option>
+            <option value="Sole Proprietorship">Sole Proprietorship</option>
+            <option value="Partnership Firm">Partnership Firm</option>
+            <option value="Limited Liability Partnership (LLP)">
+              Limited Liability Partnership (LLP)
+            </option>
+            <option value="One Person Company (OPC)">
+              One Person Company (OPC)
+            </option>
+            <option value="Private Limited Company">
+              Private Limited Company
+            </option>
+            <option value="Public Limited Company">
+              Public Limited Company
+            </option>
+            <option value="Section 8 Company (Non-Profit)">
+              Section 8 Company (Non-Profit)
+            </option>
+            <option value="Hindu Undivided Family (HUF)">
+              Hindu Undivided Family (HUF)
+            </option>
+            <option value="Cooperative Society">Cooperative Society</option>
+          </select>
+        </div>
         {/* GST */}
         <div className="flex gap-5 mx-5 my-5">
           <label>GST</label>
@@ -327,6 +351,7 @@ export const StepFour = ({
                     placeholder="GST certificate"
                     id="adminLegalUploadGst"
                     onChange={(e) => {
+                      toast.loading("Uploading Image...");
                       const file = e.target.files ? e.target.files[0] : null;
                       if (file) {
                         setLibraryDetails({
@@ -337,6 +362,8 @@ export const StepFour = ({
                           },
                         });
                       }
+                      toast.dismiss();
+                      toast.success("Image Uploaded Successfully!");
                     }}
                     style={{ display: "none", justifyContent: "center" }} // Hide the actual input
                   />
@@ -436,6 +463,7 @@ export const StepFour = ({
                     id="adminLegalUploadCin"
                     // name="uploadCinCard"
                     onChange={(e) => {
+                      toast.loading("Uploading Images...");
                       const file = e.target.files ? e.target.files[0] : null;
                       if (file) {
                         setLibraryDetails({
@@ -446,6 +474,8 @@ export const StepFour = ({
                           },
                         });
                       }
+                      toast.dismiss();
+                      toast.success("Image Uploaded Successfully!");
                     }}
                     style={{ display: "none", justifyContent: "center" }}
                   />
@@ -541,6 +571,7 @@ export const StepFour = ({
                     placeholder="Tan certificate"
                     id="adminLegalUploadTan"
                     onChange={(e) => {
+                      toast.loading("Uploading Image...");
                       const file = e.target.files ? e.target.files[0] : null;
                       if (file) {
                         setLibraryDetails({
@@ -551,6 +582,8 @@ export const StepFour = ({
                           },
                         });
                       }
+                      toast.dismiss();
+                      toast.success("Image Uploaded Successfully!");
                     }}
                     style={{ display: "none", justifyContent: "center" }}
                   />
@@ -640,6 +673,7 @@ export const StepFour = ({
                     placeholder="msme certificate"
                     id="adminLegalUploadmsme"
                     onChange={(e) => {
+                      toast.loading("Uploading Image...");
                       const file = e.target.files ? e.target.files[0] : null;
                       if (file) {
                         setLibraryDetails({
@@ -650,6 +684,8 @@ export const StepFour = ({
                           },
                         });
                       }
+                      toast.dismiss();
+                      toast.success("Image Uploaded Successfully!");
                     }}
                     style={{ display: "none", justifyContent: "center" }}
                   />
@@ -668,9 +704,8 @@ export const StepFour = ({
         </button>
         <button
           className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
-          onClick={()=>{
+          onClick={() => {
             handleNextStep();
-            
           }}
         >
           Next

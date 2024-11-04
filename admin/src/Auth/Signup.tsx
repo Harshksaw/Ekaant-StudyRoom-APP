@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import studyMain from "../assets/images/studyMain.png";
 import reading from "../assets/images/reading 1.png";
@@ -18,38 +18,32 @@ import axios from "axios";
 // @ts-ignore
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from "@/components/Loader";
-
+import tick from "@/assets/images/tick.png"
 interface LibraryDetails {
   name: string;
   librarySliders: string
   // Add other properties as needed
 }
 const FinalStep = () => {
-  const navigate = useNavigate();
   return (
-
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Final Step</h2>
-      <p className="mb-6 text-gray-700 text-2xl px-2">
-        NOw login and create Your first room and wait for the approval from the admin
-      </p>
-      <div className="flex justify-between">
-        <button
-          onClick={() => navigate("/signin", { replace: true })}
-          className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-        >
-          Back
-        </button>
-        <button
-          onClick={() => alert("Form Submitted")}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Submit
-        </button>
+    <div className="w-full h-full mt-6 flex justify-start items-center flex-col">
+      <img
+        src={tick}
+        alt="Registartion Complete"
+        className="object-cover object-center w-[150px] h-[150px]"
+      />
+      <h2 className="text-[45px] font-bold text-green-600">Success</h2>
+      <div className="text-left mt-[2rem] text-[20px] px-[10rem] font-normal">
+        Welcome to <span className="font-bold text-sky-600">Ekaant</span>:Your
+        Registration is Complete and Onboarding is Under Review for Approval
+        <br />
+        <br />
+        Kindly create a room with login to be eligible for verification
       </div>
     </div>
-  )
-}
+  );
+};
+
 
 function Signup() {
 

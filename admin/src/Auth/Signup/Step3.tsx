@@ -1,121 +1,132 @@
+
 import StateDropdown from "@/components/StateSelector";
-import {  toast } from 'react-toastify';
+
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 
 import "react-datepicker/dist/react-datepicker.css";
-import { useState } from "react";
-
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 export const StepThree = ({
   nextStep,
   prevStep,
   userDetails,
   setUserDetails,
-  // createUser,
-}: any) => 
-{
-
-  const [errors, setErrors] = useState<any>({});
-  const handleDateChange = (date :any) => {
-    setUserDetails({ ...userDetails, dob: date });
-  };
+}: // createUser,
+any) => {
+  const [aadharPreview, setAadharPreview] = useState<string | null>(null);
+  const [panPreview, setPanPreview] = useState<string | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const validateFields = () => {
-    const newErrors: any = {};
-    if (!userDetails.fullName) newErrors.fullName = "Full Name is required";
-    if (!userDetails.dob) newErrors.dob = "Date of Birth is required";
-    if (!userDetails.aadharCard) newErrors.aadharCard = "Aadhar Card is required";
-    if (!userDetails.panCard) newErrors.panCard = "Pan Card is required";
-    if (!userDetails.uploadAadharCard) {
-      newErrors.uploadAadharCard = "Aadhar Card is required";
-      toast.error("Please upload Aadhar Card");
-    }
-    if (!userDetails.uploadPanCard) {
-      newErrors.uploadPanCard = "Pan Card is required";
-      toast.error("Please upload PAN Card");
-    }
-    if (!userDetails.address.line1) newErrors.addressLine1 = "Address Line 1 is required";
-    if (!userDetails.address.line2) newErrors.addressLine2 = "Address Line 2 is required";
-    if (!userDetails.address.city) newErrors.city = "City is required";
-    if(!userDetails.address.pincode) newErrors.pincode = "Pincode is required";
 
-    // Add more validation checks as needed
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const datePickerRef = useRef<HTMLDivElement>(null);
+
+  const handleFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "aadhar" | "pan"
+  ) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
+      toast.loading("Uploading image...");
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (type === "aadhar") {
+          setAadharPreview(reader.result as string);
+          setUserDetails({ ...userDetails, uploadAadharCard: file });
+          toast.dismiss();
+          toast.success("Aadhar card uploaded successfully");
+        } else if (type === "pan") {
+          setPanPreview(reader.result as string);
+          setUserDetails({ ...userDetails, uploadPanCard: file });
+          toast.dismiss();
+          toast.success("PAN card uploaded successfully");
+        }
+      };
+      reader.onerror = () => {
+        toast.dismiss();
+        toast.error("Failed to upload image");
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-e.preventDefault();
-    if (validateFields()) {
-      // Proceed with form submission
-      console.log("Form submitted successfully", userDetails);
-      nextStep()
+  const handleDateChange = (date: Date | undefined) => {
+    if (date) {
+      setUserDetails({ ...userDetails, dob: date });
+      setShowDatePicker(false);
+    }
+  };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        datePickerRef.current &&
+        !datePickerRef.current.contains(event.target as Node)
+      ) {
+        setShowDatePicker(false);
+      }
+    };
+
+    if (showDatePicker) {
+      document.addEventListener("mousedown", handleClickOutside);
     } else {
-      console.log("Validation failed");
+      document.removeEventListener("mousedown", handleClickOutside);
     }
-  };
 
-  return(
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDatePicker]);
 
-  
-  <div className="flex  flex-1 overflow-y-auto px-10 py-6 bg-white rounded-lg">
-    {/* Form fields for step 2 */}
+  return (
+    <div className="flex  flex-1 overflow-y-auto px-10 py-6 bg-white rounded-lg">
+      {/* Form fields for step 2 */}
 
-    <form className=" flex-col w-full  mb-100 gap-25 "
-    onSubmit={handleSubmit}
-    >
-      <div className="flex-col items-center justify-start">
-        <label
-          htmlFor="adminFullName"
-          className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
-        >
-          Full Name
-        </label>
-        <input
-          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          type="text"
-          id="adminFullName"
-          name="adminFullName"
-          value={userDetails.fullName}
-          onChange={(e) =>
-            setUserDetails({ ...userDetails, fullName: e.target.value })
-          }
-          placeholder="Full Name"
-        />
-        {errors.fullName && <p className="text-red-500">{errors.fullName}</p>}
-      </div>
-      {/* DOB */}
-      <div className="flex-col items-center justify-start">
-        {/* <label
-          htmlFor="adminDob"
-          className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
-        >
-          
-        </label> */}
-        <div>
-      <label>Date of Birth:</label>
-      <input
-        type="text"
-        value={userDetails.dob ? userDetails.dob.toLocaleDateString() : ""}
-        placeholder="Select your DOB"
-        readOnly
-        onClick={() => setShowDatePicker(!showDatePicker)} // Toggle date picker on click
-      />
-{errors.dob && <p className="text-red-500">{errors.dob}</p>}
-      {showDatePicker && (
-        <DayPicker
-          mode="single"
-          selected={userDetails.dob}
-          onSelect={handleDateChange}
-       
+      <div className=" flex-col w-full  mb-100 gap-25 ">
+        <div className="flex-col items-center justify-start">
+          <label
+            htmlFor="adminFullName"
+            className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
+          >
+            Full Name
+          </label>
+          <input
+            className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            type="text"
+            id="adminFullName"
+            name="adminFullName"
+            value={userDetails.fullName}
+            onChange={(e) =>
+              setUserDetails({ ...userDetails, fullName: e.target.value })
+            }
+            placeholder="Full Name"
+          />
+        </div>
+        {/* DOB */}
+        <div className="flex-col items-center justify-start">
+          <div className="flex-col mb-4 relative" ref={datePickerRef}>
+            {showDatePicker && (
+              <div className="absolute z-10 bg-white border border-gray-300 rounded shadow-lg mt-2">
+                <DayPicker
+                  mode="single"
+                  selected={userDetails.dob}
+                  onSelect={handleDateChange}
+                  captionLayout="dropdown"
+                />
+              </div>
+            )}
+            <label>Date of Birth:</label>
+            <input
+              className="w-full px-3 py-2 border border-gray-800 rounded focus:outline-none"
+              type="text"
+              value={
+                userDetails.dob ? userDetails.dob.toLocaleDateString() : ""
+              }
+              placeholder="Select your DOB"
+              readOnly
+              onClick={() => setShowDatePicker(!showDatePicker)}
+            />
+          </div>
 
-          captionLayout="dropdown" 
-        />
-      )}
-    </div>
-    
-   
-        {/* <input
+          {/* <input
           className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="adminDob"
@@ -126,160 +137,142 @@ e.preventDefault();
           }
           placeholder="DOB"
         /> */}
-      </div>
-      {/* Aadhar Card */}
+        </div>
+        {/* Aadhar Card */}
 
-      <div className="flex-col items-center justify-start">
-        <label
-          htmlFor="adminAadharCard"
-          className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
-        >
-          Aadhar Card
-        </label>
-        <input
-          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          type="text"
-          maxLength={12}
-          id="adminAadharCard"
-          name="adminAadharCard"
-          value={userDetails.aadharCard}
-          onChange={(e) =>{
-
-            setUserDetails({ ...userDetails, aadharCard: e.target.value })
-          }
-          }
-          placeholder="Aadhar Card Number"
-        />
-        {errors.aadharCard && <p className="text-red-500">{errors.aadharCard}</p>}
-      </div>
-      {/* Upload Aadhar */}
-
-      <div className="flex justify-start mt-1 border-black items-center ">
-  <label
-    htmlFor="adminUploadAadharCard"
-    className="w-60 h-[50px] text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
-  >
-    Upload Aadhar Card
-  </label>
-
-  <label
-    htmlFor="adminUploadAadharCard" // Corrected htmlFor to match the input's id
-    className="block w-32 bg-[#0077B6] py-2 text-white h-[50px] justify-center items-center
-  text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
-  >
-    Select File
-    <input
-      type="file"
-      id="adminUploadAadharCard"
-      accept="image/*"
-      name="adminUploadAadharCard"
-      onChange={(e) => {
-        const file = e.target.files ? e.target.files[0] : null;
-        if (file) {
-          setUserDetails({
-            ...userDetails,
-            uploadAadharCard   : file,
-          });
-          toast.success("Aadhar Card uploaded")
-          console.log(userDetails.uploadAadharCard);
-        }
-      }}
-      style={{ display: "none", justifyContent: "center" }} // Hide the actual input
-    />
-  </label>
-</div>
-      <div className="flex-col items-center justify-start mt-2">
-        <label
-          htmlFor="adminPanCard"
-          className="w-1/3 text-gray-700 text-left  font-mulish font-bold text-md leading-tight"
-        >
-          PAN Card
-        </label>
-        <input
-          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          type="text"
-          maxLength={10}
-          id="adminPanCard"
-          name="adminPanCard"
-          value={userDetails.panCard}
-          onChange={(e) =>
-            setUserDetails({ ...userDetails, panCard: e.target.value })
-          }
-          
-          placeholder="Pan Card Number"
-        />
-      </div>
-
-      <div className="flex flex-row  mt-1 items-center justify-start">
-        <label
-          htmlFor="adminUploadPanCard"
-          className="w-60 h-[50px] text-gray-700 pl-3 border-black  py-2 flex items-center text-left font-normal text-md leading-tight  border-2"
-        >
-          Upload Pan Card
-        </label>
-
-        <label
-          htmlFor="uploadPanCard"
-          className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
-        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
-        >
-          Select File
+        <div className="flex-col items-center justify-start">
+          <label
+            htmlFor="adminAadharCard"
+            className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
+          >
+            Aadhar Card
+          </label>
           <input
-            type="file"
-            id="adminUploadPanCard"
-            name="adminUploadPanCard"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files ? e.target.files[0] : null;
-              if (file) {
-                setUserDetails({
-                  ...userDetails,
-                  uploadPanCard : file,
-                });
-                toast.success("Pan Card uploaded")
-                console.log(userDetails.uploadPanCard);
-              }
-            }}
-            style={{ display: "none", justifyContent: "center" }} // Hide the actual input
+            className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            type="text"
+            maxLength={12}
+            id="adminAadharCard"
+            name="adminAadharCard"
+            value={userDetails.aadharCard}
+            onChange={(e) =>
+              setUserDetails({ ...userDetails, aadharCard: e.target.value })
+            }
+            placeholder="Aadhar Card Number"
           />
-        </label>
-      </div>
+        </div>
+        {/* Upload Aadhar */}
 
-      {/* addresses */}
+        <div className="flex-col mb-4">
+          {aadharPreview && (
+            <img
+              src={aadharPreview}
+              alt="Aadhar Preview"
+              className="mt-2 mx-auto h-32 object-cover"
+            />
+          )}
+          <label className="cursor-pointer">
+            <div className="bg-white py-2 h-[4rem]  text-black text-center flex justify-between items-center px-3">
+              <div className="mx-auto w-full text-center flex justify-center items-center h-full border-2 border-solid border-black">
+                {userDetails.uploadAadharCard
+                  ? userDetails.uploadAadharCard.name
+                  : "Upload Aadhar Card"}
+              </div>
+              <div className="w-[30%] bg-[#0077B6] h-full flex justify-center items-center text-white">
+                Select File
+              </div>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleFileChange(e, "aadhar")}
+              style={{ display: "none" }}
+            />
+          </label>
+        </div>
+        <div className="flex-col items-center justify-start mt-2">
+          <label
+            htmlFor="adminPanCard"
+            className="w-1/3 text-gray-700 text-left  font-mulish font-bold text-md leading-tight"
+          >
+            PAN Card
+          </label>
+          <input
+            className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            type="text"
+            maxLength={10}
+            id="adminPanCard"
+            name="adminPanCard"
+            value={userDetails.panCard}
+            onChange={(e) =>
+              setUserDetails({ ...userDetails, panCard: e.target.value })
+            }
+            placeholder="Pan Card Number"
+          />
+        </div>
+        <div className="flex-col mb-4">
+          {panPreview && (
+            <img
+              src={panPreview}
+              alt="PAN Preview"
+              className="mt-2 mx-auto h-32 object-cover"
+            />
+          )}
+          <label className="cursor-pointer">
+            <div className="bg-white py-2 h-[4rem]  text-black text-center flex justify-between items-center px-3">
+              <div className="mx-auto w-full text-center flex justify-center items-center h-full border-2 border-solid border-black">
+                {userDetails.uploadPanCard
+                  ? userDetails.uploadPanCard.name
+                  : "Upload PAN Card"}
+              </div>
+              <div className="w-[30%] bg-[#0077B6] h-full flex justify-center items-center text-white">
+                Select File
+              </div>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleFileChange(e, "pan")}
+              style={{ display: "none" }}
+            />
+          </label>
+        </div>
 
-      <div className="flex flex-col gap-2">
-        <label className="text-xl mt-5">Address</label>
-        {/* line 1 */}
-        <input
-          className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          type="text"
-          id="adminAddressLine1"
-          value={userDetails.address.line1}
-          onChange={(e) => {
-            setUserDetails({
-              ...userDetails,
-              address: {
-                ...userDetails.address,
-                line1: e.target.value,
-              },
-            });
+        {/* addresses */}
+
+        <div className="flex flex-col gap-2">
+          <label className="text-xl mt-5">Address</label>
+          {/* line 1 */}
+          <input
+            className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            type="text"
+            id="adminAddressLine1"
+            value={userDetails.address.line1}
+            onChange={(e) => {
+              setUserDetails({
+                ...userDetails,
+                address: {
+                  ...userDetails.address,
+                  line1: e.target.value,
+                },
+              });
             }}
             placeholder="Address Line 1"
           />
           <StateDropdown
+            label={"Select State"}
             value={userDetails.address.line2}
-            onChange={(e :any) =>
-            setUserDetails({
-              ...userDetails,
-              address: {
-              ...userDetails.address,
-              line2: e.target.value,
-              },
-            })
+            onChange={(e: any) =>
+              setUserDetails({
+                ...userDetails,
+                address: {
+                  ...userDetails.address,
+                  line2: e.target.value,
+                },
+              })
             }
           />
-        {/* line 2 */}
-        {/* <input
+          {/* line 2 */}
+          {/* <input
           className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="adminAddressLine2"
@@ -296,61 +289,60 @@ e.preventDefault();
           placeholder="Address Line 2"
         /> */}
 
-        {/* city */}
-        <div className="w-2/3">
-          <input
-            className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            type="text"
-            id="adminAddressCity"
-            value={userDetails.address.city}
-            onChange={(e) => {
-              setUserDetails({
-                ...userDetails,
-                address: {
-                  ...userDetails.address,
-                  city: e.target.value,
-                },
-              });
-            }}
-            placeholder="City"
-          />
+          {/* city */}
+          <div className="w-2/3">
+            <input
+              className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              type="text"
+              id="adminAddressCity"
+              value={userDetails.address.city}
+              onChange={(e) => {
+                setUserDetails({
+                  ...userDetails,
+                  address: {
+                    ...userDetails.address,
+                    city: e.target.value,
+                  },
+                });
+              }}
+              placeholder="City"
+            />
+          </div>
+          {/* pinCode */}
+          <div className="w-1/2">
+            <input
+              className="w-32 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              type="text"
+              id="adminAddressPinCode"
+              value={userDetails.address.pincode}
+              onChange={(e) => {
+                setUserDetails({
+                  ...userDetails,
+                  address: {
+                    ...userDetails.address,
+                    pincode: e.target.value,
+                  },
+                });
+              }}
+              placeholder="pincode"
+            />
+          </div>
         </div>
-        {/* pinCode */}
-        <div className="w-1/2">
-          <input
-            className="w-32 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            type="text"
-            id="adminAddressPinCode"
-            value={userDetails.address.pincode}
-            onChange={(e) => {
-              setUserDetails({
-                ...userDetails,
-                address: {
-                  ...userDetails.address,
-                  pincode: e.target.value,
-                },
-              });
-            }}
-            placeholder="pincode"
-          />
+        <div className="flex flex-row gap-30   -col items-center justify-between">
+          <button
+            className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
+            onClick={prevStep}
+          >
+            Back
+          </button>
+          <button
+            className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
+            onClick={nextStep}
+          >
+            Next
+          </button>
         </div>
       </div>
-      <div className="flex flex-row gap-30   -col items-center justify-between">
-        <button
-          className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
-          onClick={prevStep}
-        >
-          Back
-        </button>
-        <button
-          className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
-          type="submit"
-          // onClick={handleSubmit}
-        >
-          Next
-        </button>
-      </div>
-    </form>
-  </div>
-);
-}
+    </div>
+  );
+};
