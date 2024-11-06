@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker } from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 
 import axios from 'axios';
 import { BACKEND } from '@/utils/config';
@@ -16,7 +16,7 @@ const LocationsScreen = () => {
 
   const navigation = useNavigation();
 
-
+  const route = useNavigation();
   const dispatch = useDispatch();
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [locations, setLocations] = useState([]);
@@ -50,7 +50,7 @@ const LocationsScreen = () => {
   }, []);
 
   const handleLocationSelect = async (location) => {
-  console.log("🚀 ~ handleLocationSelect ~ location:", location)
+
 
     setSelectedLocation(location);
 
@@ -61,7 +61,8 @@ const LocationsScreen = () => {
       console.error('Failed to save location to AsyncStorage', error);
     }
 
-    navigation.goBack();
+    // navigation.goBack();
+   router.push('/(tabs)');
   };
   useEffect(() => {
     const timeoutId = setTimeout(() => {

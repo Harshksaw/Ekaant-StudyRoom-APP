@@ -105,6 +105,7 @@ export default function index() {
 
     // console.log("Selected Location:109", selectedLocation);
     try {
+      console.log("🚀 ~ fetchLibraryDate ~ selectedLocation:", selectedLocation)
       const fetchedData = await fetchRoomData({ selectedLocation });
       setData(fetchedData || []);
 
@@ -339,6 +340,8 @@ export default function index() {
       setRefreshing(false);
     }, 2000);
   }, []);
+
+  
   return (
     <SafeAreaView
       style={{
