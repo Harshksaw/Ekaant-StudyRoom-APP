@@ -10,6 +10,4 @@ export const fetchRoomData = async ({selectedLocation}:any) => {
      city: selectedLocation
     })
 
-    return response.data
-
-  }
+    return response.data  }
