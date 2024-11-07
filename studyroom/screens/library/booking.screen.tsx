@@ -1,5 +1,5 @@
 import Button from "@/components/Button";
-
+import moment from 'moment'
 import Seats from "@/components/Seats";
 
 import Calendar from "@/components/calendar/calendar";
@@ -26,7 +26,7 @@ import { Month } from "@/assets";
 
 import ToggleBookingButton from "@/components/ToggleBooking";
 import { Toast } from "react-native-toast-notifications";
-// import Toast from 'react-native-toast-message'
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
@@ -107,7 +107,7 @@ const [libraryDetails , setLibraryDetails] = useState(null)
   };
   const handleData = (data: DataItem[]) => {
     return data?.map((item) => {
-      if (item.from === "0" && item.to === "24") {
+      if (item.from === "12:00 AM" && item.to === "12:00 PM") {
         // Modify the item to indicate 24/7 availability
         // This is just an example, adjust according to your needs
         return { ...item, availability: "24/7" };
@@ -241,7 +241,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
   const handleBookingError = (error) => {
     setBookingLoader(false);
     setIsModalVisible(false);
-    console.error("Error:", error);
+
     Toast.show("Error booking");
   };
 
@@ -272,6 +272,17 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
 
   if (Loading || data === null) {
     return <ActivityIndicator size="large" color="#000" />;
+  }
+
+  const formatTime = (time) => {
+    return moment(time, ["h:mm A"]).format("HH:mm")
+  }
+
+  const displayTimeRange = (from, to) => {
+    if (from === "12:00 AM" && to === "11:59 PM") {
+      return `24/7`
+    }
+    return `${from} - ${to}`
   }
 
   return (
@@ -485,7 +496,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
                       maxWidth: 300,
                     }}
                   >
-                    {/* //Time Slots */}
+
                     {available?.map((slot, index) => {
                       if (slot?.availability && slot?.from !== null) {
                         return (
@@ -548,24 +559,10 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
                               }}
                               onPress={() => handleSelectSlot(slot)} // Step 3: Attach event handler
                             >
-                              <Text
-                                style={{
-                                  textAlign: "center",
-                                  fontSize: 15,
-                                  fontWeight: "600",
-                                }}
-                              >
-                                {slot.from ? slot.from + " -" : ""}
-                              </Text>
-                              <Text
-                                style={{
-                                  textAlign: "center",
-                                  fontSize: 15,
-                                  fontWeight: "600",
-                                }}
-                              >
-                                {slot.to}
-                              </Text>
+                              <Text>
+                                {displayTimeRange(slot.from, slot.to)}
+                                </Text>
+                             
                             </TouchableOpacity>
                           </View>
                         );
@@ -583,7 +580,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
                     gap: 10,
                     padding: 10,
 
-                    marginTop: 10,
+                    marginTop: 20,
                   }}
                 >
                   <View>
@@ -592,7 +589,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
                         fontSize: 20,
                         fontWeight: "bold",
                         color: "#000",
-                        margin: 10,
+                        marginTop: 32,
                         textAlign: "center",
                       }}
                     >

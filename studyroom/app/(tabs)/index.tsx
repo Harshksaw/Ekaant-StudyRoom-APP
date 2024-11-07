@@ -36,7 +36,7 @@ import axios from "axios";
 import { setAppDetails } from "@/redux/appSlice";
 import CustomLoader from "@/components/CustomLoader";
 import { Toast } from "react-native-toast-notifications";
-import { Success } from '@/assets';
+import { Success } from "@/assets";
 export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
@@ -79,7 +79,6 @@ export default function index() {
     }
   };
 
-
   dispatch(setAppDetails(locationData || []));
 
   const getUserData = async () => {
@@ -96,35 +95,38 @@ export default function index() {
   const fetchLibraryDate = async () => {
     const res = await getUserData();
 
- 
 
     dispatch(setUserDetails(res));
-
     setIsLoading(true);
     setReload(false);
 
-    // console.log("Selected Location:109", selectedLocation);
     try {
-      console.log("🚀 ~ fetchLibraryDate ~ selectedLocation:", selectedLocation)
-      const fetchedData = await fetchRoomData({ selectedLocation });
-      console.log("🚀 ~ fetchLibraryDate ~ fetchedData:", fetchedData)
+      
+      if (selectedLocation === "") {
+        Toast.show("Please select a location", {
+          type: "error",
+          duration: 3000,
+        });
+        router.push("/(routes)/location")
+        return;
+      }
+
+      const fetchedData = await fetchRoomData({ selectedLocation   });
+
       setData(fetchedData || []);
 
       Toast.show(" fetched room data", {
         type: "Success",
 
-          successColor: "#00ff55",
+        successColor: "#00ff55",
 
         duration: 3000,
-
-        
       });
       // console.log("Fetched Data:________", fetchedData);
     } catch (error) {
       Toast.show("Failed to fetch room data", {
         type: "error",
         duration: 3000,
-
       });
       console.error("Failed to fetch room data:", error);
       setData(null);
@@ -137,15 +139,26 @@ export default function index() {
     }
   };
 
+  // useEffect(() => {
+  //   const initialize = async () => {
+  //     await fetchSelectedLocation();
+  //     if(selectedLocation){
+
+  //       fetchLibraryDate();
+  //    }
+  //   };
+
+  //   initialize();
+  
+  // }, []);
+
   useEffect(() => {
-    fetchSelectedLocation();
+fetchSelectedLocation();
     getAppData();
 
-  
     // getTokenAndPrintIt();
 
-    if(selectedLocation){
-
+    if (selectedLocation) {
       fetchLibraryDate();
     }
   }, [reload, selectedLocation]);
@@ -159,8 +172,6 @@ export default function index() {
     require("../../assets/icons/hello.svg"),
     require("../../assets/icons/locationcard.svg"),
   ]);
-
-
 
   //card listedrooms
   const renderItem = ({ item }) => (
@@ -176,16 +187,16 @@ export default function index() {
       onPress={
         item?.library.approved
           ? () =>
-            router.push({
-              pathname: "/(routes)/card-details",
-              params: { item: JSON.stringify(item.library) },
-            })
+              router.push({
+                pathname: "/(routes)/card-details",
+                params: { item: JSON.stringify(item.library) },
+              })
           : () => toggleNotListedModal()
       }
-    // onPress={()=> {
-    //   setNotListed(true)
+      // onPress={()=> {
+      //   setNotListed(true)
 
-    // }}
+      // }}
     >
       {item?.library.approved && (
         <View style={styles.card}>
@@ -309,7 +320,7 @@ export default function index() {
                       color: "#1E1E1E",
                     }}
                   >
-                    {item?.distance.toFixed(0) } km
+                    {item?.distance.toFixed(0)} km
                   </Text>
                 </View>
               )}
@@ -326,7 +337,6 @@ export default function index() {
     setStickyHeight(event.nativeEvent.layout.height);
   };
 
-
   const userDetails = useSelector((state: any) => state.user);
 
   const userData = JSON.parse(userDetails.details)?.data?.username;
@@ -334,15 +344,19 @@ export default function index() {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     getAppData();
+    console.log("refreshing",selectedLocation);
+    fetchSelectedLocation();
+    if(!selectedLocation){
+      AsyncStorage.getItem("selectedLocation");
+    }
+    // selectedLocation &&
     fetchLibraryDate();
-    
 
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
 
-  
   return (
     <SafeAreaView
       style={{
@@ -354,10 +368,11 @@ export default function index() {
         backgroundColor: "white",
       }}
     >
-      <TouchableOpacity style={{ marginTop: 0 }} 
-      onPress={()=>{
-        router.navigate('/(routes)/location')
-      }}
+      <TouchableOpacity
+        style={{ marginTop: 0 }}
+        onPress={() => {
+          router.navigate("/(routes)/location");
+        }}
       >
         <Header color="black" handleLocationChange={handleLocationChange} />
       </TouchableOpacity>
@@ -409,7 +424,7 @@ export default function index() {
               <View
                 style={{
                   flex: 1,
-justifyContent: "center",
+                  justifyContent: "center",
                   alignItems: "center",
 
                   padding: 30,
@@ -488,7 +503,7 @@ justifyContent: "center",
         {/* Lib Cards */}
 
         {isLoading ? (
-             <CustomLoader visible={true} />
+          <CustomLoader visible={true} />
         ) : (
           <>
             <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
