@@ -6,13 +6,54 @@ const multer = require("multer");
 const express = require("express");
 const cloudinary = require("cloudinary").v2;
 const Review = require("../models/review.model");
-
+const Distance = require("../models/Distance.model");
 const { Library } = require("../models/library.model");
 const { Room } = require("../models/room.model");
 const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
 const { get } = require("mongoose");
 const App = require("../models/app.model");
+
+
+const calculateDistance = (coords1, coords2) => {
+  // Haversine formula to calculate distance between two coordinates
+  const [lat1, lon1] = coords1;
+  const [lat2, lon2] = coords2;
+  const R = 6371; // Radius of the Earth in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+  return distance;
+};
+const calculateDistances = async () => {
+  try {
+    const libraries = await Library.find({ approved: true });
+    const cities = await App.aggregate([
+      { $unwind: "$locations" },
+      { $project: { city: "$locations.location", coords: "$locations.coords" } }
+    ]);
+
+    for (const library of libraries) {
+      for (const city of cities) {
+        const distance = calculateDistance(library.location, city.coords);
+        console.log("🚀 ~ calculateDistances ~ distance:", distance)
+        const distanceRecord = new Distance({
+          library: library._id,
+          city: city.city,
+          distance: distance ? distance : 0
+        });
+        await distanceRecord.save();
+      }
+    }
+    console.log('Distances calculated and saved successfully.');
+  } catch (error) {
+    console.error('Error calculating distances:', error);
+  }
+};
 
 // Ping admin dummy API
 const pingAdmin = (req, res) => {
@@ -291,28 +332,43 @@ const getAllLibrary = async (req, res) => {
   try {
     const { city } = req.body;
     console.log(city);
+    if (!city) {
+      return res.status(400).json({ success: false, message: "City is required" });
+    }
 
-    const cityCoordinates = await App.aggregate([
-      { $match: {} }, // Match all documents or apply specific conditions
-      { $unwind: "$locations" }, // Deconstruct the locations array
-      { $match: { "locations.location": city } }, // Match the specific city
-      { $project: { _id: 0, coords: "$locations.coords" } }, // Project the coordinates
-    ]);
+    const distances = await Distance.find({ city }).populate('library').sort({ distance: 1 });
+
+    if (!distances.length) {
+      return res.status(404).json({ success: false, message: "No libraries found for the specified city" });
+    }
+
+    // const cityCoordinates = await App.aggregate([
+    //   { $match: {} }, // Match all documents or apply specific conditions
+    //   { $unwind: "$locations" }, // Deconstruct the locations array
+    //   { $match: { "locations.location": city } }, // Match the specific city
+    //   { $project: { _id: 0, coords: "$locations.coords" } }, // Project the coordinates
+    // ]);
 
     // console.log("🚀 ~ getAllLibrary ~ cityCoordinates:", cityCoordinates[0].coords)
 
-    const roomsData = await Library.find({ approved: true });
+    const libraries = distances.map(distance => ({
+      library: distance.library,
+      distance: distance.distance
+    }));
 
-    const getSortedData = await GetNearestLibraries(
-      roomsData,
-      cityCoordinates[0].coords
-    );
-    console.log("🚀 ~ getAllLibrary ~ getSortedData:", getSortedData);
+    // const roomsData = await Library.find({ approved: true });
 
+    // const getSortedData = await GetNearestLibraries(
+    //   roomsData,
+    //   cityCoordinates[0].coords
+    // );
+    // console.log("🚀 ~ getAllLibrary ~ getSortedData:", getSortedData);
+
+  
     res.status(200).json({
       success: true,
-      count: roomsData.length,
-      data: getSortedData,
+      count: libraries.length,
+      data: libraries,
     });
   } catch (error) {
     console.error("Error fetching library data:", error);
@@ -599,6 +655,9 @@ const getReviews = async (req, res) => {
   }
 };
 
+
+
+
 module.exports = {
   pingAdmin,
   createLibrary,
@@ -620,4 +679,5 @@ module.exports = {
   getDummy,
   createReview,
   getReviews,
+  calculateDistances,
 };

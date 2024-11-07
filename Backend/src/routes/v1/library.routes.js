@@ -74,4 +74,7 @@ Library.get("/getDummyLibrary", LibraryController.getDummy);
 
 Library.post("/createReview/:libraryId", LibraryController.createReview);
 Library.post("/getReviews/:libraryId", LibraryController.getReviews);
+
+
+Library.get("/calculateDistance", LibraryController.calculateDistances);
 module.exports = Library;
