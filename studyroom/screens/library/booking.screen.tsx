@@ -202,12 +202,13 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
   const confirmBooking = async () => {
     setBookingLoader(true);
     await updateRoomDetails();
-
+  
     const res = await PreBook();
+    setBookingLoader(false);
+  
     if (res) {
-      setBookingLoader(false);
       setIsModalVisible(false);
-
+  
       const newBookingData = {
         bookedSeat: selectedSeat,
         bookingDate: selectedDate,
@@ -216,7 +217,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
         timeSlot: selectedSlots,
         price: finalPrice,
       };
-
+  
       const Bookdata = { ...newBookingData, libraryId: libraryDetails };
       router.push({
         pathname: "/library/checkout.screen",
@@ -225,10 +226,43 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
         },
       });
     } else {
-      setBookingLoader(false);
-      setIsModalVisible(false);
+      console.log("🚀 ~ confirmBooking ~ res", res)
+      Toast.show("Booking failed. Please try again.", {
+        type: "error",
+      });
     }
   };
+  // const confirmBooking = async () => {
+  //   setBookingLoader(true);
+  //   await updateRoomDetails();
+
+  //   const res = await PreBook();
+  //   setBookingLoader(false);
+  //   if (res) {
+  //     setBookingLoader(false);
+  //     setIsModalVisible(false);
+
+  //     const newBookingData = {
+  //       bookedSeat: selectedSeat,
+  //       bookingDate: selectedDate,
+  //       bookingPeriod: selectedMonth,
+  //       roomNo: currentRoomNo,
+  //       timeSlot: selectedSlots,
+  //       price: finalPrice,
+  //     };
+
+  //     const Bookdata = { ...newBookingData, libraryId: libraryDetails };
+  //     router.push({
+  //       pathname: "/library/checkout.screen",
+  //       params: {
+  //         item: JSON.stringify(Bookdata),
+  //       },
+  //     });
+  //   } else {
+  //     setBookingLoader(false);
+  //     setIsModalVisible(false);
+  //   }
+  // };
 
   const resetBookingState = () => {
     setSelectedSeat(null);
@@ -341,7 +375,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
           }}
           mode="dropdown"
         >
-          {data?.map((item, index) => (
+          {/* {data?.map((item, index) => (
             <Picker.Item
               key={index}
               style={{
@@ -352,7 +386,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
               label={` Room ${item.roomNo}`}
               value={`${item.roomNo}`}
             />
-          ))}
+          ))} */}
         </Picker>
         <ToggleBookingButton />
       </View>
