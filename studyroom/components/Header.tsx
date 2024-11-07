@@ -66,6 +66,7 @@ const Header = ({ color }: any) => {
             assets &&
             assets[3] && (
               <Image
+
                 source={assets[3]}
                 style={{
                   width: 20,
@@ -85,10 +86,10 @@ const Header = ({ color }: any) => {
           <View>
             {assets && assets[1] && (
               <Image
-                source={assets[1]}
+                source={assets[2]}
                 style={{
-                  width: 40,
-                  height: 40,
+                  width: 50,
+                  height: 50,
                   tintColor: color,
                 }}
               />
@@ -106,12 +107,12 @@ const Header = ({ color }: any) => {
           </View>
         )}
 
-        {color === "black" && assets && assets[0] && (
+        {assets && assets[0] && (
           <Image
-            source={assets[0]}
+            source={{ uri: assets[0].localUri || assets[0].uri }}
             style={{
-              width: 50,
-              height: 50,
+              width: 60,
+              height: 60,
               tintColor: color,
             }}
           />
