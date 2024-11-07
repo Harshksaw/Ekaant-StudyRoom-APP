@@ -5,20 +5,13 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
-
-
-
-
-
-
-
 const ManageRooms = () => {
   const { lib_id } = useParams();
   const [room, setRoom] = React.useState<any>(null);
   const [activeTab, setActiveTab] = useState<any>('userDetails');
   const [showAadhaar, setShowAadhaar] = useState<any>(false);
   const [showPanCard, setShowPanCard] = useState<any>(false);
-  const [loading , setLoading] = useState<any>(false); 
+  const [loading, setLoading] = useState<any>(false);
   const [roomData, setRoomData] = useState<any>([]);
   const [expandedRoom, setExpandedRoom] = useState<any>(null); // Track expanded room
   // const [position, setPosition] = useState<[number, number] | null>(null);
@@ -41,21 +34,23 @@ const ManageRooms = () => {
 
     const res = await axios.post(`${BASEURL}/api/v1/library/updateStatus`, { id, status: !status });
     if (res.data.success) {
-        console.log(res.data);
-        toast.success(`Library ${!status ? 'approved' : 'disapproved'} successfully.`);
-        window.location.reload();
-        // setRoom(res.data.data);
+      console.log(res.data);
+      toast.success(`Library ${!status ? 'approved' : 'disapproved'} successfully.`);
+      window.location.reload();
+      // setRoom(res.data.data);
     }
 
-};
+  };
 
-if(loading){
-  return (
-    <div className="flex justify-center items-center h-full">
-      <div className="loader ease-linear rounded-full border-20 border-t-8 border-blue-800 h-32 w-32"></div>
-    </div>
-  );
-}
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="loader ease-linear rounded-full border-20 border-t-8 border-blue-800 h-32 w-32"></div>
+      </div>
+    );
+  }
+
+  // console.log(room.libraryOwner?.adhaarCardDetails.adhaarCardFile)
   const renderUserDetails = () => {
     const address = room ? JSON.parse(room.libraryOwner.address) : null;
     return (
@@ -87,7 +82,7 @@ if(loading){
                   {showAadhaar && (
                     <div className="ml-4">
                       <img
-                        src="/path-to-aadhaar-image.jpg"
+                        src={`${room?.libraryOwner?.adhaarCardDetails?.adhaarCardFile}`}
                         alt="Aadhaar Card"
                         className="w-24 h-16"
                       />
@@ -224,23 +219,23 @@ if(loading){
   const toggleRoomExpansion = (roomId: string) => {
     setExpandedRoom(expandedRoom === roomId ? null : roomId);
   };
-const renderRoomDetails = () => (
-  <div>
-    <h2 className='text-xl font-bold text-gray-800'>Room Details</h2>
-    {roomData.length > 0 ? (
-      roomData.map((roomDetail: { _id: string; roomNo: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; seats: any[]; }, index: React.Key | null | undefined) => (
-        <div key={index} className="border-b border-gray-200 py-4">
-          <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleRoomExpansion(roomDetail._id)}>
-            <p className='text-gray-600'>Room No: {roomDetail.roomNo}</p>
-            {expandedRoom === roomDetail._id ? <FaChevronUp /> : <FaChevronDown />}
-          </div>
-          {expandedRoom === roomDetail._id && (
-              <div className="mt-2">
+  const renderRoomDetails = () => (
+    <div className=' w-full h-full overflow-y-auto'>
+      <h2 className='text-xl font-bold text-gray-800'>Room Details</h2>
+      {roomData.length > 0 ? (
+        roomData.map((roomDetail: { _id: string; roomNo: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; seats: any[]; }, index: React.Key | null | undefined) => (
+          <div key={index} className="border-b border-gray-200 py-4">
+            <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleRoomExpansion(roomDetail._id)}>
+              <p className='text-gray-600'>Room No: {roomDetail.roomNo}</p>
+              {expandedRoom === roomDetail._id ? <FaChevronUp /> : <FaChevronDown />}
+            </div>
+            {expandedRoom === roomDetail._id && (
+              <div className="mt-2 ">
                 <div className="grid grid-cols-2 gap-4">
                   {roomDetail.seats.map((seat: { seatLabel: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; timeSlots: any[]; }, seatIndex: React.Key | null | undefined) => (
                     <div key={seatIndex} className="border p-2">
                       <p className='text-gray-600'>Seat: {seat.seatLabel}</p>
-                      {seat.timeSlots.map((slot :any, slotIndex :any) => (
+                      {seat.timeSlots.map((slot: any, slotIndex: any) => (
                         <div key={slotIndex} className="ml-4">
                           <p className='text-gray-600'>Time Slot: {slot.from} - {slot.to}</p>
                           <p className='text-gray-600'>Booked: {slot.booked ? 'Yes' : 'No'}</p>
@@ -254,17 +249,17 @@ const renderRoomDetails = () => (
                 </div>
               </div>
             )}
-        </div>
-      ))
-    ) : (
-      <p className='text-gray-600'>No room details available.</p>
-    )}
-  </div>
-);
+          </div>
+        ))
+      ) : (
+        <p className='text-gray-600'>No room details available.</p>
+      )}
+    </div>
+  );
 
 
   return (
-    <div className='p-8 flex flex-col gap-4  overflow-y-auto'>
+    <div className='p-8 flex h-full flex-col gap-4  overflow-y-auto'>
       {/* Tabs */}
       <div className='flex justify-center mb-4 rounded-lg'>
         <button
@@ -288,7 +283,7 @@ const renderRoomDetails = () => (
       </div>
 
       {room && (
-          <div className="col-span-2 flex justify-end gap-4">
+        <div className="col-span-2 flex justify-end gap-4">
           <button
             onClick={() => handleApprove(room._id, room?.approved)}
             className={`px-4 py-2 rounded-lg ${room.approved ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}
@@ -298,7 +293,7 @@ const renderRoomDetails = () => (
         </div>
 
       )}
-    
+
 
       {/* Content */}
       <div className='bg-white p-6 rounded-lg shadow-md'>
