@@ -301,6 +301,7 @@ const ManageRooms = () => {
         {activeTab === 'libraryDetails' && renderLibraryDetails()}
         {activeTab === 'roomDetails' && renderRoomDetails()}
       </div>
+      
     </div>
   );
 };

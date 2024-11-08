@@ -46,7 +46,8 @@ const ManageAdmin = () => {
             <th className="py-2 px-4 border-b">Approved Status</th>
           </tr>
         </thead>
-        <tbody className="overflow-y-auto h-[50%] pb-20">
+
+        <tbody className="   h-full pb-20 overflow-y-auto">
           {library?.map((lib: Lib) => (
             <tr
               key={lib?._id}
