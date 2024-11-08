@@ -338,7 +338,9 @@ const getAllLibrary = async (req, res) => {
 
     const distances = await Distance.find({ city }).populate('library').sort({ distance: 1 });
 
-    if (!distances.length) {
+    const filterLibrary = distances.filter((distance) => distance.approved === true && distance.rooms.length > 0);
+
+    if (!filterLibrary.length) {
       return res.status(404).json({ success: false, message: "No libraries found for the specified city" });
     }
 
@@ -352,7 +354,7 @@ const getAllLibrary = async (req, res) => {
     // console.log("🚀 ~ getAllLibrary ~ cityCoordinates:", cityCoordinates[0].coords)
 
     const libraries = distances.map(distance => ({
-      library: distance.library,
+      library: filterLibrary.library,
       distance: distance.distance
     }));
 

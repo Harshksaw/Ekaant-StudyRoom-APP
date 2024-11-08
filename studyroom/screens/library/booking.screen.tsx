@@ -297,7 +297,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
 
   useEffect(() => {
     fetchRooms().then((data) => {
-      console.log("🚀 ~ data:", data);
+      console.log("🚀 ~ data:", data.rooms.length);
       setData(data.rooms);
       setLoading(false);
     });
