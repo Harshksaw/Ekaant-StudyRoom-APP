@@ -360,8 +360,8 @@ const getAllLibrary = async (req, res) => {
 
     // console.log("🚀 ~ getAllLibrary ~ cityCoordinates:", cityCoordinates[0].coords)
 
-    const libraries = distances.map(distance => ({
-      library: filterLibrary,
+    const libraries = filterLibrary.map(distance => ({
+      library: distance.library,
       distance: distance.distance
     }));
 
