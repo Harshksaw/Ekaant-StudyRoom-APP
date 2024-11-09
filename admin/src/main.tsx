@@ -10,6 +10,8 @@ import { Provider } from 'react-redux';
 // @ts-ignore
 import {store } from "./redux/store";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <>
     <Provider store={store}>
