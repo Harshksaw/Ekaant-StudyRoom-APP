@@ -34,9 +34,10 @@ const ManageAdmin = () => {
     };
     func();
   }, []);
-
+console.log(library)
   return (
     <div className="p-3 bg-slate-300 h-full ">
+       <div className="overflow-auto max-h-[calc(100vh-100px)]">
       <table className="min-w-full bg-white">
         <thead>
           <tr className="bg-gray-800 text-white">
@@ -48,7 +49,7 @@ const ManageAdmin = () => {
           </tr>
         </thead>
 
-        <tbody className="   h-full pb-20 overflow-y-auto">
+        <tbody className=" bg-gray-100">
           {library?.map((lib: Lib) => (
             <tr
               key={lib?._id}
@@ -57,8 +58,8 @@ const ManageAdmin = () => {
             >
               <td className="py-2 px-4 border-b align-center ">
                 <img
-                  src={lib?.cardimage}
-                  alt={lib?.name}
+                  src={lib.cardimage ? lib.cardimage : lib?.images[0]}
+                  // alt={lib?.name}
                   className="h-36 w-52 object-cover rounded-md"
                 />
               </td>
@@ -74,6 +75,7 @@ const ManageAdmin = () => {
           ))}
         </tbody>
       </table>
+    </div>
     </div>
   );
 };
