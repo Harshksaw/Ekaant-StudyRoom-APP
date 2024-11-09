@@ -114,7 +114,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     margin: 5,
-    backgroundColor: isBooked ? "red" : isSelected ? "blue" : "transparent",
+    borderRadius: 10,
+    backgroundColor: isBooked ? "red" : isSelected ? "#6f82f2" : "transparent",
   }),
   emptySeat: {
     width: 70,

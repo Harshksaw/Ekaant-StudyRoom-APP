@@ -153,6 +153,8 @@ const CheckoutScreen: React.FC = () => {
     }
   }, [isPaymentComplete]);
 
+
+
   const handlePayment = async () => {
     var options = {
       description: "Room Booking",
@@ -165,12 +167,12 @@ const CheckoutScreen: React.FC = () => {
       name: "Ekaant",
       order_id: "",
       prefill: {
-        email: `${userData.user.email}`,
-        contact: `${userData.user.phoneNumber}`,
-        name: `${userData.user.username}`,
+        email: `${userData.data.user_id.email}`,
+        contact: `${userData.data.user_id.phoneNumber}`,
+        name: `${userData.data.user_id.username}`,
       },
     };
-    RazorpayCheckout.open(options)
+   await RazorpayCheckout.open(options)
       .then((data) => {
         // handle success
         setPaymentStatus(true);
@@ -187,6 +189,12 @@ const CheckoutScreen: React.FC = () => {
       })
       .catch((error) => {
         // handle failure
+        Toast.show(`${error.slice(0,10)}Payment Failed`, {
+          dangerColor: "red",
+          duration: 4000,
+
+          icon: <Ionicons name="alert-circle" size={24} color="red" />,
+        });
         setPaymentStatus(false);
 
         console.log(

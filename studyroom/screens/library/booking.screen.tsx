@@ -297,7 +297,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
 
   useEffect(() => {
     fetchRooms().then((data) => {
-      console.log("🚀 ~ data:", data.rooms.length);
+
       setData(data.rooms);
       setLoading(false);
     });
@@ -365,7 +365,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
         <Picker
           selectedValue={currentRoomNo}
           onValueChange={(itemValue, itemIndex) => {
-            console.log(itemValue, itemIndex);
+            console.log(itemValue, itemIndex, "-----");
             setCurrentRoomNo(itemValue);
           }}
           style={{
@@ -375,7 +375,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
           }}
           mode="dropdown"
         >
-          {/* {data?.map((item, index) => (
+          {data?.map((item, index) => (
             <Picker.Item
               key={index}
               style={{
@@ -386,7 +386,7 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
               label={` Room ${item.roomNo}`}
               value={`${item.roomNo}`}
             />
-          ))} */}
+          ))}
         </Picker>
         <ToggleBookingButton />
       </View>

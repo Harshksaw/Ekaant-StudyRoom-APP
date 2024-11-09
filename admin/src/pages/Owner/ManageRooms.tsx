@@ -52,7 +52,25 @@ const ManageRooms = () => {
 
   // console.log(room.libraryOwner?.adhaarCardDetails.adhaarCardFile)
   const renderUserDetails = () => {
+    const CLOUDINARY = import.meta.env.VITE_URL 
+    console.log("🚀 ~ renderUserDetails ~ CLOUDINARY:", CLOUDINARY)
+    const transformUrl = (url: string) => {
+      const newPrefix = CLOUDINARY;
+      const urlParts = url.split('/admin');
+      if (urlParts.length > 1) {
+        return newPrefix + '/admin' + urlParts[1];
+      }
+      return url;
+    };
+  
     const address = room ? JSON.parse(room.libraryOwner.address) : null;
+    const AddharCard = room?.libraryOwner?.adhaarCardDetails?.adhaarCardFile;
+    const PanCard = room?.libraryOwner?.panCardDetails?.panCardFile;
+  
+    const AddharUrl = AddharCard ? transformUrl(AddharCard) : null;
+    const PanUrl = PanCard ? transformUrl(PanCard) : null;
+
+
     return (
       <div>
         <h2 className='text-xl font-bold text-gray-800'>User Details</h2>
@@ -72,7 +90,7 @@ const ManageRooms = () => {
               {/* Aadhaar Card Section */}
               <div className="mt-6">
                 <h2 className="text-lg font-semibold">Aadhaar Card</h2>
-                <div className="flex items-center mt-2">
+                <div className="flex items-center mt-2 flex-col">
                   <button
                     onClick={() => setShowAadhaar(!showAadhaar)}
                     className="px-4 py-2 bg-blue-500 text-white rounded"
@@ -82,11 +100,14 @@ const ManageRooms = () => {
                   {showAadhaar && (
                     <div className="ml-4">
                       <img
-                        src={`${room?.libraryOwner?.adhaarCardDetails?.adhaarCardFile}`}
+                        src={`${AddharUrl}`}
                         alt="Aadhaar Card"
-                        className="w-24 h-16"
+                        className="w-72 h-60"
                       />
-                      <p className="text-gray-600">1234-5678-9101</p>
+                      <p className="text-gray-800 text-center m-4 text-bold ">{
+                          room?.libraryOwner?.adhaarCardDetails.adhaarNumber
+
+                        }</p>
                     </div>
                   )}
                 </div>
@@ -94,8 +115,8 @@ const ManageRooms = () => {
 
               {/* PAN Card Section */}
               <div className="mt-6">
-                <h2 className="text-lg font-semibold">PAN Card</h2>
-                <div className="flex items-center mt-2">
+                <h2 className="text-lg font-semibold ">PAN Card</h2>
+                <div className="flex items-center mt-2 flex-col ">
                   <button
 
                     onClick={() => setShowPanCard(!showPanCard)}
@@ -106,17 +127,19 @@ const ManageRooms = () => {
                   {showPanCard && (
                     <div className="ml-4">
                       <img
-                        src="/path-to-pan-image.jpg"
+                        src={`${PanUrl}`}
                         alt="PAN Card"
-                        className="w-24 h-16"
+                     className="w-72 h-60"
                       />
-                      <p className="text-gray-600">ABCDE1234F</p>
+                      <p className="text-gray-600 text-center m-4 text-bold">{
+                    room?.libraryOwner?.panCardDetails?.panNumber
+                    }</p>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Address Details */}
+
 
             </div>
             <div className="mt-6">
@@ -258,6 +281,8 @@ const ManageRooms = () => {
   );
 
 
+
+
   return (
     <div className='p-8 flex h-full flex-col gap-4  overflow-y-auto'>
       {/* Tabs */}
@@ -301,7 +326,7 @@ const ManageRooms = () => {
         {activeTab === 'libraryDetails' && renderLibraryDetails()}
         {activeTab === 'roomDetails' && renderRoomDetails()}
       </div>
-      
+
     </div>
   );
 };
