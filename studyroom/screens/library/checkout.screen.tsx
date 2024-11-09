@@ -172,42 +172,31 @@ const CheckoutScreen: React.FC = () => {
         name: `${userData.data.user_id.username}`,
       },
     };
-   await RazorpayCheckout.open(options)
-      .then((data) => {
-        // handle success
-        setPaymentStatus(true);
-        setPaymentData(data);
-        setPaymentId(data.razorpay_payment_id);
-        // console.log(data, "Payment Success");
-
-        setIsPaymentComplete(true);
-        Toast.show("Payment Success", {
-          successColor: "green",
-          duration: 4000,
-          icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
-        });
-      })
-      .catch((error) => {
-        // handle failure
-        Toast.show(`${error.slice(0,10)}Payment Failed`, {
-          dangerColor: "red",
-          duration: 4000,
-
-          icon: <Ionicons name="alert-circle" size={24} color="red" />,
-        });
-        setPaymentStatus(false);
-
-        console.log(
-          "Error in payment",
-          error.code,
-          error.description,
-          error.source,
-          error.metadata
-        );
-        alert(
-          `Error: ${error.code} | ${error.description} | ${error.source} | ${error.metadata}`
-        );
+  
+    try {
+      console.log('Opening Razorpay with options:', options);
+      const data = await RazorpayCheckout.open(options);
+      console.log('Payment Success:', data);
+  
+      setPaymentStatus(true);
+      setPaymentData(data);
+      setPaymentId(data.razorpay_payment_id);
+      setIsPaymentComplete(true);
+  
+      Toast.show("Payment Success", {
+        successColor: "green",
+        duration: 4000,
+        icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
       });
+    } catch (error) {
+
+      Toast.show(`${error.slice(0, 10)} Payment Failed`, {
+        dangerColor: "red",
+        duration: 4000,
+        icon: <Ionicons name="alert-circle" size={24} color="red" />,
+      });
+      setPaymentStatus(false);
+    }
   };
 
   // console.log(userData, "User Data", BookedData?.libraryId);
