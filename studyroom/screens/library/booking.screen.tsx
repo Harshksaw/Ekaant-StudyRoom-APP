@@ -39,7 +39,8 @@ const BookingScreen: React.FC = () => {
   const city = JSON.parse(params?.params?.location);
 
   const bookingData = useSelector((state: any) => state.booking);
-  const userDetails = useSelector((state: any) => state.user);
+  const userDetails =useSelector((state: any) => state.user);
+  console.log("🚀 ~ bookingData33:", bookingData?.details.id)
 
   const [data, setData] = useState(null);
   const [selectedSeat, setSelectedSeat] = useState(null);
@@ -68,7 +69,7 @@ const BookingScreen: React.FC = () => {
     slot: selectedSlots,
   };
 
-  
+ 
 
   useEffect(() => {
 
@@ -166,13 +167,13 @@ const BookingScreen: React.FC = () => {
       // BookedData.months
     ) {
 
-      console.log("🚀 ~ PreBook ~ BookedData:3", bookingData)
+      console.log("🚀 ~ PreBook ~ BookedData:3", bookingData);
+
       try {
-        const response = await axios.post(
-          `${BACKEND}/api/v1/booking/createBooking`,
+        const response = await axios.post(`${BACKEND}/api/v1/booking/createBooking`,
           {
             userId,
-            libraryId: bookingData.details.id,
+            libraryId: libraryDetails?._id,
             initialPrice: price,
             finalPrice,
             timeSlot: BookedData.slot,
@@ -269,11 +270,31 @@ const BookingScreen: React.FC = () => {
     }
   };
 
+  const getLib = async () => {
+    const bookingData = useSelector((state: any) => state.booking);
+    return bookingData
+  }
+  // useEffect(() => {
+  //   setLoading(true);
+  //   const checkBookingData = setInterval(() => {
+  //     const bookingData = getLib();
+
+  //     if (bookingData && bookingData.details && bookingData.details.id) {
+  //       console.log("🚀 ~ useEffect ~ bookingData.details.id:", bookingData.details.id);
+  //       setLoading(false);
+  //       clearInterval(checkBookingData);
+  //     }
+  //   }, 1000); // Check every second
+  
+  //   return () => clearInterval(checkBookingData); // Cleanup interval on component unmount
+  // }, [bookingData]);
+
   useEffect(() => {
     fetchRooms().then((data) => {
 
       setData(data.rooms);
       setLoading(false);
+
     });
   }, []);
 

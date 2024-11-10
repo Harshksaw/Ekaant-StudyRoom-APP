@@ -17,7 +17,7 @@ import {
   ActivityIndicator,
   Image,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 
 import axios from "axios";
 import { BACKEND } from "@/utils/config";

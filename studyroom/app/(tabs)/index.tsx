@@ -36,7 +36,7 @@ import axios from "axios";
 import { setAppDetails } from "@/redux/appSlice";
 import CustomLoader from "@/components/CustomLoader";
 import { Toast } from "react-native-toast-notifications";
-import { Success } from "@/assets";
+
 export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
