@@ -83,6 +83,7 @@ const BookingScreen: React.FC = () => {
   };
 
   const handleSelectSlot = (selectedSlot) => {
+    console.log("🚀 ~ handleSelectSlot ~ selectedSlot:", selectedSlot)
     if (selectedSlots.find((slot) => slot._id === selectedSlot._id)) {
       setSelectedSlots(
         selectedSlots.filter((slot) => slot._id !== selectedSlot._id)
@@ -136,35 +137,35 @@ const BookingScreen: React.FC = () => {
       });
 
     }
-    console.log("🚀 ~ PreBook ~ BookedData:", userId,
-      "-----",
-      bookingData.details.id,
-      "-----",
-      finalPrice,
-      "-----",
-      totalAmount,
-      "-----",
-      BookedData.slot.length > 0,
-      "-----",
+    // console.log("🚀 ~ PreBook ~ BookedData:", userId,
+    //   "-----",
+    //   bookingData.details.id,
+    //   "-----",
+    //   finalPrice,
+    //   "-----",
+    //   totalAmount,
+    //   "-----",
+    //   BookedData.slot.length > 0,
+    //   "-----",
 
-      BookedData.room,
-      "-----",
-      BookedData.seat,
-      "-----",
-      BookedData.date,
-      "-----",
-      BookedData.months)
+    //   BookedData.room,
+    //   "-----",
+    //   BookedData.seat,
+    //   "-----",
+    //   BookedData.date,
+    //   "-----",
+    //   BookedData.months)
 
     if (
-      userId 
-      // bookingData.details.id &&
-      // finalPrice &&
-      // totalAmount
-      // BookedData.slot.length > 0 &&
-      // BookedData.room &&
-      // BookedData.seat &&
-      // BookedData.date &&
-      // BookedData.months
+      userId &&
+
+      finalPrice &&
+      totalAmount &&
+      BookedData.slot.length > 0 &&
+      BookedData.room &&
+      BookedData.seat &&
+      BookedData.date &&
+      BookedData.months
     ) {
 
       console.log("🚀 ~ PreBook ~ BookedData:3", bookingData);
@@ -274,20 +275,7 @@ const BookingScreen: React.FC = () => {
     const bookingData = useSelector((state: any) => state.booking);
     return bookingData
   }
-  // useEffect(() => {
-  //   setLoading(true);
-  //   const checkBookingData = setInterval(() => {
-  //     const bookingData = getLib();
 
-  //     if (bookingData && bookingData.details && bookingData.details.id) {
-  //       console.log("🚀 ~ useEffect ~ bookingData.details.id:", bookingData.details.id);
-  //       setLoading(false);
-  //       clearInterval(checkBookingData);
-  //     }
-  //   }, 1000); // Check every second
-  
-  //   return () => clearInterval(checkBookingData); // Cleanup interval on component unmount
-  // }, [bookingData]);
 
   useEffect(() => {
     fetchRooms().then((data) => {

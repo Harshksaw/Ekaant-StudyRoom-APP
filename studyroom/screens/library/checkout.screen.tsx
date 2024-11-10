@@ -25,7 +25,7 @@ import { BACKEND } from "@/utils/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "react-native-toast-notifications";
 import RazorpayCheckout from "react-native-razorpay";
-import { set, sub } from "react-native-reanimated";
+
 import getLocationName from "@/utils/location";
 
 const CheckoutScreen: React.FC = () => {
@@ -75,7 +75,7 @@ const CheckoutScreen: React.FC = () => {
   const [paymentId, setPaymentId] = useState(null); // Payment data
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
-
+const [loading, setLoading] = useState(false);
   useEffect(() => {
 
     setBookingId(bookingid);
@@ -156,13 +156,15 @@ const CheckoutScreen: React.FC = () => {
 
 
   const handlePayment = async () => {
+
+
     var options = {
       description: "Room Booking",
       image:
-        "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png", //logo
+        "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png", 
 
       currency: "INR",
-      key: "rzp_test_lmy83ka5bsXLz8",
+      key: "rzp_test_hi1B6uwenBy9Ir",
       amount: `${PaymentPrice * 100}`,
       name: "Ekaant",
       order_id: "",
@@ -174,9 +176,9 @@ const CheckoutScreen: React.FC = () => {
     };
   
     try {
-      console.log('Opening Razorpay with options:', options);
+      // console.log('Opening Razorpay with options:', options);
       const data = await RazorpayCheckout.open(options);
-      console.log('Payment Success:', data);
+      // console.log('Payment Success:', data);
   
       setPaymentStatus(true);
       setPaymentData(data);
@@ -188,18 +190,20 @@ const CheckoutScreen: React.FC = () => {
         duration: 4000,
         icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
       });
+      setLoading(false);
     } catch (error) {
 
-      Toast.show(`${error.slice(0, 10)} Payment Failed`, {
+      Toast.show(` Payment Failed`, {
         dangerColor: "red",
         duration: 4000,
         icon: <Ionicons name="alert-circle" size={24} color="red" />,
       });
       setPaymentStatus(false);
+      setLoading(false);
     }
   };
 
-  // console.log(userData, "User Data", BookedData?.libraryId);
+
 
   const confirmPayment = async () => {
     if (!bookingId) {
@@ -216,7 +220,7 @@ const CheckoutScreen: React.FC = () => {
           paymentStatus: paymentStatus,
         }
       );
-      console.log(res.data, "Payment Confirmed 196");
+      // console.log(res.data, "Payment Confirmed 196");
       return true;
     } catch (error) {
       console.log(error);
@@ -225,22 +229,21 @@ const CheckoutScreen: React.FC = () => {
   };
 
   const PaymentScreen = async () => {
+
+    setLoading(true);
     await handlePayment();
     // console.log("Payment Screen");
 
     if (isPaymentComplete) {
-      console.log("Payment Status", paymentStatus);
-      console.log("Payment Data", paymentData);
-      console.log("PaymentId", paymentId);
-      console.log("Payment is complete");
+
 
       const res = await confirmPayment();
-      console.log("Payment Confirmation", res);
+      // console.log("Payment Confirmation", res);
       if (res) {
         setinvoiceComplete(true);
-        console.log("Payment Confirmed");
+        // console.log("Payment Confirmed");
       } else {
-        console.log("Payment Failed");
+        // console.log("Payment Failed");
       }
     }
   };
@@ -262,6 +265,23 @@ const CheckoutScreen: React.FC = () => {
     }).join(', ');
   }
   console.log("BOoked Data11",BookedData.bookedSeat.timeSlots)
+
+  if(loading){
+    return (
+      <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#fff0a5",
+        // marginTop: 20,
+        // paddingTop: 50,
+      }}
+      >
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+      )
+  }
   return (
     <SafeAreaView
       style={{
@@ -428,8 +448,8 @@ const CheckoutScreen: React.FC = () => {
 
       {/* Summary */}
 
-      <TouchableOpacity onPress={PaymentScreen}>
-        <View
+      <TouchableOpacity onPress={PaymentScreen}
+
           style={{
             flexDirection: "row",
             position: "absolute",
@@ -447,7 +467,7 @@ const CheckoutScreen: React.FC = () => {
             Total Amount: ₹{finalAmount}
           </Text>
           <Ionicons name="arrow-forward" size={25} color="white" />
-        </View>
+
       </TouchableOpacity>
     </SafeAreaView>
   );
