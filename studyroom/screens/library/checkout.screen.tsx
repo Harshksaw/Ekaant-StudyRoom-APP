@@ -20,6 +20,7 @@ import { BACKEND } from "@/utils/config";
 import getLocationName from "@/utils/location";
 import { getDateAfterMonths } from "@/utils/date";
 import { AC, Cash, CheckoutScreenLoc, Note, SeatsCheckout } from "@/assets";
+import { router } from "expo-router";
 
 const CheckoutScreen: React.FC = () => {
   const route = useRoute();
@@ -110,6 +111,8 @@ const CheckoutScreen: React.FC = () => {
         successColor: "green",
         duration: 4000,
       });
+
+      router.push('/(tabs)/bookings')
     } catch (error) {
       Toast.show("Payment Failed", {
         dangerColor: "red",
