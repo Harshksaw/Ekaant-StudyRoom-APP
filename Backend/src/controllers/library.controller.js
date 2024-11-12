@@ -656,7 +656,13 @@ const getReviews = async (req, res) => {
   try {
     const { libraryId } = req.params;
 
-    const library = await Library.findById(libraryId).populate('reviews').populate('user')
+    const library = await Library.findById(libraryId).populate({
+      path: "reviews",
+      populate: {
+        path: "user", // Specify the path for the nested population
+        model: "User" // Specify the model if necessary
+      }
+    });
     if (!library) {
       return res.status(404).json({ message: 'Library not found' });
     }
