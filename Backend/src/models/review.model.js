@@ -4,7 +4,8 @@ const reviewSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   review: { type: String, required: true },
   stars: { type: Number, required: true, min: 1, max: 5 },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  library: { type: mongoose.Schema.Types.ObjectId, ref: 'Library', required: true }, // Add this line
 });
 
 module.exports = mongoose.model('Review', reviewSchema);

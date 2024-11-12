@@ -9,11 +9,13 @@ import {
     TextInput,
     KeyboardAvoidingView,
     TouchableOpacity,
+    ScrollView,
 } from "react-native";
 import StarRating from "./Ratinstar";
 import { StarIcon } from "@/assets";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "react-native-toast-notifications";
+import { Image } from "expo-image";
 
 
 interface Review {
@@ -98,7 +100,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
 
                 console.log("🚀 ~ fetchReviews ~ response.data:", response.data);
 
-                setReviews(response.data);
+                setReviews(response.data.data);
                 setLoading(false);
             } catch (err) {
                 console.log("Error", err.message);
@@ -160,9 +162,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
         );
     }
 
-    if (reviews.data.length === 0) {
-        return <Text>No reviews available</Text>;
-    }
+ 
 
     return (
         <View
@@ -209,14 +209,24 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
                 <Text style={{ padding: 0, fontSize: 13 }}>0 Reviews</Text>
             </View>
             <Text style={styles.header}>User Reviews</Text>
-            <View style={styles.reviewContainer}>
-                {reviews.data.length > 0 ? (
-                    reviews.data.map((review) => (
+            <ScrollView style={styles.reviewContainer}>
+                {reviews.length > 0 ? (
+                    reviews.map((review) => (
                         <View style={styles.review} key={review.id}>
+
+                            <Image source={review.user.image}
+                                style={{
+                                    width: 50,
+                                    height: 50,
+                                    borderRadius: 50,
+                                    resizeMode: "cover",
+                                }}
+                            
+                            />
                             <View style={styles.reviewContent}>
                                 <StarRating rating={review.stars} />
                                 <Text>{review.review}</Text>
-                                <Text>By: {review.user}</Text>
+                                <Text>By: {review.user.username}</Text>
                             </View>
                         </View>
                     ))
@@ -233,7 +243,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
                         No reviews available
                     </Text>
                 )}
-            </View>
+            </ScrollView>
 
             <View>
                 <KeyboardAvoidingView
@@ -277,13 +287,13 @@ const styles = StyleSheet.create({
 
         flexDirection: "column",
         // flexWrap: 'wrap',
-        alignItems: "center",
-        justifyContent: "center",
+        // alignItems: "center",
+        // justifyContent: "center",
         backgroundColor: "#F0F0F0",
     },
     review: {
         flexDirection: "row",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
         width: "auto",
         borderTopWidth: 2,
@@ -294,6 +304,7 @@ const styles = StyleSheet.create({
     },
     reviewContent: {
         flexDirection: "column",
+        justifyContent: "space-around",
         marginTop: 10,
         borderRadius: 20,
         padding: 10,
