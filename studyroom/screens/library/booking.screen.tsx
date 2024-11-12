@@ -36,8 +36,11 @@ const BookingScreen: React.FC = () => {
   const params = useRoute();
 
   const dataK = JSON.parse(params?.params?.item);
-
   const city = JSON.parse(params?.params?.location);
+
+  const bookingData = useSelector((state: any) => state.booking);
+  const userDetails =useSelector((state: any) => state.user);
+  console.log("🚀 ~ bookingData33:", bookingData?.details.id)
 
   const [data, setData] = useState(null);
   const [selectedSeat, setSelectedSeat] = useState(null);
@@ -51,9 +54,8 @@ const BookingScreen: React.FC = () => {
   const [currentRoomNo, setCurrentRoomNo] = useState(1);
   const [forFriend, setForFriend] = useState(false);
   const [Loading, setLoading] = useState(true);
-  const userDetails = useSelector((state: any) => state.user);
-  const bookingData = useSelector((state: any) => state.booking);
-const [libraryDetails , setLibraryDetails] = useState(null)
+
+  const [libraryDetails, setLibraryDetails] = useState(null)
   const price = bookingData.details.price || 6000;
   const registrationFees = 1000;
   const subtotal = Number((price + registrationFees).toFixed(2));
@@ -67,7 +69,8 @@ const [libraryDetails , setLibraryDetails] = useState(null)
     slot: selectedSlots,
   };
 
-  console.log("SELECT", selectedSlots);
+ 
+
   useEffect(() => {
 
     const totalPrice = selectedSlots.reduce((acc, slot) => acc + Number(slot.price), 0);
@@ -80,6 +83,7 @@ const [libraryDetails , setLibraryDetails] = useState(null)
   };
 
   const handleSelectSlot = (selectedSlot) => {
+    console.log("🚀 ~ handleSelectSlot ~ selectedSlot:", selectedSlot)
     if (selectedSlots.find((slot) => slot._id === selectedSlot._id)) {
       setSelectedSlots(
         selectedSlots.filter((slot) => slot._id !== selectedSlot._id)
@@ -102,7 +106,7 @@ const [libraryDetails , setLibraryDetails] = useState(null)
       name: libraryDetails.name,
       price: finalPrice,
     };
-    console.log("🚀 ~ updateRoomDetails ~ details:", details);
+    // console.log("🚀 ~ updateRoomDetails ~ details:", details);
     dispatch(setBookingDetails(details));
   };
   const handleData = (data: DataItem[]) => {
@@ -122,7 +126,7 @@ const [libraryDetails , setLibraryDetails] = useState(null)
     const userData = await AsyncStorage.getItem("userData");
 
     const userid = JSON.parse(userData);
-    console.log("🚀 ~ PreBook ~ userid:", userid)
+
 
     const userId = userid.data.user_id._id;
     console.log("🚀 ~ PreBook ~ userId:", userId)
@@ -133,42 +137,44 @@ const [libraryDetails , setLibraryDetails] = useState(null)
       });
 
     }
-console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
-  "-----",
-  bookingData.details.id ,
-  "-----",
-  finalPrice ,
-  "-----",
-  totalAmount ,
-  "-----",
-  BookedData.slot ,
-  "-----",
+    // console.log("🚀 ~ PreBook ~ BookedData:", userId,
+    //   "-----",
+    //   bookingData.details.id,
+    //   "-----",
+    //   finalPrice,
+    //   "-----",
+    //   totalAmount,
+    //   "-----",
+    //   BookedData.slot.length > 0,
+    //   "-----",
 
-  BookedData.room ,
-  "-----",
-  BookedData.seat ,
-  "-----",
-  BookedData.date ,
-  "-----",
-  BookedData.months)
+    //   BookedData.room,
+    //   "-----",
+    //   BookedData.seat,
+    //   "-----",
+    //   BookedData.date,
+    //   "-----",
+    //   BookedData.months)
 
     if (
       userId &&
-      bookingData.details.id &&
+
       finalPrice &&
       totalAmount &&
-      BookedData.slot.length &&
+      BookedData.slot.length > 0 &&
       BookedData.room &&
       BookedData.seat &&
       BookedData.date &&
       BookedData.months
     ) {
+
+      console.log("🚀 ~ PreBook ~ BookedData:3", bookingData);
+
       try {
-        const response = await axios.post(
-          `${BACKEND}/api/v1/booking/createBooking`,
+        const response = await axios.post(`${BACKEND}/api/v1/booking/createBooking`,
           {
             userId,
-            libraryId: bookingData.details.id,
+            libraryId: libraryDetails?._id,
             initialPrice: price,
             finalPrice,
             timeSlot: BookedData.slot,
@@ -179,11 +185,12 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
             forFriend: userDetails.friendDetails,
           }
         );
+        console.log("🚀 ~ PreBook ~ response:", response.data)
+
 
         const bookingId = response.data.Booking._id;
         setBookingId(bookingId);
 
-        console.log(response, "111");
         if (response.status === 200 || response.status === 201) {
           Toast.show("Booking Successful", {
             type: "success",
@@ -193,45 +200,14 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
         resetBookingState();
         return bookingId;
       } catch (error) {
+        console.error("Error:", error);
         handleBookingError(error);
         return null;
       }
     }
   };
 
-  const confirmBooking = async () => {
-    setBookingLoader(true);
-    await updateRoomDetails();
-  
-    const res = await PreBook();
-    setBookingLoader(false);
-  
-    if (res) {
-      setIsModalVisible(false);
-  
-      const newBookingData = {
-        bookedSeat: selectedSeat,
-        bookingDate: selectedDate,
-        bookingPeriod: selectedMonth,
-        roomNo: currentRoomNo,
-        timeSlot: selectedSlots,
-        price: finalPrice,
-      };
-  
-      const Bookdata = { ...newBookingData, libraryId: libraryDetails };
-      router.push({
-        pathname: "/library/checkout.screen",
-        params: {
-          item: JSON.stringify(Bookdata),
-        },
-      });
-    } else {
-      console.log("🚀 ~ confirmBooking ~ res", res)
-      Toast.show("Booking failed. Please try again.", {
-        type: "error",
-      });
-    }
-  };
+
   // const confirmBooking = async () => {
   //   setBookingLoader(true);
   //   await updateRoomDetails();
@@ -295,11 +271,18 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
     }
   };
 
+  const getLib = async () => {
+    const bookingData = useSelector((state: any) => state.booking);
+    return bookingData
+  }
+
+
   useEffect(() => {
     fetchRooms().then((data) => {
 
       setData(data.rooms);
       setLoading(false);
+
     });
   }, []);
 
@@ -318,7 +301,39 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
     }
     return `${from} - ${to}`
   }
+  const confirmBooking = async () => {
+    setBookingLoader(true);
+    await updateRoomDetails();
+    console.log('Attempting to prebook...');
+    const res = await PreBook();
+    setBookingLoader(false);
 
+    if (res) {
+      setIsModalVisible(false);
+
+      const newBookingData = {
+        bookedSeat: selectedSeat,
+        bookingDate: selectedDate,
+        bookingPeriod: selectedMonth,
+        roomNo: currentRoomNo,
+        timeSlot: selectedSlots,
+        price: finalPrice,
+      };
+
+      const Bookdata = { ...newBookingData, libraryId: libraryDetails };
+      router.push({
+        pathname: "/library/checkout.screen",
+        params: {
+          item: JSON.stringify(Bookdata),
+        },
+      });
+    } else {
+      console.log("🚀 ~ confirmBooking ~ res", res)
+      Toast.show("Booking failed. Please try again.", {
+        type: "error",
+      });
+    }
+  };
   return (
     <SafeAreaView
       style={{
@@ -399,12 +414,12 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
           flexWrap: "wrap", // Allows wrapping into multiple lines if needed
           justifyContent: "center",
         }}
-        // style={{
-        //   flex: 1,
+      // style={{
+      //   flex: 1,
 
-        //   marginBottom: 10,
-        //   // justifyContent: "center",
-        // }}
+      //   marginBottom: 10,
+      //   // justifyContent: "center",
+      // }}
       >
         {/* //seating arrangement */}
         {data && data[currentRoomNo - 1].seats.length !== 0 && (
@@ -595,8 +610,8 @@ console.log("🚀 ~ PreBook ~ BookedData:",   userId ,
                             >
                               <Text>
                                 {displayTimeRange(slot.from, slot.to)}
-                                </Text>
-                             
+                              </Text>
+
                             </TouchableOpacity>
                           </View>
                         );

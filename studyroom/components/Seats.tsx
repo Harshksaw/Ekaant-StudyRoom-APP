@@ -1,22 +1,51 @@
+import { DeskGreen } from "@/assets";
 import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Image, Text, ScrollView } from "react-native";
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect }) => {
+console.log("🚀 ~ Seat ~ seatData:", seatData)
+
+  
+  const isFullyBooked = seatData.timeSlots.every(slot => slot.booked);
+  const isPartiallyBooked = seatData.timeSlots.some(slot => slot.booked);
+
+  const getIcon = () => {
+    if (isFullyBooked) {
+      return <DeskGreen fill={"#e41818"}/>
+    } else if (isPartiallyBooked) {
+      return <DeskGreen />
+      
+    } else {
+      return <DeskGreen fill={"#07f07b"}/>
+
+    }
+  };
+
   return (
     <TouchableOpacity
       onPress={() => onSeatSelect(seatData)}
-      style={styles.seat(isBooked, isSelected)}
+      style={styles.seat(isFullyBooked, isSelected)}
     >
-      <Image source={require('../assets/icons/desk2.png')} style={{ width: 50, height: 50 }} />
+      {getIcon()}
+      {/* <Image source={getIcon()} style={{ width: 50, height: 50 }} /> */}
       <Text>{seatData.seatLabel}</Text>
     </TouchableOpacity>
   );
+
 };
 
 const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
   const [selectedSeat, setSelectedSeat] = useState(null);
 
+
+
   const handleSelect = (seatData) => {
+
+    // console.log(selectedSeat, "----23");
+    // const isFullyBooked = selectedSeat.timeSlots.every(slot => slot.booked);
+  // const isPartiallyBooked = selectedSeat.timeSlots.some(slot => slot.booked);
+
+
     if (selectedSeat && seatData.seatId === selectedSeat.seatId) {
       setSelectedSeat(null);
       onSeatSelect(null);

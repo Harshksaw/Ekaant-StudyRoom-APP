@@ -29,6 +29,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Toast } from "react-native-toast-notifications";
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
+import ReviewList from "@/components/Review";
 
 
 
@@ -77,9 +78,9 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     // Fetch user reviews here
     try {
       
-      console.log("🚀 ~ getUserReviews ~ data._id:", data)
+
       const res = await axios.post(`${BACKEND}/api/v1/library/getReviews/${data._id}`);
-      console.log(res.data, "---------------112--");
+
       setUserReviews(res.data);
 
 
@@ -100,7 +101,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
-  console.log(data,"-----------------")
+
 
   const librarybooking = () => {
     router.push({
@@ -108,8 +109,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
       params: { item: JSON.stringify(data), location: JSON.stringify(city) },
     });
 
-    // params: { params.item.seatLayout },
-    // });
+
   };
   const amenities = data.amenities || {};
   const trueAmenities = Object.keys(amenities).filter(key => amenities[key]);
@@ -117,14 +117,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const price = data.Price || 0;
   return (
     <SafeAreaView style={styles.container}>
-      {/* <View
-      style={{
-        marginTop: Platform.OS === "ios" ? 0 : 20,
-      }}
-      >
-
-      <Header color="black" />
-      </View> */}
+ 
       <ScrollView
         stickyHeaderIndices={[2]}
         showsVerticalScrollIndicator={false}
@@ -298,114 +291,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
             {/* //ratings */}
 
-            <View
-              style={{
-                flexDirection: "column",
-                justifyContent: "center",
-                alignContent: "center",
-              }}
-            >
-              <Text
-                style={{
-                  margin: 20,
-                  // fontFamily: "Roboto",
-                  fontSize: 20,
-                  fontStyle: "normal",
-                  fontWeight: "800",
-
-                  textAlign: "center",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                Reviews
-              </Text>
-
-              <View
-                style={{
-                  marginHorizontal: "auto",
-                  flexWrap: "wrap",
-                  backgroundColor: "#F0F0F0",
-                  elevation: 6,
-                  borderRadius: 12,
-                  flexDirection: "row",
-                  paddingHorizontal: 38,
-                  paddingVertical: 8,
-                  justifyContent: "center",
-                  alignSelf: "",
-                  gap: 10,
-                }}
-              >
-                {/* <Text>4.5</Text> */}
-                <StarRating rating={4} />
-                <Text style={{ padding: 0, fontSize: 13 }}>10 Reviews</Text>
-              </View>
-
-              {/* ///review by user */}
-
-              <View
-                style={
-                  {
-                    // height:'100%',
-                    // backgroundColor:'red'
-                  }
-                }
-              >
-                <Text style={{ fontWeight: "bold", fontSize: 20, margin: 10 }}>
-                  User Reviews
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "column",
-                    flexWrap: "wrap",
-                    // margin: 10,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {[1, 1, 1].map((item, index) => (
-                    <View
-                      key={index}
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: "auto",
-                        borderTopWidth: 2,
-
-                        padding: 10,
-                        paddingHorizontal: 40,
-                        borderColor: "#eaeaea",
-                        // backgroundColor: "#30364D",
-
-                        // alignSelf: "center",
-                        gap: 10,
-                      }}
-                    >
-                      <Avatar name="Arsh" />
-                      <View
-                        style={{
-                          flexDirection: "column",
-
-                          marginTop: 10,
-
-                          borderRadius: 20,
-                          padding: 10,
-
-                          alignSelf: "center",
-                        }}
-                      >
-                        <Text>Harsh</Text>
-                        <Text>Review revis is Good</Text>
-                      </View>
-
-                      <StarRating rating={4} />
-                    </View>
-                  ))}
-                </View>
-              </View>
-            </View>
+          <ReviewList libraryId={data._id} />
 
 
 

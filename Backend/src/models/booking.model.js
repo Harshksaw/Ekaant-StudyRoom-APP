@@ -89,6 +89,7 @@ const bookingSchema = new mongoose.Schema({
     type: Date,
     default: Date.now, // When the booking was created
   },
+
 });
 
 module.exports = {

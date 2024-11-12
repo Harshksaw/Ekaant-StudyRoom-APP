@@ -97,7 +97,11 @@ async function getUserBookings(req, res) {
 
     const { id } = req.params;
 
-    const bookings = await Booking.find({userId: id}).populate("libraryId").exec();
+    const bookings = await Booking.find({userId: id},{
+      bookingStatus:"CONFIRMED",
+
+      
+    }).populate("libraryId").exec();
 
 
     return res.status(StatusCodes.OK).json({ bookings });
