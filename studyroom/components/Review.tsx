@@ -18,6 +18,7 @@ import { Toast } from "react-native-toast-notifications";
 import { Image } from "expo-image";
 
 
+
 interface Review {
     id: string;
     content: string;
@@ -86,6 +87,8 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
     const [rating, setRating] = useState<number>(0);
     const [reviewMessage, setReviewMessage] = useState<string>("");
 
+    const [avgRating , setAvgRating] = useState<number>(0);
+
     const handleRating = (rating: number) => {
         setRating(rating);
     };
@@ -101,6 +104,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
                 console.log("🚀 ~ fetchReviews ~ response.data:", response.data);
 
                 setReviews(response.data.data);
+                setAvgRating(response.data.avgRating);
                 setLoading(false);
             } catch (err) {
                 console.log("Error", err.message);
@@ -205,24 +209,19 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
                 }}
             >
                 {/* <Text>4.5</Text> */}
-                <StarRating rating={0} />
-                <Text style={{ padding: 0, fontSize: 13 }}>0 Reviews</Text>
+                <StarRating rating={avgRating.toFixed(0) || 0} />
+                <Text style={{ padding: 0, fontSize: 13 }}>{avgRating} </Text>
             </View>
             <Text style={styles.header}>User Reviews</Text>
-            <ScrollView style={styles.reviewContainer}>
+            <ScrollView style={styles.reviewContainer}
+            horizontal={true}
+            scrollEnabled={true} 
+            
+            showsHorizontalScrollIndicator={false}>
                 {reviews.length > 0 ? (
                     reviews.map((review) => (
                         <View style={styles.review} key={review.id}>
-
-                            <Image source={review.user.image}
-                                style={{
-                                    width: 50,
-                                    height: 50,
-                                    borderRadius: 50,
-                                    resizeMode: "cover",
-                                }}
-                            
-                            />
+                            <Image source={review.user.image} style={styles.reviewImage} />
                             <View style={styles.reviewContent}>
                                 <StarRating rating={review.stars} />
                                 <Text>{review.review}</Text>
@@ -231,17 +230,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
                         </View>
                     ))
                 ) : (
-                    <Text
-                        style={{
-                            color: "red",
-                            fontSize: 20,
-                            textAlign: "center",
-
-                            margin: 20,
-                        }}
-                    >
-                        No reviews available
-                    </Text>
+                    <Text style={styles.noReviewsText}>No reviews available</Text>
                 )}
             </ScrollView>
 
@@ -283,24 +272,24 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     reviewContainer: {
-        minHeight: 100,
-
-        flexDirection: "column",
-        // flexWrap: 'wrap',
-        // alignItems: "center",
-        // justifyContent: "center",
+        maxHeight: 300, // Limit the height here to make it scrollable
         backgroundColor: "#F0F0F0",
     },
     review: {
         flexDirection: "row",
         justifyContent: "flex-start",
         alignItems: "center",
-        width: "auto",
         borderTopWidth: 2,
         padding: 10,
         paddingHorizontal: 40,
         borderColor: "#eaeaea",
         gap: 10,
+    },
+    reviewImage: {
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        resizeMode: "cover",
     },
     reviewContent: {
         flexDirection: "column",
@@ -308,7 +297,32 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 20,
         padding: 10,
-        alignSelf: "center",
+    },
+    noReviewsText: {
+        color: "red",
+        fontSize: 20,
+        textAlign: "center",
+        margin: 20,
+    },
+    inputContainer: {
+        flexDirection: "column",
+        justifyContent: "center",
+        alignContent: "center",
+        paddingHorizontal: 20,
+    },
+    input: {
+        borderWidth: 2,
+        borderColor: "#eaeaea",
+        borderRadius: 20,
+        padding: 10,
+        textAlign: "center",
+        margin: 10,
+    },
+    errorText: {
+        color: "red",
+        fontSize: 20,
+        textAlign: "center",
+        margin: 20,
     },
 });
 
