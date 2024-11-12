@@ -13,9 +13,11 @@ const librarySchema = new mongoose.Schema({
   images: [{ type: String }],
   location: [],
   address: {},
+
   commingSoonMessage: { type: String, default: false },
   rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Room" }],
   coords:{type: String, required: false},
+  avgRating : {type: Number, default: 0}, 
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
   deleted: { type: Boolean, default: false },
   amenities: {

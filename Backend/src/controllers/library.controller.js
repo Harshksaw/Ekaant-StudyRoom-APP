@@ -11,7 +11,7 @@ const { Library } = require("../models/library.model");
 const { Room } = require("../models/room.model");
 const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
-const { get } = require("mongoose");
+const { get, default: mongoose } = require("mongoose");
 const App = require("../models/app.model");
 
 
@@ -639,10 +639,33 @@ const createReview = async (req, res) => {
 
     console.log(req.body, "req.body");
 
-    const newReview = new Review({ user, review, stars });
-    await newReview.save();
+    const ifUser = await Review.findOne({
+      user
+    })
+    console.log("🚀 ~ createReview ~ ifUser:", ifUser)
+    // if(ifUser){
+    //    res.status(400).json({ message: 'You have already reviewed this library' });
+    // }
 
-    await Library.findByIdAndUpdate(libraryId, { $push: { reviews: newReview._id } });
+    const newReview = new Review({ user, review, stars, library: libraryId });
+    await newReview.save();
+    const reviews = await Review.find({ library: libraryId });
+
+    // Calculate the average rating manually
+    let totalStars = 0;
+    reviews.forEach(review => {
+      totalStars += review.stars;
+    });
+
+    const avgRating = reviews.length > 0 ? totalStars / reviews.length : 0;
+    console.log("🚀 ~ avgRating:", avgRating);
+
+   
+
+    await Library.findByIdAndUpdate(libraryId, {
+      $push: { reviews: newReview._id },
+      $set: { avgRating: avgRating }
+    });
 
     res.status(201).json(newReview);
   } catch (error) {
@@ -667,7 +690,7 @@ const getReviews = async (req, res) => {
       return res.status(404).json({ message: 'Library not found' });
     }
 
-    res.status(200).json({data : library.reviews});
+    res.status(200).json({data : library.reviews, avgRating: library.avgRating});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
