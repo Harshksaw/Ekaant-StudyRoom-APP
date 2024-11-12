@@ -637,6 +637,8 @@ const createReview = async (req, res) => {
     const { libraryId } = req.params;
     const { user, review, stars } = req.body;
 
+    console.log(req.body, "req.body");
+
     const newReview = new Review({ user, review, stars });
     await newReview.save();
 
@@ -644,6 +646,7 @@ const createReview = async (req, res) => {
 
     res.status(201).json(newReview);
   } catch (error) {
+    console.log(error.message)
     res.status(500).json({ message: error.message });
   }
 };
@@ -653,7 +656,7 @@ const getReviews = async (req, res) => {
   try {
     const { libraryId } = req.params;
 
-    const library = await Library.findById(libraryId).populate('reviews');
+    const library = await Library.findById(libraryId).populate('reviews').populate('user')
     if (!library) {
       return res.status(404).json({ message: 'Library not found' });
     }
