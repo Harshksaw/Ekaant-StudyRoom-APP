@@ -12,9 +12,54 @@ import { useEffect } from "react";
 import { useAssets } from "expo-asset";
 import Button from "@/components/Button";
 import { Image, ImageBackground } from "expo-image";
+import AppLoading from 'expo-app-loading';
+import {
+  useFonts,
+  Poppins_100Thin,
+  Poppins_100Thin_Italic,
+  Poppins_200ExtraLight,
+  Poppins_200ExtraLight_Italic,
+  Poppins_300Light,
+  Poppins_300Light_Italic,
+  Poppins_400Regular,
+  Poppins_400Regular_Italic,
+  Poppins_500Medium,
+  Poppins_500Medium_Italic,
+  Poppins_600SemiBold,
+  Poppins_600SemiBold_Italic,
+  Poppins_700Bold,
+  Poppins_700Bold_Italic,
+  Poppins_800ExtraBold,
+  Poppins_800ExtraBold_Italic,
+  Poppins_900Black,
+  Poppins_900Black_Italic,
+} from '@expo-google-fonts/poppins';
 
 export default function Home() {
   const navigation = useNavigation();
+  let [fontsLoaded] = useFonts({
+    Poppins_100Thin,
+    Poppins_100Thin_Italic,
+    Poppins_200ExtraLight,
+    Poppins_200ExtraLight_Italic,
+    Poppins_300Light,
+    Poppins_300Light_Italic,
+    Poppins_400Regular,
+    Poppins_400Regular_Italic,
+    Poppins_500Medium,
+    Poppins_500Medium_Italic,
+    Poppins_600SemiBold,
+    Poppins_600SemiBold_Italic,
+    Poppins_700Bold,
+    Poppins_700Bold_Italic,
+    Poppins_800ExtraBold,
+    Poppins_800ExtraBold_Italic,
+    Poppins_900Black,
+    Poppins_900Black_Italic,
+  });
+
+
+
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -23,12 +68,20 @@ export default function Home() {
     require("../../assets/images/EKAANT.png"),
     require("../../assets/images/EkaantWelcom.png"),
   ]);
+  if (!fontsLoaded) {
+    return <AppLoading />;}
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.view1}>
         <Text style={styles.text}>
           Study Anywhere & Anytime{" "}
-          <Text style={{ fontWeight: "bold", color: "#0077B6" }}>
+          <Text style={{ color: "#0077B6"
+
+,
+fontFamily: 'Poppins_100Regular',
+
+
+           }}>
             Book Your Seat
           </Text>{" "}
           Now
@@ -134,7 +187,8 @@ const styles = StyleSheet.create({
     color: "#000000",
 
     fontSize: 26,
-    fontWeight: "700",
+    fontFamily: 'Poppins_100Regular',
+    // fontWeight: "700",
 marginTop: 25,
     lineHeight: 37,
     textAlign: "center",
@@ -142,6 +196,7 @@ marginTop: 25,
   text2: {
     fontSize: 20,
     lineHeight: 24,
+    fontFamily: 'Poppins_100Regular',
     fontWeight: "400",
     textAlign: "center",
     marginTop: 20,
