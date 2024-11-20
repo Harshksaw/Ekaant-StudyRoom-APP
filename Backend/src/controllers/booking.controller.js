@@ -180,9 +180,10 @@ async function ConfrimBooking(req, res) {
           },
           { new: true } // Return the updated document
         );
-        if (!updatedBooking) {
-          throw new Error('Booking not found');
-        }
+        console.log("🚀 ~ ConfrimBooking ~ updatedBooking:", updatedBooking)
+        // if (!updatedBooking) {
+        //   throw new Error('Booking not found');
+        // }
         return  res.status(200).json({
           updatedBooking});
 
