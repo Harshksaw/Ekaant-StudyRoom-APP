@@ -55,7 +55,7 @@ const CheckoutScreen: React.FC = () => {
 
   console.log(BookedData, "Booked Data");
 
-  console.log(libraryId, "Library Id");
+
 
   const bookingid = BookedData._id;
 
@@ -184,7 +184,13 @@ const CheckoutScreen: React.FC = () => {
         duration: 4000,
       });
 
+      const res = await confirmPayment();
+      console.log("Payment Confirmation", res);
+
       router.push('/(tabs)/bookings')
+
+
+     
     } catch (error) {
       Toast.show("Payment Failed", {
         dangerColor: "red",
@@ -203,8 +209,10 @@ const CheckoutScreen: React.FC = () => {
     }
     try {
       console.log("Payment Data is 186");
+
+      
       const res = await axios.post(
-        `${BACKEND}/api/v1/booking//confirm/${bookingId}`,
+        `${BACKEND}/api/v1/booking/confirm/${bookingId}`,
         {
           bookingId: bookingId,
           paymentId: paymentId,
@@ -222,23 +230,25 @@ const CheckoutScreen: React.FC = () => {
 
   const PaymentScreen = async () => {
     await handlePayment();
-    // console.log("Payment Screen");
+    console.log("Payment Screen11");
 
-    if (isPaymentComplete) {
-      // console.log("Payment Status", paymentStatus);
-      // console.log("Payment Data", paymentData);
-      // console.log("PaymentId", paymentId);
-      // console.log("Payment is complete");
+    // if (isPaymentComplete) {
+    //   // console.log("Payment Status", paymentStatus);
+    //   // console.log("Payment Data", paymentData);
+    //   // console.log("PaymentId", paymentId);
+    //   // console.log("Payment is complete");
 
-      const res = await confirmPayment();
-      console.log("Payment Confirmation", res);
-      if (res) {
-        setinvoiceComplete(true);
-        console.log("Payment Confirmed");
-      } else {
-        console.log("Payment Failed");
-      }
-    }
+    //   const res = await confirmPayment();
+    //   console.log("Payment Confirmation", res);
+
+    //   router.push('/(tabs)/bookings')
+    //   if (res) {
+    //     setinvoiceComplete(true);
+    //     console.log("Payment Confirmed");
+    //   } else {
+    //     console.log("Payment Failed");
+    //   }
+    // }
   };
   function formatSeatLabel(seatLabel) {
     const [row, column] = seatLabel.split('-');

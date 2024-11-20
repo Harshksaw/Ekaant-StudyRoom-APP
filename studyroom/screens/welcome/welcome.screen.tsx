@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import { useAssets } from "expo-asset";
 import Button from "@/components/Button";
 import { Image, ImageBackground } from "expo-image";
-import AppLoading from 'expo-app-loading';
+
 import {
   useFonts,
   Poppins_100Thin,
@@ -68,8 +68,7 @@ export default function Home() {
     require("../../assets/images/EKAANT.png"),
     require("../../assets/images/EkaantWelcom.png"),
   ]);
-  if (!fontsLoaded) {
-    return <AppLoading />;}
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.view1}>

@@ -156,7 +156,7 @@ async function ConfrimBooking(req, res) {
       paymentId,
       paymentData,
       paymentStatus } = req.body;
-      console.log(req.body,"ConfrimBooking")
+      // console.log(req.body,"ConfrimBooking")
 
     const transactionDetailsData = {
       bookingId,
