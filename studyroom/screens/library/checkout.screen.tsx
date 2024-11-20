@@ -230,28 +230,28 @@ const CheckoutScreen: React.FC = () => {
     }
   };
 
-  const PaymentScreen = async () => {
-    await handlePayment();
-    console.log("Payment Screen11");
+  // const PaymentScreen = async () => {
+  //   await handlePayment();
+  //   console.log("Payment Screen11");
 
-    // if (isPaymentComplete) {
-    //   // console.log("Payment Status", paymentStatus);
-    //   // console.log("Payment Data", paymentData);
-    //   // console.log("PaymentId", paymentId);
-    //   // console.log("Payment is complete");
+  //   // if (isPaymentComplete) {
+  //   //   // console.log("Payment Status", paymentStatus);
+  //   //   // console.log("Payment Data", paymentData);
+  //   //   // console.log("PaymentId", paymentId);
+  //   //   // console.log("Payment is complete");
 
-    //   const res = await confirmPayment();
-    //   console.log("Payment Confirmation", res);
+  //   //   const res = await confirmPayment();
+  //   //   console.log("Payment Confirmation", res);
 
-    //   router.push('/(tabs)/bookings')
-    //   if (res) {
-    //     setinvoiceComplete(true);
-    //     console.log("Payment Confirmed");
-    //   } else {
-    //     console.log("Payment Failed");
-    //   }
-    // }
-  };
+  //   //   router.push('/(tabs)/bookings')
+  //   //   if (res) {
+  //   //     setinvoiceComplete(true);
+  //   //     console.log("Payment Confirmed");
+  //   //   } else {
+  //   //     console.log("Payment Failed");
+  //   //   }
+  //   // }
+  // };
   function formatSeatLabel(seatLabel) {
     const [row, column] = seatLabel.split('-');
     return `Row ${row}, Col ${column}`;
@@ -456,7 +456,7 @@ const CheckoutScreen: React.FC = () => {
 
       {/* Summary */}
 
-      <TouchableOpacity onPress={PaymentScreen}>
+      <TouchableOpacity onPress={handlePayment}>
         <View
           style={{
             flexDirection: "row",

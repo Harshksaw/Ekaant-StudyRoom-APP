@@ -155,8 +155,8 @@ async function ConfrimBooking(req, res) {
     const {  bookingId,
       paymentId,
       paymentData,
-      paymentStatus } = req.body;
-      // console.log(req.body,"ConfrimBooking")
+      } = req.body;
+
 
     const transactionDetailsData = {
       bookingId,
@@ -165,6 +165,7 @@ async function ConfrimBooking(req, res) {
 
 
     }
+    console.log("🚀 ~ ConfrimBooking ~ transactionDetailsData:", transactionDetailsData)
 
 
 
@@ -178,7 +179,7 @@ async function ConfrimBooking(req, res) {
               bookingStatus: "CONFIRMED"
             }
           },
-          { new: true } // Return the updated document
+          { new: true } 
         );
         console.log("🚀 ~ ConfrimBooking ~ updatedBooking:", updatedBooking)
         // if (!updatedBooking) {
