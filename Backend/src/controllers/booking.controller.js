@@ -183,7 +183,8 @@ async function ConfrimBooking(req, res) {
         if (!updatedBooking) {
           throw new Error('Booking not found');
         }
-        return updatedBooking
+        return  res.status(200).json({
+          updatedBooking});
       }
         
     
