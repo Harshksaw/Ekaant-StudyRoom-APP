@@ -25,7 +25,7 @@ import { BACKEND } from "@/utils/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "react-native-toast-notifications";
 import RazorpayCheckout from "react-native-razorpay";
-import { set, sub } from "react-native-reanimated";
+
 import getLocationName from "@/utils/location";
 
 const CheckoutScreen: React.FC = () => {
@@ -43,7 +43,7 @@ const CheckoutScreen: React.FC = () => {
   const params = useRoute();
 
   const BookedData = JSON.parse(params.params.item);
-  console.log("🚀 ~ BookedData:", BookedData)
+  console.log("🚀 ~ BookedData2:", BookedData)
 
   if (!BookedData) {
     return (
@@ -57,7 +57,7 @@ const CheckoutScreen: React.FC = () => {
 
 
 
-  const bookingid = BookedData.bookedSeat._id;
+  const bookingid = BookedData.bookingId;
 
   // const BookingDate = BookedData?.bookingDate
   const BookingMonths = BookedData?.bookingPeriod;

@@ -129,7 +129,7 @@ const BookingScreen: React.FC = () => {
 
 
     const userId = userid.data.user_id._id;
-    console.log("🚀 ~ PreBook ~ userId:", userId)
+    // console.log("🚀 ~ PreBook ~ userId:", userId)
 
     if (!userId) {
       Toast.show("Error is App , Relogin", {
@@ -137,24 +137,7 @@ const BookingScreen: React.FC = () => {
       });
 
     }
-    // console.log("🚀 ~ PreBook ~ BookedData:", userId,
-    //   "-----",
-    //   bookingData.details.id,
-    //   "-----",
-    //   finalPrice,
-    //   "-----",
-    //   totalAmount,
-    //   "-----",
-    //   BookedData.slot.length > 0,
-    //   "-----",
 
-    //   BookedData.room,
-    //   "-----",
-    //   BookedData.seat,
-    //   "-----",
-    //   BookedData.date,
-    //   "-----",
-    //   BookedData.months)
 
     if (
       userId &&
@@ -320,7 +303,8 @@ const BookingScreen: React.FC = () => {
         price: finalPrice,
       };
 
-      const Bookdata = { ...newBookingData, libraryId: libraryDetails };
+      const Bookdata = { ...newBookingData, libraryId: libraryDetails , bookingId:bookingId};
+      console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
       router.push({
         pathname: "/library/checkout.screen",
         params: {
