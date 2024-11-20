@@ -1,105 +1,177 @@
+import { AC, Cash, CheckoutScreenLoc, Note, SeatsCheckout } from "@/assets";
+
+import { getDateAfterMonths } from "@/utils/date";
+import { Ionicons } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
+
+
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   SafeAreaView,
   StyleSheet,
+  Touchable,
   TouchableOpacity,
   ActivityIndicator,
   Image,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
-import { useSelector } from "react-redux";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import RazorpayCheckout from "react-native-razorpay";
-import { Toast } from "react-native-toast-notifications";
+import { useDispatch, useSelector } from "react-redux";
 
+import axios from "axios";
 import { BACKEND } from "@/utils/config";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Toast } from "react-native-toast-notifications";
+import RazorpayCheckout from "react-native-razorpay";
+import { set, sub } from "react-native-reanimated";
 import getLocationName from "@/utils/location";
-import { getDateAfterMonths } from "@/utils/date";
-import { AC, Cash, CheckoutScreenLoc, Note, SeatsCheckout } from "@/assets";
-import { router } from "expo-router";
 
 const CheckoutScreen: React.FC = () => {
   const route = useRoute();
-  const userDetails = useSelector((state: any) => state.user);
 
+  const userDetails = useSelector((state: any) => state.user);
   const [bookingId, setBookingId] = useState(null);
   const [userData, setUserData] = useState(null);
   const [libraryData, setLibraryData] = useState(null);
   const [location, setLocation] = useState(null);
-  const [loading, setLoading] = useState(false);
 
+  // console.log(userDetails, "-----------------")
+  //getting data  from booking screen
+  const [libraryId, setLibraryId] = useState(null);
+  const params = useRoute();
+
+  const BookedData = JSON.parse(params.params.item);
+  console.log("🚀 ~ BookedData:", BookedData)
+
+  if (!BookedData) {
+    return (
+      <View>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  console.log(BookedData, "Booked Data");
+
+
+
+  const bookingid = BookedData._id;
+
+  // const BookingDate = BookedData?.bookingDate
+  const BookingMonths = BookedData?.bookingPeriod;
+  const BookingSeat = BookedData?.bookedSeat;
+  const BookingSlot = BookedData?.timeSlot;
+  const RoomNo = BookedData?.roomNo;
+  const BookedDate = BookedData?.bookingDate.slice(0, 10);
   const [modalVisible, setModalVisible] = useState(false);
   const [initialPrice, setInitialPrice] = useState(0);
-  const [registrationFees, setRegistrationFees] = useState(1000);
+  const [RegistrationFees, setRegistrationFees] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
 
   const [paymentStatus, setPaymentStatus] = useState(false);
-  const [paymentData, setPaymentData] = useState(null);
-  const [paymentId, setPaymentId] = useState(null);
+  const [paymentData, setPaymentData] = useState(null); // Payment data
+  const [paymentId, setPaymentId] = useState(null); // Payment data
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
-  const [isInvoiceComplete, setIsInvoiceComplete] = useState(false);
-
-  // Booking data from route
-  const params = route.params;
-  const BookedData = JSON.parse(params?.item || "{}");
-  const bookingid = BookedData?._id;
-
+  const [isinvoiceComplete, setinvoiceComplete] = useState(false);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    if (BookedData) {
-      setBookingId(bookingid);
-      fetchLibraryData();
-    }
-  }, [BookedData]);
 
-  const fetchLibraryData = async () => {
-    try {
+    setBookingId(bookingid);
+    const getLibraryData = async () => {
       const loc = await getLocationName(
         BookedData?.libraryId?.location[0],
         BookedData?.libraryId?.location[1]
       );
       setLocation(loc);
+      try {
+        const userDataId = await AsyncStorage.getItem("userData");
+        const userid = JSON.parse(userDataId);
+        console.log("🚀 ~ getLibraryData ~ userid:", userid)
+        setUserData(userid);
 
-      const userDataId = await AsyncStorage.getItem("userData");
-      const userid = JSON.parse(userDataId);
-      setUserData(userid);
+        const res = await axios.post(
+          `${BACKEND}/api/v1/library/getLibraryById`,
+          {
+            id: BookedData?.libraryId?._id,
+          }
+        );
+        setLibraryData(res.data);
 
-      const res = await axios.post(`${BACKEND}/api/v1/library/getLibraryById`, {
-        id: BookedData?.libraryId?._id,
-      });
-      setLibraryData(res.data);
+        return res.data.library;
+      } catch (error) {
+        console.log(error);
 
-      setFinalAmount(initialPrice + registrationFees);
-    } catch (error) {
-      console.error(error);
-      Toast.show("Error fetching library details. Try again.", {
-        dangerColor: "red",
-        duration: 2000,
+        Toast.show("Error in fetching library details, Try again", {
+          dangerColor: "red",
+          duration: 2000,
+          icon: <Ionicons name="alert-circle" size={24} color="red" />,
+        });
+
+        // router.back();
+      }
+    };
+    getLibraryData();
+  }, []);
+
+
+  const endDate = getDateAfterMonths(BookedDate, BookingMonths);
+
+
+  // const location = getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
+  const getFinalPrice = async () => {
+    const price = BookedData?.price || BookedData?.initialPrice;
+    console.log(price, "Price++++");
+    setInitialPrice(price);
+
+    //registion fee from libary only
+    const RegistrationFees =
+      (await AsyncStorage.getItem("RegistrationFee")) || 1000;
+    setRegistrationFees(RegistrationFees);
+    const finalAmount = price + parseInt(RegistrationFees);
+    setFinalAmount(finalAmount);
+  };
+  useEffect(() => {
+
+    getFinalPrice();
+  }, []);
+  const PaymentPrice = finalAmount;
+
+  useEffect(() => {
+    // InvoiceScreen();
+    if (isinvoiceComplete) {
+      router.push({
+        pathname: "/library/invoice.screen",
+        params: {
+          price: JSON.stringify(PaymentPrice),
+          paymentData: JSON.stringify(paymentData),
+          paymentId: JSON.stringify(paymentId),
+          bookingId: JSON.stringify(bookingId),
+        },
       });
     }
-  };
+  }, [isPaymentComplete]);
 
-  const endDate = getDateAfterMonths(BookedData?.bookingDate, BookedData?.bookingPeriod);
+
 
   const handlePayment = async () => {
-    setLoading(true);
-    const options = {
+    var options = {
       description: "Room Booking",
-      image: "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png",
+      image:
+        "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png", //logo
+
       currency: "INR",
       key: "rzp_test_hi1B6uwenBy9Ir",
-      amount: `${finalAmount * 100}`,
+      amount: `${PaymentPrice * 100}`,
       name: "Ekaant",
+      order_id: "",
       prefill: {
-        email: userData?.data?.user_id?.email,
-        contact: userData?.data?.user_id?.phoneNumber,
-        name: userData?.data?.user_id?.username,
+        email: `${userData.data.user_id.email}`,
+        contact: `${userData.data.user_id.phoneNumber}`,
+        name: `${userData.data.user_id.username}`,
       },
     };
-
     try {
       const data = await RazorpayCheckout.open(options);
       setPaymentStatus(true);
@@ -112,7 +184,13 @@ const CheckoutScreen: React.FC = () => {
         duration: 4000,
       });
 
+      const res = await confirmPayment();
+      console.log("Payment Confirmation", res);
+
       router.push('/(tabs)/bookings')
+
+
+     
     } catch (error) {
       Toast.show("Payment Failed", {
         dangerColor: "red",
@@ -123,30 +201,72 @@ const CheckoutScreen: React.FC = () => {
       setLoading(false);
     }
   };
+  // console.log(userData, "User Data", BookedData?.libraryId);
 
   const confirmPayment = async () => {
     if (!bookingId) {
       Toast.show("Booking ID is missing");
-      return;
     }
     try {
-      await axios.post(`${BACKEND}/api/v1/booking/confirm/${bookingId}`, {
-        bookingId,
-        paymentId,
-        paymentData,
-        paymentStatus,
-      });
-      setIsInvoiceComplete(true);
+      console.log("Payment Data is 186");
+
+      
+      const res = await axios.post(
+        `${BACKEND}/api/v1/booking/confirm/${bookingId}`,
+        {
+          bookingId: bookingId,
+          paymentId: paymentId,
+          paymentData: paymentData,
+          paymentStatus: paymentStatus,
+        }
+      );
+      console.log(res.data, "Payment Confirmed 196");
+      return true;
     } catch (error) {
-      console.error(error);
+      console.log(error);
+      return false;
     }
   };
 
-  useEffect(() => {
-    if (isPaymentComplete) {
-      confirmPayment();
-    }
-  }, [isPaymentComplete]);
+  const PaymentScreen = async () => {
+    await handlePayment();
+    console.log("Payment Screen11");
+
+    // if (isPaymentComplete) {
+    //   // console.log("Payment Status", paymentStatus);
+    //   // console.log("Payment Data", paymentData);
+    //   // console.log("PaymentId", paymentId);
+    //   // console.log("Payment is complete");
+
+    //   const res = await confirmPayment();
+    //   console.log("Payment Confirmation", res);
+
+    //   router.push('/(tabs)/bookings')
+    //   if (res) {
+    //     setinvoiceComplete(true);
+    //     console.log("Payment Confirmed");
+    //   } else {
+    //     console.log("Payment Failed");
+    //   }
+    // }
+  };
+  function formatSeatLabel(seatLabel) {
+    const [row, column] = seatLabel.split('-');
+    return `Row ${row}, Col ${column}`;
+  }
+  function formatTimeSlots(timeSlots) {
+    return timeSlots.map(slot => {
+      const { from, to } = slot;
+
+      const formatTime = (time) => {
+        const [hour, minute] = time.split(':');
+
+        return `${hour % 12 || 12} ${minute.slice(2,)} `;
+      };
+
+      return `${formatTime(from)} - ${formatTime(to)}`;
+    }).join(', ');
+  }
 
   if (!BookedData || loading) {
     return (
@@ -155,44 +275,206 @@ const CheckoutScreen: React.FC = () => {
       </View>
     );
   }
-
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Library and Booking Details */}
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+        justifyContent: "space-between",
+        // alignItems: "center",
+
+        marginTop: 20,
+        paddingTop: 50,
+      }}
+    >
       <View>
-        <View style={styles.libraryInfoContainer}>
-          <Image source={{ uri: BookedData?.libraryId?.images[0] }} style={styles.libraryImage} />
-          <View style={styles.libraryDetails}>
-            <Text>{userDetails.bookingsForFriend ? "Booking for Friend" : "Booking for Self"}</Text>
-            <Text style={styles.libraryName}>{BookedData?.libraryId?.name || "Library Name"}</Text>
-            <Text>Period - {BookedData.bookingPeriod} Month(s)</Text>
-            <Text>A/C Rooms - {BookedData?.libraryId[0]?.Ac ? "Yes" : "No"}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            marginHorizontal: 20,
+            justifyContent: "flex-start",
+            gap: 20,
+            alignItems: "center",
+          }}
+        >
+          <View style={{}}>
+            <Image
+              source={{ uri: BookedData?.libraryId?.images[0] }}
+              style={{
+                width: 140,
+                height: 200,
+                borderRadius: 10,
+              }}
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              // height: 100,
+              gap: 10,
+            }}
+          >
+            <View
+              style={{
+                width: 150,
+                height: 50,
+                borderRadius: 20,
+                backgroundColor: "rgb(148, 230, 200)", // Example background color
+                justifyContent: "center",
+                alignItems: "center",
+                marginRight: 10,
+              }}
+            >
+              {userDetails.bookingsForFriend ? (
+                <View style={{ flexDirection: "column", alignItems: "center" }}>
+                  <Text>Booking for friend</Text>
+                  <Text>{userDetails?.friendDetails?.name}</Text>
+                </View>
+              ) : (
+                <Text>Booking for SELF</Text>
+              )}
+            </View>
+
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              {BookedData?.libraryId?.name || "Library Name"}
+            </Text>
+
+            <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+              <Ionicons name="time-outline" size={24} color="black" />
+              <Text>Period - {BookedData.bookingPeriod} Month{BookedData.bookingPeriod > 1 ? 's' : ''}</Text>
+            </View>
+
+
+            <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+              <Text>A/C Rooms - {BookedData?.libraryId[0]?.Ac ? "Yes" : "No"}</Text>
+            </View>
           </View>
         </View>
 
-        <View style={styles.dateContainer}>
-          <Ionicons name="calendar-outline" size={50} color="black" />
-          <Text>{BookedData?.bookingDate.slice(0, 10)} - {endDate.toISOString().split("T")[0]}</Text>
-          <SeatsCheckout />
-          <Text>{BookedData?.bookedSeat?.seatLabel}</Text>
-        </View>
+        {/* Image and Side Details */}
+        <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 20, alignItems: "center", gap: 40 }}>
+          <View style={{ flexDirection: "row", gap: 10, alignItems: "center", width: 150 }}>
+            <Ionicons name="calendar-outline" size={50} color="black" />
+            <View style={{ flexDirection: "column", gap: 10 }}>
+              <Text style={{ fontSize: 15, fontWeight: "500" }}>{BookedDate} -</Text>
+              <Text style={{ fontSize: 15, fontWeight: "500" }}>{endDate.toISOString().split("T")[0]}</Text>
+            </View>
+          </View>
+          <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+            < SeatsCheckout />
+            <Text style={{
+              fontSize: 15,
+              fontWeight: "300",
+              color: "black",
+              // textTransform: "uppercase",
 
-        <View style={styles.paymentSummaryContainer}>
-          <Text>Registration Fee - ₹{registrationFees}</Text>
-          <Text>Sub Total - ₹{initialPrice}</Text>
-          <Text>Total Amount: ₹{finalAmount}</Text>
-        </View>
+              flexDirection: "column",
+              flexWrap: "wrap"
 
-        <View style={styles.locationContainer}>
-          <CheckoutScreenLoc />
-          <Text>{location}</Text>
-        </View>
 
-        <TouchableOpacity onPress={handlePayment} style={styles.paymentButton}>
-          <Text style={styles.paymentButtonText}>Pay ₹{finalAmount}</Text>
-          <Ionicons name="arrow-forward" size={25} color="white" />
-        </TouchableOpacity>
+            }}>{formatSeatLabel(BookedData?.bookedSeat?.seatLabel)} </Text>
+          </View>
+        </View>
+        <View style={{ height: 1, backgroundColor: "black", marginHorizontal: 20, marginVertical: 10 }} />
+
+        {/* Payment Summary */}
+        <View style={{ marginHorizontal: 20, marginTop: 20, flexDirection: "column", gap: 15 }}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Text style={{ fontSize: 20, fontWeight: "400" }}>Registration Fee</Text>
+            <Text style={{ fontSize: 20, fontWeight: "400" }}>- ₹{RegistrationFees}</Text>
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Text style={{ fontSize: 20, fontWeight: "500" }}>Sub Total</Text>
+            <Text style={{ fontSize: 20, fontWeight: "500" }}>- ₹{initialPrice}</Text>
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            {BookedData?.libraryId?.[0]?.timeSlot?.map((slot, index) => (
+              <View key={index} style={{ flexDirection: "row", gap: 5 }}>
+                <Text>{slot.from || ''} - {slot.to || ''}</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* Display Location */}
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <CheckoutScreenLoc />
+            <View
+              style={{
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  gap: 10,
+                }}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "500" }}>
+                  {location?.split(" ").slice(0, 2).join(" ")}{" "}
+                </Text>
+              </View>
+              <View
+                style={{ flexDirection: "row", justifyContent: "space-between" }}
+              >
+                <Text style={{ fontSize: 15, fontWeight: "300" }}>
+                  {location?.split(" ").slice(3, 5).join(" ")}{" "}
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View style={{
+            flexDirection: "row",
+            gap: 10,
+            alignItems: "center",
+            justifyContent: "flex-start",
+            marginTop: 10,
+
+
+          }}>
+            <Note />
+            <View style={{ flexDirection: 'row', gap: 10, }}>
+          
+              <Text style={{ fontSize: 18, fontWeight: '400', maxWidth: '90%' }}>
+              <Text style={{ fontSize: 20, fontWeight: '600', maxWidth: '90%', marginHorizontal:5 }}>
+              Slot Time -
+              </Text>
+               {formatTimeSlots(BookedData?.timeSlots || BookedData.bookedSeat.timeSlots)}
+              </Text>
+            </View>
+          </View>
+
+        </View>
       </View>
+
+
+
+      {/* Summary */}
+
+      <TouchableOpacity onPress={PaymentScreen}>
+        <View
+          style={{
+            flexDirection: "row",
+            position: "absolute",
+            bottom: 25,
+            width: "90%",
+            justifyContent: "space-between",
+            marginHorizontal: 20,
+            alignItems: "center",
+            padding: 20,
+            backgroundColor: "#0077B6",
+            borderRadius: 10,
+          }}
+        >
+          <Text style={{ color: "#FFFFF5", fontSize: 18, fontWeight: "700", letterSpacing: 2 }}>
+            Total Amount: ₹{finalAmount}
+          </Text>
+          <Ionicons name="arrow-forward" size={25} color="white" />
+        </View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, Stack, useNavigation } from "expo-router";
 import { View, Text, StyleSheet, Image, SafeAreaView } from "react-native";
-import { useEffect } from "react";
+
 
 
 import { useAssets } from "expo-asset";
