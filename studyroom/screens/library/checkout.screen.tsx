@@ -57,7 +57,7 @@ const CheckoutScreen: React.FC = () => {
 
 
 
-  const bookingid = BookedData._id;
+  const bookingid = BookedData.bookedSeat._id;
 
   // const BookingDate = BookedData?.bookingDate
   const BookingMonths = BookedData?.bookingPeriod;
@@ -78,6 +78,7 @@ const CheckoutScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
 
+    console.log("🚀 ~ useEffect ~ bookingid:", bookingid)
     setBookingId(bookingid);
     const getLibraryData = async () => {
       const loc = await getLocationName(
@@ -114,6 +115,7 @@ const CheckoutScreen: React.FC = () => {
     };
     getLibraryData();
   }, []);
+
 
 
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);

@@ -183,11 +183,12 @@ async function ConfrimBooking(req, res) {
         if (!updatedBooking) {
           throw new Error('Booking not found');
         }
+        return updatedBooking
       }
         
     
 
-    return updatedBooking;
+
   } catch (error) {
     // Handle possible errors
     console.error('Error confirming booking:', error);
