@@ -166,7 +166,7 @@ async function ConfrimBooking(req, res) {
 
     }
 
-      if(paymentStatus){
+
 
         
         const updatedBooking = await Booking.findByIdAndUpdate(
@@ -185,7 +185,7 @@ async function ConfrimBooking(req, res) {
         }
         return  res.status(200).json({
           updatedBooking});
-      }
+
         
     
 
@@ -198,17 +198,7 @@ async function ConfrimBooking(req, res) {
 }
 
 
-// const generateInvoice = async (booking) => {
-//   // Create a PDF document
-//   const doc = new pdf();
-//   doc.pipe(fs.createWriteStream('invoice.pdf'));
 
-//   // Populate the PDF with invoice data
-//   doc.text(`Invoice for Booking #${booking._id}`);
-//   // Add more invoice content based on booking details
-
-//   doc.end();
-// };
 async function generateInvoice(req, res) {
   try {
     const { bookingId } = req.params;
