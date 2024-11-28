@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { Marker } from 'react-native-maps';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch, useSelector } from 'react-redux';
-import { router, useNavigation } from 'expo-router';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  TextInput,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import MapView, { Marker } from "react-native-maps";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch, useSelector } from "react-redux";
+import { router, useNavigation } from "expo-router";
 
-import axios from 'axios';
-import { BACKEND } from '@/utils/config';
-
-
-
+import axios from "axios";
+import { BACKEND } from "@/utils/config";
+import ff from "@/constants/fonts";
 
 const LocationsScreen = () => {
-
   const navigation = useNavigation();
 
   const route = useNavigation();
@@ -21,7 +26,7 @@ const LocationsScreen = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [locations, setLocations] = useState([]);
   const [filteredLocations, setFilteredLocations] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const citiesData = useSelector((state) => state.app);
 
   useEffect(() => {
@@ -31,38 +36,37 @@ const LocationsScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         // const citiesData = useSelector((state) => state.app);
 
         const res = await axios.get(`${BACKEND}/api/v1/app/getApp`);
         const citiesData = res.data.data;
-        console.log("🚀 ~ fetchData ~ res:", res.data.data.locations)
+        console.log("🚀 ~ fetchData ~ res:", res.data.data.locations);
 
         setLocations(citiesData.locations);
         setFilteredLocations(citiesData.locations);
       } catch (error) {
-        console.error('Failed to fetch data', error);
+        console.error("Failed to fetch data", error);
       }
-        console.log("🚀 ~ fetchData ~ citiesData.locations:", citiesData.locations)
+      console.log(
+        "🚀 ~ fetchData ~ citiesData.locations:",
+        citiesData.locations
+      );
     };
 
     fetchData();
   }, []);
 
   const handleLocationSelect = async (location) => {
-
-
     setSelectedLocation(location);
 
     try {
-
-      await AsyncStorage.setItem('selectedLocation', location.location);
+      await AsyncStorage.setItem("selectedLocation", location.location);
     } catch (error) {
-      console.error('Failed to save location to AsyncStorage', error);
+      console.error("Failed to save location to AsyncStorage", error);
     }
 
     // navigation.goBack();
-   router.push('/(tabs)');
+    router.push("/(tabs)");
   };
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -82,16 +86,25 @@ const LocationsScreen = () => {
         style={styles.searchBar}
         placeholder="Search locations..."
         value={searchQuery}
-
         onChangeText={(text) => setSearchQuery(text)}
       />
       <FlatList
-         data={filteredLocations}
+        data={filteredLocations}
         keyExtractor={(item) => item._id} // Ensure each item has a unique key
         numColumns={3}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.gridItem} onPress={() => handleLocationSelect(item)}>
-            <Image source={{ uri: item?.locationImage || "https://th.bing.com/th/id/OIP.m78y_Nupeq-RtHFEeNk5PwHaH5?rs=1&pid=ImgDetMain" }} style={styles.image} />
+          <TouchableOpacity
+            style={styles.gridItem}
+            onPress={() => handleLocationSelect(item)}
+          >
+            <Image
+              source={{
+                uri:
+                  item?.locationImage ||
+                  "https://th.bing.com/th/id/OIP.m78y_Nupeq-RtHFEeNk5PwHaH5?rs=1&pid=ImgDetMain",
+              }}
+              style={styles.image}
+            />
             <Text style={styles.locationItem}>{item?.location}</Text>
           </TouchableOpacity>
         )}
@@ -108,23 +121,23 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 26,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    textAlign: "center",
     marginVertical: 10,
+    fontFamily: ff.textSemiBold,
   },
   gridItem: {
     flex: 1,
     margin: 5,
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   searchBar: {
     height: 50,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     borderRadius: 8,
     marginHorizontal: 20,
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     marginBottom: 16,
   },
   image: {
@@ -135,7 +148,7 @@ const styles = StyleSheet.create({
   },
   locationItem: {
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 

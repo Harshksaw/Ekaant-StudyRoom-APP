@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { Dimensions } from "react-native";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { useAssets } from "expo-asset";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from 'expo-router';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "expo-router";
+import ff from "@/constants/fonts";
 
 const { width, height } = Dimensions.get("window");
 
@@ -26,12 +22,12 @@ const Header = ({ color }: any) => {
 
   const fetchLocation = async () => {
     try {
-      const location = await AsyncStorage.getItem('selectedLocation');
+      const location = await AsyncStorage.getItem("selectedLocation");
       if (location) {
         setSelectedLocation(location);
       }
     } catch (error) {
-      console.error('Failed to fetch location from AsyncStorage', error);
+      console.error("Failed to fetch location from AsyncStorage", error);
     }
   };
 
@@ -46,8 +42,8 @@ const Header = ({ color }: any) => {
         <View style={styles.label}>
           <Text
             style={{
-              fontSize: 16,
-              fontWeight: "500",
+              fontSize: 18,
+              fontFamily: ff.textRegular,
               lineHeight: 24,
               textAlign: "center",
               color: color,
@@ -56,7 +52,7 @@ const Header = ({ color }: any) => {
             Location
           </Text>
 
-          <Ionicons name="chevron-down-outline" size={20} color={color} />
+          <Ionicons name="chevron-down-outline" size={20} color={"#0077B6"} />
         </View>
 
         <View style={styles.selectedCity}>
@@ -66,7 +62,6 @@ const Header = ({ color }: any) => {
             assets &&
             assets[3] && (
               <Image
-
                 source={assets[3]}
                 style={{
                   width: 20,
@@ -76,7 +71,7 @@ const Header = ({ color }: any) => {
             )
           )}
           <Text style={styles.selectedCityText}>
-            {selectedLocation ? `${selectedLocation}, IN` : 'No location'}
+            {selectedLocation ? `${selectedLocation}, IN` : "No location"}
           </Text>
         </View>
       </View>
@@ -141,15 +136,14 @@ const styles = StyleSheet.create({
   },
   citySelector: {
     flex: 1,
-    marginLeft: 10,
+    marginLeft: 16,
     textAlign: "center",
   },
   label: {
     fontSize: 16,
-    marginLeft: 10,
     fontWeight: "bold",
     flexDirection: "row",
-    gap: 5,
+    gap: 10,
     alignItems: "center",
     marginTop: 5,
   },
@@ -159,7 +153,7 @@ const styles = StyleSheet.create({
   },
   selectedCityText: {
     fontSize: 16,
-    fontWeight: "semibold",
+    fontFamily: ff.deckRegular,
     marginLeft: 5,
   },
 });

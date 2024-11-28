@@ -1,6 +1,7 @@
 import { NoBookingsSVG } from "@/assets";
 import Header from "@/components/Header";
 import StarRating from "@/components/Ratinstar";
+import ff from "@/constants/fonts";
 import { fetchRoomData } from "@/hooks/api/library";
 import { BACKEND } from "@/utils/config";
 import { calculatePeriod } from "@/utils/date";
@@ -18,7 +19,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
-
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -38,12 +38,12 @@ const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
 };
 
 export default function Bookings() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
-    console.log("🚀 ~ getBookings ~ userId:", userId)
+    console.log("🚀 ~ getBookings ~ userId:", userId);
 
     if (userId) {
       // Check if userId is not null
@@ -51,12 +51,11 @@ export default function Bookings() {
         `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
       );
 
-      if(res.status === 200) {
+      if (res.status === 200) {
         Toast.show("Bookings Fetched", {
           type: "success",
           duration: 2000,
-          
-        })
+        });
       }
       console.log("userID---->", res.data.bookings);
 
@@ -75,7 +74,6 @@ export default function Bookings() {
       // setData(fetchedData.data || []);
     };
     getBookingData();
-    console.log("Data+++", data);
   }, []);
 
   const onRefresh = useCallback(() => {
@@ -84,7 +82,7 @@ export default function Bookings() {
       setRefreshing(false);
     }, 2000);
   }, []);
-console.log("---d",data)
+  console.log("---d", data);
   return (
     <SafeAreaView
       style={{
@@ -105,15 +103,18 @@ console.log("---d",data)
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "flex-start",
+          borderBottomWidth: 1.5,
+          paddingBottom: 5,
         }}
       >
         <Text
           style={{
-            margin: 20,
             fontSize: 30,
-            fontWeight: "bold",
-            marginTop: 20,
+            fontFamily: ff.displayBlack,
             color: "black",
+            textDecorationStyle: "solid",
+            marginTop: 20,
+            marginLeft: 30,
           }}
         >
           My Bookings
@@ -123,10 +124,6 @@ console.log("---d",data)
       <View
         style={{
           flex: 1,
-
-          // width: "80%",
-          // justifyContent: "center",
-          // alignItems: "center",
         }}
       >
         <ScrollView
@@ -142,7 +139,7 @@ console.log("---d",data)
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          {data && data.length == 0 && (
+          {data && data?.length == 0 && (
             <TouchableOpacity
               onPress={() => getBookings()}
               style={{

@@ -6,7 +6,7 @@ import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -17,7 +17,6 @@ import {
   ScrollView,
   Modal,
   Platform,
-
 } from "react-native";
 
 import Carousel from "react-native-reanimated-carousel";
@@ -30,10 +29,7 @@ import { Toast } from "react-native-toast-notifications";
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
 import ReviewList from "@/components/Review";
-
-
-
-
+import ff from "@/constants/fonts";
 
 interface CardDetailScreenProps {
   // Define your params here
@@ -41,31 +37,27 @@ interface CardDetailScreenProps {
 
 const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const width = Dimensions.get("window").width;
-  const [userReviews , setUserReviews] = useState([]);
+  const [userReviews, setUserReviews] = useState([]);
   const params = useRoute();
   const data = JSON.parse(params.params.item);
 
   const [city, setCity] = useState("Delhi");
 
   const seat = data.seatLayout;
-  // console.log(data, "----card.details--45", seat);
   const locationData = async () => {
     try {
       // Assuming data.location might be null or undefined, leading to issues when accessed
       if (!data.location || data.location.length < 2) {
-        console.log("Invalid location data");
         return; // Exit the function if location data is not valid
       }
 
       const res = await getLocationName(data.location[0], data.location[1]);
-      // console.log("----card.details--45", res);
 
       // Check if res is not null before setting it
       if (res !== null) {
         setCity(res);
       } else {
         // Handle null case, maybe set a default value or handle it as needed
-        console.log("Received null response from getLocationName");
       }
     } catch (error) {
       console.error("Error in locationData:", error);
@@ -77,24 +69,20 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const getUserReviews = async () => {
     // Fetch user reviews here
     try {
-      
-
-      const res = await axios.post(`${BACKEND}/api/v1/library/getReviews/${data._id}`);
+      const res = await axios.post(
+        `${BACKEND}/api/v1/library/getReviews/${data._id}`
+      );
 
       setUserReviews(res.data);
-
-
-    } catch (error ) {
-      console.log(error)
+    } catch (error) {
       Toast.show("Error fetching user reviews");
-      
     }
-  }
+  };
 
   useEffect(() => {
     locationData();
     getUserReviews();
-  }, []); 
+  }, []);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -102,56 +90,82 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     setIsModalVisible(!isModalVisible);
   };
 
-
   const librarybooking = () => {
     router.push({
       pathname: "/(routes)/library/library.booking",
       params: { item: JSON.stringify(data), location: JSON.stringify(city) },
     });
-
-
   };
   const amenities = data.amenities || {};
-  const trueAmenities = Object.keys(amenities).filter(key => amenities[key]);
+  const trueAmenities = Object.keys(amenities).filter((key) => amenities[key]);
 
   const price = data.Price || 0;
+
+  const [scrollIndex, setScrollIndex] = useState<number>(0);
+
+  const Carasoul = useMemo(() => {
+    return (
+      <>
+        <Carousel
+          loop
+          width={width}
+          height={height / 3.3}
+          autoPlay
+          pagingEnabled
+          data={data.images}
+          defaultIndex={scrollIndex}
+          scrollAnimationDuration={2000}
+          onProgressChange={(_, absoluteProgress) => {
+            if (absoluteProgress.toString()?.length < 3) {
+              setScrollIndex(Math.trunc(absoluteProgress));
+            }
+          }}
+          panGestureHandlerProps={{
+            activeOffsetX: [-10, 10],
+          }}
+          renderItem={({ item, index }) => (
+            <View style={styles.imageContainer}>
+              <Image source={{ uri: item }} style={styles.image} />
+            </View>
+          )}
+        />
+        <View
+          style={{
+            alignSelf: "center",
+            gap: 10,
+            flexDirection: "row",
+            marginBottom: 20,
+          }}
+        >
+          {data?.images?.map((_, ind) => (
+            <View
+              key={ind}
+              style={{
+                width: scrollIndex === ind ? 23 : 8.86,
+                backgroundColor:
+                  scrollIndex === ind ? "rgba(0, 119, 182, 1)" : "#6FC8E2",
+                height: 8.86,
+                borderRadius: 20,
+              }}
+            />
+          ))}
+        </View>
+      </>
+    );
+  }, [width, data.images, scrollIndex]);
   return (
     <SafeAreaView style={styles.container}>
- 
       <ScrollView
         stickyHeaderIndices={[2]}
         showsVerticalScrollIndicator={false}
         style={{}}
       >
-        <View style={{ flex: 1, marginVertical: -20 }}>
-          <Carousel
-            loop
-            width={width}
-            height={width / 1.5} // Adjusted height for better aspect ratio
-            autoPlay={true}
-            data={data.images}
-            autoFillData={true}
-
-           
-
-            scrollAnimationDuration={2000}
-            style={{
-              zIndex: 23,
-
-            }}
-            renderItem={({ item, index }) => (
-              <View style={styles.imageContainer}>
-                <Image source={{ uri: item }} style={styles.image} />
-              </View>
-            )}
-          />
-        </View>
+        <View style={{ flex: 1 }}>{Carasoul}</View>
 
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={{
             flex: 1,
-
             flexDirection: "column",
             ...(Platform.OS === "ios" ? { marginTop: -200 } : { marginTop: 0 }),
           }}
@@ -170,15 +184,12 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               <Text style={styles.heading}>{data?.name}</Text>
               <Text
                 style={{
-                  fontSize: 15,
+                  fontSize: 16,
                   color: "#0077B6",
-                  fontWeight: "500",
-                  fontStyle: "italic",
+                  fontFamily: ff.deckMedium,
                 }}
               >
-
-                ₹{price }/month
-
+                ₹{price}/month
               </Text>
             </View>
 
@@ -193,11 +204,13 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             >
               <Ionicons name="location" size={24} />
               <Text
-                numberOfLines={1}
+                numberOfLines={2}
                 style={{
                   fontSize: 14,
-                  color: "#A8A8A8",
-                  fontWeight: "semi-bold",
+                  color: "#929191",
+                  fontFamily: ff.textMedium,
+                  letterSpacing: 1,
+                  marginRight: 30,
                 }}
               >
                 {city ? city : "Delhi"}
@@ -213,18 +226,16 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 color: "#A8A8A8",
                 borderRadius: 10,
                 textAlign: "left",
-                letterSpacing: 1.5,
-      
+                letterSpacing: 1.1,
+                fontFamily: ff.deckMedium,
               }}
               numberOfLines={7}
             >
               {data?.longDescription}
             </Text>
 
-            <View style={{ marginTop: 12 }}>
-              <Text style={{ fontWeight: "700", fontSize: 17, color: "black" }}>
-                Overview
-              </Text>
+            <View style={{ marginTop: 20 }}>
+              <Text style={styles.amenities}>Overview</Text>
 
               <View
                 style={{
@@ -233,30 +244,28 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                   gap: 5,
                   rowGap: 2,
                   marginTop: 6,
-
                 }}
               >
-               {trueAmenities.length > 0 ? (
-            trueAmenities.map((amenity, index) => (
-              <View style={{
-                // backgroundColor: "#d0cdcd",
-                borderWidth: 1,
-                borderColor: "#d0cdcd",
-                borderRadius: 20,
-                padding: 5,
-                paddingHorizontal: 10,
-                margin: 5,
-              }}>
-
-
-              <Text key={index} style={styles.amenityItem}>
-                {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
-              </Text>
-              </View>
-            ))
-          ) : (
-            <Text style={styles.noAmenities}>No amenities available</Text>
-          )}
+                {trueAmenities.length > 0 ? (
+                  trueAmenities.map((amenity, index) => (
+                    <View
+                      style={{
+                        borderWidth: 1,
+                        borderColor: "#d0cdcd",
+                        borderRadius: 10,
+                        paddingVertical: 4,
+                        paddingHorizontal: 16,
+                        margin: 5,
+                      }}
+                    >
+                      <Text key={index} style={styles.amenityItem}>
+                        {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
+                      </Text>
+                    </View>
+                  ))
+                ) : (
+                  <Text style={styles.amenityItem}>No amenities available</Text>
+                )}
               </View>
             </View>
 
@@ -290,12 +299,8 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             </Modal>
 
             {/* //ratings */}
-
-          <ReviewList libraryId={data._id} />
-
-
-
           </View>
+          <ReviewList libraryId={data._id} />
 
           <View
             style={{
@@ -304,10 +309,15 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               backgroundColor: "#F0F0F0",
               padding: 10,
               borderRadius: 20,
-              marginBottom: 40,
             }}
           >
-            <Text style={{ marginVertical: 20, fontSize: 12, fontWeight: 600 }}>
+            <Text
+              style={{
+                marginVertical: 20,
+                fontSize: 14,
+                fontFamily: ff.deckMedium,
+              }}
+            >
               Copyright © 2024 EKAANT . All rights reserved.
             </Text>
           </View>
@@ -315,8 +325,8 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
       </ScrollView>
       <View
         style={{
-          position: "absolute",
-          marginBottom: 20,
+          // position: "absolute",
+          marginBottom: 10,
           bottom: 0,
           flexDirection: "row",
           justifyContent: "center",
@@ -349,14 +359,10 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
-
     alignItems: "center",
-
     padding: 10,
-
     borderRadius: 20,
     marginRight: 30,
-    // backgroundColor: "lightblue",
     justifyContent: "center",
   },
   image: {
@@ -380,14 +386,19 @@ const styles = StyleSheet.create({
     padding: 10, // Add padding for better spacing
   },
   heading: {
-    fontSize: 25,
-    fontWeight: "700",
+    fontSize: 26,
+    fontFamily: ff.deckBold,
   },
 
   amenities: {
-    fontSize: 17,
-    fontWeight: "700",
+    fontSize: 19,
+    fontFamily: ff.deckBold,
     color: "black",
+  },
+  amenityItem: {
+    fontSize: 14,
+    fontFamily: ff.deckRegular,
+    color: "#5a5959",
   },
   centeredView: {
     flex: 1,

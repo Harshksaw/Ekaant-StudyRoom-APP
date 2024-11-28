@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
+import ff from "@/constants/fonts";
 import { LinearGradient } from "expo-linear-gradient";
 import {
-
   ScrollView,
   StyleSheet,
   Text,
@@ -60,20 +60,28 @@ const sampleData = {
 interface GradientButtonProps {
   text: string;
   onPress: () => void; // Function to handle button press
+  bg1: string;
+  bg2: string;
 }
-const GradientButton: React.FC<GradientButtonProps> = ({ text, onPress }) => {
+const GradientButton: React.FC<GradientButtonProps> = ({
+  text,
+  onPress,
+  bg1,
+  bg2,
+}) => {
   // Generate random colors for the gradient
-  const colors = [
-    `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-    `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-  ];
+  // const colors = [
+  //   `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+  //   `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+  // ];
+  const colors = [bg1, bg2];
 
   return (
     <TouchableOpacity
       onPress={onPress}
       style={{
         alignSelf: "center",
-        marginHorizontal: 10,
+        marginRight: 15,
       }}
     >
       <LinearGradient
@@ -88,7 +96,6 @@ const GradientButton: React.FC<GradientButtonProps> = ({ text, onPress }) => {
   );
 };
 
-
 export default function Search() {
   return (
     <SafeAreaView
@@ -96,16 +103,10 @@ export default function Search() {
         flex: 1,
         flexDirection: "column",
 
-
-
-
-
         backgroundColor: "white",
         // backgroundColor: "lightgreen",
       }}
     >
-
-
       {/* <View
         style={{
           marginTop: 0,
@@ -114,31 +115,38 @@ export default function Search() {
 
         <Header color="black" />
       </View> */}
-      <View style={{
-        marginTop: 10,
-        flex: 1,
-        flexDirection: "column",
-        backgroundColor: "white",
-      }}>
-
-
+      <View
+        style={{
+          marginTop: 10,
+          flex: 1,
+          flexDirection: "column",
+          backgroundColor: "white",
+        }}
+      >
         <View>
           <ScrollView
             horizontal={true}
+            showsHorizontalScrollIndicator={false}
             style={styles.scrollViewStyle}
             contentContainerStyle={styles.scrollViewContent}
           >
             {/* Place your horizontally scrollable content here */}
 
             <GradientButton
+              bg1="#0077B6"
+              bg2="#00BFFF"
               text="Jobs"
               onPress={() => console.log("Search Jobs")}
             />
             <GradientButton
+              bg1="#0077B6"
+              bg2="#32CD32"
               text="Admit Cards"
               onPress={() => console.log("Search Jobs")}
             />
             <GradientButton
+              bg1="#0077B6"
+              bg2="#FFD700"
               text="Latest"
               onPress={() => console.log("Search Jobs")}
             />
@@ -158,60 +166,74 @@ export default function Search() {
         >
           <Text
             style={{
-
               fontSize: 30,
-              fontWeight: "semibold",
-              marginTop: 20,
+              fontFamily: ff.displayBlack,
+              marginVertical: 20,
               color: "black",
-
             }}
-          >Latest Jobs</Text>
+          >
+            Latest Jobs
+          </Text>
 
           <View
             style={{
               flexDirection: "column",
               gap: 20,
-
             }}
           >
             {sampleData.Latest.map((item) => (
               <TouchableOpacity key={item.id}>
                 <View
                   style={{
-                    // flex: 1,
-                    // width: 250,
-                    backgroundColor: 'lightgray',
+                    backgroundColor: "#fff",
                     borderRadius: 20,
-                    padding: 10,
-
+                    padding: 15,
                     marginHorizontal: 10,
-                    // flexDirection: "column",
                     justifyContent: "space-between",
                     flexDirection: "row",
-
-                    // justifyContent:'flex-start',
-                    // alignItems: "flex-start",
-
+                    borderWidth: 1,
+                    borderColor: "#cdcccc",
                   }}
                 >
                   <View>
-
-                    <Text style={{
-                      color: 'blue',
-                    }}>{item.title}</Text>
-                    <Text>{item.company}</Text>
+                    <Text
+                      style={{
+                        color: "#0077B6",
+                        fontSize: 30,
+                        fontFamily: ff.deckSemiBold,
+                      }}
+                    >
+                      {item.title}
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#000",
+                        fontSize: 12,
+                        fontFamily: ff.deckBold,
+                        letterSpacing: 1,
+                      }}
+                    >
+                      {item.company}
+                    </Text>
                   </View>
 
-                  <Text>{item.location}</Text>
+                  <Text
+                    style={{
+                      color: "#000",
+                      fontSize: 12,
+                      fontFamily: ff.deckBold,
+                      letterSpacing: 1,
+                    }}
+                  >
+                    {item.location}
+                  </Text>
                   {/* <Text>{item.postedDate}</Text> */}
                 </View>
               </TouchableOpacity>
             ))}
           </View>
-
         </View>
       </View>
-
     </SafeAreaView>
   );
 }
@@ -230,14 +252,14 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 12,
     paddingHorizontal: 30, // Adjust padding as needed
-    borderRadius: 20,
+    borderRadius: 9,
     alignItems: "center",
     justifyContent: "center",
-    margin: 10,
-    // Removed fixed width to allow button width to adjust based on text length
   },
   text: {
     color: "white",
-    fontSize: 16,
+    fontSize: 18,
+    fontFamily: ff.deckSemiBold,
+    letterSpacing: 1,
   },
 });
