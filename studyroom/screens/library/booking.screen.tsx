@@ -1,9 +1,9 @@
 import Button from "@/components/Button";
-import moment from 'moment'
+import moment from "moment";
 import Seats from "@/components/Seats";
 
 import Calendar from "@/components/calendar/calendar";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
@@ -30,17 +30,20 @@ import { Toast } from "react-native-toast-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
+import Header from "@/components/Header";
+import { h, vw, w } from "@/constants/size";
+import ff from "@/constants/fonts";
 
 const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
-  const params = useRoute();
+  const params: any = useRoute();
 
-  const dataK = JSON.parse(params?.params?.item);
+  const Library = JSON.parse(params.params?.item);
+
   const city = JSON.parse(params?.params?.location);
 
   const bookingData = useSelector((state: any) => state.booking);
-  const userDetails =useSelector((state: any) => state.user);
-  console.log("🚀 ~ bookingData33:", bookingData?.details.id)
+  const userDetails = useSelector((state: any) => state.user);
 
   const [data, setData] = useState(null);
   const [selectedSeat, setSelectedSeat] = useState(null);
@@ -55,7 +58,7 @@ const BookingScreen: React.FC = () => {
   const [forFriend, setForFriend] = useState(false);
   const [Loading, setLoading] = useState(true);
 
-  const [libraryDetails, setLibraryDetails] = useState(null)
+  const [libraryDetails, setLibraryDetails] = useState<any>(null);
   const price = bookingData.details.price || 6000;
   const registrationFees = 1000;
   const subtotal = Number((price + registrationFees).toFixed(2));
@@ -69,11 +72,11 @@ const BookingScreen: React.FC = () => {
     slot: selectedSlots,
   };
 
- 
-
   useEffect(() => {
-
-    const totalPrice = selectedSlots.reduce((acc, slot) => acc + Number(slot.price), 0);
+    const totalPrice = selectedSlots.reduce(
+      (acc, slot) => acc + Number(slot.price),
+      0
+    );
 
     setFinalPrice(totalPrice * selectedMonth);
   }, [selectedSlots, selectedMonth]);
@@ -83,7 +86,6 @@ const BookingScreen: React.FC = () => {
   };
 
   const handleSelectSlot = (selectedSlot) => {
-    console.log("🚀 ~ handleSelectSlot ~ selectedSlot:", selectedSlot)
     if (selectedSlots.find((slot) => slot._id === selectedSlot._id)) {
       setSelectedSlots(
         selectedSlots.filter((slot) => slot._id !== selectedSlot._id)
@@ -95,6 +97,7 @@ const BookingScreen: React.FC = () => {
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
+    setBookingLoader(false);
   };
 
   const updateRoomDetails = async () => {
@@ -106,7 +109,6 @@ const BookingScreen: React.FC = () => {
       name: libraryDetails.name,
       price: finalPrice,
     };
-    // console.log("🚀 ~ updateRoomDetails ~ details:", details);
     dispatch(setBookingDetails(details));
   };
   const handleData = (data: DataItem[]) => {
@@ -127,21 +129,16 @@ const BookingScreen: React.FC = () => {
 
     const userid = JSON.parse(userData);
 
-
-    const userId = userid.data.user_id._id;
-    // console.log("🚀 ~ PreBook ~ userId:", userId)
+    const userId = userid.data?.user_id?._id;
 
     if (!userId) {
-      Toast.show("Error is App , Relogin", {
+      Toast.show("user data not confirgured properly, Relogin", {
         type: "error",
       });
-
     }
-
 
     if (
       userId &&
-
       finalPrice &&
       totalAmount &&
       BookedData.slot.length > 0 &&
@@ -150,11 +147,9 @@ const BookingScreen: React.FC = () => {
       BookedData.date &&
       BookedData.months
     ) {
-
-      console.log("🚀 ~ PreBook ~ BookedData:3", bookingData);
-
       try {
-        const response = await axios.post(`${BACKEND}/api/v1/booking/createBooking`,
+        const response = await axios.post(
+          `${BACKEND}/api/v1/booking/createBooking`,
           {
             userId,
             libraryId: libraryDetails?._id,
@@ -168,8 +163,6 @@ const BookingScreen: React.FC = () => {
             forFriend: userDetails.friendDetails,
           }
         );
-        console.log("🚀 ~ PreBook ~ response:", response.data)
-
 
         const bookingId = response.data.Booking._id;
         setBookingId(bookingId);
@@ -189,7 +182,6 @@ const BookingScreen: React.FC = () => {
       }
     }
   };
-
 
   // const confirmBooking = async () => {
   //   setBookingLoader(true);
@@ -243,11 +235,10 @@ const BookingScreen: React.FC = () => {
       const response = await axios.post(
         `${BACKEND}/api/v1/library/getLibraryRooms`,
         {
-          id: dataK._id,
+          id: Library._id,
         }
       );
-      console.log("🚀 ~ response--->:", response.data.data.rooms);
-      setLibraryDetails(response.data.data)
+      setLibraryDetails(response.data.data);
       return response.data.data;
     } catch (error) {
       console.error("Error:", error);
@@ -256,39 +247,35 @@ const BookingScreen: React.FC = () => {
 
   const getLib = async () => {
     const bookingData = useSelector((state: any) => state.booking);
-    return bookingData
-  }
-
+    return bookingData;
+  };
 
   useEffect(() => {
     fetchRooms().then((data) => {
-
       setData(data.rooms);
       setLoading(false);
-
     });
   }, []);
-
 
   if (Loading || data === null) {
     return <ActivityIndicator size="large" color="#000" />;
   }
 
   const formatTime = (time) => {
-    return moment(time, ["h:mm A"]).format("HH:mm")
-  }
+    return moment(time, ["h:mm A"]).format("HH:mm");
+  };
 
   const displayTimeRange = (from, to) => {
     if (from === "12:00 AM" && to === "11:59 PM") {
-      return `24/7`
+      return `24/7`;
     }
-    return `${from} - ${to}`
-  }
+    return `${from} - ${to}`;
+  };
   const confirmBooking = async () => {
     setBookingLoader(true);
     await updateRoomDetails();
-    console.log('Attempting to prebook...');
     const res = await PreBook();
+
     setBookingLoader(false);
 
     if (res) {
@@ -303,8 +290,11 @@ const BookingScreen: React.FC = () => {
         price: finalPrice,
       };
 
-      const Bookdata = { ...newBookingData, libraryId: libraryDetails , bookingId:bookingId};
-      console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
+      const Bookdata = {
+        ...newBookingData,
+        libraryId: libraryDetails,
+        bookingId: bookingId,
+      };
       router.push({
         pathname: "/library/checkout.screen",
         params: {
@@ -312,7 +302,7 @@ const BookingScreen: React.FC = () => {
         },
       });
     } else {
-      console.log("🚀 ~ confirmBooking ~ res", res)
+      setBookingLoader(false);
       Toast.show("Booking failed. Please try again.", {
         type: "error",
       });
@@ -323,26 +313,28 @@ const BookingScreen: React.FC = () => {
       style={{
         backgroundColor: "white",
         flex: 1,
-        marginTop: 10,
-        paddingTop: 50,
         paddingBottom: 20,
-        marginBottom: 20,
-        gap: 30,
+        paddingTop: 40,
       }}
     >
-      {/* <View>
-        <Header color="black" />
-      </View> */}
+      <Header color="black" />
+      <Text
+        style={{
+          color: "#000",
+          fontSize: w(30),
+          fontFamily: ff.deckSemiBold,
+          paddingLeft: 20,
+        }}
+      >
+        Booking - {Library.name}
+      </Text>
 
       <View
         style={{
-          // flex: 1,
-
           flexDirection: "column",
           alignItems: "center",
           gap: 10,
-
-          // justifyContent: "center",
+          marginTop: h(10),
         }}
       >
         <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
@@ -350,27 +342,19 @@ const BookingScreen: React.FC = () => {
 
       <View
         style={{
-          marginTop: -40,
-          // backgroundColor:'red',
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          height: 55,
-          width: "100%",
-          paddingHorizontal: 10,
-          marginHorizontal: 10,
         }}
       >
         <Picker
           selectedValue={currentRoomNo}
           onValueChange={(itemValue, itemIndex) => {
-            console.log(itemValue, itemIndex, "-----");
             setCurrentRoomNo(itemValue);
           }}
           style={{
-            borderRadius: 20,
-            width: "50%",
-            // backgroundColor: "red",
+            width: "40%",
+            fontFamily: ff.deckMedium,
           }}
           mode="dropdown"
         >
@@ -387,7 +371,9 @@ const BookingScreen: React.FC = () => {
             />
           ))}
         </Picker>
-        <ToggleBookingButton />
+        <View style={{ marginRight: w(28) }}>
+          <ToggleBookingButton />
+        </View>
       </View>
 
       <ScrollView
@@ -398,12 +384,6 @@ const BookingScreen: React.FC = () => {
           flexWrap: "wrap", // Allows wrapping into multiple lines if needed
           justifyContent: "center",
         }}
-      // style={{
-      //   flex: 1,
-
-      //   marginBottom: 10,
-      //   // justifyContent: "center",
-      // }}
       >
         {/* //seating arrangement */}
         {data && data[currentRoomNo - 1].seats.length !== 0 && (
@@ -415,296 +395,297 @@ const BookingScreen: React.FC = () => {
         )}
       </ScrollView>
 
-      <TouchableOpacity
+      <View
         style={{
-          // flex: 1,
           flexDirection: "row",
           justifyContent: "space-between",
-          alignItems: "center",
-
-          paddingRight: 20,
+          paddingLeft: w(24),
         }}
-        onPress={() => setIsModalVisible(true)}
       >
-        <View>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={isModalVisible}
-            onRequestClose={toggleModal}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <View>
-                  <Text
-                    style={{
-                      color: "black",
-                      fontSize: 25,
-                      fontStyle: "normal",
-                      fontWeight: 500,
-                      textAlign: "center",
-                      marginTop: 20,
-                    }}
-                  >
-                    Select Period
-                  </Text>
-
-                  <View
-                    style={
-                      {
-                        // flexDirection:'row'
-                        // height: 100,
-                        // alignItems: "space-between",
-                        // backgroundColor: "red",
-                      }
-                    }
-                  >
-                    <View
-                      style={{
-                        position: "relative",
-                        right: 10,
-                        top: 45,
-
-                        // backgroundColor: "blue",
-                      }}
-                    >
-                      <Month />
-                    </View>
-
-                    <View
-                      style={{
-                        position: "relative",
-                        left: 20,
-                      }}
-                    >
-                      <Picker
-                        selectedValue={selectedMonth}
-                        onValueChange={(itemValue, itemIndex) => {
-                          // console.log(itemValue, itemIndex);
-                          setSelectedMonth(itemValue);
-                        }}
-                      >
-                        {Array.from({ length: 12 }, (_, i) => (
-                          <Picker.Item
-                            key={i}
-                            label={`${i + 1} month${i === 0 ? "" : "s"}`}
-                            value={`${i + 1}`}
-                          />
-                        ))}
-                      </Picker>
-                    </View>
-                  </View>
-                </View>
-
-                <View
-                  style={{
-                    padding: 10,
-                    marginTop: 20,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "black",
-                      fontSize: 25,
-                      fontStyle: "normal",
-                      fontWeight: 500,
-                      textAlign: "center",
-                    }}
-                  >
-                    Select Slot
-                  </Text>
-
-                  <View
-                    style={{
-                      flexDirection: "row-reverse",
-
-                      rowGap: 10,
-
-                      flexWrap: "wrap",
-                      justifyContent: "center",
-                      padding: 10,
-                      gap: 10,
-
-                      height: 125,
-                      maxWidth: 300,
-                    }}
-                  >
-
-                    {available?.map((slot, index) => {
-                      if (slot?.availability && slot?.from !== null) {
-                        return (
-                          <View
-                            key={slot._id}
-                            style={{
-                              maxWidth: 70,
-                              marginHorizontal: 50,
-                            }}
-                          >
-                            <TouchableOpacity
-                              style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                flexWrap: "wrap",
-                                padding: 10,
-                                gap: 5,
-                                backgroundColor: selectedSlots.some(
-                                  (selectedSlot) =>
-                                    selectedSlot._id === slot._id
-                                )
-                                  ? "rgb(204, 243, 177)"
-                                  : "rgb(236, 233, 233)",
-                                borderRadius: 10,
-                                alignItems: "center",
-                              }}
-                              onPress={() => handleSelectSlot(slot)}
-                            >
-                              <Text
-                                style={{
-                                  textAlign: "center",
-                                  fontSize: 15,
-                                  fontWeight: 600,
-                                }}
-                              >
-                                {slot.availability}
-                              </Text>
-                            </TouchableOpacity>
-                          </View>
-                        );
-                      } else if (slot?.from !== null) {
-                        // Render regular time slots
-
-                        return (
-                          <View key={slot._id}>
-                            <TouchableOpacity
-                              style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                padding: 10,
-                                gap: 5,
-                                backgroundColor: selectedSlots.some(
-                                  (selectedSlot) =>
-                                    selectedSlot._id === slot._id
-                                )
-                                  ? "rgb(204, 243, 177)"
-                                  : "rgb(236, 233, 233)",
-                                borderRadius: 10,
-                                alignItems: "center",
-                              }}
-                              onPress={() => handleSelectSlot(slot)} // Step 3: Attach event handler
-                            >
-                              <Text>
-                                {displayTimeRange(slot.from, slot.to)}
-                              </Text>
-
-                            </TouchableOpacity>
-                          </View>
-                        );
-                      }
-                    })}
-                  </View>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    alignContent: "space-evenly",
-                    alignItems: "center",
-                    gap: 10,
-                    padding: 10,
-
-                    marginTop: 20,
-                  }}
-                >
-                  <View>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        fontWeight: "bold",
-                        color: "#000",
-                        marginTop: 32,
-                        textAlign: "center",
-                      }}
-                    >
-                      Price :
-                      <Text
-                        style={{
-                          fontSize: 24, // Larger font size
-                          fontWeight: "bold", // Bold text
-                          color: "#E91E63", // A distinct color
-                          margin: 10, // Add some margin around the text
-                          textAlign: "center",
-                        }}
-                      >
-                        {finalPrice}
-                      </Text>
-                    </Text>
-                  </View>
-                  {selectedDate &&
-                    selectedSeat &&
-                    selectedMonth &&
-                    selectedSlots && (
-                      <TouchableOpacity
-                        style={{
-                          backgroundColor: "rgb(93, 223, 38)",
-                          marginTop: 10,
-                          borderRadius: 15,
-                          paddingHorizontal: 10,
-                        }}
-                        onPress={confirmBooking}
-                      >
-                        {bookingloader ? (
-                          <ActivityIndicator size="large" color="#000" />
-                        ) : (
-                          <Text
-                            style={{
-                              alignItems: "center",
-                              padding: 15,
-                              borderRadius: 20,
-                              fontSize: 15,
-
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Confirm
-                          </Text>
-                        )}
-                      </TouchableOpacity>
-                    )}
-
-                  <TouchableOpacity
-                    onPress={toggleModal}
-                    style={{
-                      // position: "absolute",
-                      // bottom: 0,
-                      padding: 10,
-                      backgroundColor: "red",
-                      borderRadius: 90,
-                      marginBottom: -20,
-                    }}
-                  >
-                    <Ionicons name="close" size={30} color="#000" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </Modal>
-        </View>
         <TouchableOpacity
           onPress={() => {
             router.push("(routes)/friend");
           }}
           style={{
-            backgroundColor: "yellow",
+            backgroundColor: "transparent",
             padding: 10,
             borderRadius: 50,
+            borderWidth: 1,
+            borderColor: "#414141",
+            width: 50,
+            height: 50,
           }}
         >
-          <Ionicons name="person-add-outline" size={24} color="black" />
+          <Ionicons name="person-add-outline" size={24} color="#706f6f" />
         </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            paddingRight: 20,
+            opacity: !selectedSeat ? 0.6 : 1,
+          }}
+          onPress={() => {
+            if (!selectedDate) {
+              Toast.show("Please Select Date");
+              return;
+            }
+            if (!selectedSeat) {
+              Toast.show("Please Select Select");
+              return;
+            }
+            setIsModalVisible(true);
+          }}
+        >
+          <Button text="Book" width={200} />
+        </TouchableOpacity>
+      </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={toggleModal}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TouchableOpacity
+              onPress={toggleModal}
+              style={{
+                position: "absolute",
+                top: 0,
+                padding: 10,
+                borderRadius: 90,
+                right: 0,
+                zIndex: 999,
+              }}
+            >
+              <Ionicons name="close" size={30} color="#000" />
+            </TouchableOpacity>
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#ECECEC",
+                width: "100%",
+                paddingBottom: h(5),
+              }}
+            >
+              <Text
+                style={{
+                  color: "black",
+                  fontSize: w(30),
+                  fontFamily: ff.deckBold,
+                  textAlign: "center",
+                  marginTop: 20,
+                }}
+              >
+                Select Period
+              </Text>
 
-        <Button text="Book" width={200} />
-      </TouchableOpacity>
+              <View
+                style={{
+                  position: "relative",
+                  left: w(28),
+                  marginTop: 10,
+                  width: "50%",
+                  alignSelf: "center",
+                }}
+              >
+                <View
+                  style={{ position: "absolute", left: w(-12), top: w(12) }}
+                >
+                  <Feather name="calendar" size={w(20)} />
+                </View>
+                <Picker
+                  style={{ width: "80%", marginLeft: w(15) }}
+                  selectedValue={selectedMonth}
+                  onValueChange={(itemValue, itemIndex) => {
+                    setSelectedMonth(itemValue);
+                  }}
+                >
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <Picker.Item
+                      key={i}
+                      label={`${i + 1} month${i === 0 ? "" : "s"}`}
+                      value={`${i + 1}`}
+                    />
+                  ))}
+                </Picker>
+              </View>
+            </View>
+
+            <View
+              style={{
+                paddingHorizontal: 10,
+              }}
+            >
+              <Text
+                style={{
+                  color: "black",
+                  fontSize: w(30),
+                  fontFamily: ff.deckBold,
+                  textAlign: "center",
+                }}
+              >
+                Select Slot
+              </Text>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  rowGap: 10,
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  padding: 10,
+                  gap: 10,
+                }}
+              >
+                {available?.map((slot, index) => {
+                  const selected = selectedSlots.some(
+                    (selectedSlot) => selectedSlot._id === slot._id
+                  );
+                  if (slot?.availability && slot?.from !== null) {
+                    return (
+                      <View
+                        key={slot._id}
+                        style={{
+                          maxWidth: 70,
+                          marginHorizontal: 50,
+                        }}
+                      >
+                        <TouchableOpacity
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            flexWrap: "wrap",
+                            padding: 10,
+                            gap: 5,
+                            backgroundColor: selected ? "#0077B6" : "#fff",
+                            borderWidth: 1,
+                            borderRadius: 3,
+                            borderColor: "#a09f9f",
+                            alignItems: "center",
+                          }}
+                          onPress={() => handleSelectSlot(slot)}
+                        >
+                          <Text
+                            style={{
+                              textAlign: "center",
+                              fontSize: w(13),
+                              fontFamily: ff.deckMedium,
+                              color: selected ? "#fff" : "#000",
+                            }}
+                          >
+                            {slot.availability}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  } else if (slot?.from !== null) {
+                    // Render regular time slots
+
+                    return (
+                      <View key={slot._id}>
+                        <TouchableOpacity
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            flexWrap: "wrap",
+                            padding: 10,
+                            gap: 5,
+                            backgroundColor: selected ? "#0077B6" : "#fff",
+                            borderWidth: 1,
+                            borderRadius: 3,
+                            borderColor: "#a09f9f",
+                            alignItems: "center",
+                          }}
+                          onPress={() => handleSelectSlot(slot)} // Step 3: Attach event handler
+                        >
+                          <Text
+                            style={{
+                              textAlign: "center",
+                              fontSize: w(13),
+                              fontFamily: ff.deckMedium,
+                              color: selected ? "#fff" : "#000",
+                            }}
+                          >
+                            {displayTimeRange(slot.from, slot.to)}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  }
+                })}
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "column",
+                justifyContent: "space-between",
+                alignContent: "space-evenly",
+                alignItems: "center",
+                gap: 10,
+                paddingHorizontal: 10,
+              }}
+            >
+              <View>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: w(15),
+                    fontFamily: ff.deckMedium,
+                    color: "#000",
+                    marginBottom: 20,
+                  }}
+                >
+                  Price :{" "}
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontSize: w(18),
+                      fontFamily: ff.deckMedium,
+                      color: "#cb1919",
+                    }}
+                  >
+                    {finalPrice}
+                  </Text>
+                </Text>
+              </View>
+              {selectedDate &&
+                selectedSeat &&
+                selectedMonth &&
+                selectedSlots && (
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: "#0077B6",
+                      borderRadius: 3,
+                      marginBottom: h(10),
+                      opacity: !selectedSlots.length ? 0.5 : 1,
+                    }}
+                    disabled={!selectedSlots.length}
+                    onPress={confirmBooking}
+                  >
+                    {bookingloader ? (
+                      <ActivityIndicator size="large" color="#fff" />
+                    ) : (
+                      <Text
+                        style={{
+                          alignItems: "center",
+                          padding: w(10),
+                          borderRadius: 20,
+                          fontSize: w(16),
+                          fontFamily: ff.deckSemiBold,
+                          color: "#fff",
+                          letterSpacing: 1,
+                        }}
+                      >
+                        Confirm Booking
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                )}
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -712,22 +693,13 @@ const BookingScreen: React.FC = () => {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0,0,3,0.7)", // This will give a semi-transparent background
   },
   modalView: {
     backgroundColor: "white",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignContent: "center",
-
-    borderRadius: 20,
-    padding: 10,
     gap: 5,
-    width: 300,
-    height: 600,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -737,6 +709,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    width: vw - 50,
   },
   numberButton: {
     marginHorizontal: 10,

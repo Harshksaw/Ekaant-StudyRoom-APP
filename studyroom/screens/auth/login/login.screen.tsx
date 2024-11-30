@@ -1,4 +1,6 @@
 import Button from "@/components/Button";
+import ff from "@/constants/fonts";
+import { h, w } from "@/constants/size";
 import { BACKEND } from "@/utils/config";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -12,18 +14,31 @@ import {
   TouchableOpacity,
   View,
   Image,
-  SafeAreaView
+  SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 
 import { Toast } from "react-native-toast-notifications";
 
+export function maskPhoneNumber(phoneNumber?: string | number) {
+  if (!phoneNumber) {
+    return 0;
+  }
+  // Ensure the phone number is a string
+  const phoneStr = phoneNumber.toString();
+
+  // Mask the middle part of the phone number
+  return phoneStr.slice(0, 2) + "****" + phoneStr.slice(-4);
+}
+
 const LoginScreen: React.FC = () => {
-  const [password, setPassword] = useState("Password");
+  const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isOtp, setIsOtp] = useState<boolean>(false);
   const [otp, setOtp] = useState(["", "", "", ""]);
   const inputRefs = [createRef(), createRef(), createRef(), createRef()];
-  const [loginOption, setLoginOption] = useState("password");
+  const [loginOption, setLoginOption] = useState("otp");
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
   const [attempts, setAttempts] = useState(0);
@@ -47,14 +62,21 @@ const LoginScreen: React.FC = () => {
   };
 
   const loginWithOtp = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(`${BACKEND}/api/v1/auth/otp-login`, {
         phoneNumber,
         otp: otp.join(""),
       });
 
+      setLoading(false);
       if (response.status === 200) {
-        await AsyncStorage.setItem("token", JSON.stringify(response.data.token));
+        console.log(response, "res");
+
+        await AsyncStorage.setItem(
+          "token",
+          JSON.stringify(response.data.token)
+        );
         await AsyncStorage.setItem("userData", JSON.stringify(response.data));
         Toast.show("Login Successful", {
           type: "success",
@@ -70,7 +92,7 @@ const LoginScreen: React.FC = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      setLoading(false);
       Toast.show("Login failed", {
         type: "danger",
         placement: "top",
@@ -80,6 +102,7 @@ const LoginScreen: React.FC = () => {
   };
 
   const login = async () => {
+    setLoading(true);
     if (!phoneNumber || !password) {
       return Toast.show("Please fill all fields", {
         type: "danger",
@@ -88,18 +111,22 @@ const LoginScreen: React.FC = () => {
       });
     }
 
-
     try {
       const response = await axios.post(`${BACKEND}/api/v1/auth/signin`, {
         phoneNumber,
         password,
       });
-      console.log("🚀 ~ login ~ response:", response)
-
+      setLoading(false);
 
       if (response.data.success) {
-        await AsyncStorage.setItem("token", JSON.stringify(response.data.token));
-        await AsyncStorage.setItem("userData", JSON.stringify(response.data.data));
+        await AsyncStorage.setItem(
+          "token",
+          JSON.stringify(response.data.token)
+        );
+        await AsyncStorage.setItem(
+          "userData",
+          JSON.stringify(response.data.data)
+        );
         Toast.show("Login Successful", {
           type: "success",
           placement: "top",
@@ -114,7 +141,7 @@ const LoginScreen: React.FC = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      setLoading(false);
       Toast.show("Login failed", {
         type: "danger",
         placement: "top",
@@ -123,76 +150,29 @@ const LoginScreen: React.FC = () => {
     }
   };
 
-  const handleLogin = async () => {
-    if (phoneNumber.length == 10) {
-      console.log(loginOption, phoneNumber);
-      if (loginOption === "otp") {
-        loginWithOtp();
-      } else {
-        await login();
-      }
-    } else {
-      Toast.show("Please enter a valid 10-digit phone number", {
-        type: "danger",
-        placement: "top",
-        duration: 2000,
-      });
-    }
-  };
-
-  // useEffect(() => {
-  //   if (phoneNumber.length === 10) {
-
-  //     if (loginOption === "otp") {
-  //         axios
-  //         .post(`${BACKEND}/api/v1/auth/otp`, {
-  //           phoneNumber,
-  //         })
-  //         .then((res) => {
-  //           if (res.data.success) {
-  //             Toast.show("OTP sent successfully", {
-  //               type: "success",
-  //               placement: "top",
-  //               duration: 2000,
-  //             });
-  //           } else {
-  //             Toast.show(res.data.message, {
-  //               type: "danger",
-  //               placement: "top",
-  //               duration: 2000,
-  //             });
-  //           }
-  //         })
-  //         .catch((err) => {
-  //           console.log(err);
-  //           Toast.show("Failed to send OTP", {
-  //             type: "danger",
-  //             placement: "top",
-  //             duration: 2000,
-  //           });
-  //         });
-  //     }
-  //   }
-  // }, [phoneNumber]);
   const handleKeyPress = (e, index) => {
-    if (e.nativeEvent.key === 'Backspace' && otp[index] === "" && index > 0) {
+    if (e.nativeEvent.key === "Backspace" && otp[index] === "" && index > 0) {
       inputRefs[index - 1].current.focus();
     }
   };
   const handlePhoneNumberChange = (text) => {
     // Ensure only numeric input and limit to 10 digits
-    const cleanedText = text.replace(/[^0-9]/g, '').slice(0, 10);
+    const cleanedText = text.replace(/[^0-9]/g, "").slice(0, 10);
     setPhoneNumber(cleanedText);
   };
 
-
-  const sendOtp = async() => {
+  const sendOtp = async () => {
+    setLoading(true);
     if (isBlocked) {
-      Toast.show("You have reached the maximum number of attempts. Please try again later.", {
-        type: "danger",
-        placement: "top",
-        duration: 2000,
-      });
+      Toast.show(
+        "You have reached the maximum number of attempts. Please try again later.",
+        {
+          type: "danger",
+          placement: "top",
+          duration: 2000,
+        }
+      );
+      setLoading(false);
       return;
     }
 
@@ -203,12 +183,14 @@ const LoginScreen: React.FC = () => {
         duration: 2000,
       });
 
-       await axios
+      await axios
         .post(`${BACKEND}/api/v1/auth/otp`, {
           phoneNumber,
         })
         .then((res) => {
+          setLoading(false);
           if (res.data.success) {
+            setIsOtp(true);
             Toast.show("OTP sent successfully", {
               type: "success",
               placement: "top",
@@ -227,13 +209,33 @@ const LoginScreen: React.FC = () => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          setLoading(false);
           Toast.show("Failed to send OTP", {
             type: "danger",
             placement: "top",
             duration: 2000,
           });
         });
+    } else {
+      setLoading(false);
+      Toast.show("Please enter a valid 10-digit phone number", {
+        type: "danger",
+        placement: "top",
+        duration: 2000,
+      });
+    }
+  };
+  const handleLogin = async () => {
+    if (isOtp) {
+      loginWithOtp();
+      return;
+    }
+    if (phoneNumber.length === 10) {
+      if (loginOption === "otp") {
+        sendOtp();
+      } else {
+        await login();
+      }
     } else {
       Toast.show("Please enter a valid 10-digit phone number", {
         type: "danger",
@@ -242,8 +244,6 @@ const LoginScreen: React.FC = () => {
       });
     }
   };
-
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -270,20 +270,19 @@ const LoginScreen: React.FC = () => {
         style={{
           flex: 1,
           justifyContent: "center",
-          alignItems: "center",
-          marginTop: 200,
+          // alignItems: "center",
+          marginTop: h(200),
           width: "100%",
           height: "100%",
           zIndex: 1,
+          paddingHorizontal: w(10),
         }}
       >
         <Text
           style={{
-            fontSize: 40,
-            fontWeight: "800",
-            letterSpacing: 5,
-            marginBottom: 30,
-            left: -100,
+            fontSize: w(50),
+            fontFamily: ff.displayBlack,
+            letterSpacing: 1.5,
           }}
         >
           Login
@@ -292,165 +291,161 @@ const LoginScreen: React.FC = () => {
           style={{
             fontSize: 20,
             color: "black",
-            marginBottom: 20,
-            left: -70,
+            marginTop: h(5),
+            marginBottom: h(20),
+            fontFamily: ff.deckRegular,
           }}
         >
           Good to See You back! 🖤
         </Text>
 
-        <View style={styles.inputContainer}>
+        {!isOtp && (
           <View
             style={{
-              paddingLeft: 10,
-              paddingRight: 10,
-              borderRadius: 20,
               flexDirection: "row",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              backgroundColor: "#fff",
+              justifyContent: "space-between",
+              marginBottom: h(10),
             }}
           >
             <Text
               style={{
-                fontSize: 25,
-                marginHorizontal: 10,
-                color: "black",
-                marginRight: -2,
+                textAlign: "left",
+                fontSize: w(20),
+                fontFamily: ff.deckMedium,
               }}
             >
-              🇮🇳 |
+              Login Via:
             </Text>
-
-            <View style={{
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent:'space-between',
-              paddingRight: 10,
-
-            }
-            }>
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        maxLength={10}
-        value={phoneNumber}
-        onChangeText={handlePhoneNumberChange}
-        placeholder="Enter your phone number"
-      />
-      <TouchableOpacity onPress={sendOtp}>
-
-      {loginOption === 'otp' && (
-        
-        <Ionicons name="send" size={24} color="black" onPress={sendOtp} 
-        
-        style={{
-          
-          
-          
-          
-        }}
-        />
-      )}
-      </TouchableOpacity>
-      {/* Add other components and logic here */}
-    </View>
-          </View>
-
-          <Text
-            style={{
-              textAlign: "left",
-              fontSize: 18,
-              marginLeft: 20,
-            }}
-          >
-            Login Via
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              marginTop: 5,
-              justifyContent: "center",
-              gap: 25,
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => setLoginOption("password")}
-              style={{ flexDirection: "row", alignItems: "center" }}
-            >
-              <View
-                style={{
-                  height: 20,
-                  width: 20,
-                  borderRadius: 10,
-                  borderWidth: 2,
-                  borderColor: "#2467E2",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: 5,
-                }}
-              >
-                {loginOption === "password" && (
-                  <View
-                    style={{
-                      height: 10,
-                      width: 10,
-                      borderRadius: 5,
-                      backgroundColor: "#2467E2",
-                    }}
-                  />
-                )}
-              </View>
-              <Text
-                style={{
-                  color: loginOption === "password" ? "#2467E2" : "#000",
-                }}
-              >
-                Password
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setLoginOption("otp")}
+            <View
               style={{
                 flexDirection: "row",
-                alignItems: "center",
-                marginLeft: 20,
+                marginTop: 5,
+                justifyContent: "center",
+                gap: 25,
               }}
             >
-              <View
+              <TouchableOpacity
+                onPress={() => setLoginOption("password")}
+                style={{ flexDirection: "row", alignItems: "center" }}
+              >
+                <View
+                  style={{
+                    height: 20,
+                    width: 20,
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    borderColor: "#2467E2",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 5,
+                  }}
+                >
+                  {loginOption === "password" && (
+                    <View
+                      style={{
+                        height: "90%",
+                        width: "90%",
+                        borderRadius: 50,
+                        backgroundColor: "#2467E2",
+                      }}
+                    />
+                  )}
+                </View>
+                <Text
+                  style={{
+                    color: loginOption === "password" ? "#2467E2" : "#000",
+                    fontFamily: ff.deckMedium,
+                  }}
+                >
+                  Password
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setLoginOption("otp")}
                 style={{
-                  height: 20,
-                  width: 20,
-                  borderRadius: 10,
-                  borderWidth: 2,
-                  borderColor: "#2467E2",
+                  flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: 5,
+                  marginLeft: 20,
                 }}
               >
-                {loginOption === "otp" && (
-                  <View
-                    style={{
-                      height: 10,
-                      width: 10,
-                      borderRadius: 5,
-                      backgroundColor: "#2467E2",
-                    }}
-                  />
-                )}
-              </View>
-              <Text
-                style={{ color: loginOption === "otp" ? "#2467E2" : "#000" }}
-              >
-                OTP
-              </Text>
-            </TouchableOpacity>
+                <View
+                  style={{
+                    height: 20,
+                    width: 20,
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    borderColor: "#2467E2",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 5,
+                  }}
+                >
+                  {loginOption === "otp" && (
+                    <View
+                      style={{
+                        height: "90%",
+                        width: "90%",
+                        borderRadius: 50,
+                        backgroundColor: "#2467E2",
+                      }}
+                    />
+                  )}
+                </View>
+                <Text
+                  style={{
+                    color: loginOption === "otp" ? "#2467E2" : "#000",
+                    fontFamily: ff.deckMedium,
+                  }}
+                >
+                  OTP
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
+        )}
+        <View style={styles.inputContainer}>
+          {!isOtp && (
+            <View
+              style={{
+                paddingLeft: 10,
+                borderRadius: 20,
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                backgroundColor: "#fff",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 25,
+                  marginLeft: 10,
+                  color: "black",
+                }}
+              >
+                🇮🇳 |
+              </Text>
 
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  maxLength={10}
+                  value={phoneNumber}
+                  onChangeText={handlePhoneNumberChange}
+                  placeholder="Enter your phone number"
+                />
+              </View>
+            </View>
+          )}
           {/* Conditional Input Field */}
-          {loginOption === "password" ? (
+          {loginOption === "password" && (
             <View
               style={{
                 flexDirection: "row",
@@ -459,7 +454,7 @@ const LoginScreen: React.FC = () => {
             >
               <TextInput
                 style={[styles.input, { width: "100%" }]} // Adjust padding as needed
-                placeholder="Password"
+                placeholder="Enter your password"
                 secureTextEntry={passwordVisibility}
                 value={password}
                 onChangeText={setPassword}
@@ -473,59 +468,91 @@ const LoginScreen: React.FC = () => {
                 onPress={() => setPasswordVisibility(!passwordVisibility)}
               >
                 <Ionicons
-                  name={
-                    passwordVisibility ? "eye-off-outline" : "eye-outline"
-                  }
+                  name={passwordVisibility ? "eye-off-outline" : "eye-outline"}
                   size={25}
                 />
               </TouchableOpacity>
             </View>
-          ) : (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingHorizontal: 70,
-              }}
-            >
-              {otp.map((value, index) => (
-                <TextInput
-                  key={index}
-                  ref={inputRefs[index]}
-                  style={{
-                    width: 50,
-                    height: 50,
-                    borderWidth: 1,
-                    borderColor: "lightgray",
-                    borderRadius: 10,
-                    backgroundColor: "white",
-                    textAlign: "center",
-                  }}
-                  maxLength={1}
-                  keyboardType="numeric"
-                  onChangeText={(text) => handleOtpChange(text, index)}
-                  onKeyPress={(e) => handleKeyPress(e, index)}
-                  value={value}
-                />
-              ))}
-            </View>
+          )}
+
+          {isOtp && (
+            <>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: w(14),
+                  fontFamily: ff.deckMedium,
+                  textAlign: "center",
+                }}
+              >
+                {isOtp
+                  ? "Enter 4-digit otp to verify"
+                  : "Enter 10-digit Phone Number to login"}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  paddingHorizontal: "10%",
+                }}
+              >
+                {otp.map((value, index) => (
+                  <TextInput
+                    key={index}
+                    ref={inputRefs[index]}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      borderWidth: 1,
+                      borderColor: "lightgray",
+                      borderRadius: 10,
+                      backgroundColor: "white",
+                      textAlign: "center",
+                      fontFamily: ff.deckBold,
+                      fontSize: w(20),
+                    }}
+                    maxLength={1}
+                    keyboardType="numeric"
+                    onChangeText={(text) => handleOtpChange(text, index)}
+                    onKeyPress={(e) => handleKeyPress(e, index)}
+                    value={value}
+                  />
+                ))}
+              </View>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: w(14),
+                  fontFamily: ff.deckMedium,
+                  textAlign: "center",
+                }}
+              >
+                OTP has been sent to your registered Mobile Number {"\n"}
+                +91-{maskPhoneNumber(phoneNumber)}
+              </Text>
+            </>
           )}
         </View>
 
         <TouchableOpacity
           style={{
-            padding: 16,
             borderRadius: 8,
             marginHorizontal: 16,
             marginTop: 35,
+            opacity: loading ? 0.6 : 1,
           }}
           onPress={handleLogin}
+          disabled={loading}
         >
-          <Button text="Login" width={300} height={60} onPress={handleLogin} />
+          <Button
+            loading={loading}
+            text={isOtp || loginOption === "password" ? "Login" : "Submit"}
+            width={w(300)}
+          />
         </TouchableOpacity>
 
         <View style={styles.signupRedirect}>
-          <Text style={{ fontSize: 18, fontFamily: "normal" }}>
+          <Text style={{ fontSize: 18, fontFamily: ff.deckRegular }}>
             Don't have an account?
           </Text>
           <TouchableOpacity onPress={() => router.push("/(routes)/signup")}>
@@ -534,6 +561,7 @@ const LoginScreen: React.FC = () => {
                 fontSize: 18,
                 color: "#2467EC",
                 marginLeft: 5,
+                fontFamily: ff.deckBold,
               }}
             >
               Sign Up
@@ -552,19 +580,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 16,
   },
- 
+
   inputContainer: {
     width: "100%",
-    marginHorizontal: 16,
     rowGap: 30,
   },
   input: {
     height: 55,
     borderRadius: 20,
-    paddingLeft: 35,
+    paddingLeft: w(10),
     fontSize: 16,
     backgroundColor: "white",
-    color: "#A1A1A0",
+    color: "#434343",
+    fontFamily: ff.deckMedium,
   },
   visibleIcon: {
     position: "absolute",

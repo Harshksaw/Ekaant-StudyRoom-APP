@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { SafeAreaView, View, Text, StyleSheet } from "react-native";
-import { Dimensions } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { useAssets } from "expo-asset";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
 import ff from "@/constants/fonts";
-
-const { width, height } = Dimensions.get("window");
 
 const Header = ({ color }: any) => {
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
@@ -119,13 +116,14 @@ const Header = ({ color }: any) => {
 
 const styles = StyleSheet.create({
   header: {
-    height: height * 0.085,
+    // height: height * 0.085,
     width: "100%",
     paddingHorizontal: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 10,
+    marginTop: 8,
   },
   logoContainer: {
     alignItems: "center",
@@ -152,8 +150,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   selectedCityText: {
-    fontSize: 16,
-    fontFamily: ff.deckRegular,
+    fontSize: 18,
+    fontFamily: ff.deckMedium,
     marginLeft: 5,
   },
 });

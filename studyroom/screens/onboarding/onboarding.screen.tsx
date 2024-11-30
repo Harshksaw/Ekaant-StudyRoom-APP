@@ -23,6 +23,7 @@ import useUser from "@/hooks/auth/useUser";
 import { ImageBackground } from "expo-image";
 import { Image } from "react-native";
 import ff from "@/constants/fonts";
+import { h } from "@/constants/size";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -103,7 +104,7 @@ export default function OnBoardingScreen() {
           dotSize: 8.86,
           activeColor: "rgba(0, 119, 182, 1)",
           color: "#6FC8E2",
-          bottomOffset: height * 0.43,
+          bottomOffset: h(330),
           activeDotStyle: {
             width: 23,
             height: 8.86,
@@ -121,7 +122,6 @@ export default function OnBoardingScreen() {
               style={{
                 flex: 1,
                 width: "100%",
-                backgroundColor: "red",
               }}
               source={item?.image}
             >

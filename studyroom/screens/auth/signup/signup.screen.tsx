@@ -6,21 +6,14 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   ScrollView,
   SafeAreaView,
 } from "react-native";
 
-import {
-  AntDesign,
-  Entypo,
-  FontAwesome,
-  Fontisto,
-  Ionicons,
-} from "@expo/vector-icons";
+import { AntDesign, Entypo, Fontisto, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { createRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -31,10 +24,11 @@ import { Feather } from "@expo/vector-icons";
 import { BACKEND } from "@/utils/config";
 import Button from "@/components/Button";
 import { Toast } from "react-native-toast-notifications";
-import { spacing } from '../../../utils/theme';
+import { h, w } from "@/constants/size";
+import ff from "@/constants/fonts";
+import { maskPhoneNumber } from "../login/login.screen";
 
 export default function SignUpScreen() {
-  const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [buttonSpinner, setButtonSpinner] = useState(false);
 
   const [otpVerified, setotpVerified] = useState(false);
@@ -50,10 +44,6 @@ export default function SignUpScreen() {
   });
 
   const [required, setRequired] = useState(false);
-  const [error, setError] = useState({
-    password: "",
-  });
-
   const [otp, setOtp] = useState(["", "", "", ""]);
 
   const otpRefs = useRef([]);
@@ -99,7 +89,6 @@ export default function SignUpScreen() {
       setImage(result.assets[0].uri);
     }
   };
-
 
   const sendOtp = async () => {
     try {
@@ -180,16 +169,12 @@ export default function SignUpScreen() {
       });
       return;
     }
- 
+
     setButtonSpinner(true);
 
     let formData = new FormData();
 
-
-
     try {
-
-
       if (image) {
         formData.append("image", {
           uri: image,
@@ -232,7 +217,6 @@ export default function SignUpScreen() {
             padding: 10,
             marginTop: 50,
           },
-
         });
 
         if (buttonSpinner) {
@@ -250,359 +234,381 @@ export default function SignUpScreen() {
     }
   };
   const handleKeyPress = (e, index) => {
-    if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
+    if (e.nativeEvent.key === "Backspace" && !otp[index] && index > 0) {
       otpRefs.current[index - 1].focus();
     }
   };
 
   return (
     <SafeAreaView
-      style={[{
-        flex: 1,
-        flexDirection: "column",
-        // justifyContent: "center",
-        // paddingTop  :50,
-        // gap:50,
-        backgroundColor: "#fff",
-
-      }, styles.container]}
+      style={[
+        {
+          flex: 1,
+          flexDirection: "column",
+          backgroundColor: "#fff",
+        },
+        styles.container,
+      ]}
     >
-      <ScrollView style={{
-        flex: 1,
-        flexDirection: "column",
-        // justifyContent: "center",
-        // paddingTop  :50,
-        gap:60,
-        backgroundColor: "#fff",
-      }}>
-
-      
-      <View style={styles.signInImage}>
-        <Image
-          source={require("../../../assets/icons/bubble2.png")}
-          style={styles.backgroundObject}
-        />
-        <View
-          style={{
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 60,
-            marginLeft: -20,
-
-
-            marginTop: 120,
-            // marginLeft: 20,
-            // backgroundColor: "red",
-          }}
-        >
-          <Text style={[styles.welcomeText, {}]}>Create {"     "} Account</Text>
-
-          <TouchableOpacity
-            onPress={pickImage}
+      <ScrollView
+        style={{
+          flex: 1,
+          flexDirection: "column",
+          gap: 60,
+          backgroundColor: "#fff",
+        }}
+      >
+        <View style={styles.signInImage}>
+          <Image
+            source={require("../../../assets/icons/bubble2.png")}
+            style={styles.backgroundObject}
+            resizeMode="contain"
+          />
+          <View
             style={{
-              width: 100,
-              height: 100,
-              marginLeft: -80,
-              borderRadius: 50, // This makes the border rounded
-              borderWidth: 2, // This sets the width of the border
-              borderColor: "#0077B6", // This sets the color of the border
-              borderStyle: "dashed", // This makes the border dotted
+              flex: 1,
               justifyContent: "center",
-              alignItems: "center",
+              marginTop: h(100),
+              width: "100%",
+              zIndex: 1,
             }}
           >
-            {/* <NativeButton  onPress={pickImage} 
+            <Text
+              style={{
+                fontSize: w(40),
+                fontFamily: ff.displayBlack,
+                letterSpacing: 1.5,
+                left: -w(50),
+              }}
+            >
+              Create{"\n"}Account
+            </Text>
+
+            <TouchableOpacity
+              onPress={pickImage}
+              style={{
+                width: 100,
+                height: 100,
+                left: -w(50),
+                marginTop: h(20),
+                borderRadius: 50, // This makes the border rounded
+                borderWidth: 2, // This sets the width of the border
+                borderColor: "#0077B6", // This sets the color of the border
+                borderStyle: "dashed", // This makes the border dotted
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {/* <NativeButton  onPress={pickImage} 
               
               
               > */}
-            {!image && (
-              <Ionicons name="camera-outline" size={40} color={"#0077B6"} />
-            )}
-            {/* </NativeButton> */}
-            {image && (
-              <Image
-                source={{ uri: image }}
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: 50,
-                }}
-              />
-            )}
-          </TouchableOpacity>
+              {!image && (
+                <Ionicons name="camera-outline" size={40} color={"#0077B6"} />
+              )}
+              {/* </NativeButton> */}
+              {image && (
+                <Image
+                  source={{ uri: image }}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 50,
+                  }}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
+
+          <Image
+            source={require("../../../assets/images/bubble2.png")}
+            style={{
+              marginRight: -100,
+            }}
+          />
         </View>
 
-        <Image
-          source={require("../../../assets/images/bubble2.png")}
+        <View
           style={{
-            marginRight: -100,
+            flexDirection: "column",
+            gap: 15,
+            marginTop: 45,
           }}
-        />
-      </View>
-
-      <View style={{
-        flexDirection: "column",
-        gap: 15,
-        marginTop: 45,
-      }}>
-        <KeyboardAvoidingView style={styles.inputContainer}>
-          <View>
-            <TextInput
-            
-              style={[
-                styles.input,
-                {
-                  paddingLeft: 40,
-                  backgroundColor: "#F8F8F8",
-                  borderRadius: 50,
-                  color: "#000",
-                },
-              ]}
-              keyboardType="email-address"
-              
-              value={userInfo.email}
-              placeholder="Email"
-              onChangeText={(value) =>
-                setUserInfo({ ...userInfo, email: value })
-              }
-            />
-            <Fontisto
-              style={{ position: "absolute", left: 26, top: 17.8 }}
-              name="email"
-              size={20}
-              color={"#A1A1A1"}
-            />
-          </View>
-          <View style={{ borderRadius: 50 }}>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  paddingLeft: 40,
-                  color: "#000",
-                  marginBottom: -12,
-                  borderRadius: 50,
-                  backgroundColor: "#F8F8F8",
-                },
-              ]}
-              keyboardType="default"
-              value={userInfo.name}
-              placeholder="Full Name"
-              onChangeText={(value) =>
-                setUserInfo({ ...userInfo, name: value })
-              }
-            />
-            <AntDesign
-              style={{ position: "absolute", left: 26, top: 14 }}
-              name="user"
-              size={20}
-              color={"#A1A1A1"}
-            />
-          </View>
-
-          <View
-            style={{
-              flexDirection: "column",
-              justifyContent: "center",
-              // alignItems: "center",
-              gap: 10,
-              marginTop: 10,
-            }}
-          >
-            <View
-              style={[
-                styles.input,
-                {
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  borderRadius: 50,
-                  backgroundColor: "#F8F8F8",
-                },
-              ]}
-            >
-              <Text style={{ fontSize: 20 }}>🇮🇳</Text>
-              <View
-                style={{
-                  height: 30,
-                  borderWidth: 1,
-                  width: 1,
-                  borderColor: "black",
-                  marginLeft: 10,
-                }}
-              ></View>
-        <TextInput
-
-        autoComplete="sms-otp" 
-  style={{ paddingLeft: 20,     color: "#000",}}
-  keyboardType="phone-pad"
-  value={userInfo.phone ? userInfo.phone.toString() : ''} // Conditionally render value
-  placeholder="Your Number"
-  onChangeText={(value) =>
-    setUserInfo({
-      ...userInfo,
-      phone: value ? parseInt(value, 10) : 0, // Convert input value to number; use 0 as fallback
-    })
-  }
-/>
-
-              <Feather
-                style={{
-                  position: "absolute",
-                  right: 30,
-                  top: 15,
-                }}
-                onPress={sendOtp}
-                name="arrow-up-right"
-                size={24}
-                color="black"
-              />
-            </View>
-            {showOtp && Number(userInfo.phone) >= 1000000000 && (
-              <View
-                style={{
-                  flexDirection: "column",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  gap: 5,
-                  marginTop: 10,
-
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 18,
-
-                    fontWeight: "400",
-                    textAlign: "center",marginVertical:10
-                  }}
-                >
-                  Enter OTP
-                </Text>
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingHorizontal: 50,
-                  }}
-                >
-                  {otp.map((value, index) => (
-                    <TextInput
-                      key={index}
-                      // Assuming inputRefs is defined elsewhere in your component
-                      ref={(ref) => otpRefs.current[index] = ref}
-                      onChangeText={(text) => handleOtpChange(text, index)}
-                      onKeyPress={(e) => handleKeyPress(e, index)}
-                      style={{
-                        width: 45,
-                        height: 45,
-                        borderWidth: 1,
-
-                        marginHorizontal: 8,
-                        borderColor: "rgb(199, 196, 196)",
-                        borderRadius: 10,
-                        backgroundColor: "white",
-                        textAlign: "center",
-                      }}
-                      maxLength={1}
-                      keyboardType="numeric"
-
-                      value={value}
-                    />
-                  ))}
+        >
+          <KeyboardAvoidingView style={styles.inputContainer}>
+            {!showOtp && (
+              <>
+                <View>
+                  <TextInput
+                    style={styles.input}
+                    keyboardType="email-address"
+                    value={userInfo.email}
+                    placeholder="Email"
+                    onChangeText={(value) =>
+                      setUserInfo({ ...userInfo, email: value })
+                    }
+                  />
+                  <Fontisto
+                    style={{ position: "absolute", left: 26, top: 17.8 }}
+                    name="email"
+                    size={20}
+                    color={"#A1A1A1"}
+                  />
                 </View>
-              </View>
+                <View style={{ borderRadius: 50 }}>
+                  <TextInput
+                    style={styles.input}
+                    keyboardType="default"
+                    value={userInfo.name}
+                    placeholder="Full Name"
+                    onChangeText={(value) =>
+                      setUserInfo({ ...userInfo, name: value })
+                    }
+                  />
+                  <AntDesign
+                    style={{ position: "absolute", left: 26, top: 14 }}
+                    name="user"
+                    size={20}
+                    color={"#A1A1A1"}
+                  />
+                </View>
+              </>
             )}
-
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  marginTop: 15,
-                  borderRadius: 50,
-                  borderRadius: 50,
-                  backgroundColor: "#F8F8F8",
-                  color: "#000",
-                },
-              ]}
-              secureTextEntry
-              value={userInfo.password}
-              placeholder="Password"
-              onChangeText={(value) => {
-                setUserInfo({ ...userInfo, password: value });
-              }}
-            />
-
-            {required && (
-              <View
-              //  style={commonStyles.errorContainer}
-              >
-                <Entypo name="cross" size={18} color={"red"} />
-              </View>
-            )}
-
             <View
               style={{
                 flexDirection: "column",
                 justifyContent: "center",
-                alignItems: "center",
-                marginBottom: 40,
+                // alignItems: "center",
+                gap: 10,
+                marginTop: h(20),
               }}
             >
-              {buttonSpinner ? (
-                <ActivityIndicator size="large" color="rgb(184, 196, 71)" />
-              ) : (
-                <>
-                  {
-                    otpVerified && (
-                      <TouchableOpacity
+              {!showOtp && (
+                <View
+                  style={[
+                    styles.input,
+                    {
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      paddingLeft: w(10),
+                    },
+                  ]}
+                >
+                  <Text style={{ fontSize: 20 }}>🇮🇳</Text>
+                  <View
+                    style={{
+                      height: 30,
+                      borderWidth: 1,
+                      width: 1,
+                      borderColor: "black",
+                      marginLeft: 10,
+                    }}
+                  ></View>
+                  <TextInput
+                    autoComplete="sms-otp"
+                    style={{ paddingLeft: 20, color: "#000" }}
+                    keyboardType="phone-pad"
+                    value={userInfo.phone ? userInfo.phone.toString() : ""} // Conditionally render value
+                    placeholder="Your Number"
+                    onChangeText={(value) =>
+                      setUserInfo({
+                        ...userInfo,
+                        phone: value ? parseInt(value, 10) : 0, // Convert input value to number; use 0 as fallback
+                      })
+                    }
+                  />
+                </View>
+              )}
+              {/* {showOtp && Number(userInfo.phone) >= 1000000000 && (
+                <View
+                  style={{
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    gap: 5,
+                    marginTop: 10,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 18,
 
+                      fontWeight: "400",
+                      textAlign: "center",
+                      marginVertical: 10,
+                    }}
+                  >
+                    Enter OTP
+                  </Text>
+
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      paddingHorizontal: 50,
+                    }}
+                  >
+                    {otp.map((value, index) => (
+                      <TextInput
+                        key={index}
+                        // Assuming inputRefs is defined elsewhere in your component
+                        ref={(ref) => (otpRefs.current[index] = ref)}
+                        onChangeText={(text) => handleOtpChange(text, index)}
+                        onKeyPress={(e) => handleKeyPress(e, index)}
                         style={{
-                          padding: 20,
-                          borderRadius: 8,
-                          marginHorizontal: 16,
+                          width: 45,
+                          height: 45,
+                          borderWidth: 1,
 
-                          marginTop: 15,
+                          marginHorizontal: 8,
+                          borderColor: "rgb(199, 196, 196)",
+                          borderRadius: 10,
+                          backgroundColor: "white",
+                          textAlign: "center",
                         }}
-                        onPress={() => handleSignUp()}
-                      >
-                        <Button
+                        maxLength={1}
+                        keyboardType="numeric"
+                        value={value}
+                      />
+                    ))}
+                  </View>
+                </View>
+              )} */}
+              {!showOtp && (
+                <>
+                  <TextInput
+                    style={styles.input}
+                    secureTextEntry
+                    value={userInfo.password}
+                    placeholder="Password"
+                    onChangeText={(value) => {
+                      setUserInfo({ ...userInfo, password: value });
+                    }}
+                  />
 
-                          text="Register" width={350} height={60} />
-                      </TouchableOpacity>
-                    )
-                  }
-
+                  {required && (
+                    <View
+                    //  style={commonStyles.errorContainer}
+                    >
+                      <Entypo name="cross" size={18} color={"red"} />
+                    </View>
+                  )}
                 </>
               )}
 
-              <TouchableOpacity
-                style={{
-                  padding: 16,
-                  borderRadius: 8,
-                  marginHorizontal: 16,
-                  marginBottom: 100,
+              {showOtp && (
+                <>
+                  <Text
+                    style={{
+                      color: "#000",
+                      fontSize: w(14),
+                      fontFamily: ff.deckMedium,
+                      textAlign: "center",
+                    }}
+                  >
+                    Enter 4-digit otp to verify Phone
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      paddingHorizontal: "10%",
+                    }}
+                  >
+                    {otp.map((value, index) => (
+                      <TextInput
+                        key={index}
+                        // Assuming inputRefs is defined elsewhere in your component
+                        ref={(ref) => (otpRefs.current[index] = ref)}
+                        onChangeText={(text) => handleOtpChange(text, index)}
+                        onKeyPress={(e) => handleKeyPress(e, index)}
+                        style={{
+                          width: 50,
+                          height: 50,
+                          borderWidth: 1,
+                          borderColor: "lightgray",
+                          borderRadius: 10,
+                          backgroundColor: "white",
+                          textAlign: "center",
+                          fontFamily: ff.deckBold,
+                          fontSize: w(20),
+                        }}
+                        maxLength={1}
+                        keyboardType="numeric"
+                        value={value}
+                      />
+                    ))}
+                  </View>
+                  <Text
+                    style={{
+                      color: "#000",
+                      fontSize: w(14),
+                      fontFamily: ff.deckMedium,
+                      textAlign: "center",
+                    }}
+                  >
+                    OTP has been sent to your registered Mobile Number {"\n"}
+                    +91-{maskPhoneNumber(userInfo.phone)}
+                  </Text>
+                </>
+              )}
 
-                  // marginTop: 15,
+              <View
+                style={{
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: 40,
                 }}
-                onPress={() => router.back()}
               >
-                <Text
+                {buttonSpinner ? (
+                  <ActivityIndicator size="large" color="rgb(184, 196, 71)" />
+                ) : (
+                  <TouchableOpacity
+                    style={{
+                      padding: 20,
+                      borderRadius: 8,
+                      marginHorizontal: 16,
+
+                      marginTop: 15,
+                    }}
+                    onPress={() => (showOtp ? handleSignUp() : sendOtp())}
+                  >
+                    <Button
+                      text={showOtp ? "Submit" : "Register"}
+                      width={w(300)}
+                    />
+                  </TouchableOpacity>
+                )}
+
+                <TouchableOpacity
                   style={{
-                    // color: "white",
-                    textAlign: "center",
-                    fontSize: 16,
+                    paddingHorizontal: w(16),
+                    paddingVertical: w(6),
+                    borderRadius: 8,
+                    marginHorizontal: 16,
+                    marginBottom: 100,
+                    marginTop: h(15),
+                    borderWidth: 1,
+                    borderColor: "#a7a7a7",
                   }}
+                  onPress={() => router.back()}
                 >
-                  Cancel
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={{
+                      // color: "white",
+                      textAlign: "center",
+                      fontSize: 16,
+                    }}
+                  >
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </KeyboardAvoidingView>
-      </View>
+          </KeyboardAvoidingView>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -611,13 +617,13 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
+    position: "relative",
   },
   content: {
     flex: 1,
   },
   backgroundObject: {
-    position: 'absolute',
+    position: "absolute",
     width: 259.33,
     height: 213.44,
     left: -100,
@@ -626,14 +632,9 @@ const styles = StyleSheet.create({
   },
   signInImage: {
     width: "60%",
-    height: 300,
-    marginBottom: 80,
-    paddingTop:30,
-
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-
     alignSelf: "center",
     marginTop: 0,
   },
@@ -665,12 +666,12 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 55,
-    marginHorizontal: 16,
-    borderRadius: 8,
-    paddingLeft: 35,
+    borderRadius: 20,
+    paddingLeft: w(55),
     fontSize: 16,
-    backgroundColor: "white",
-    color: "#A1A1A1",
+    backgroundColor: "#e6e6e6",
+    color: "#434343",
+    fontFamily: ff.deckMedium,
   },
   visibleIcon: {
     position: "absolute",

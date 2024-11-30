@@ -1,51 +1,41 @@
 // import ProfileScreen from "@/screens/profile/profile.screen";
 
-import Header from "@/components/Header";
-
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Fontisto, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   View,
   Text,
   StyleSheet,
   Image,
-
-
   TouchableOpacity,
   Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { LinearGradient as LinearBackground } from 'expo-linear-gradient';
+import { LinearGradient as LinearBackground } from "expo-linear-gradient";
 
-
-
-
-
-const generateShadesOfBlue = () => {
-  // Function to generate shades of blue dynamically
-  // This example uses a simple approach to generate shades of blue.
-  // You can adjust the logic to generate the shades as per your requirement.
-  const shadesOfBlue = [
-
-
-    '#00BFFF', // Deep Sky Blue
-    '#1E90FF', // Dodger Blue
-    '#4169E1', // Royal Blue
-  ];
-  return shadesOfBlue.sort(() => 0.5 - Math.random()).slice(0, 3);
-};
-
+// const generateShadesOfBlue = () => {
+//   // Function to generate shades of blue dynamically
+//   // This example uses a simple approach to generate shades of blue.
+//   // You can adjust the logic to generate the shades as per your requirement.
+//   const shadesOfBlue = [
+//     "#00BFFF", // Deep Sky Blue
+//     "#1E90FF", // Dodger Blue
+//     "#4169E1", // Royal Blue
+//   ];
+//   return shadesOfBlue.sort(() => 0.5 - Math.random()).slice(0, 3);
+// };
 
 import { useDispatch, useSelector } from "react-redux";
 import { resetUserState } from "@/redux/userSlice";
 import { resetAppState } from "@/redux/appSlice";
 import { resetBookingState } from "@/redux/bookingSlice";
+import { h, w } from "@/constants/size";
+import ff from "@/constants/fonts";
 export default function profile() {
-
   const dispatch = useDispatch();
 
   const logout = async () => {
@@ -55,7 +45,7 @@ export default function profile() {
     dispatch(resetAppState());
     dispatch(resetBookingState());
 
-    router.push("(routes)/welcome");
+    router.push("(routes)/welcome" as any);
   };
 
   const userDetails = useSelector((state: any) => state.user);
@@ -63,87 +53,75 @@ export default function profile() {
   // console.log("-------------->",JSON.parse(userDetails));
   // console.log("-------------->+++++++", JSON.parse(userDetails.details));
   const userData = JSON.parse(userDetails?.details)?.user;
-  const getInitials = (name: string) => {
-    let initials = name.match(/\b\w/g) || [];
-    initials = (
-      (initials.shift() || "") + (initials.pop() || "")
-    ).toUpperCase();
-    return initials;
-  };
-  const { width } = Dimensions.get('window');
-  const [colors, setColors] = useState(generateShadesOfBlue());
+  // const getInitials = (name: string) => {
+  //   let initials = name.match(/\b\w/g) || [];
+  //   initials = (
+  //     (initials.shift() || "") + (initials.pop() || "")
+  //   ).toUpperCase();
+  //   return initials;
+  // };
+  const { width } = Dimensions.get("window");
+  // const [colors, setColors] = useState(generateShadesOfBlue());
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      // Generate new shades of blue dynamically
-      setColors(generateShadesOfBlue());
-    }, 3000); // Change colors every 3 seconds
-  
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, []);
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     // Generate new shades of blue dynamically
+  //     setColors(generateShadesOfBlue());
+  // //   }, 3000); // Change colors every 3 seconds
+
+  //   return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  // }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, }}>
-       <LinearBackground
-        colors={colors}
+    <SafeAreaView style={{ flex: 1 }}>
+      <LinearBackground
+        colors={["#0077B6", "#0077B6"]}
         style={{
           flex: 1,
           width: width,
         }}
       >
-
-{/* 
-        <View
+        <Text
           style={{
-            marginTop: 0,
-
-
+            color: "#fff",
+            fontSize: w(30),
+            fontFamily: ff.deckMedium,
+            margin: w(30),
           }}
         >
-          <Header color="white" />
-        </View> */}
-
+          My Profile
+        </Text>
       </LinearBackground>
-    
-       
+
       <View
         style={{
           flex: 1,
           zIndex: 3,
-          borderRadius: 250,
+          borderRadius: w(25),
           borderBottomEndRadius: 0,
           borderBottomStartRadius: 0,
           backgroundColor: "white",
           position: "absolute",
           bottom: 0,
-          height: "70%",
+          height: "75%",
           width: "100%",
           justifyContent: "flex-start",
-          // borderColor: "black",
-
-          // justifyContent: "center",
-          // alignItems: "center",
         }}
       >
-        
-        
         <View
           style={{
-            // position: "relative",
-            // bottom:50,
-
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
             position: "relative",
-            bottom: 30,
+            top: "-20%",
           }}
         >
           <View
             style={{
-              width: 100,
-              height: 100,
-              borderRadius: 100,
+              width: w(140),
+              height: w(140),
+              borderRadius: 400,
               backgroundColor: "#007422", // Example background color
               justifyContent: "center",
               alignItems: "center",
@@ -154,26 +132,18 @@ export default function profile() {
               source={{
                 uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr_IULLOXJT80cLu-eRqkRGrHY23yLEx4p0w&s=10",
               }}
-              width={100}
-              height={100}
               style={{
-                borderRadius: 100,
+                borderRadius: 400,
+                width: w(140),
+                height: w(140),
               }}
             />
-            {/* <Text
-              style={{
-                color: "#ffffff", // Example text color
-                fontSize: 16,
-              }}
-            >
-              {getInitials("HARSH")}
-            </Text> */}
           </View>
         </View>
 
         <View
           style={{
-            marginTop: -20,
+            marginTop: "-15%",
             flexDirection: "column",
             gap: 10,
             marginHorizontal: 20,
@@ -182,12 +152,20 @@ export default function profile() {
           }}
         >
           <Text
-            style={{ fontSize: 20, fontWeight: "bold", alignSelf: "center" }}
+            style={{
+              fontSize: 22,
+              fontFamily: ff.deckMedium,
+              alignSelf: "center",
+            }}
           >
             {userData?.username || "Harsh"}
           </Text>
           <Text
-            style={{ fontSize: 16, fontWeight: "bold", alignSelf: "center" }}
+            style={{
+              fontSize: 20,
+              fontFamily: ff.deckMedium,
+              alignSelf: "center",
+            }}
           >
             <Text> {userData?.email || "Harsh@gmail.com"}</Text>
           </Text>
@@ -198,18 +176,22 @@ export default function profile() {
               justifyContent: "center",
               gap: 10,
               marginTop: 20,
-              borderWidth: 4,
+              borderWidth: 1,
               width: "60%",
               height: 50,
-              // justifyContent: "center",
               alignItems: "center",
-
-              borderRadius: 10,
-              // borderBlockColor: "lightblue",
+              borderRadius: w(6),
               borderColor: "lightblue",
             }}
           >
-            <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }}>
+            <Feather name="edit" size={20} />
+            <Text
+              style={{
+                fontSize: 18,
+                fontFamily: ff.deckMedium,
+                color: "black",
+              }}
+            >
               Edit Profile
             </Text>
           </View>
@@ -225,8 +207,8 @@ export default function profile() {
           >
             <TouchableOpacity
               style={{
-                borderWidth: 2,
-                borderColor: "black",
+                borderWidth: 1,
+                borderColor: "#818181",
 
                 height: 45,
                 gap: 0,
@@ -239,20 +221,22 @@ export default function profile() {
               <View
                 style={{
                   height: 30,
-
                   alignItems: "center",
                   flexDirection: "row",
                   justifyContent: "flex-start",
                   marginHorizontal: 20,
-
                   gap: 20,
                 }}
               >
-                <Ionicons name="book" size={30} color="black" />
+                <Ionicons
+                  name="bookmarks-outline"
+                  color={"#263238"}
+                  size={20}
+                />
                 <Text
                   style={{
-                    fontSize: 15,
-                    fontWeight: "semibold",
+                    fontSize: 17,
+                    fontFamily: ff.deckMedium,
                     color: "black",
                   }}
                 >
@@ -263,8 +247,9 @@ export default function profile() {
 
             <TouchableOpacity
               style={{
-                borderWidth: 2,
-                borderColor: "black",
+                borderWidth: 1,
+                borderColor: "#818181",
+
                 marginTop: 10,
                 height: 45,
                 gap: 10,
@@ -287,11 +272,11 @@ export default function profile() {
                   gap: 20,
                 }}
               >
-                <Ionicons name="key" size={30} color="black" />
+                <Fontisto name="locked" size={20} color="#4f4f4f" />
                 <Text
                   style={{
-                    fontSize: 15,
-                    fontWeight: "semibold",
+                    fontSize: 17,
+                    fontFamily: ff.deckMedium,
                     color: "black",
                   }}
                 >
@@ -301,34 +286,55 @@ export default function profile() {
             </TouchableOpacity>
           </View>
           <View
-          style={{
-            marginTop: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginHorizontal: 20,
-          }}
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginHorizontal: 20,
+              borderWidth: 0.3,
+              padding: w(10),
+              borderRadius: 3,
+              borderColor: "#949494",
+            }}
           >
-            <Text>Terms & Conditions</Text>
+            <Text
+              style={{
+                fontSize: 20,
+                fontFamily: ff.deckMedium,
+                color: "black",
+                marginRight: 10,
+              }}
+            >
+              Terms & Conditions
+            </Text>
             <Ionicons name="arrow-forward" size={20} color="black" />
           </View>
-
-
+        </View>
+        <View
+          style={{
+            borderTopWidth: 1,
+            borderStyle: "dashed",
+            borderColor: "#000",
+            marginHorizontal: w(20),
+            marginTop: h(35),
+          }}
+        >
           <TouchableOpacity onPress={() => logout()}>
             <View
               style={{
                 marginTop: 10,
                 flexDirection: "row",
-
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
+                marginLeft: w(15),
               }}
             >
               <Text
                 style={{
-                  fontSize: 15,
-                  fontWeight: "semibold",
-                  color: "red",
+                  fontSize: 20,
+                  fontFamily: ff.deckBold,
+                  color: "#000",
                   alignSelf: "flex-start",
                 }}
               >

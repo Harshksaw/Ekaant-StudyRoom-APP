@@ -14,8 +14,6 @@ export default function useUser() {
     const subscription = async () => {
       const accessToken = await AsyncStorage.getItem("token");
 
-      console.log(accessToken, "accessToken");
-
       await axios
         .get(`${BACKEND}/api/v1/auth/me`, {
           headers: {
@@ -37,7 +35,7 @@ export default function useUser() {
           if (error.response && error.response.status === 403) {
             if (!intervalId) {
               const id = setInterval(() => {
-                setRefetch(prev => !prev);
+                setRefetch((prev) => !prev);
               }, 30000);
               setIntervalId(id);
             }
