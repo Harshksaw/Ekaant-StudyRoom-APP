@@ -1,4 +1,9 @@
-
+import { NoBookingsSVG } from "@/assets";
+import Header from "@/components/Header";
+import StarRating from "@/components/Ratinstar";
+import ff from "@/constants/fonts";
+import { w } from "@/constants/size";
+import { fetchRoomData } from "@/hooks/api/library";
 import { BACKEND } from "@/utils/config";
 import { calculatePeriod } from "@/utils/date";
 import { getUserId } from "@/utils/keys";
@@ -15,7 +20,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
-
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -27,7 +31,12 @@ interface ApprovalStatusProps {
 const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
   return (
     <View style={styles.container}>
-      <Text style={isApproved === "CONFIRMED" ? styles.approved : styles.notApproved}>
+      <Text
+        style={[
+          isApproved ? styles.approved : styles.notApproved,
+          { fontFamily: ff.deckSemiBold, fontSize: w(12) },
+        ]}
+      >
         {isApproved ? "Paid" : "Not Paid"}
       </Text>
     </View>
@@ -35,33 +44,31 @@ const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
 };
 
 export default function Bookings() {
-  const [data, setData] = useState(null);
-
+  const [data, setData] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
-    console.log("🚀 ~ getBookings ~ userId:", userId)
 
     if (userId) {
       // Check if userId is not null
-      const res = await axios.get(
-        `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
-      );
+      try {
+        const res = await axios.get(
+          `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
+        );
 
-      if(res.status === 200) {
-        Toast.show("Bookings Fetched", {
-          type: "success",
-          duration: 2000,
-          
-        })
+        if (res.status === 200) {
+          Toast.show("Bookings Fetched", {
+            type: "success",
+            duration: 2000,
+          });
+        }
+
+        setData(res.data.bookings);
+      } catch (error) {
+        console.error(error, "this is error");
       }
-      console.log("userID---->", res.data.bookings);
-
-      setData(res.data.bookings);
-      console.log("🚀 ~ getBookings ~ res.data.bookings:", res.data.bookings)
     } else {
-      console.log("UserId is null");
     }
   };
 
@@ -70,11 +77,9 @@ export default function Bookings() {
       await getBookings();
       // const fetchedData = await axios.post();
 
-      // console.log("-------------", fetchedData.data);
       // setData(fetchedData.data || []);
     };
     getBookingData();
-    console.log("Data+++", data);
   }, []);
 
   const onRefresh = useCallback(() => {
@@ -83,7 +88,6 @@ export default function Bookings() {
       setRefreshing(false);
     }, 2000);
   }, []);
-
   return (
     <SafeAreaView
       style={{
@@ -98,15 +102,18 @@ export default function Bookings() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "flex-start",
+          borderBottomWidth: 1.5,
+          paddingBottom: 5,
         }}
       >
         <Text
           style={{
-            margin: 20,
             fontSize: 30,
-            fontWeight: "bold",
-            marginTop: 20,
+            fontFamily: ff.displayBlack,
             color: "black",
+            textDecorationStyle: "solid",
+            marginTop: 20,
+            marginLeft: 30,
           }}
         >
           My Bookings
@@ -116,26 +123,20 @@ export default function Bookings() {
       <View
         style={{
           flex: 1,
-
-          // width: "80%",
-          // justifyContent: "center",
-          // alignItems: "center",
         }}
       >
         <ScrollView
           style={{
             flex: 1,
-
+            marginTop: 15,
             marginHorizontal: 10,
             paddingHorizontal: 10,
-
-            // backgroundColor: "yellow",
           }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          {data && data.length == 0 && (
+          {data && data?.length == 0 && (
             <TouchableOpacity
               onPress={() => getBookings()}
               style={{
@@ -168,21 +169,19 @@ export default function Bookings() {
               <TouchableOpacity
               key={index}
                 style={{
-                  borderRadius: 24,
-                  borderWidth: 1,
-                  borderColor: "lightgray",
-                  marginBottom: 4,
-                  padding: 2,
+                  borderRadius: 15,
+                  borderWidth: 1.5,
+                  borderColor: "#dcd8da",
+                  marginBottom: 13,
+                  padding: 8,
                 }}
-
-                // onPress={() =>
-                //   // console.log("Item", item)
-                //   router.push({
-                //     pathname: "/(routes)/library/checkout.screen",
-                //     params: { item: JSON.stringify(item) },
-                //   })
-                // }
-              
+                key={item._id}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(routes)/library/checkout.screen",
+                    params: { item: JSON.stringify(item) },
+                  })
+                }
               >
                 <View style={styles.card}>
                   <Image
@@ -191,48 +190,44 @@ export default function Bookings() {
                         item.libraryId?.images[0] ||
                         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr_IULLOXJT80cLu-eRqkRGrHY23yLEx4p0w&s=10",
                     }}
-                    style={{ width: 100, height: 100, borderRadius: 20 }}
+                    style={{
+                      width: 140,
+                      height: 120,
+                      borderRadius: 10,
+                      aspectRatio: 16 / 15,
+                    }}
                   />
                   <View
                     style={{
                       flex: 1,
-
                       flexDirection: "column",
-                      // width: 200,
                       marginLeft: 0,
-                      // justifyContent: "space-between",
                       alignItems: "flex-start",
                     }}
                   >
                     <View
                       style={{
                         flex: 1,
-                        // width: 250,
-
-                        // marginHorizontal: 10,
                         flexDirection: "column",
                         justifyContent: "space-evenly",
                         alignItems: "flex-start",
-
-                        // justifyContent:'flex-start',
                       }}
                     >
                       <View
                         style={{
                           width: "100%",
-
                           flexDirection: "row",
-
                           alignItems: "center",
                           justifyContent: "space-between",
                         }}
                       >
                         <Text
                           style={{
-                            fontSize: 13.34,
-                            fontWeight: "300",
+                            fontSize: 20,
                             lineHeight: 26.01,
                             textAlign: "left",
+                            fontFamily: ff.deckMedium,
+                            letterSpacing: 1,
                           }}
                         >
                           {item?.libraryId.name
@@ -257,7 +252,7 @@ export default function Bookings() {
                         <Text
                           style={{
                             fontSize: 12.14,
-                            fontWeight: "300",
+                            fontFamily: ff.deckRegular,
                             lineHeight: 18.21,
                             textAlign: "left",
                           }}
@@ -276,12 +271,12 @@ export default function Bookings() {
                         <Text
                           style={{
                             fontSize: 12.14,
-                            fontWeight: "300",
+                            fontFamily: ff.deckRegular,
                             lineHeight: 18.21,
                             textAlign: "left",
                           }}
                         >
-                          Period{" "}
+                          Period:{" "}
                           {calculatePeriod(
                             item.bookingDate,
                             item.bookingPeriod
@@ -293,12 +288,10 @@ export default function Bookings() {
                     <View
                       style={{
                         flex: 1,
-
                         height: 10,
                         width: 200,
                         flexDirection: "row",
                         paddingRight: 20,
-
                         justifyContent: "space-between",
                         // alignItems: "space-between",
                       }}
@@ -315,7 +308,7 @@ export default function Bookings() {
                           size={16}
                           color="black"
                         />
-                        <Text>AC </Text>
+                        <Text style={{ fontFamily: ff.deckMedium }}>AC</Text>
                       </View>
 
                       <View
@@ -326,7 +319,9 @@ export default function Bookings() {
                       >
                         <Ionicons name="location" size={16} color="black" />
 
-                        <Text>{item.distance || "2 KMs"}</Text>
+                        <Text style={{ fontFamily: ff.deckMedium }}>
+                          {item.distance || "N/A KMs"}
+                        </Text>
                       </View>
                     </View>
                   </View>
@@ -369,11 +364,10 @@ const styles = StyleSheet.create({
     margin: 5,
     // backgroundColor: "red",
     // padding:10,
-    gap: 10,
+    gap: 18,
     borderRadius: 5,
     flexDirection: "row",
-    // alignItems: "space-between",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
 
     ...(Platform.OS === "ios" && {
       marginBottom: 10,
@@ -381,5 +375,8 @@ const styles = StyleSheet.create({
       borderRadius: 20,
       padding: 5,
     }),
+
+    // justifyContent: "flex-start",
+    alignItems: "center",
   },
 });

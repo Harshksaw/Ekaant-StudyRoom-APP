@@ -1,23 +1,26 @@
 import { DeskGreen } from "@/assets";
+import ff from "@/constants/fonts";
+import { w } from "@/constants/size";
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Image, Text, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+} from "react-native";
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect }) => {
-console.log("🚀 ~ Seat ~ seatData:", seatData)
-
-  
-  const isFullyBooked = seatData.timeSlots.every(slot => slot.booked);
-  const isPartiallyBooked = seatData.timeSlots.some(slot => slot.booked);
+  const isFullyBooked = seatData.timeSlots.every((slot) => slot.booked);
+  const isPartiallyBooked = seatData.timeSlots.some((slot) => slot.booked);
 
   const getIcon = () => {
     if (isFullyBooked) {
-      return <DeskGreen fill={"#e41818"}/>
+      return <DeskGreen fill={"#ffcc7f64"} />;
     } else if (isPartiallyBooked) {
-      return <DeskGreen />
-      
+      return <DeskGreen />;
     } else {
-      return <DeskGreen fill={"#07f07b"}/>
-
+      return <DeskGreen fill={"#07f07b"} />;
     }
   };
 
@@ -27,25 +30,17 @@ console.log("🚀 ~ Seat ~ seatData:", seatData)
       style={styles.seat(isFullyBooked, isSelected)}
     >
       {getIcon()}
-      {/* <Image source={getIcon()} style={{ width: 50, height: 50 }} /> */}
-      <Text>{seatData.seatLabel}</Text>
+      <Text style={{ fontFamily: ff.deckRegular, fontSize: w(12) }}>
+        {seatData.seatLabel}
+      </Text>
     </TouchableOpacity>
   );
-
 };
 
 const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
   const [selectedSeat, setSelectedSeat] = useState(null);
 
-
-
   const handleSelect = (seatData) => {
-
-    // console.log(selectedSeat, "----23");
-    // const isFullyBooked = selectedSeat.timeSlots.every(slot => slot.booked);
-  // const isPartiallyBooked = selectedSeat.timeSlots.some(slot => slot.booked);
-
-
     if (selectedSeat && seatData.seatId === selectedSeat.seatId) {
       setSelectedSeat(null);
       onSeatSelect(null);
@@ -57,15 +52,21 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
 
   const createSeatGrid = () => {
     // Find matrix dimensions based on the max row and column in layout
-    const maxRow = Math.max(...layout.map(seat => parseInt(seat.seatId.split('-')[0])));
-    const maxCol = Math.max(...layout.map(seat => parseInt(seat.seatId.split('-')[1])));
-    
+    const maxRow = Math.max(
+      ...layout.map((seat) => parseInt(seat.seatId.split("-")[0]))
+    );
+    const maxCol = Math.max(
+      ...layout.map((seat) => parseInt(seat.seatId.split("-")[1]))
+    );
+
     // Create a matrix filled with null to start
-    const matrix = Array.from({ length: maxRow + 1 }, () => Array(maxCol + 1).fill(null));
+    const matrix = Array.from({ length: maxRow + 1 }, () =>
+      Array(maxCol + 1).fill(null)
+    );
 
     // Populate matrix with seat objects
     layout.forEach((seat) => {
-      const [row, col] = seat.seatId.split('-').map(Number);
+      const [row, col] = seat.seatId.split("-").map(Number);
       matrix[row][col] = seat;
     });
 
@@ -74,8 +75,11 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
       <View key={`row-${rowIndex}`} style={styles.seatRow}>
         {row.map((seat, colIndex) => {
           if (seat) {
-            const isSelected = selectedSeat && seat.seatId === selectedSeat.seatId;
-            const isBooked = bookedSeats.some(bookedSeat => bookedSeat.seatId === seat.seatId);
+            const isSelected =
+              selectedSeat && seat.seatId === selectedSeat.seatId;
+            const isBooked = bookedSeats.some(
+              (bookedSeat) => bookedSeat.seatId === seat.seatId
+            );
 
             return (
               <Seat
@@ -88,42 +92,35 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
             );
           }
           // Render an invisible placeholder for empty seats
-          return <View key={`${rowIndex}-${colIndex}`} style={styles.emptySeat} />;
+          return (
+            <View key={`${rowIndex}-${colIndex}`} style={styles.emptySeat} />
+          );
         })}
       </View>
     ));
   };
 
-  return(
-    <ScrollView horizontal={true}
-    showsHorizontalScrollIndicator={false}
-    >
+  return (
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
       <View style={styles.container}>{createSeatGrid()}</View>
     </ScrollView>
   );
-
 };
 
-
-
 export default function Seats({ onSeatSelect, SeatLayout, currentRoom }) {
-  console.log("🚀 ~ Seats ~ SeatLayout:", SeatLayout);
-
   const handleSeatSelect = (selectedSeat) => {
     onSeatSelect(selectedSeat);
-    console.log("Selected Seat:", selectedSeat);
   };
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-    <SeatsComponent
-      layout={SeatLayout}
-      bookedSeats={[]}
-      onSeatSelect={handleSeatSelect}
-      currentRoom={currentRoom}
-    />
+      <SeatsComponent
+        layout={SeatLayout}
+        bookedSeats={[]}
+        onSeatSelect={handleSeatSelect}
+        currentRoom={currentRoom}
+      />
     </ScrollView>
-
   );
 }
 const styles = StyleSheet.create({
@@ -138,13 +135,19 @@ const styles = StyleSheet.create({
     flexWrap: "nowrap",
   },
   seat: (isBooked, isSelected) => ({
-    width: 70,
-    height: 70,
     justifyContent: "center",
     alignItems: "center",
     margin: 5,
-    borderRadius: 10,
-    backgroundColor: isBooked ? "red" : isSelected ? "#6f82f2" : "transparent",
+    borderRadius: 7,
+    backgroundColor: isBooked
+      ? "#ffcc7f64"
+      : isSelected
+      ? "#8cf39c7d"
+      : "transparent",
+    borderWidth: 1.3,
+    borderColor: "#0077B6",
+    padding: w(2),
+    paddingHorizontal: w(6),
   }),
   emptySeat: {
     width: 70,

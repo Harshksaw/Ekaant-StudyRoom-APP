@@ -33,7 +33,9 @@ import {
   Poppins_800ExtraBold_Italic,
   Poppins_900Black,
   Poppins_900Black_Italic,
-} from '@expo-google-fonts/poppins';
+} from "@expo-google-fonts/poppins";
+import ff from "@/constants/fonts";
+import { vw } from "@/constants/size";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -58,9 +60,6 @@ export default function Home() {
     Poppins_900Black_Italic,
   });
 
-
-
-
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
@@ -74,13 +73,11 @@ export default function Home() {
       <View style={styles.view1}>
         <Text style={styles.text}>
           Study Anywhere & Anytime{" "}
-          <Text style={{ color: "#0077B6"
-
-,
-fontFamily: 'Poppins_100Regular',
-
-
-           }}>
+          <Text
+            style={{
+              color: "#0077B6",
+            }}
+          >
             Book Your Seat
           </Text>{" "}
           Now
@@ -90,72 +87,58 @@ fontFamily: 'Poppins_100Regular',
           style={{
             flexDirection: "column",
             gap: 5,
-            marginVertical: 0,
+            alignItems: "center",
           }}
         >
-          <ImageBackground
+          <Image
             source={{
               uri: "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597055/assets/zkh6zr51x1fmgrwai59i.png",
             }}
+            contentFit="contain"
             style={{
-              width: 320,
-              height: 280,
+              width: vw * 0.7,
+              height: vw * 0.7,
             }}
           />
-          <ImageBackground
+          <Image
             source={{
               uri: "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597083/assets/cwdjhddyzahxbbp0vaqf.png",
             }}
             style={{
-              width: "auto",
+              width: vw * 0.8,
               height: 60,
-              // width: 320,
-              // height: 5 0,
+              marginTop: 10,
             }}
           />
         </View>
-        <View
-          style={{
-            paddingHorizontal: 20,
-          }}
-        >
-          <Text style={styles.text2}>
-            Reserve library spaces across India with ease
-          </Text>
-        </View>
+
+        <Text style={styles.text2}>
+          Reserve library spaces across India with ease
+        </Text>
       </View>
 
       <View style={styles.view2}>
         <View style={styles.buttonBox}>
           <TouchableOpacity onPress={() => router.push("/(routes)/signup")}>
-            <Button width={300}  
-            text="Get Started"
-          height={60}
-            fontSizeR={22}
-
-            />
-
+            <Button width={300} text="Get Started" height={60} fontSizeR={22} />
           </TouchableOpacity>
-          {/* <linearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.buttonBox}> */}
         </View>
-        {/* </linearGradient> */}
         <Text style={styles.orText}>Or</Text>
 
-        <View style={{}}>
-          <Link href={{ pathname: "login" }}>
-            <Text
-              style={{
-                color: "#0077B6",
-                fontSize: 25,
-                lineHeight: 30,
-                fontWeight: "400",
-                textAlign: "center",
-              }}
-            >
-              Login
-            </Text>
-          </Link>
-        </View>
+        <Link href={{ pathname: "login" }}>
+          <Text
+            style={{
+              color: "#0077B6",
+              fontSize: 25,
+              lineHeight: 30,
+              textAlign: "center",
+              fontFamily: ff.textMedium,
+              letterSpacing: 0.9,
+            }}
+          >
+            Login
+          </Text>
+        </Link>
       </View>
     </SafeAreaView>
   );
@@ -176,7 +159,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   view2: {
-    height: "20%",
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
@@ -184,21 +166,20 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#000000",
-
-    fontSize: 26,
-    fontFamily: 'Poppins_100Regular',
-    // fontWeight: "700",
-marginTop: 25,
+    fontSize: 30,
+    fontFamily: ff.deckBold,
+    marginTop: 25,
     lineHeight: 37,
     textAlign: "center",
+    width: vw * 0.8,
   },
   text2: {
     fontSize: 20,
     lineHeight: 24,
-    fontFamily: 'Poppins_100Regular',
     fontWeight: "400",
     textAlign: "center",
-    marginTop: 20,
+    fontFamily: ff.deckRegular,
+    width: vw * 0.7,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -227,10 +208,9 @@ marginTop: 25,
     textAlign: "center",
   },
   orText: {
-    color: "#8E8E93",
-    fontSize: 16,
-    fontWeight: "600",
-    marginTop: 10,
-    marginBottom: 10,
+    color: "#000",
+    fontSize: 22,
+    marginVertical: 10,
+    fontFamily: ff.deckBold,
   },
 });

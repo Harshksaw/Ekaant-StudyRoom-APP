@@ -1,36 +1,32 @@
-import { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, ScrollView } from 'react-native'
-import moment from 'moment'
-import Date from './date'
+import { useState, useEffect } from "react";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
+import moment from "moment";
+import Date from "./date";
 
-const Calendar = ({ onSelectDate , selected }) => {
-  const [dates, setDates] = useState([])
-  const [scrollPosition, setScrollPosition] = useState(0)
-  const [currentMonth, setCurrentMonth] = useState()
+const Calendar = ({ onSelectDate, selected }) => {
+  const [dates, setDates] = useState([]);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [currentMonth, setCurrentMonth] = useState();
 
   // get the dates from today to 10 days from now, format them as strings and store them in state
   const getDates = () => {
-    const _dates = []
+    const _dates = [];
     for (let i = 0; i < 10; i++) {
-      const date = moment().add(i, 'days')
-      _dates.push(date)
+      const date = moment().add(i, "days");
+      _dates.push(date);
     }
-    setDates(_dates)
-  }
+    setDates(_dates);
+  };
 
   useEffect(() => {
-    getDates()
-  }, [])
+    getDates();
+  }, []);
 
   return (
     <>
-   
       <View style={styles.dateSection}>
         <View style={styles.scroll}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          >
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {dates.map((date, index) => (
               <Date
                 key={index}
@@ -43,25 +39,26 @@ const Calendar = ({ onSelectDate , selected }) => {
         </View>
       </View>
     </>
-  )
-}
+  );
+};
 
-export default Calendar
+export default Calendar;
 
 const styles = StyleSheet.create({
   centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   dateSection: {
-    width: '100%',
-    padding:10,
+    width: "100%",
+    paddingHorizontal: 10,
+    paddingBottom: 10,
   },
   scroll: {
-    height: 100,
+    // height: 100,
   },
-})
+});

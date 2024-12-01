@@ -4,7 +4,6 @@ import { getDateAfterMonths } from "@/utils/date";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 
-
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -12,12 +11,11 @@ import {
   Text,
   SafeAreaView,
   StyleSheet,
-  Touchable,
   TouchableOpacity,
   ActivityIndicator,
   Image,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
@@ -27,23 +25,21 @@ import { Toast } from "react-native-toast-notifications";
 import RazorpayCheckout from "react-native-razorpay";
 
 import getLocationName from "@/utils/location";
+import { vw, w } from "@/constants/size";
+import ff from "@/constants/fonts";
 
 const CheckoutScreen: React.FC = () => {
-  const route = useRoute();
-
   const userDetails = useSelector((state: any) => state.user);
   const [bookingId, setBookingId] = useState(null);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<any>(null);
   const [libraryData, setLibraryData] = useState(null);
   const [location, setLocation] = useState(null);
 
-  // console.log(userDetails, "-----------------")
   //getting data  from booking screen
   const [libraryId, setLibraryId] = useState(null);
   const params = useRoute();
 
   const BookedData = JSON.parse(params.params.item);
-  console.log("🚀 ~ BookedData2:", BookedData)
 
   if (!BookedData) {
     return (
@@ -52,10 +48,6 @@ const CheckoutScreen: React.FC = () => {
       </View>
     );
   }
-
-  console.log(BookedData, "Booked Data");
-
-
 
   const bookingid = BookedData.bookingId;
 
@@ -91,7 +83,6 @@ const CheckoutScreen: React.FC = () => {
       try {
         const userDataId = await AsyncStorage.getItem("userData");
         const userid = JSON.parse(userDataId);
-        console.log("🚀 ~ getLibraryData ~ userid:", userid)
         setUserData(userid);
 
         const res = await axios.post(
@@ -101,11 +92,8 @@ const CheckoutScreen: React.FC = () => {
           }
         );
         setLibraryData(res.data);
-
         return res.data.library;
       } catch (error) {
-        console.log(error);
-
         Toast.show("Error in fetching library details, Try again", {
           dangerColor: "red",
           duration: 2000,
@@ -123,11 +111,9 @@ const CheckoutScreen: React.FC = () => {
 
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
 
-
   // const location = getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
   const getFinalPrice = async () => {
     const price = BookedData?.price || BookedData?.initialPrice;
-    console.log(price, "Price++++");
     setInitialPrice(price);
 
     //registion fee from libary only
@@ -138,7 +124,6 @@ const CheckoutScreen: React.FC = () => {
     setFinalAmount(finalAmount);
   };
   useEffect(() => {
-
     getFinalPrice();
   }, []);
   const PaymentPrice = finalAmount;
@@ -158,25 +143,23 @@ const CheckoutScreen: React.FC = () => {
     }
   }, [isPaymentComplete]);
 
-
-
   const handlePayment = async () => {
     var options = {
       description: "Room Booking",
       image:
         "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png", //logo
-
       currency: "INR",
       key: "rzp_test_hi1B6uwenBy9Ir",
       amount: `${PaymentPrice * 100}`,
       name: "Ekaant",
       order_id: "",
       prefill: {
-        email: `${userData.data.user_id.email}`,
-        contact: `${userData.data.user_id.phoneNumber}`,
-        name: `${userData.data.user_id.username}`,
+        email: `${userData?.data?.user_id?.email}`,
+        contact: `${userData?.data?.user_id?.phoneNumber}`,
+        name: `${userData?.data?.user_id?.username}`,
       },
     };
+
     try {
       const data = await RazorpayCheckout.open(options);
       setPaymentStatus(true);
@@ -190,13 +173,11 @@ const CheckoutScreen: React.FC = () => {
       });
 
       const res = await confirmPayment();
-      console.log("Payment Confirmation", res);
 
-      router.push('/(tabs)/bookings')
-
-
-     
+      router.push("/(tabs)/bookings");
     } catch (error) {
+      console.log(error, "this");
+
       Toast.show("Payment Failed", {
         dangerColor: "red",
         duration: 4000,
@@ -206,7 +187,6 @@ const CheckoutScreen: React.FC = () => {
       setLoading(false);
     }
   };
-  // console.log(userData, "User Data", BookedData?.libraryId);
 
   const confirmPayment = async () => {
     if (!bookingId) {
@@ -225,30 +205,30 @@ const CheckoutScreen: React.FC = () => {
           paymentStatus: paymentStatus,
         }
       );
-      console.log(res.data, "Payment Confirmed 196");
       return true;
     } catch (error) {
-      console.log(error);
       return false;
     }
   };
 
   function formatSeatLabel(seatLabel) {
-    const [row, column] = seatLabel.split('-');
+    const [row, column] = seatLabel.split("-");
     return `Row ${row}, Col ${column}`;
   }
   function formatTimeSlots(timeSlots) {
-    return timeSlots.map(slot => {
-      const { from, to } = slot;
+    return timeSlots
+      .map((slot) => {
+        const { from, to } = slot;
 
-      const formatTime = (time) => {
-        const [hour, minute] = time.split(':');
+        const formatTime = (time) => {
+          const [hour, minute] = time.split(":");
 
-        return `${hour % 12 || 12} ${minute.slice(2,)} `;
-      };
+          return `${hour % 12 || 12} ${minute.slice(2)} `;
+        };
 
-      return `${formatTime(from)} - ${formatTime(to)}`;
-    }).join(', ');
+        return `${formatTime(from)} to ${formatTime(to)}`;
+      })
+      .join("\n");
   }
 
   if (!BookedData || loading) {
@@ -264,13 +244,22 @@ const CheckoutScreen: React.FC = () => {
         flex: 1,
         backgroundColor: "#fff",
         justifyContent: "space-between",
-        // alignItems: "center",
-
         marginTop: 20,
         paddingTop: 50,
       }}
     >
       <View>
+        <Text
+          style={{
+            color: "#000",
+            fontSize: w(30),
+            fontFamily: ff.deckSemiBold,
+            paddingLeft: 20,
+            marginBottom: w(17),
+          }}
+        >
+          Booking Confirmation
+        </Text>
         <View
           style={{
             flexDirection: "row",
@@ -284,7 +273,7 @@ const CheckoutScreen: React.FC = () => {
             <Image
               source={{ uri: BookedData?.libraryId?.images[0] }}
               style={{
-                width: 140,
+                width: vw / 2.5,
                 height: 200,
                 borderRadius: 10,
               }}
@@ -295,87 +284,240 @@ const CheckoutScreen: React.FC = () => {
               flexDirection: "column",
               justifyContent: "space-between",
               alignItems: "flex-start",
-              // height: 100,
               gap: 10,
             }}
           >
             <View
               style={{
-                width: 150,
-                height: 50,
-                borderRadius: 20,
-                backgroundColor: "rgb(148, 230, 200)", // Example background color
+                borderRadius: 5,
+                backgroundColor: "#fff", // Example background color
                 justifyContent: "center",
                 alignItems: "center",
                 marginRight: 10,
+                borderWidth: 1,
+                borderColor: "#828282",
+                paddingVertical: w(5),
+                paddingHorizontal: w(10),
               }}
             >
-              {userDetails.bookingsForFriend ? (
+              {userDetails?.bookingsForFriend ? (
                 <View style={{ flexDirection: "column", alignItems: "center" }}>
-                  <Text>Booking for friend</Text>
-                  <Text>{userDetails?.friendDetails?.name}</Text>
+                  <Text
+                    style={{
+                      color: "#000",
+                      fontSize: w(12),
+                      fontFamily: ff.deckSemiBold,
+                    }}
+                  >
+                    Booking for friend
+                  </Text>
+                  <Text
+                    style={{
+                      color: "#000",
+                      fontSize: w(12),
+                      fontFamily: ff.deckSemiBold,
+                    }}
+                  >
+                    {userDetails?.friendDetails?.name}
+                  </Text>
                 </View>
               ) : (
-                <Text>Booking for SELF</Text>
+                <Text
+                  style={{
+                    color: "#000",
+                    fontSize: w(12),
+                    fontFamily: ff.deckSemiBold,
+                  }}
+                >
+                  Booking for SELF
+                </Text>
               )}
             </View>
 
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+            <Text
+              style={{
+                color: "#000",
+                fontSize: w(20),
+                fontFamily: ff.deckSemiBold,
+              }}
+            >
               {BookedData?.libraryId?.name || "Library Name"}
             </Text>
 
-            <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-              <Ionicons name="time-outline" size={24} color="black" />
-              <Text>Period - {BookedData.bookingPeriod} Month{BookedData.bookingPeriod > 1 ? 's' : ''}</Text>
+            <View
+              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+            >
+              <Ionicons name="time-outline" size={20} color="black" />
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: w(14),
+                  fontFamily: ff.deckMedium,
+                }}
+              >
+                Period - {BookedData.bookingPeriod} Month
+                {BookedData.bookingPeriod > 1 ? "s" : ""}
+              </Text>
             </View>
 
-
-            <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-              <Text>A/C Rooms - {BookedData?.libraryId[0]?.Ac ? "Yes" : "No"}</Text>
+            <View
+              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+            >
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: w(13),
+                  fontFamily: ff.deckMedium,
+                  letterSpacing: 0.5,
+                }}
+              >
+                A/C Rooms - {BookedData?.libraryId[0]?.Ac ? "Yes" : "No"}
+              </Text>
             </View>
           </View>
         </View>
 
         {/* Image and Side Details */}
-        <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 20, alignItems: "center", gap: 40 }}>
-          <View style={{ flexDirection: "row", gap: 10, alignItems: "center", width: 150 }}>
-            <Ionicons name="calendar-outline" size={50} color="black" />
+        <View
+          style={{
+            flexDirection: "row",
+            marginHorizontal: 20,
+            marginTop: 20,
+            alignItems: "center",
+            gap: 40,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              alignItems: "center",
+              width: 150,
+            }}
+          >
+            <Ionicons name="calendar-outline" size={40} color="black" />
             <View style={{ flexDirection: "column", gap: 10 }}>
-              <Text style={{ fontSize: 15, fontWeight: "500" }}>{BookedDate} -</Text>
-              <Text style={{ fontSize: 15, fontWeight: "500" }}>{endDate.toISOString().split("T")[0]}</Text>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: w(14),
+                  fontFamily: ff.textRegular,
+                }}
+              >
+                {BookedDate}
+              </Text>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: w(14),
+                  fontFamily: ff.textRegular,
+                }}
+              >
+                {endDate.toISOString().split("T")[0]}
+              </Text>
             </View>
           </View>
           <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-            < SeatsCheckout />
-            <Text style={{
-              fontSize: 15,
-              fontWeight: "300",
-              color: "black",
-              // textTransform: "uppercase",
-
-              flexDirection: "column",
-              flexWrap: "wrap"
-
-
-            }}>{formatSeatLabel(BookedData?.bookedSeat?.seatLabel)} </Text>
+            <SeatsCheckout />
+            <Text
+              style={{
+                flexDirection: "column",
+                flexWrap: "wrap",
+                color: "#000",
+                fontSize: w(14),
+                fontFamily: ff.deckRegular,
+              }}
+            >
+              {formatSeatLabel(BookedData?.bookedSeat?.seatLabel)}{" "}
+            </Text>
           </View>
         </View>
-        <View style={{ height: 1, backgroundColor: "black", marginHorizontal: 20, marginVertical: 10 }} />
+        <View
+          style={{
+            height: 1,
+            backgroundColor: "black",
+            marginHorizontal: 20,
+            marginVertical: 10,
+          }}
+        />
 
         {/* Payment Summary */}
-        <View style={{ marginHorizontal: 20, marginTop: 20, flexDirection: "column", gap: 15 }}>
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <Text style={{ fontSize: 20, fontWeight: "400" }}>Registration Fee</Text>
-            <Text style={{ fontSize: 20, fontWeight: "400" }}>- ₹{RegistrationFees}</Text>
+        <View
+          style={{
+            marginHorizontal: 20,
+            marginTop: 20,
+            flexDirection: "column",
+            gap: 15,
+          }}
+        >
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text
+              style={{
+                flexDirection: "column",
+                flexWrap: "wrap",
+                color: "#000",
+                fontSize: w(16),
+                fontFamily: ff.deckRegular,
+              }}
+            >
+              Registration Fee
+            </Text>
+            <Text
+              style={{
+                flexDirection: "column",
+                flexWrap: "wrap",
+                color: "#000",
+                fontSize: w(16),
+                fontFamily: ff.deckSemiBold,
+              }}
+            >
+              ₹{RegistrationFees}
+            </Text>
           </View>
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <Text style={{ fontSize: 20, fontWeight: "500" }}>Sub Total</Text>
-            <Text style={{ fontSize: 20, fontWeight: "500" }}>- ₹{initialPrice}</Text>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text
+              style={{
+                flexDirection: "column",
+                flexWrap: "wrap",
+                color: "#000",
+                fontSize: w(16),
+                fontFamily: ff.deckRegular,
+              }}
+            >
+              Sub Total
+            </Text>
+            <Text
+              style={{
+                flexDirection: "column",
+                flexWrap: "wrap",
+                color: "#000",
+                fontSize: w(16),
+                fontFamily: ff.deckSemiBold,
+              }}
+            >
+              ₹{initialPrice}
+            </Text>
           </View>
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
             {BookedData?.libraryId?.[0]?.timeSlot?.map((slot, index) => (
               <View key={index} style={{ flexDirection: "row", gap: 5 }}>
-                <Text>{slot.from || ''} - {slot.to || ''}</Text>
+                <Text
+                  style={{
+                    flexDirection: "column",
+                    flexWrap: "wrap",
+                    color: "#000",
+                    fontSize: w(16),
+                    fontFamily: ff.deckRegular,
+                  }}
+                >
+                  {slot.from || ""} - {slot.to || ""}
+                </Text>
               </View>
             ))}
           </View>
@@ -396,44 +538,78 @@ const CheckoutScreen: React.FC = () => {
                   gap: 10,
                 }}
               >
-                <Text style={{ fontSize: 20, fontWeight: "500" }}>
+                <Text
+                  style={{
+                    flexDirection: "column",
+                    flexWrap: "wrap",
+                    color: "#000",
+                    fontSize: w(16),
+                    fontFamily: ff.deckRegular,
+                  }}
+                >
                   {location?.split(" ").slice(0, 2).join(" ")}{" "}
                 </Text>
               </View>
               <View
-                style={{ flexDirection: "row", justifyContent: "space-between" }}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
               >
-                <Text style={{ fontSize: 15, fontWeight: "300" }}>
+                <Text
+                  style={{
+                    flexDirection: "column",
+                    flexWrap: "wrap",
+                    color: "#000",
+                    fontSize: w(16),
+                    fontFamily: ff.deckRegular,
+                  }}
+                >
                   {location?.split(" ").slice(3, 5).join(" ")}{" "}
                 </Text>
               </View>
             </View>
           </View>
-          <View style={{
-            flexDirection: "row",
-            gap: 10,
-            alignItems: "center",
-            justifyContent: "flex-start",
-            marginTop: 10,
-
-
-          }}>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              // alignItems: "center",
+              justifyContent: "flex-start",
+              marginTop: 10,
+            }}
+          >
             <Note />
-            <View style={{ flexDirection: 'row', gap: 10, }}>
-          
-              <Text style={{ fontSize: 18, fontWeight: '400', maxWidth: '90%' }}>
-              <Text style={{ fontSize: 20, fontWeight: '600', maxWidth: '90%', marginHorizontal:5 }}>
-              Slot Time -
+            <View>
+              <Text
+                style={{
+                  flexDirection: "column",
+                  flexWrap: "wrap",
+                  color: "#000",
+                  fontSize: w(16),
+                  fontFamily: ff.deckSemiBold,
+                }}
+              >
+                Slot Time -
               </Text>
-               {formatTimeSlots(BookedData?.timeSlots || BookedData.bookedSeat.timeSlots)}
+              <Text
+                style={{
+                  flexDirection: "column",
+                  flexWrap: "wrap",
+                  color: "#000",
+                  fontSize: w(16),
+                  fontFamily: ff.deckRegular,
+                  marginRight: w(20),
+                }}
+              >
+                {formatTimeSlots(
+                  BookedData?.timeSlots ?? BookedData.bookedSeat.timeSlots
+                )}
               </Text>
             </View>
           </View>
-
         </View>
       </View>
-
-
 
       {/* Summary */}
 
@@ -449,13 +625,20 @@ const CheckoutScreen: React.FC = () => {
             alignItems: "center",
             padding: 20,
             backgroundColor: "#0077B6",
-            borderRadius: 10,
+            borderRadius: 4,
           }}
         >
-          <Text style={{ color: "#FFFFF5", fontSize: 18, fontWeight: "700", letterSpacing: 2 }}>
+          <Text
+            style={{
+              color: "#FFFFF5",
+              fontSize: w(20),
+              fontFamily: ff.deckBold,
+              letterSpacing: 1.5,
+            }}
+          >
             Total Amount: ₹{finalAmount}
           </Text>
-          <Ionicons name="arrow-forward" size={25} color="white" />
+          <Ionicons name="arrow-forward" size={w(20)} color="white" />
         </View>
       </TouchableOpacity>
     </SafeAreaView>
