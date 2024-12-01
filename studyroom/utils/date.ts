@@ -12,6 +12,7 @@ export function calculatePeriod(bookingDate: string, bookingPeriod: number): str
   
     // Parse the booking date string into a Date object
     const startDate = new Date(bookingDate);
+    console.log("🚀 ~ calculatePeriod ~ bookingDate:", bookingDate)
     
     // Create a new Date object for the end date by adding the booking period to the start date's month
     const endDate = new Date(startDate);

@@ -65,7 +65,7 @@ const CheckoutScreen: React.FC = () => {
   const BookingSlot = BookedData?.timeSlot;
   const RoomNo = BookedData?.roomNo;
   const BookedDate = BookedData?.bookingDate.slice(0, 10);
-  const [modalVisible, setModalVisible] = useState(false);
+
   const [initialPrice, setInitialPrice] = useState(0);
   const [RegistrationFees, setRegistrationFees] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
@@ -78,8 +78,10 @@ const CheckoutScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
 
-    console.log("🚀 ~ useEffect ~ bookingid:", bookingid)
-    setBookingId(bookingid);
+
+    setBookingId( BookedData.bookingId);
+    console.log("🚀 ~ useEffect ~ BookedData.bookedSeat.bookingId:", BookedData.bookingId)
+
     const getLibraryData = async () => {
       const loc = await getLocationName(
         BookedData?.libraryId?.location[0],
@@ -118,6 +120,7 @@ const CheckoutScreen: React.FC = () => {
 
 
 
+
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
 
 
@@ -141,7 +144,7 @@ const CheckoutScreen: React.FC = () => {
   const PaymentPrice = finalAmount;
 
   useEffect(() => {
-    // InvoiceScreen();
+
     if (isinvoiceComplete) {
       router.push({
         pathname: "/library/invoice.screen",
@@ -212,7 +215,7 @@ const CheckoutScreen: React.FC = () => {
     try {
       console.log("Payment Data is 186");
 
-      
+      console.log(bookingId, "-1-1-11-")
       const res = await axios.post(
         `${BACKEND}/api/v1/booking/confirm/${bookingId}`,
         {
@@ -230,28 +233,6 @@ const CheckoutScreen: React.FC = () => {
     }
   };
 
-  // const PaymentScreen = async () => {
-  //   await handlePayment();
-  //   console.log("Payment Screen11");
-
-  //   // if (isPaymentComplete) {
-  //   //   // console.log("Payment Status", paymentStatus);
-  //   //   // console.log("Payment Data", paymentData);
-  //   //   // console.log("PaymentId", paymentId);
-  //   //   // console.log("Payment is complete");
-
-  //   //   const res = await confirmPayment();
-  //   //   console.log("Payment Confirmation", res);
-
-  //   //   router.push('/(tabs)/bookings')
-  //   //   if (res) {
-  //   //     setinvoiceComplete(true);
-  //   //     console.log("Payment Confirmed");
-  //   //   } else {
-  //   //     console.log("Payment Failed");
-  //   //   }
-  //   // }
-  // };
   function formatSeatLabel(seatLabel) {
     const [row, column] = seatLabel.split('-');
     return `Row ${row}, Col ${column}`;

@@ -172,6 +172,7 @@ const BookingScreen: React.FC = () => {
 
 
         const bookingId = response.data.Booking._id;
+        console.log("🚀 ~ PreBook ~ bookingId11:", bookingId)
         setBookingId(bookingId);
 
         if (response.status === 200 || response.status === 201) {
@@ -289,6 +290,7 @@ const BookingScreen: React.FC = () => {
     await updateRoomDetails();
     console.log('Attempting to prebook...');
     const res = await PreBook();
+    console.log("🚀 ~ confirmBooking ~ res:", res)
     setBookingLoader(false);
 
     if (res) {
@@ -303,7 +305,7 @@ const BookingScreen: React.FC = () => {
         price: finalPrice,
       };
 
-      const Bookdata = { ...newBookingData, libraryId: libraryDetails , bookingId:bookingId};
+      const Bookdata = { ...newBookingData, libraryId: libraryDetails , bookingId: res};
       console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
       router.push({
         pathname: "/library/checkout.screen",
@@ -312,7 +314,7 @@ const BookingScreen: React.FC = () => {
         },
       });
     } else {
-      console.log("🚀 ~ confirmBooking ~ res", res)
+      // console.log("🚀 ~ confirmBooking ~ res", res)
       Toast.show("Booking failed. Please try again.", {
         type: "error",
       });

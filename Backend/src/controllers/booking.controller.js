@@ -101,7 +101,7 @@ async function getUserBookings(req, res) {
       bookingStatus:"CONFIRMED",
 
       
-    }).populate("libraryId").exec();
+    }).populate("libraryId")
 
 
     return res.status(StatusCodes.OK).json({ bookings });

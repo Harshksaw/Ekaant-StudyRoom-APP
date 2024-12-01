@@ -1,7 +1,4 @@
-import { NoBookingsSVG } from "@/assets";
-import Header from "@/components/Header";
-import StarRating from "@/components/Ratinstar";
-import { fetchRoomData } from "@/hooks/api/library";
+
 import { BACKEND } from "@/utils/config";
 import { calculatePeriod } from "@/utils/date";
 import { getUserId } from "@/utils/keys";
@@ -25,12 +22,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Toast } from "react-native-toast-notifications";
 
 interface ApprovalStatusProps {
-  isApproved: boolean;
+  isApproved: String;
 }
 const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
   return (
     <View style={styles.container}>
-      <Text style={isApproved ? styles.approved : styles.notApproved}>
+      <Text style={isApproved === "CONFIRMED" ? styles.approved : styles.notApproved}>
         {isApproved ? "Paid" : "Not Paid"}
       </Text>
     </View>
@@ -39,6 +36,7 @@ const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
 
 export default function Bookings() {
   const [data, setData] = useState(null);
+
   const [refreshing, setRefreshing] = useState(false);
 
   const getBookings = async () => {
@@ -61,6 +59,7 @@ export default function Bookings() {
       console.log("userID---->", res.data.bookings);
 
       setData(res.data.bookings);
+      console.log("🚀 ~ getBookings ~ res.data.bookings:", res.data.bookings)
     } else {
       console.log("UserId is null");
     }
@@ -84,7 +83,7 @@ export default function Bookings() {
       setRefreshing(false);
     }, 2000);
   }, []);
-console.log("---d",data)
+
   return (
     <SafeAreaView
       style={{
@@ -92,13 +91,7 @@ console.log("---d",data)
         padding: 0,
       }}
     >
-      {/* <View
-        style={{
-          marginTop: 0,
-        }}
-      >
-        <Header color="black" />
-      </View> */}
+   
 
       <View
         style={{
@@ -173,6 +166,7 @@ console.log("---d",data)
           {data &&
             data.map((item, index) => (
               <TouchableOpacity
+              key={index}
                 style={{
                   borderRadius: 24,
                   borderWidth: 1,
@@ -180,18 +174,15 @@ console.log("---d",data)
                   marginBottom: 4,
                   padding: 2,
                 }}
-                key={item._id}
-                onPress={() =>
-                  // console.log("Item", item)
-                  router.push({
-                    pathname: "/(routes)/library/checkout.screen",
-                    params: { item: JSON.stringify(item) },
-                  })
-                }
-                // onPress={()=> {
-                //   setNotListed(true)
 
-                // }}
+                // onPress={() =>
+                //   // console.log("Item", item)
+                //   router.push({
+                //     pathname: "/(routes)/library/checkout.screen",
+                //     params: { item: JSON.stringify(item) },
+                //   })
+                // }
+              
               >
                 <View style={styles.card}>
                   <Image
@@ -250,7 +241,7 @@ console.log("---d",data)
                             .join(" ")}
                         </Text>
 
-                        <ApprovalStatus isApproved={item.approved} />
+                        <ApprovalStatus isApproved={item.bookingStatus} />
                       </View>
                       <View
                         style={{
@@ -271,7 +262,8 @@ console.log("---d",data)
                             textAlign: "left",
                           }}
                         >
-                          A-4
+                         {/* {
+                        item.bookedSeat.seatLabel} */}
                         </Text>
                       </View>
                       <View
@@ -291,8 +283,8 @@ console.log("---d",data)
                         >
                           Period{" "}
                           {calculatePeriod(
-                            item?.bookingDate,
-                            item?.bookingPeriod
+                            item.bookingDate,
+                            item.bookingPeriod
                           ) || "2 Months"}
                         </Text>
                       </View>
@@ -341,31 +333,7 @@ console.log("---d",data)
                 </View>
               </TouchableOpacity>
 
-              // <View
-              //   key={index}
-              //   style={{
-              //     // width: "100%",
-              //     borderRadius: 40,
 
-              //     backgroundColor: "lightblue",
-              //     padding: 15,
-              //     marginBottom: 15,
-              //     flexDirection: "row",
-              //     justifyContent: "space-between",
-              //     alignItems: "center",
-              //   }}
-              // >
-              //   <View
-              //     style={{
-              //       flexDirection: "column",
-              //       justifyContent: "space-between",
-              //     }}
-              //   >
-              //     <Text>Booking {index + 1}</Text>
-              //     <Text>Room: {item.name}</Text>
-              //   </View>
-              //   <ApprovalStatus isApproved={item.approved} />
-              // </View>
             ))}
         </ScrollView>
       </View>
