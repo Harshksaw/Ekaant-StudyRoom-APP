@@ -198,7 +198,7 @@ const CheckoutScreen: React.FC = () => {
     try {
 
 
-      console.log(bookingId, "-1-1-11-")
+      console.log(bookingId, "-1-1-11-", BookedData)
       const res = await axios.post(
         `${BACKEND}/api/v1/booking/confirm/${bookingId}`,
         {
@@ -206,9 +206,14 @@ const CheckoutScreen: React.FC = () => {
           paymentId: paymentId,
           paymentData: paymentData,
           paymentStatus: paymentStatus,
+          bookingData: BookedData,
         }
       );
-      console.log("🚀 ~ confirmPayment ~ res:", res)
+
+      if(res.data.status === "success") {
+        Toast.show("Payment Success", {});
+      }
+
       return true;
     } catch (error) {
       return false;

@@ -212,7 +212,7 @@ async function ConfrimBooking(req, res) {
     const timeSlot = seat.timeSlots.find(
       (slot) => slot._id.toString() === timeSlotId
     );
-    console.log("🚀 ~ ConfrimBooking ~ timeSlot:", timeSlot)
+
     if (!timeSlot) {
       return res.status(404).json({ error: "Time slot not found" });
     }
