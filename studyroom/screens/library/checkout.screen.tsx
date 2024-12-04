@@ -54,7 +54,9 @@ const CheckoutScreen: React.FC = () => {
   // const BookingDate = BookedData?.bookingDate
   const BookingMonths = BookedData?.bookingPeriod;
   const BookingSeat = BookedData?.bookedSeat;
+  console.log("🚀 ~ BookingSeat:", BookingSeat)
   const BookingSlot = BookedData?.timeSlot;
+  console.log("🚀 ~ BookingSlot:", BookedData)
   const RoomNo = BookedData?.roomNo;
   const BookedDate = BookedData?.bookingDate.slice(0, 10);
 
@@ -173,6 +175,7 @@ const CheckoutScreen: React.FC = () => {
       });
 
       const res = await confirmPayment();
+      console.log("🚀 ~ handlePayment ~ res:", res)
 
       router.push("/(tabs)/bookings");
     } catch (error) {
@@ -193,7 +196,7 @@ const CheckoutScreen: React.FC = () => {
       Toast.show("Booking ID is missing");
     }
     try {
-      console.log("Payment Data is 186");
+
 
       console.log(bookingId, "-1-1-11-")
       const res = await axios.post(
@@ -205,6 +208,7 @@ const CheckoutScreen: React.FC = () => {
           paymentStatus: paymentStatus,
         }
       );
+      console.log("🚀 ~ confirmPayment ~ res:", res)
       return true;
     } catch (error) {
       return false;
@@ -603,7 +607,7 @@ const CheckoutScreen: React.FC = () => {
                 }}
               >
                 {formatTimeSlots(
-                  BookedData?.timeSlots ?? BookedData.bookedSeat.timeSlots
+                  BookedData?.timeSlot ?? BookedData.bookedSeat.timeSlot
                 )}
               </Text>
             </View>

@@ -174,7 +174,7 @@ const BookingScreen: React.FC = () => {
           });
         }
 
-        resetBookingState();
+  
         return bookingId;
       } catch (error) {
         console.error("Error:", error);
@@ -299,6 +299,8 @@ const BookingScreen: React.FC = () => {
           item: JSON.stringify(Bookdata),
         },
       });
+
+            // resetBookingState();
     } else {
       // console.log("🚀 ~ confirmBooking ~ res", res)
       Toast.show("Booking failed. Please try again.", {

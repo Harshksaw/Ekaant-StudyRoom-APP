@@ -2,11 +2,10 @@ const { StatusCodes } = require("http-status-codes");
 
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
-const { User, Invoice} = require("../models");
+const { User, Invoice } = require("../models");
 const { Booking } = require("../models/booking.model");
 const sendInvoiceEmail = require("../utils/mails/invoice.mail");
-
-
+const { Library } = require("../models/library.model");
 
 const JWT_SECRET = "MY_SECRET_KEY";
 const BookingSchema = zod.object({
@@ -51,8 +50,8 @@ async function createBooking(req, res) {
       forFriend,
       bookingPeriod,
     } = req.body;
-    console.log(forFriend)
-    const user = await User.findById( userId );
+    console.log(forFriend);
+    const user = await User.findById(userId);
     // console.log(user);
 
     if (!user) {
@@ -75,11 +74,11 @@ async function createBooking(req, res) {
 
     const newBooking = await Booking.create(bookingData);
 
-  // Now retrieve the booking with populate
-  // const populatedBooking = await 
-  //   .populate("userId")
-  //   .populate("libraryId");
-   
+    // Now retrieve the booking with populate
+    // const populatedBooking = await
+    //   .populate("userId")
+    //   .populate("libraryId");
+
     await newBooking.save();
 
     return res.status(StatusCodes.CREATED).json({
@@ -91,18 +90,16 @@ async function createBooking(req, res) {
   }
 }
 
-
 async function getUserBookings(req, res) {
   try {
-
     const { id } = req.params;
 
-    const bookings = await Booking.find({userId: id},{
-      bookingStatus:"CONFIRMED",
-
-      
-    }).populate("libraryId")
-
+    const bookings = await Booking.find(
+      { userId: id },
+      {
+        bookingStatus: "CONFIRMED",
+      }
+    ).populate("libraryId");
 
     return res.status(StatusCodes.OK).json({ bookings });
   } catch (error) {
@@ -112,13 +109,13 @@ async function getUserBookings(req, res) {
 
 async function getBookingById(req, res) {
   try {
-    console.log(req.body,"getBookingById") 
+    console.log(req.body, "getBookingById");
 
     const { id } = req.body;
-    if(!id){
-      res.status(StatusCodes.BAD_REQUEST).json({ message: 'id not found' });
+    if (!id) {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: "id not found" });
     }
-    const bookings = await Booking.find({_id: id}).populate("userId");
+    const bookings = await Booking.find({ _id: id }).populate("userId");
     return res.status(StatusCodes.OK).json({ bookings });
   } catch (error) {
     console.error(error);
@@ -127,15 +124,17 @@ async function getBookingById(req, res) {
 
 async function getBookingByLibId(req, res) {
   try {
-    console.log(req.body,"getBookingByLibId") 
+    console.log(req.body, "getBookingByLibId");
 
     const { lib_id } = req.body;
-    if(!lib_id){
-      res.status(StatusCodes.BAD_REQUEST).json({ message: 'lib_id not found' });
+    if (!lib_id) {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: "lib_id not found" });
     }
-    const bookings = await Booking.find({libraryId: lib_id}).populate("userId");
-    console.log("🚀 ~ getBookingByLibId ~ bookings:", bookings)
-    
+    const bookings = await Booking.find({ libraryId: lib_id }).populate(
+      "userId"
+    );
+    console.log("🚀 ~ getBookingByLibId ~ bookings:", bookings);
+
     return res.status(StatusCodes.OK).json({
       success: true,
       message: "Bookings fetched successfully",
@@ -150,70 +149,103 @@ async function ConfrimBooking(req, res) {
   try {
     // Find the booking by ID and update it
 
-    const { id } = req.params;
+    // const { id } = req.params;
 
-    const {  bookingId,
-      paymentId,
-      paymentData,
-      } = req.body;
+    const {
+      // bookingId,
+      // paymentId,
+      // paymentData,
+      bookingData,
+    } = req.body;
+    console.log("🚀 ~ ConfrimBooking ~ bookingData:", bookingData);
 
+    // const transactionDetailsData = {
+    //   bookingId,
+    //   paymentId,
+    //   paymentData,
 
-    const transactionDetailsData = {
-      bookingId,
-      paymentId,
-      paymentData,
+    // }
 
+    // const updatedBooking = await Booking.findByIdAndUpdate(
+    //   id,
+    //   {
+    //     $set: {
+    //       transactionDetails: transactionDetailsData,
+    //       paid: true,
+    //       bookingStatus: "CONFIRMED"
+    //     }
+    //   },
+    //   { new: true }
+    // );
+    // console.log("🚀 ~ ConfrimBooking ~ updatedBooking:", updatedBooking)
+    // if (!updatedBooking) {
+    //   throw new Error('Booking not found');
+    // }
 
+    const lib = await Library.findById(bookingData.libraryId._id).populate(
+      "rooms"
+    );
+    const roomNo = bookingData.roomNo;
+    const seatId = bookingData.bookedSeat._id;
+    const timeSlotId = bookingData.timeSlot[0]._id.toString(); // Assuming you want to book the first time slot
+    console.log("🚀 ~ ConfrimBooking ~ timeSlotId:", timeSlotId);
+    console.log("🚀 ~ ConfrimBooking ~ seatId:", seatId);
+
+    const findRoomAndSeat = (roomNo, seatId) => {
+      const room = lib.rooms.find((room) => {
+        return room.roomNo === roomNo;
+      });
+      console.log("🚀 ~ findRoomAndSeat ~ room:", room);
+      // if (!room) {
+      //   return { room: null, seat: null };
+      // }
+
+      const seat = room.seats.find((seat) => seat._id.toString() === seatId);
+      return { room, seat };
+    };
+
+    const { room, seat } = findRoomAndSeat(roomNo, seatId);
+    if (!room || !seat) {
+      return res.status(404).json({ error: "Room or Seat not found" });
     }
-    console.log("🚀 ~ ConfrimBooking ~ transactionDetailsData:", transactionDetailsData)
 
+    const timeSlot = seat.timeSlots.find(
+      (slot) => slot._id.toString() === timeSlotId
+    );
+    console.log("🚀 ~ ConfrimBooking ~ timeSlot:", timeSlot)
+    if (!timeSlot) {
+      return res.status(404).json({ error: "Time slot not found" });
+    }
 
+    if (timeSlot.booked) {
+      return res.status(400).json({ error: "Time slot already booked" });
+    }
 
-        
-        const updatedBooking = await Booking.findByIdAndUpdate(
-          id,
-          {
-            $set: {
-              transactionDetails: transactionDetailsData,
-              paid: true, 
-              bookingStatus: "CONFIRMED"
-            }
-          },
-          { new: true } 
-        );
-        console.log("🚀 ~ ConfrimBooking ~ updatedBooking:", updatedBooking)
-        // if (!updatedBooking) {
-        //   throw new Error('Booking not found');
-        // }
-        return  res.status(200).json({
-          updatedBooking});
+    // Mark the time slot as booked
+    timeSlot.booked = true;
 
-        
-    
+    // Save the updated library document
+    await lib.save();
+    await room.save();
 
-
+    return res.status(200).json({});
   } catch (error) {
     // Handle possible errors
-    console.error('Error confirming booking:', error);
+    console.error("Error confirming booking:", error);
     throw error; // Rethrow or handle as needed
   }
 }
 
-
-
 async function generateInvoice(req, res) {
   try {
     const { bookingId } = req.params;
-    const booking = await Booking.findById(bookingId).populate('userId').exec();
+    const booking = await Booking.findById(bookingId).populate("userId").exec();
 
-    console.log("🚀 ~ generateInvoice ~ booking:", booking)
+    console.log("🚀 ~ generateInvoice ~ booking:", booking);
 
     if (!booking) {
-      return res.status(404).json({ error: 'Booking not found' });
+      return res.status(404).json({ error: "Booking not found" });
     }
-
-
-
 
     // Create new invoice
     const invoice = new Invoice({
@@ -229,34 +261,29 @@ async function generateInvoice(req, res) {
       bookingPeriod: booking.bookingPeriod,
       bookingStatus: booking.bookingStatus,
       approved: booking.approved,
-      timeStamp: booking.timeStamp
+      timeStamp: booking.timeStamp,
     });
     // Save invoice to database
-    
+
     // Send invoice to user
     await sendInvoiceEmail(booking.userId.email, invoice);
-    
+
     await invoice.save();
 
-
-
-    res.status(201).json({ 
+    res.status(201).json({
       success: true,
-      message: 'Invoice generated successfully',
+      message: "Invoice generated successfully",
       data: invoice,
-     });
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      error: 'Failed to generate invoice',
-    message: error.message
-     });
+      error: "Failed to generate invoice",
+      message: error.message,
+    });
   }
- 
-  
 }
-
 
 module.exports = {
   createBooking,
@@ -265,5 +292,5 @@ module.exports = {
   getBookingById,
   getBookingByLibId,
   ConfrimBooking,
-  generateInvoice
+  generateInvoice,
 };
