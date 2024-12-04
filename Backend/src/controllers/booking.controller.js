@@ -37,7 +37,11 @@ function pingBookingController(req, res) {
   return res.json({ message: "Booking controller is up" });
 }
 async function createBooking(req, res) {
+
+
   try {
+
+
     const {
       userId,
       libraryId,
@@ -49,10 +53,15 @@ async function createBooking(req, res) {
       bookingDate,
       forFriend,
       bookingPeriod,
+
     } = req.body;
-    console.log(forFriend);
+
     const user = await User.findById(userId);
-    // console.log(user);
+
+
+    const bookingFinalDate = new Date(bookingDate)
+    bookingFinalDate.setMonth(bookingFinalDate.getMonth() + bookingPeriod);
+
 
     if (!user) {
       return res
@@ -70,6 +79,7 @@ async function createBooking(req, res) {
       bookedSeat,
       bookingDate,
       bookingPeriod,
+      bookingfinalDate : bookingFinalDate,
     };
 
     const newBooking = await Booking.create(bookingData);
@@ -175,6 +185,7 @@ async function ConfrimBooking(req, res) {
           bookingStatus: "CONFIRMED"
         }
       },
+
       { new: true }
     );
     // console.log("🚀 ~ ConfrimBooking ~ updatedBooking:", updatedBooking)

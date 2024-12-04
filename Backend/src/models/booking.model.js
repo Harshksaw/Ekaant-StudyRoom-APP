@@ -59,6 +59,11 @@ const bookingSchema = new mongoose.Schema({
     type: Date,
     required: true, // Assuming this is the date the booking is for
   },
+  bookingFinalDate: {
+    type: Date,
+    required: false, // Assuming this is the final date of
+
+  },
   forFriend: { // Structured as a sub-schema for clarity
     name: { type: String, required: false },
     email: { type: String, required: false },
