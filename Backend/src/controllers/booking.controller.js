@@ -177,7 +177,7 @@ async function ConfrimBooking(req, res) {
       },
       { new: true }
     );
-    console.log("🚀 ~ ConfrimBooking ~ updatedBooking:", updatedBooking)
+    // console.log("🚀 ~ ConfrimBooking ~ updatedBooking:", updatedBooking)
     if (!updatedBooking) {
       throw new Error('Booking not found');
     }
@@ -188,14 +188,14 @@ async function ConfrimBooking(req, res) {
     const roomNo = bookingData.roomNo;
     const seatId = bookingData.bookedSeat._id;
     const timeSlotId = bookingData.timeSlot[0]._id.toString(); // Assuming you want to book the first time slot
-    console.log("🚀 ~ ConfrimBooking ~ timeSlotId:", timeSlotId);
-    console.log("🚀 ~ ConfrimBooking ~ seatId:", seatId);
+    // console.log("🚀 ~ ConfrimBooking ~ timeSlotId:", timeSlotId);
+    // console.log("🚀 ~ ConfrimBooking ~ seatId:", seatId);
 
     const findRoomAndSeat = (roomNo, seatId) => {
       const room = lib.rooms.find((room) => {
         return room.roomNo === roomNo;
       });
-      console.log("🚀 ~ findRoomAndSeat ~ room:", room);
+      // console.log("🚀 ~ findRoomAndSeat ~ room:", room);
       // if (!room) {
       //   return { room: null, seat: null };
       // }
@@ -228,7 +228,11 @@ async function ConfrimBooking(req, res) {
     await lib.save();
     await room.save();
 
-    return res.status(200).json({});
+    return res.status(200).json({
+      success: true,
+      message: "Booking confirmed successfully",
+      data: updatedBooking,
+    });
   } catch (error) {
     // Handle possible errors
     console.error("Error confirming booking:", error);
