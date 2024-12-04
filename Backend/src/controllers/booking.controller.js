@@ -149,38 +149,38 @@ async function ConfrimBooking(req, res) {
   try {
     // Find the booking by ID and update it
 
-    // const { id } = req.params;
+    const { id } = req.params;
 
     const {
-      // bookingId,
-      // paymentId,
-      // paymentData,
+      bookingId,
+      paymentId,
+      paymentData,
       bookingData,
     } = req.body;
-    console.log("🚀 ~ ConfrimBooking ~ bookingData:", bookingData);
 
-    // const transactionDetailsData = {
-    //   bookingId,
-    //   paymentId,
-    //   paymentData,
 
-    // }
+    const transactionDetailsData = {
+      bookingId,
+      paymentId,
+      paymentData,
 
-    // const updatedBooking = await Booking.findByIdAndUpdate(
-    //   id,
-    //   {
-    //     $set: {
-    //       transactionDetails: transactionDetailsData,
-    //       paid: true,
-    //       bookingStatus: "CONFIRMED"
-    //     }
-    //   },
-    //   { new: true }
-    // );
-    // console.log("🚀 ~ ConfrimBooking ~ updatedBooking:", updatedBooking)
-    // if (!updatedBooking) {
-    //   throw new Error('Booking not found');
-    // }
+    }
+
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          transactionDetails: transactionDetailsData,
+          paid: true,
+          bookingStatus: "CONFIRMED"
+        }
+      },
+      { new: true }
+    );
+    console.log("🚀 ~ ConfrimBooking ~ updatedBooking:", updatedBooking)
+    if (!updatedBooking) {
+      throw new Error('Booking not found');
+    }
 
     const lib = await Library.findById(bookingData.libraryId._id).populate(
       "rooms"
