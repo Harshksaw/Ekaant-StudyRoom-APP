@@ -126,7 +126,7 @@ const BookingScreen: React.FC = () => {
 
   const PreBook = async () => {
     const userData = await AsyncStorage.getItem("userData");
-
+    console.log("----",libraryDetails)
     const userid = JSON.parse(userData);
 
     const userId = userid.data?.user_id?._id;
@@ -148,6 +148,8 @@ const BookingScreen: React.FC = () => {
       BookedData.months
     ) {
       try {
+
+        console.log("🚀 ~ PreBook ~ BookedData:", BookedData.slot)
         const response = await axios.post(
           `${BACKEND}/api/v1/booking/createBooking`,
           {

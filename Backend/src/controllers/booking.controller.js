@@ -75,11 +75,11 @@ async function createBooking(req, res) {
       finalPrice,
       roomNo,
       forFriend: !forFriend ? null : forFriend,
-      timeSlot,
+      timeSlotDetails : timeSlot,
       bookedSeat,
       bookingDate,
       bookingPeriod,
-      bookingfinalDate : bookingFinalDate,
+      bookingFinalDate : bookingFinalDate,
     };
 
     const newBooking = await Booking.create(bookingData);
