@@ -183,7 +183,7 @@ async function ConfrimBooking(req, res) {
           transactionDetails: transactionDetailsData,
           paid: true,
           bookingStatus: "CONFIRMED",
-          "timeSlotDetails.$[].booked": true // Mark all time slots as booked
+          "timeSlotDetails.$[].booked": true
         }
       },
 
