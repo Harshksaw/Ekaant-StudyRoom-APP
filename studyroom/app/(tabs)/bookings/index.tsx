@@ -54,7 +54,7 @@ export default function Bookings() {
         const res = await axios.get(
           `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
         );
-          console.log("🚀 ~ getBookings ~ userId:", userId)
+          // console.log("🚀 ~ getBookings ~ userId:", userId)
 
         if (res.status === 200) {
           Toast.show("Bookings Fetched", {
@@ -183,7 +183,7 @@ export default function Bookings() {
                 onPress={() =>
                   router.push({
                     pathname: "/(routes)/invoice",  
-                    params: { item: JSON.stringify(item) },
+                    params: { item: JSON.stringify(item), id: item._id },
                   })
                 }
               >

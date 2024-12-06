@@ -1,8 +1,11 @@
-import React from 'react';
+import { BACKEND } from '@/utils/config';
+import { useRoute } from '@react-navigation/native';
+import axios from 'axios';
+import React, { useEffect } from 'react';
 import { View, Text, SafeAreaView, Button, StyleSheet } from 'react-native';
-import { PDFDocument, Page, Text as PDFText } from 'react-native-pdf-lib';
-import RNFS from 'react-native-fs';
-import Share from 'react-native-share';
+// import { PDFDocument, Page, Text as PDFText } from 'react-native-pdf-lib';
+// import RNFS from 'react-native-fs';
+// import Share from 'react-native-share';
 
 export default function Invoice() {
   const invoiceDetails = {
@@ -14,61 +17,82 @@ export default function Invoice() {
     ],
     total: 200,
   };
+  const id = useRoute()
+  console.log("🚀 ~ Invoice ~ id:", id.params)
 
-  const generatePDF = async () => {
-    const page1 = Page.create()
-      .drawText(`Invoice ID: ${invoiceDetails.id}`, {
-        x: 50,
-        y: 700,
-        size: 20,
-      })
-      .drawText(`Date: ${invoiceDetails.date}`, {
-        x: 50,
-        y: 670,
-        size: 15,
-      })
-      .drawText('Items:', {
-        x: 50,
-        y: 640,
-        size: 15,
-      });
 
-    invoiceDetails.items.forEach((item, index) => {
-      page1.drawText(
-        `${item.description} - Quantity: ${item.quantity} - Price: $${item.price}`,
-        {
-          x: 50,
-          y: 610 - index * 30,
-          size: 12,
-        }
-      );
-    });
-
-    page1.drawText(`Total: $${invoiceDetails.total}`, {
-      x: 50,
-      y: 500,
-      size: 15,
-    });
-
-    const pdfPath = `${RNFS.DocumentDirectoryPath}/invoice.pdf`;
-    const pdfDoc = PDFDocument.create(pdfPath).addPages(page1);
-    await pdfDoc.write();
-
-    return pdfPath;
-  };
-
-  const downloadPDF = async () => {
+  const getInvoice = async () => {  
     try {
-      const pdfPath = await generatePDF();
-      await Share.open({
-        url: `file://${pdfPath}`,
-        type: 'application/pdf',
-        title: 'Invoice',
-      });
+
+      const res = await axios.get(`${BACKEND}/api/v1/booking/invoices/${id.params.id}`);
+      
+      console.log("🚀 ~ getInvoice ~ res:", res.data)
     } catch (error) {
-      console.error('Error generating PDF:', error);
+
+      console.error('Error fetching invoice:', error);
+
+      
     }
-  };
+  }
+  useEffect(() => {
+
+    getInvoice();
+  }, []);
+
+  // const generatePDF = async () => {
+  //   const page1 = Page.create()
+  //     .drawText(`Invoice ID: ${invoiceDetails.id}`, {
+  //       x: 50,
+  //       y: 700,
+  //       size: 20,
+  //     })
+  //     .drawText(`Date: ${invoiceDetails.date}`, {
+  //       x: 50,
+  //       y: 670,
+  //       size: 15,
+  //     })
+  //     .drawText('Items:', {
+  //       x: 50,
+  //       y: 640,
+  //       size: 15,
+  //     });
+
+  //   invoiceDetails.items.forEach((item, index) => {
+  //     page1.drawText(
+  //       `${item.description} - Quantity: ${item.quantity} - Price: $${item.price}`,
+  //       {
+  //         x: 50,
+  //         y: 610 - index * 30,
+  //         size: 12,
+  //       }
+  //     );
+  //   });
+
+  //   page1.drawText(`Total: $${invoiceDetails.total}`, {
+  //     x: 50,
+  //     y: 500,
+  //     size: 15,
+  //   });
+
+  //   const pdfPath = `${RNFS.DocumentDirectoryPath}/invoice.pdf`;
+  //   const pdfDoc = PDFDocument.create(pdfPath).addPages(page1);
+  //   await pdfDoc.write();
+
+  //   return pdfPath;
+  // };
+
+  // const downloadPDF = async () => {
+  //   try {
+  //     const pdfPath = await generatePDF();
+  //     await Share.open({
+  //       url: `file://${pdfPath}`,
+  //       type: 'application/pdf',
+  //       title: 'Invoice',
+  //     });
+  //   } catch (error) {
+  //     console.error('Error generating PDF:', error);
+  //   }
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -84,7 +108,7 @@ export default function Invoice() {
         ))}
         <Text>Total: ${invoiceDetails.total}</Text>
       </View>
-      <Button title="Download PDF" onPress={downloadPDF} />
+      {/* <Button title="Download PDF" onPress={downloadPDF} /> */}
     </SafeAreaView>
   );
 }

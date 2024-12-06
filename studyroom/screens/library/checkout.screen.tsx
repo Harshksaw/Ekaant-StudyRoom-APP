@@ -40,6 +40,7 @@ const CheckoutScreen: React.FC = () => {
   const params = useRoute();
 
   const BookedData = JSON.parse(params.params.item);
+  console.log("🚀 ~ BookedData:", BookedData)
 
   if (!BookedData) {
     return (
@@ -70,12 +71,16 @@ const CheckoutScreen: React.FC = () => {
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
 
 
     setBookingId( BookedData.bookingId);
-    console.log("🚀 ~ useEffect ~ BookedData.bookedSeat.bookingId:", BookedData.bookingId)
-
+    // console.log("🚀 ~ useEffect ~ BookedData.bookedSeat.bookingId:", BookedData.bookingId)
+    setRegistrationFees(BookedData?.libraryId?.registrationFees);
+    setInitialPrice(BookedData?.price);
+        console.log("🚀 ~ useEffect ~ BookedData?.libraryId.price:", BookedData?.libraryId.price)
+    setFinalAmount(BookedData?.totalAmount);
     const getLibraryData = async () => {
       const loc = await getLocationName(
         BookedData?.libraryId?.location[0],
@@ -111,23 +116,11 @@ const CheckoutScreen: React.FC = () => {
 
 
 
+
+
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
 
-  // const location = getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
-  const getFinalPrice = async () => {
-    const price = BookedData?.price || BookedData?.initialPrice;
-    setInitialPrice(price);
-
-    //registion fee from libary only
-    const RegistrationFees =
-      (await AsyncStorage.getItem("RegistrationFee")) || 1000;
-    setRegistrationFees(RegistrationFees);
-    const finalAmount = price + parseInt(RegistrationFees);
-    setFinalAmount(finalAmount);
-  };
-  useEffect(() => {
-    getFinalPrice();
-  }, []);
+ 
   const PaymentPrice = finalAmount;
 
   useEffect(() => {
@@ -175,11 +168,11 @@ const CheckoutScreen: React.FC = () => {
       });
 
       const res = await confirmPayment();
-      console.log("🚀 ~ handlePayment ~ res:", res)
+      // console.log("🚀 ~ handlePayment ~ res:", res)
 
       router.push("/(tabs)/bookings");
     } catch (error) {
-      console.log(error, "this");
+      // console.log(error, "this");
 
       Toast.show("Payment Failed", {
         dangerColor: "red",
@@ -198,7 +191,7 @@ const CheckoutScreen: React.FC = () => {
     try {
 
 
-      console.log(bookingId, "-1-1-11-", BookedData)
+      // console.log(bookingId, "-1-1-11-", BookedData)
       const res = await axios.post(
         `${BACKEND}/api/v1/booking/confirm/${bookingId}`,
         {
