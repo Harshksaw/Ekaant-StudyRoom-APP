@@ -24,7 +24,7 @@ export default function Invoice() {
   const getInvoice = async () => {  
     try {
 
-      const res = await axios.get(`${BACKEND}/api/v1/booking/invoices/${id.params.id}`);
+      const res = await axios.post(`${BACKEND}/api/v1/booking/invoices/${id.params.id}`);
       
       console.log("🚀 ~ getInvoice ~ res:", res.data)
     } catch (error) {
