@@ -64,6 +64,10 @@ export default function Invoice() {
           <Text style={styles.value}>{new Date(invoiceDetails.bookingDate).toLocaleDateString()}</Text>
         </View>
         <View style={styles.row}>
+          <Text style={styles.label}>Booking Date:</Text>
+          <Text style={styles.value}>{invoiceDetails.libraryaddress}</Text>
+        </View>
+        <View style={styles.row}>
           <Text style={styles.label}>Booking Period:</Text>
           <Text style={styles.value}>{invoiceDetails.bookingPeriod} month(s)</Text>
         </View>

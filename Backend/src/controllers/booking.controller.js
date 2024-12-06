@@ -235,7 +235,7 @@ async function ConfrimBooking(req, res) {
     await lib.save();
     await room.save();
 
-    const booking = await Booking.findById(bookingId).populate("userId").populate("libraryId").exec();
+    const booking = await Booking.findById(bookingId).populate("userId").populate("libraryId")
 
     // console.log("🚀 ~ generateInvoice ~ booking:", booking);
 
@@ -283,7 +283,7 @@ async function ConfrimBooking(req, res) {
 async function generateInvoice(req, res) {
   try {
     const { bookingId } = req.params;
-    const booking = await Booking.findById(bookingId).populate("userId").populate("library").exec()
+    const booking = await Booking.findById(bookingId).populate("userId").populate("libraryId").exec()
 
     console.log("🚀 ~ generateInvoice ~ booking:", booking);
 
