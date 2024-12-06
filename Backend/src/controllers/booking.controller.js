@@ -4,8 +4,8 @@ const zod = require("zod");
 const jwt = require("jsonwebtoken");
 const { User, Invoice } = require("../models");
 const { Booking } = require("../models/booking.model");
-const sendInvoiceEmail = require("../utils/mails/invoice.mail");
 const { Library } = require("../models/library.model");
+const { sendInvoiceEmail } = require("../utils/mails/invoice.mail");
 
 const JWT_SECRET = "MY_SECRET_KEY";
 const BookingSchema = zod.object({
