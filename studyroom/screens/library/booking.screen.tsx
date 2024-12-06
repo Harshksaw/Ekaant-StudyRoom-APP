@@ -122,11 +122,13 @@ const BookingScreen: React.FC = () => {
     });
   };
 
-  const available = handleData(selectedSeat?.timeSlots);
+  const available = handleData(selectedSeat?.timeSlots.filter((slot) => slot.booked === false));
+
+  // console.log("🚀 ~ selectedSeat:", selectedSeat)
 
   const PreBook = async () => {
     const userData = await AsyncStorage.getItem("userData");
-    console.log("----",libraryDetails)
+    // console.log("----",libraryDetails)
     const userid = JSON.parse(userData);
 
     const userId = userid.data?.user_id?._id;
@@ -167,7 +169,7 @@ const BookingScreen: React.FC = () => {
         );
 
         const bookingId = response.data.Booking._id;
-        console.log("🚀 ~ PreBook ~ bookingId11:", bookingId)
+        // console.log("🚀 ~ PreBook ~ bookingId11:", bookingId)
         setBookingId(bookingId);
 
         if (response.status === 200 || response.status === 201) {
@@ -294,7 +296,7 @@ const BookingScreen: React.FC = () => {
       };
 
       const Bookdata = { ...newBookingData, libraryId: libraryDetails , bookingId: res};
-      console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
+      // console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
       router.push({
         pathname: "/library/checkout.screen",
         params: {
@@ -302,14 +304,15 @@ const BookingScreen: React.FC = () => {
         },
       });
 
-            // resetBookingState();
+            resetBookingState();
     } else {
       // console.log("🚀 ~ confirmBooking ~ res", res)
       Toast.show("Booking failed. Please try again.", {
         type: "error",
       });
     }
-  };
+  }
+
   return (
     <SafeAreaView
       style={{
@@ -387,7 +390,7 @@ const BookingScreen: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        {/* //seating arrangement */}
+
         {data && data[currentRoomNo - 1].seats.length !== 0 && (
           <Seats
             onSeatSelect={handleSeatSelect}
@@ -440,6 +443,7 @@ const BookingScreen: React.FC = () => {
           <Button text="Book" width={200} />
         </TouchableOpacity>
       </View>
+
       <Modal
         animationType="slide"
         transparent={true}

@@ -1,11 +1,9 @@
-import { NoBookingsSVG } from "@/assets";
-import Header from "@/components/Header";
-import StarRating from "@/components/Ratinstar";
+
 import ff from "@/constants/fonts";
 import { w } from "@/constants/size";
-import { fetchRoomData } from "@/hooks/api/library";
+
 import { BACKEND } from "@/utils/config";
-import { calculatePeriod } from "@/utils/date";
+
 import { getUserId } from "@/utils/keys";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -56,17 +54,19 @@ export default function Bookings() {
         const res = await axios.get(
           `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
         );
+          console.log("🚀 ~ getBookings ~ userId:", userId)
 
         if (res.status === 200) {
           Toast.show("Bookings Fetched", {
             type: "success",
             duration: 2000,
           });
-        }
+        } 
+        console.log(res.data.bookings, "this is response");
 
         setData(res.data.bookings);
       } catch (error) {
-        console.error(error, "this is error");
+        console.error(error, "this is error");2
       }
     } else {
     }
@@ -88,6 +88,8 @@ export default function Bookings() {
       setRefreshing(false);
     }, 2000);
   }, []);
+
+  console.log(data, "this is data");
   return (
     <SafeAreaView
       style={{
@@ -166,6 +168,8 @@ export default function Bookings() {
           )}
           {data &&
             data.map((item, index) => (
+
+           
               <TouchableOpacity
               key={index}
                 style={{
@@ -175,7 +179,7 @@ export default function Bookings() {
                   marginBottom: 13,
                   padding: 8,
                 }}
-                key={item._id}
+                // key={item._id}
                 onPress={() =>
                   router.push({
                     pathname: "/(routes)/library/checkout.screen",
@@ -183,6 +187,7 @@ export default function Bookings() {
                   })
                 }
               >
+                
                 <View style={styles.card}>
                   <Image
                     source={{
@@ -268,6 +273,7 @@ export default function Bookings() {
                         }}
                       >
                         <Ionicons name="time-outline" size={16} color="black" />
+                  
                         <Text
                           style={{
                             fontSize: 12.14,
@@ -277,10 +283,26 @@ export default function Bookings() {
                           }}
                         >
                           Period:{" "}
-                          {calculatePeriod(
+                          {item.bookingDate} - 
+                          {item.bookingFinalDate}
+                          {/* {calculatePeriod(
                             item.bookingDate,
                             item.bookingPeriod
-                          ) || "2 Months"}
+                          ) || "2 Months"} */}
+                        </Text>
+                        <Text
+                        style={{
+                          fontSize: 12.14,
+                          fontFamily: ff.deckRegular,
+                          lineHeight: 18.21,
+                          textAlign: "left",
+
+                          color: "red",
+                          textDecorationLine: "line-through",
+                        }}
+                        >
+                        {item.bookingDate} - 
+                        {item.bookingFinalDate}
                         </Text>
                       </View>
                     </View>
@@ -311,7 +333,7 @@ export default function Bookings() {
                         <Text style={{ fontFamily: ff.deckMedium }}>AC</Text>
                       </View>
 
-                      <View
+                      {/* <View
                         style={{
                           flexDirection: "row",
                           gap: 3,
@@ -322,7 +344,7 @@ export default function Bookings() {
                         <Text style={{ fontFamily: ff.deckMedium }}>
                           {item.distance || "N/A KMs"}
                         </Text>
-                      </View>
+                      </View> */}
                     </View>
                   </View>
                 </View>
