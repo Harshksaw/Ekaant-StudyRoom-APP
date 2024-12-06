@@ -501,6 +501,7 @@ const EditAdminLibrary = async (req, res) => {
       amenities,
       libraryId,
       address,
+      registrationFees,
     } = req.body;
 
     const library = await Library.findByIdAndUpdate(
@@ -511,6 +512,7 @@ const EditAdminLibrary = async (req, res) => {
         longDescription,
         amenities,
         address,
+        registrationFees
       },
       { new: true } // Return the updated document
     );

@@ -182,7 +182,7 @@ export default function Bookings() {
                 // key={item._id}
                 onPress={() =>
                   router.push({
-                    pathname: "/(routes)/library/checkout.screen",
+                    pathname: "/(routes)/invoice",  
                     params: { item: JSON.stringify(item) },
                   })
                 }
@@ -269,41 +269,52 @@ export default function Bookings() {
                       <View
                         style={{
                           flexDirection: "row",
+                          
                           gap: 3,
                         }}
                       >
                         <Ionicons name="time-outline" size={16} color="black" />
-                  
+                        <View style={{
+                          flexDirection: "column",
+                        }}>
                         <Text
                           style={{
                             fontSize: 12.14,
                             fontFamily: ff.deckRegular,
                             lineHeight: 18.21,
                             textAlign: "left",
+
+                            
+
+                            
                           }}
                         >
                           Period:{" "}
-                          {item.bookingDate} - 
-                          {item.bookingFinalDate}
-                          {/* {calculatePeriod(
-                            item.bookingDate,
-                            item.bookingPeriod
-                          ) || "2 Months"} */}
+                          {(item.bookingDate).slice(0,10)}  {"-"}
+                     
+                    
                         </Text>
                         <Text
-                        style={{
-                          fontSize: 12.14,
-                          fontFamily: ff.deckRegular,
-                          lineHeight: 18.21,
-                          textAlign: "left",
+                          style={{
+                            fontSize: 12.14,
+                            fontFamily: ff.deckRegular,
+                            lineHeight: 18.21,
+                            textAlign: "left",
 
-                          color: "red",
-                          textDecorationLine: "line-through",
-                        }}
+                            
+
+                            
+                          }}
                         >
-                        {item.bookingDate} - 
-                        {item.bookingFinalDate}
+
+                          {(item.bookingFinalDate).slice(0,10)}
+                     
+                    
                         </Text>
+
+                        </View>
+                     
+                  
                       </View>
                     </View>
 

@@ -54,7 +54,7 @@ const librarySchema = new mongoose.Schema({
     msmeNumber: { type: String, required: false },
     msmeCertificateFile: { type: String, required: false },
   },
-  registrationFees: { type: Number, default: 500 },
+  registrationFees: { type: Number, default: 0 },
   Price: { type: Number, default: 0 },
 });
 

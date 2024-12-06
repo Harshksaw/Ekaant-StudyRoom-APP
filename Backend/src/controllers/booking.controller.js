@@ -272,7 +272,7 @@ async function generateInvoice(req, res) {
       bookingPeriod: booking.bookingPeriod,
       bookingStatus: booking.bookingStatus,
       approved: booking.approved,
-      timeStamp: booking.timeStamp,
+
     });
     // Save invoice to database
 

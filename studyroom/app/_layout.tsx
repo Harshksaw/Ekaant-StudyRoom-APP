@@ -117,6 +117,12 @@ function RootLayoutNav() {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name="(routes)/invoice/index"
+            options={{
+              headerShown: false,
+            }}
+          />
 
           <Stack.Screen
             name="(tabs)"

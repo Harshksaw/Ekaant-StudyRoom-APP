@@ -55,6 +55,7 @@ const EditLibrary = () => {
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [longdescription, setLongDescription] = useState<string>('');
+  const [registrationFees, setRegistrationFees] = useState<number>(0);
   const [address, setAddress] = useState<Address>({
     line1: '',
     line2: '',
@@ -114,9 +115,6 @@ const EditLibrary = () => {
     setLoading(true);
 
 
-    console.log("🚀 ~ handleUpdateLibrary ~ data:", name, description, longdescription, amenities);
-    console.log("🚀 ~ handleUpdateLibrary ~ LibraryId:", LibraryId.id);
-
     const payload = {
       libraryId: LibraryId.id,
       name,
@@ -124,6 +122,7 @@ const EditLibrary = () => {
       longDescription: longdescription,
       amenities,
       address,
+      registrationFees
     };
 
     try {
@@ -180,13 +179,13 @@ const EditLibrary = () => {
 
     } catch (error) {
       toast.error('Error updating images');
-      console.error('Error updating images:', error);
+      // console.error('Error updating images:', error);r
     } finally {
       setLoading(false);
     }
   }
   const handleDeleteRoom = async (roomId: string) => {
-    console.log("🚀 ~ handleDeleteRoom ~ roomId:", roomId)
+    // console.log("🚀 ~ handleDeleteRoom ~ roomId:", roomId)
     setLoading(true);
     try {
       const res = await axios.post(`${BASEURL}/api/v1/library/deleteRoomLib`,{
@@ -248,6 +247,7 @@ const EditLibrary = () => {
 
 
       <div>
+
 
       <div className='mb-6'>
         <label className='flex flex-row justify-center items-center text-gray-700 text-sm font-bold mb-2' htmlFor='cardImage'>
@@ -412,6 +412,19 @@ const EditLibrary = () => {
           type='text'
           value={address.pincode}
           onChange={handleAddressChange}
+          className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+        />
+      </div>
+      <div className='mb-6'>
+        <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='pincode'>
+         Registration Fees
+        </label>
+        <input
+          id='registration'
+          name='registration'
+          type='number'
+          value={registrationFees}
+          onChange={(e)=>setRegistrationFees(e.target.value)}
           className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
         />
       </div>
