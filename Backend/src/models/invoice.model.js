@@ -11,6 +11,10 @@ const invoiceSchema = new mongoose.Schema({
     required: false,
     default: 'INV-0'
   },
+  libraryaddress:{
+    type: String,
+    required: false,
+  },
   invoiceDate: {
     type: Date,
     default: Date.now

@@ -235,7 +235,7 @@ async function ConfrimBooking(req, res) {
     await lib.save();
     await room.save();
 
-    const booking = await Booking.findById(bookingId).populate("userId").exec();
+    const booking = await Booking.findById(bookingId).populate("userId").populate("libraryId").exec();
 
     // console.log("🚀 ~ generateInvoice ~ booking:", booking);
 
@@ -249,7 +249,8 @@ async function ConfrimBooking(req, res) {
       customerName: booking.userId.username,
       customerEmail: booking.userId.email,
       customerPhoneNumber: booking.userId.phoneNumber,
-      libraryId: booking.libraryId,
+      libraryId: booking.libraryId.name,
+      libraryaddress: booking.libraryId.address,
       initialPrice: booking.initialPrice,
       finalPrice: booking.finalPrice,
       paid: booking.paid,
@@ -262,7 +263,7 @@ async function ConfrimBooking(req, res) {
       timeSlotDetails: booking.timeSlotDetails
 
     });
-    // Save invoice to database
+
 
     // Send invoice to user
     await sendInvoiceEmail(booking.userId.email, invoice);
@@ -282,7 +283,7 @@ async function ConfrimBooking(req, res) {
 async function generateInvoice(req, res) {
   try {
     const { bookingId } = req.params;
-    const booking = await Booking.findById(bookingId).populate("userId").exec();
+    const booking = await Booking.findById(bookingId).populate("userId").populate("library").exec()
 
     console.log("🚀 ~ generateInvoice ~ booking:", booking);
 
@@ -298,6 +299,7 @@ async function generateInvoice(req, res) {
       customerPhoneNumber: booking.userId.phoneNumber,
       libraryId: booking.libraryId,
       initialPrice: booking.initialPrice,
+      libraryaddress: booking.libraryId.address,
       finalPrice: booking.finalPrice,
       paid: booking.paid,
       bookingDate: booking.bookingDate,
