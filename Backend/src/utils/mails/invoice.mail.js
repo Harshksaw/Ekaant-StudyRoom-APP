@@ -1,3 +1,5 @@
+const mailSender = require("../mailSender");
+
 const invoiceTemplate = (invoice) => {
   return `
     <!DOCTYPE html>
