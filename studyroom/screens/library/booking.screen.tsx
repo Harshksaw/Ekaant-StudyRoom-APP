@@ -22,7 +22,7 @@ import {
 import { setBookingDetails } from "@/redux/bookingSlice";
 import { useRoute } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
-import { Month } from "@/assets";
+
 
 import ToggleBookingButton from "@/components/ToggleBooking";
 import { Toast } from "react-native-toast-notifications";
@@ -59,10 +59,15 @@ const BookingScreen: React.FC = () => {
   const [Loading, setLoading] = useState(true);
 
   const [libraryDetails, setLibraryDetails] = useState<any>(null);
-  const price = bookingData.details.price || 6000;
-  const registrationFees = 1000;
-  const subtotal = Number((price + registrationFees).toFixed(2));
-  const totalAmount = subtotal;
+
+  const price = bookingData.details.price || 0;
+  const [totalAmount, setTotalAmount] = useState(0);
+  
+  // const subtotal = Number((price + registrationFees).toFixed(2));
+  // const totalAmount = subtotal;
+
+
+
 
   const BookedData = {
     seat: selectedSeat,
@@ -79,6 +84,9 @@ const BookingScreen: React.FC = () => {
     );
 
     setFinalPrice(totalPrice * selectedMonth);
+    const registrationFees = libraryDetails?.registrationFees || 0;
+
+    setTotalAmount(registrationFees + totalPrice * selectedMonth);
   }, [selectedSlots, selectedMonth]);
 
   const handleSeatSelect = (seatDataFromChild) => {
@@ -131,6 +139,7 @@ const BookingScreen: React.FC = () => {
     // console.log("----",libraryDetails)
     const userid = JSON.parse(userData);
 
+
     const userId = userid.data?.user_id?._id;
 
     if (!userId) {
@@ -138,6 +147,8 @@ const BookingScreen: React.FC = () => {
         type: "error",
       });
     }
+
+
 
     if (
       userId &&
@@ -158,7 +169,8 @@ const BookingScreen: React.FC = () => {
             userId,
             libraryId: libraryDetails?._id,
             initialPrice: price,
-            finalPrice,
+            finalPrice: totalAmount,
+
             timeSlot: BookedData.slot,
             roomNo: BookedData.room,
             bookedSeat: BookedData.seat,
@@ -266,9 +278,9 @@ const BookingScreen: React.FC = () => {
     return <ActivityIndicator size="large" color="#000" />;
   }
 
-  const formatTime = (time) => {
-    return moment(time, ["h:mm A"]).format("HH:mm");
-  };
+  // const formatTime = (time) => {
+  //   return moment(time, ["h:mm A"]).format("HH:mm");
+  // };
 
   const displayTimeRange = (from, to) => {
     if (from === "12:00 AM" && to === "11:59 PM") {
@@ -288,11 +300,13 @@ const BookingScreen: React.FC = () => {
 
       const newBookingData = {
         bookedSeat: selectedSeat,
+        registrationFees: libraryDetails?.registrationFees,
         bookingDate: selectedDate,
         bookingPeriod: selectedMonth,
         roomNo: currentRoomNo,
         timeSlot: selectedSlots,
         price: finalPrice,
+        totalAmount
       };
 
       const Bookdata = { ...newBookingData, libraryId: libraryDetails , bookingId: res};

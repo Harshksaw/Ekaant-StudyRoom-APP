@@ -1,106 +1,126 @@
-import React from 'react';
-import { View, Text, SafeAreaView, Button, StyleSheet } from 'react-native';
-import { PDFDocument, Page, Text as PDFText } from 'react-native-pdf-lib';
-import RNFS from 'react-native-fs';
-import Share from 'react-native-share';
+import React, { useEffect, useState } from 'react';
+import { View, Text, SafeAreaView, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import axios from 'axios';
+import { BACKEND } from '@/utils/config';
 
 export default function Invoice() {
-  const invoiceDetails = {
-    id: 'INV-123456',
-    date: '2024-12-08',
-    items: [
-      { description: 'Item 1', quantity: 2, price: 50 },
-      { description: 'Item 2', quantity: 1, price: 100 },
-    ],
-    total: 200,
-  };
+  const [invoiceDetails, setInvoiceDetails] = useState(null);
+  const route = useRoute();
+  const { id } = route.params;
 
-  const generatePDF = async () => {
-    const page1 = Page.create()
-      .drawText(`Invoice ID: ${invoiceDetails.id}`, {
-        x: 50,
-        y: 700,
-        size: 20,
-      })
-      .drawText(`Date: ${invoiceDetails.date}`, {
-        x: 50,
-        y: 670,
-        size: 15,
-      })
-      .drawText('Items:', {
-        x: 50,
-        y: 640,
-        size: 15,
-      });
-
-    invoiceDetails.items.forEach((item, index) => {
-      page1.drawText(
-        `${item.description} - Quantity: ${item.quantity} - Price: $${item.price}`,
-        {
-          x: 50,
-          y: 610 - index * 30,
-          size: 12,
-        }
-      );
-    });
-
-    page1.drawText(`Total: $${invoiceDetails.total}`, {
-      x: 50,
-      y: 500,
-      size: 15,
-    });
-
-    const pdfPath = `${RNFS.DocumentDirectoryPath}/invoice.pdf`;
-    const pdfDoc = PDFDocument.create(pdfPath).addPages(page1);
-    await pdfDoc.write();
-
-    return pdfPath;
-  };
-
-  const downloadPDF = async () => {
+  const getInvoice = async () => {
     try {
-      const pdfPath = await generatePDF();
-      await Share.open({
-        url: `file://${pdfPath}`,
-        type: 'application/pdf',
-        title: 'Invoice',
-      });
+      const res = await axios.post(`${BACKEND}/api/v1/booking/invoices/${id}`);
+      setInvoiceDetails(res.data.data);
+      console.log("🚀 ~ getInvoice ~ res:", res.data);
     } catch (error) {
-      console.error('Error generating PDF:', error);
+      console.error('Error fetching invoice:', error);
     }
   };
 
+  useEffect(() => {
+    getInvoice();
+  }, []);
+
+  if (!invoiceDetails) {
+    return (
+      <SafeAreaView style={styles.container}>
+       <ActivityIndicator 
+       color="blue"
+       size="large"
+       />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.invoiceContainer}>
         <Text style={styles.title}>Invoice</Text>
-        <Text>Invoice ID: {invoiceDetails.id}</Text>
-        <Text>Date: {invoiceDetails.date}</Text>
-        <Text>Items:</Text>
-        {invoiceDetails.items.map((item, index) => (
-          <Text key={index}>
-            {item.description} - Quantity: {item.quantity} - Price: ${item.price}
-          </Text>
-        ))}
-        <Text>Total: ${invoiceDetails.total}</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>Invoice Number:</Text>
+          <Text style={styles.value}>{invoiceDetails.invoiceNumber}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Invoice Date:</Text>
+          <Text style={styles.value}>{new Date(invoiceDetails.invoiceDate).toLocaleDateString()}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Customer Name:</Text>
+          <Text style={styles.value}>{invoiceDetails.customerName}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Customer Email:</Text>
+          <Text style={styles.value}>{invoiceDetails.customerEmail}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Customer Phone:</Text>
+          <Text style={styles.value}>{invoiceDetails.customerPhoneNumber}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Booking Date:</Text>
+          <Text style={styles.value}>{new Date(invoiceDetails.bookingDate).toLocaleDateString()}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Booking Period:</Text>
+          <Text style={styles.value}>{invoiceDetails.bookingPeriod} month(s)</Text>
+        </View>
+       
+        <View style={styles.row}>
+          <Text style={styles.label}>Final Price:</Text>
+          <Text style={styles.value}>${invoiceDetails.finalPrice}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Booking Status:</Text>
+          <Text style={styles.value}>{invoiceDetails.bookingStatus}</Text>
+        </View>
       </View>
-      <Button title="Download PDF" onPress={downloadPDF} />
-    </SafeAreaView>
-  );
+    </ScrollView>
+  </SafeAreaView>
+);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: 'white',
-  },
-  invoiceContainer: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
+container: {
+  flex: 1,
+  backgroundColor: 'white',
+  justifyContent: 'center',
+  // alignItems: 'center',
+  paddingTop:40
+},
+scrollContainer: {
+  padding: 20,
+},
+invoiceContainer: {
+  padding: 20,
+  borderRadius: 10,
+  backgroundColor: '#f9f9f9',
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 5,
+  elevation: 5,
+},
+title: {
+  fontSize: 24,
+  fontWeight: 'bold',
+  marginBottom: 20,
+  textAlign: 'center',
+},
+row: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  marginBottom: 10,
+},
+label: {
+  fontSize: 16,
+  fontWeight: '600',
+  color: '#333',
+},
+value: {
+  fontSize: 16,
+  color: '#666',
+},
 });
