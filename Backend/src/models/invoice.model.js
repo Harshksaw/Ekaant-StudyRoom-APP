@@ -64,8 +64,7 @@ const invoiceSchema = new mongoose.Schema({
     required: true
   },
   timeStamp: {
-    type: Date,
-    required: true
+   
   },
   bookingFinalDate:{
     type: Date,
