@@ -235,6 +235,38 @@ async function ConfrimBooking(req, res) {
     await lib.save();
     await room.save();
 
+    const booking = await Booking.findById(bookingId).populate("userId").exec();
+
+    // console.log("🚀 ~ generateInvoice ~ booking:", booking);
+
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    // Create new invoice
+    const invoice = new Invoice({
+      bookingId: booking._id,
+      customerName: booking.userId.username,
+      customerEmail: booking.userId.email,
+      customerPhoneNumber: booking.userId.phoneNumber,
+      libraryId: booking.libraryId,
+      initialPrice: booking.initialPrice,
+      finalPrice: booking.finalPrice,
+      paid: booking.paid,
+      bookingDate: booking.bookingDate,
+      bookingPeriod: booking.bookingPeriod,
+      bookingStatus: booking.bookingStatus,
+      approved: booking.approved,
+      seatLabel: booking.bookedSeat.seatLabel,
+      bookingFinalDate: booking.bookingFinalDate,
+      timeSlotDetails: booking.timeSlotDetails
+
+    });
+    // Save invoice to database
+
+    // Send invoice to user
+    await sendInvoiceEmail(booking.userId.email, invoice);
+
     return res.status(200).json({
       success: true,
       message: "Booking confirmed successfully",
@@ -272,12 +304,15 @@ async function generateInvoice(req, res) {
       bookingPeriod: booking.bookingPeriod,
       bookingStatus: booking.bookingStatus,
       approved: booking.approved,
+      seatLabel: booking.bookedSeat.seatLabel,
+      bookingFinalDate: booking.bookingFinalDate,
+      timeSlotDetails: booking.timeSlotDetails
 
     });
     // Save invoice to database
 
     // Send invoice to user
-    await sendInvoiceEmail(booking.userId.email, invoice);
+    // await sendInvoiceEmail(booking.userId.email, invoice);
 
     await invoice.save();
 
