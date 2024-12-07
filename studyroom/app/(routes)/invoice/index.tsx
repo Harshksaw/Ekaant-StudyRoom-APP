@@ -63,9 +63,29 @@ export default function Invoice() {
           <Text style={styles.label}>Booking Date:</Text>
           <Text style={styles.value}>{new Date(invoiceDetails.bookingDate).toLocaleDateString()}</Text>
         </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Booking Date:</Text>
-          <Text style={styles.value}>{invoiceDetails.libraryaddress}</Text>
+        <View style={{
+          flexDirection: 'column',
+          justifyContent:'center',
+          alignItems:'center',
+          gap:10,
+          marginBottom:10
+
+        }}>
+          <Text style={styles.label}>Library Address:</Text>
+          <View
+          style={{
+            flexDirection: 'column',
+            justifyContent:'center',
+            alignItems:'center',
+            gap:10,
+
+          }}
+          >
+
+          <Text style={styles.value}>{invoiceDetails.libraryaddress.line1}</Text>
+          <Text style={styles.value}>{invoiceDetails.libraryaddress.line2}</Text>
+          <Text style={styles.value}>{invoiceDetails.libraryaddress.pincode}</Text>
+          </View>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Booking Period:</Text>
