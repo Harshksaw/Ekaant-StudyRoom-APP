@@ -12,7 +12,13 @@ const invoiceSchema = new mongoose.Schema({
     default: 'INV-0'
   },
   libraryaddress:{
+    type: String,
+    required: true
+  },
+  libraryName: {
 
+    type: String,
+    required: true
   },
   invoiceDate: {
     type: Date,

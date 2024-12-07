@@ -70,12 +70,12 @@ const invoiceTemplate = (invoice) => {
             <div class="details-left">
               <p><strong>Invoice Number:</strong> ${invoice.invoiceNumber}</p>
               // <p><strong>Booking ID:</strong> ${invoice.bookingId}</p>
-              // <p><strong>Library ID:</strong> ${invoice.libraryId}</p>
+              // <p><strong>Library ID:</strong> ${invoice.libraryId.name}</p>
             </div>
             <div class="details-right">
 
               <h3><strong>Final Price: </strong> ${invoice.finalPrice}</h3>
-              <h3><strong>Library Address: </strong> ${invoice.libraryaddress} </h3>
+              <h3><strong>Library Address: </strong> ${invoice.libraryaddress} ${invoice.libraryId.pincode}</h3>
 
 
 
