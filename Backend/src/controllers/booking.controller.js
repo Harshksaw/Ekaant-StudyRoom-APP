@@ -251,7 +251,7 @@ async function ConfrimBooking(req, res) {
       customerPhoneNumber: booking.userId.phoneNumber,
       libraryId: booking.libraryId,
       libraryName: booking.libraryId.name,
-      libraryaddress: booking.libraryId.address.line1,
+      libraryaddress: booking.libraryId.address.line1 + " " + booking.libraryId.address.line2 + " " + booking.libraryId.address.city + " " + booking.libraryId.address.state + " " + booking.libraryId.address.pincode,
       initialPrice: booking.initialPrice,
       finalPrice: booking.finalPrice,
       paid: booking.paid,

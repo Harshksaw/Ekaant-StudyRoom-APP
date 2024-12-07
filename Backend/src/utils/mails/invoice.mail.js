@@ -75,7 +75,7 @@ const invoiceTemplate = (invoice) => {
             <div class="details-right">
 
               <h3><strong>Final Price: </strong> ${invoice.finalPrice}</h3>
-              <h3><strong>Library Address: </strong> ${invoice.libraryaddress.line1} </h3>
+              <h3><strong>Library Address: </strong> ${invoice.libraryaddress} </h3>
 
 
 
