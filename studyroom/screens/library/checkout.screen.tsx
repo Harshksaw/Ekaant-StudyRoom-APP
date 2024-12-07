@@ -203,6 +203,8 @@ const CheckoutScreen: React.FC = () => {
         }
       );
 
+      console.log(bookingId, "-1-1-11-", paymentData, paymentId, paymentStatus, BookedData)
+
       if(res.data.status === "success") {
         Toast.show("Payment Success", {});
       }

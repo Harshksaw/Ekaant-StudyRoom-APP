@@ -251,7 +251,7 @@ async function ConfrimBooking(req, res) {
       customerPhoneNumber: booking.userId.phoneNumber,
       libraryId: booking.libraryId,
       libraryName: booking.libraryId.name,
-      libraryaddress: booking.libraryId.address,
+      libraryaddress: booking.libraryId.address.line1,
       initialPrice: booking.initialPrice,
       finalPrice: booking.finalPrice,
       paid: booking.paid,
@@ -265,7 +265,7 @@ async function ConfrimBooking(req, res) {
 
     });
 
-
+    await invoice.save();
     // Send invoice to user
     await sendInvoiceEmail(booking.userId.email, invoice);
 
@@ -300,7 +300,7 @@ async function generateInvoice(req, res) {
       customerPhoneNumber: booking.userId.phoneNumber,
       libraryId: booking.libraryId,
       initialPrice: booking.initialPrice,
-      libraryaddress: booking.libraryId.address,
+      libraryaddress: booking.libraryId.address.line1,
       finalPrice: booking.finalPrice,
       paid: booking.paid,
       bookingDate: booking.bookingDate,
