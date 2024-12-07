@@ -298,46 +298,10 @@ async function generateInvoice(req, res) {
       message: "Invoice fetched successfully",
       data: invoice,
     });
-    // const booking = await Booking.findById(bookingId).populate("userId").populate("libraryId").exec()
+    
+   
 
-    // console.log("🚀 ~ generateInvoice ~ booking:", booking);
-
-    // if (!booking) {
-    //   return res.status(404).json({ error: "Booking not found" });
-    // }
-
-    // // Create new invoice
-    // const invoice = new Invoice({
-    //   bookingId: booking._id,
-    //   customerName: booking.userId.username,
-    //   customerEmail: booking.userId.email,
-    //   customerPhoneNumber: booking.userId.phoneNumber,
-    //   libraryId: booking.libraryId,
-    //   initialPrice: booking.initialPrice,
-    //   libraryaddress: booking.libraryId.address.line1,
-    //   finalPrice: booking.finalPrice,
-    //   paid: booking.paid,
-    //   bookingDate: booking.bookingDate,
-    //   bookingPeriod: booking.bookingPeriod,
-    //   bookingStatus: booking.bookingStatus,
-    //   approved: booking.approved,
-    //   seatLabel: booking.bookedSeat.seatLabel,
-    //   bookingFinalDate: booking.bookingFinalDate,
-    //   timeSlotDetails: booking.timeSlotDetails
-
-    // });
-    // // Save invoice to database
-
-    // // Send invoice to user
-    // // await sendInvoiceEmail(booking.userId.email, invoice);
-
-    // await invoice.save();
-
-    res.status(201).json({
-      success: true,
-      message: "Invoice generated successfully",
-      data: invoice,
-    });
+ 
   } catch (error) {
     console.error(error);
     res.status(500).json({
