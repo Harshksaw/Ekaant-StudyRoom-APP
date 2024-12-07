@@ -79,7 +79,7 @@ const CheckoutScreen: React.FC = () => {
     // console.log("🚀 ~ useEffect ~ BookedData.bookedSeat.bookingId:", BookedData.bookingId)
     setRegistrationFees(BookedData?.libraryId?.registrationFees);
     setInitialPrice(BookedData?.price);
-        console.log("🚀 ~ useEffect ~ BookedData?.libraryId.price:", BookedData?.libraryId.price)
+        // console.log("🚀 ~ useEffect ~ BookedData?.libraryId.price:", BookedData?.libraryId.price)
     setFinalAmount(BookedData?.totalAmount);
     const getLibraryData = async () => {
       const loc = await getLocationName(
