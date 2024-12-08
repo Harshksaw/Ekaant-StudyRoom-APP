@@ -10,6 +10,7 @@ import { BASEURL } from "@/lib/utils";
 // import { set } from "react-hook-form";
 import Loader from "@/components/Loader";
 import { toast } from "react-toastify";
+import { ForgotPassword } from '@/screens/auth/forgotpassword';
 
 const Auth = ({ type }: { type: "signin" }) => {
 
@@ -190,6 +191,14 @@ const Auth = ({ type }: { type: "signin" }) => {
 
                 </div>
           
+
+          <div>
+            <Link to="/forgot-password">
+
+
+            <p className="ml-40 text-blue-500">ForgotPassword</p>
+            </Link>
+          </div>
           </div>
           </div>
         </div>

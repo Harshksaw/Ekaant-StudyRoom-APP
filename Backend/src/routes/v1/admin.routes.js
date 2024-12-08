@@ -26,9 +26,12 @@ AdminRouter.post(
 );
 AdminRouter.post("/loginAdmin", AdminController.LoginAdmin);
 
+AdminRouter.post("/resetotp", AdminController.resetpasswordotp);
 AdminRouter.post("/resetAdminPassword", AdminController.ResetAdminPassword);
 
 AdminRouter.post("/bookSeat", AdminController.BookSeat);
 AdminRouter.post("/removeSeatBooking", AdminController.RemoveSeatBooking);
+
+
 
 module.exports = AdminRouter;

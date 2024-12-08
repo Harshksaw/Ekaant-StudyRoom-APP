@@ -17,17 +17,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { LinearGradient as LinearBackground } from "expo-linear-gradient";
 
-// const generateShadesOfBlue = () => {
-//   // Function to generate shades of blue dynamically
-//   // This example uses a simple approach to generate shades of blue.
-//   // You can adjust the logic to generate the shades as per your requirement.
-//   const shadesOfBlue = [
-//     "#00BFFF", // Deep Sky Blue
-//     "#1E90FF", // Dodger Blue
-//     "#4169E1", // Royal Blue
-//   ];
-//   return shadesOfBlue.sort(() => 0.5 - Math.random()).slice(0, 3);
-// };
+
 
 import { useDispatch, useSelector } from "react-redux";
 import { resetUserState } from "@/redux/userSlice";

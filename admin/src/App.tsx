@@ -23,6 +23,7 @@ import AdminBookings from "./components/Search";
 import EditLibrary from "./components/ManageLibrary/EditLibrary";
 import LocationForm from "./components/Owner/AppConfig";
 import LibraryPage from "./components/Owner/DummyLib";
+import PhoneOtpForm from "./components/forgot-password";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -41,6 +42,7 @@ function App() {
       <Route path="/" element={<Auth type="signin" />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/signin" element={<Auth type="signin" />} />
+      <Route path="/forgot-password" element={<PhoneOtpForm />} />
       {role === "Admin" && (
         <Route element={<ProtectedRoute />}>
           <Route
@@ -77,6 +79,7 @@ function App() {
           <Route path="/admin/manage-admin" element={<ManageAdmin />} />
           <Route path="/admin/app-config" element={<LocationForm />} />
           <Route path="/admin/dummy" element={<LibraryPage />} />
+    
           
         </Route>
       )}

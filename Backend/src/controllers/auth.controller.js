@@ -1,5 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const axios = require("axios");
+
 const bcrypt = require('bcrypt');
 const zod = require("zod");
 const { User, Admin } = require("../models");
@@ -119,15 +120,7 @@ const signinSchema = zod.object({
   password: zod.string().min(8),
 });
 async function signIn(req, res, next) {
-  // const { success } = signinSchema.safeParse(req.body);
-  // if (!success) {
-  //   return res.status(StatusCodes.BAD_REQUEST).json({
-  //     success: false,
-  //     message: "Invalid data",
-  //     error: { 411: "Invalid data" },
-  //     data: {},
-  //   });
-  // }
+
   try {
     const { phoneNumber, password } = req.body;
 

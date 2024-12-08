@@ -1,4 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
+const axios = require("axios");
 
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin.model");
@@ -9,7 +10,8 @@ const bcrypt = require("bcrypt");
 const File = require("../models/file.model");
 const { Library } = require("../models/library.model");
 const OTP = require("../models/OTP");
-
+const otpGenerator = require("otp-generator");
+const phoneotp = require("../models/phoneotp");
 const AWS = require('aws-sdk');
 const ping = (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Ping successful" });
@@ -259,17 +261,94 @@ async function LoginAdmin(req, res) {
 // }
 // reset password--
 //
+
+
+
+async function resetpasswordotp(req, res , next){
+
+  try {
+    
+    const { phoneNumber } = req.body;
+    const apiKey = process.env.FASTSMS;
+    var otp = otpGenerator.generate(4, {
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+      specialChars: false,
+    });
+  
+    // console.log("OTP GENERATED => ", otp, phoneNumber, apiKey);
+  
+    if (!phoneNumber) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone number is required",
+      });
+    }
+    
+    if (!apiKey) {
+      // console.log("API key for Fast2SMS is not set");
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: "API key for Fast2SMS is not set",
+        error: {},
+        data: {},
+      });
+    }
+  
+  
+  
+  
+    let url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=dlt&sender_id=EKAANT&message=171779&variables_values=${otp}&flash=0&numbers=${phoneNumber}`;
+  
+    if(req.body.Admin){
+      url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=dlt&sender_id=EKAANT&message=171780&variables_values=${otp}&flash=0&numbers=${phoneNumber}` 
+    }
+    const response = await axios.get(url);
+    const otpPayload = { phoneNumber, phoneotp: otp };
+    const otpBody = await phoneotp.create(otpPayload);
+  
+  
+    if (response.status == 200) {
+      return res.status(200).json({
+        success: true,
+        message: `OTP sent to ${phoneNumber}`,
+      });
+    } else {
+      return res.status(response.status).json({
+        success: false,
+        message: "Failed to send OTP",
+      });
+    }
+
+  } catch (error) {
+    console.log("error is ", error);
+
+    
+  }
+
+}
 async function ResetAdminPassword(req, res, next) {
-  const { email, password, confirmPassword } = req.body;
-  console.log("🚀 ~ ResetAdminPassword ~ req.body:", req.body)
+  const { phoneNumber, otp , password, confirmPassword } = req.body;
+  // console.log("🚀 ~ ResetAdminPassword ~ req.body:", req.body)
   if (password !== confirmPassword) {
+    console.log("Password does not match");
     return res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
       message: "Password does not match",
       error: {},
     });
   }
-  const admin = await Admin.findOne({ email });
+
+  const latest = await  phoneotp.find({ phoneNumber : phoneNumber}).sort({ createdAt: -1 });
+  if(latest[0].phoneotp !== otp){
+    console.log("OTP is incorrect", latest, otp);
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      message: "OTP is incorrect",
+      error: {},
+    });
+  }
+  const admin = await Admin.findOne({ phoneNumber });
 
   if (admin) {
     const hashedPassword = await admin.createHash(password);
@@ -365,13 +444,7 @@ module.exports = {
   ResetAdminPassword,
   BookSeat,
   RemoveSeatBooking,
-  // ChangeAdminPassword,
+  resetpasswordotp
+
 };
 
-// ienipepec11@
-// Gourish.,1
-
-// AdminHarsh
-
-// AdminHarsh@gmail.com
-// Harsh@13

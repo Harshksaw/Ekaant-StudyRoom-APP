@@ -23,6 +23,7 @@
     "@types/react-redux": "^7.1.33",
     "@types/react-toastify": "^4.0.2",
     "axios": "^1.7.2",
+    "caniuse-lite": "^1.0.30001687",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.12",
