@@ -1,23 +1,21 @@
 import { BASEURL } from "@/lib/utils";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 // Function to fetch all library bookings
-const fetchLibraryBookings = async () => {
+const fetchLibraryBookings = async (id:string) => {
+  console.log("🚀 ~ fetchLibraryBookings ~ id:", id)
   try {
-    const response = await axios(`${BASEURL}/api/v1/bookings/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+
+    const response = await axios.post(`${BASEURL}/api/v1/booking/getBookingByLibId`, {
+        lib_id: id, 
     });
+    console.log("🚀 ~ fetchLibraryBookings ~ response", response.data.data);
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch bookings');
-    }
 
-    const data = await response.json();
-    return data;
+
+    return response.data.data;   
   } catch (error) {
     console.error('Error fetching bookings:', error);
     return [];
@@ -26,15 +24,16 @@ const fetchLibraryBookings = async () => {
 
 // Component to display bookings
 const LibraryBookings = () => {
-  const [librarybookings, setLibraryBookings] = useState<any[]>([]);
+    const { id } = useParams<{ id: string }>();
+    const [librarybookings, setLibraryBookings] = useState<any[]>([]);
 
   useEffect(() => {
     const getBookings = async () => {
-      const bookings = await fetchLibraryBookings();
+        const bookings = await fetchLibraryBookings(id);
       setLibraryBookings(bookings);
     };
     getBookings();
-  }, []);
+  }, [id]);
 
   return (
     <div className="flex-1 min-h-96 justify-center flex-col">

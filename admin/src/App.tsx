@@ -57,7 +57,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
 
           <Route path="/manage-booking/view" element={<ViewBookings />} />
-          <Route path="/manage-library/view-library/:id" element={<ViewBookings />} />
+          <Route path="/manage-library/view-library/:id" element={<LibraryBookings />} />
 
           <Route path="/manage-booking/adminbookings" element={<LibraryBookings />} />
 
