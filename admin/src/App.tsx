@@ -19,11 +19,12 @@ import Auth from "./Auth/Auth";
 import CreateRoom from "./components/ManageLibrary/CreateRoom";
 import ViewBookings from "./components/ManageBookings/ViewBookings";
 import Signup from "./Auth/Signup";
-import AdminBookings from "./components/Search";
+
 import EditLibrary from "./components/ManageLibrary/EditLibrary";
 import LocationForm from "./components/Owner/AppConfig";
 import LibraryPage from "./components/Owner/DummyLib";
 import PhoneOtpForm from "./components/forgot-password";
+import LibraryBookings from "./components/ManageBookings/ViewLibraryBookings";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -56,8 +57,9 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
 
           <Route path="/manage-booking/view" element={<ViewBookings />} />
+          <Route path="/manage-library/view-library/:id" element={<ViewBookings />} />
 
-          <Route path="/manage-booking/adminbookings" element={<AdminBookings />} />
+          <Route path="/manage-booking/adminbookings" element={<LibraryBookings />} />
 
           <Route
             path="/manage-library/view-library/:library_id"
