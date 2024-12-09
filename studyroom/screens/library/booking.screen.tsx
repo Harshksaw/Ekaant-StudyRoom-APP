@@ -23,7 +23,6 @@ import { setBookingDetails } from "@/redux/bookingSlice";
 import { useRoute } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
 
-
 import ToggleBookingButton from "@/components/ToggleBooking";
 import { Toast } from "react-native-toast-notifications";
 
@@ -47,7 +46,7 @@ const BookingScreen: React.FC = () => {
 
   const [data, setData] = useState(null);
   const [selectedSeat, setSelectedSeat] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(1);
   const [selectedSlots, setSelectedSlots] = useState([]);
@@ -62,12 +61,9 @@ const BookingScreen: React.FC = () => {
 
   const price = bookingData.details.price || 0;
   const [totalAmount, setTotalAmount] = useState(0);
-  
+
   // const subtotal = Number((price + registrationFees).toFixed(2));
   // const totalAmount = subtotal;
-
-
-
 
   const BookedData = {
     seat: selectedSeat,
@@ -76,6 +72,7 @@ const BookingScreen: React.FC = () => {
     room: currentRoomNo,
     slot: selectedSlots,
   };
+  console.log("🚀 ~ BookedData.selectedDate:",selectedDate)
 
   useEffect(() => {
     const totalPrice = selectedSlots.reduce(
@@ -130,7 +127,9 @@ const BookingScreen: React.FC = () => {
     });
   };
 
-  const available = handleData(selectedSeat?.timeSlots.filter((slot) => slot.booked === false));
+  const available = handleData(
+    selectedSeat?.timeSlots.filter((slot) => slot.booked === false)
+  );
 
   // console.log("🚀 ~ selectedSeat:", selectedSeat)
 
@@ -139,7 +138,6 @@ const BookingScreen: React.FC = () => {
     // console.log("----",libraryDetails)
     const userid = JSON.parse(userData);
 
-
     const userId = userid.data?.user_id?._id;
 
     if (!userId) {
@@ -147,8 +145,6 @@ const BookingScreen: React.FC = () => {
         type: "error",
       });
     }
-
-
 
     if (
       userId &&
@@ -161,8 +157,7 @@ const BookingScreen: React.FC = () => {
       BookedData.months
     ) {
       try {
-
-        console.log("🚀 ~ PreBook ~ BookedData:", BookedData.slot)
+        console.log("🚀 ~ PreBook ~ BookedData:", BookedData.slot);
         const response = await axios.post(
           `${BACKEND}/api/v1/booking/createBooking`,
           {
@@ -190,7 +185,6 @@ const BookingScreen: React.FC = () => {
           });
         }
 
-  
         return bookingId;
       } catch (error) {
         console.error("Error:", error);
@@ -234,7 +228,7 @@ const BookingScreen: React.FC = () => {
 
   const resetBookingState = () => {
     setSelectedSeat(null);
-    setSelectedDate(null);
+    // setSelectedDate(null);
     setSelectedMonth(1);
     setCurrentRoomNo(1);
     setSelectedSlots([]);
@@ -275,7 +269,28 @@ const BookingScreen: React.FC = () => {
   }, []);
 
   if (Loading || data === null) {
-    return <ActivityIndicator size="large" color="#000" />;
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+        }}
+      >
+        <ActivityIndicator
+          size="large"
+          color="#000"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: w(10),
+            borderRadius: 20,
+          }}
+        />
+      </View>
+    );
   }
 
   // const formatTime = (time) => {
@@ -292,7 +307,7 @@ const BookingScreen: React.FC = () => {
     setBookingLoader(true);
     await updateRoomDetails();
     const res = await PreBook();
-    console.log("🚀 ~ confirmBooking ~ res:", res)
+    console.log("🚀 ~ confirmBooking ~ res:", res);
     setBookingLoader(false);
 
     if (res) {
@@ -306,10 +321,14 @@ const BookingScreen: React.FC = () => {
         roomNo: currentRoomNo,
         timeSlot: selectedSlots,
         price: finalPrice,
-        totalAmount
+        totalAmount,
       };
 
-      const Bookdata = { ...newBookingData, libraryId: libraryDetails , bookingId: res};
+      const Bookdata = {
+        ...newBookingData,
+        libraryId: libraryDetails,
+        bookingId: res,
+      };
       // console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
       router.push({
         pathname: "/library/checkout.screen",
@@ -318,14 +337,14 @@ const BookingScreen: React.FC = () => {
         },
       });
 
-            resetBookingState();
+      resetBookingState();
     } else {
       // console.log("🚀 ~ confirmBooking ~ res", res)
       Toast.show("Booking failed. Please try again.", {
         type: "error",
       });
     }
-  }
+  };
 
   return (
     <SafeAreaView
@@ -356,7 +375,7 @@ const BookingScreen: React.FC = () => {
           marginTop: h(10),
         }}
       >
-        <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
+        {/* <Calendar onSelectDate={setSelectedDate} selected={selectedDate} /> */}
       </View>
 
       <View
@@ -404,7 +423,6 @@ const BookingScreen: React.FC = () => {
           justifyContent: "center",
         }}
       >
-
         {data && data[currentRoomNo - 1].seats.length !== 0 && (
           <Seats
             onSeatSelect={handleSeatSelect}
@@ -684,7 +702,24 @@ const BookingScreen: React.FC = () => {
                     onPress={confirmBooking}
                   >
                     {bookingloader ? (
-                      <ActivityIndicator size="large" color="#fff" />
+                      <View
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          padding: w(10),
+                          borderRadius: 20,
+                        }}
+                      >
+                        <ActivityIndicator
+                          size="large"
+                          color="#fff"
+                          style={{
+                            padding: w(10),
+                            borderRadius: 20,
+                          }}
+                        />
+                      </View>
                     ) : (
                       <Text
                         style={{
