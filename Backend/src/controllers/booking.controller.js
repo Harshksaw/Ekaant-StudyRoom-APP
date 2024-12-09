@@ -137,7 +137,9 @@ async function getBookingByLibId(req, res) {
     }
     const bookings = await Booking.find({ libraryId: lib_id }).populate(
       "userId"
-    );
+    ).sort({
+      createdAt : -1
+    })
     console.log("🚀 ~ getBookingByLibId ~ bookings:", bookings);
 
     return res.status(StatusCodes.OK).json({

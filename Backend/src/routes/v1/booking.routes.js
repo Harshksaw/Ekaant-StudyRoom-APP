@@ -13,7 +13,9 @@ BookingRouter.post('/getBookingByLibId', BookingController.getBookingByLibId);
 BookingRouter.post('/confirm/:id', BookingController.ConfrimBooking);
 
 BookingRouter.post('/invoices/:bookingId', BookingController.generateInvoice);
-// BookingRouter.post('/otp', BookingController.generateOtp);
+
+
+// BookingRouter.post('/getLibrary', BookingController.generateOtp);
 // BookingRouter.post('/verifyOtp', BookingController.verifyOtp);
 
 

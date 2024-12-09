@@ -2,7 +2,7 @@ import { getLibraryDataById } from "@/hooks/libraryData";
 import { BASEURL } from "@/lib/utils";
 import axios from "axios";
 import React from "react";
-import { to } from '../../../node_modules/@types/node/vm.d';
+
 import { Link } from "react-router-dom";
 
 
@@ -45,7 +45,7 @@ const ViewBookings = () => {
   return (
     <div className="flex-1 h-full">
       {isLoading ? (
-        <div>Loading...</div>
+        <div className="">Loading...</div>
       ) : (
         <div className="flex-col">
           {bookings.map((booking: any) => (
