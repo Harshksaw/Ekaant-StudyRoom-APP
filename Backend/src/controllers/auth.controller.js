@@ -10,6 +10,9 @@ const JWT_SECRET = "MY_SECRET_KEY";
 const otpGenerator = require("otp-generator");
 const phoneotp = require("../models/phoneotp");
 const apiKey = process.env.FASTSMS;
+const { PrismaClient, Prisma } = require('@prisma/client');
+
+const prisma = new PrismaClient();
 const cloudinary = require("cloudinary").v2;
 // signing up schema
 const signupSchema = zod.object({
@@ -73,26 +76,41 @@ async function signUp(req, res) {
       // Use a default DiceBear image if no image is provided
       images = `https://avatars.dicebear.com/api/initials/${req.body.username}.svg`;
     }
+    const existingUser = await prisma.user.findUnique({
+      where: { email: req.body.email },
+    });
 
-    const newUser = await User.create({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-      phoneNumber: req.body.phoneNumber,
-      accountType: req.body.accountType,
-      image: images,
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email already exists',
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    const newUser = await prisma.user.create({
+      data: {  
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword, 
+        phoneNumber: req.body.phoneNumber,
+        accountType: req.body.accountType,
+        image: images,
+      },
     });
 
     // Hashing the password
-    const hashedPassword = await newUser.createHash(req.body.password);
-    console.log("hashedpassword is ", hashedPassword);
-    newUser.password = hashedPassword;
+
+
+
 
     // Saving the user
-    await newUser.save();
+    // await newUser.save();
 
     // Getting the user_id
     const user_id = newUser._id;
+    console.log("🚀 ~ signUp ~ user_id:", user_id)
 
     // Generating the token
     const token = jwt.sign({ user_id }, JWT_SECRET);

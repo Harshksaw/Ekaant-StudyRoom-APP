@@ -7,7 +7,7 @@ const JWT_SECRET = "MY_SECRET_KEY";
 
 
 const bcrypt = require("bcrypt");
-const File = require("../models/file.model");
+
 const { Library } = require("../models/library.model");
 const OTP = require("../models/OTP");
 const otpGenerator = require("otp-generator");
