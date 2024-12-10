@@ -38,9 +38,9 @@ async function RegisterAdmin(req, res, next) {
       Address,
       username,
     } = req.body;
-    console.log("🚀 ~ RegisterAdmin ~ req.body:", req.body)
+    // console.log("🚀 ~ RegisterAdmin ~ req.body:", req.body)
 
-    const existingAdmin = await Admin.findOne({ email });
+    const existingAdmin = await prisma.admin.findOne( { data : { email }});
     if (existingAdmin) {
       const token = jwt.sign({ admin_id: existingAdmin._id }, JWT_SECRET);
       return res.status(200).json({
@@ -88,7 +88,7 @@ async function RegisterAdmin(req, res, next) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newAdmin = await Admin.create({
+    const newAdmin = await prisma.admin.create({
       phoneNumber,
       username,
       email,
@@ -130,7 +130,7 @@ async function LoginAdmin(req, res) {
 
 
   try {
-    const admin = await Admin.findOne({ email });
+    const admin = await prisma.admin.findOne({ email });
     console.log(admin)
     if (!admin) {
       return res
@@ -152,7 +152,7 @@ async function LoginAdmin(req, res) {
 
     // Generate token
     const token = jwt.sign({ admin_id: admin._id }, JWT_SECRET);
-    const libraries = await Library.find({ libraryOwner: admin._id })
+    const libraries = await  prisma.Library.find({ libraryOwner: admin._id })
 
     if (libraries.length > 1) {
       // User owns more than one library, considered an existing user
@@ -286,7 +286,7 @@ async function resetpasswordotp(req, res , next){
     }
     
     if (!apiKey) {
-      // console.log("API key for Fast2SMS is not set");
+
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: "API key for Fast2SMS is not set",
@@ -305,8 +305,8 @@ async function resetpasswordotp(req, res , next){
     }
     const response = await axios.get(url);
     const otpPayload = { phoneNumber, phoneotp: otp };
-    const otpBody = await phoneotp.create(otpPayload);
-  
+    const otpBody = await prisma.phoneOtp.create(otpPayload);
+
   
     if (response.status == 200) {
       return res.status(200).json({
@@ -331,7 +331,7 @@ async function ResetAdminPassword(req, res, next) {
   const { phoneNumber, otp , password, confirmPassword } = req.body;
   // console.log("🚀 ~ ResetAdminPassword ~ req.body:", req.body)
   if (password !== confirmPassword) {
-    console.log("Password does not match");
+    // console.log("Password does not match");
     return res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
       message: "Password does not match",
@@ -339,7 +339,7 @@ async function ResetAdminPassword(req, res, next) {
     });
   }
 
-  const latest = await  phoneotp.find({ phoneNumber : phoneNumber}).sort({ createdAt: -1 });
+  const latest = await  prisma.phoneOtp.find({ phoneNumber : phoneNumber}).sort({ createdAt: -1 });
   if(latest[0].phoneotp !== otp){
     console.log("OTP is incorrect", latest, otp);
     return res.status(StatusCodes.BAD_REQUEST).json({
@@ -348,7 +348,7 @@ async function ResetAdminPassword(req, res, next) {
       error: {},
     });
   }
-  const admin = await Admin.findOne({ phoneNumber });
+  const admin = await prisma.admin.findOne({ phoneNumber });
 
   if (admin) {
     const hashedPassword = await admin.createHash(password);
@@ -356,7 +356,7 @@ async function ResetAdminPassword(req, res, next) {
     await admin.save();
     return res.status(StatusCodes.OK).json({
       success: true,
-      message: "Password updated successfully",
+      message: "Password updated  successfully",
       error: {},
     });
   } else {
@@ -370,10 +370,10 @@ async function ResetAdminPassword(req, res, next) {
 
 async function BookSeat(req, res) {
   const { libraryId, roomNo, seatId, adminId,label } = req.body;
-  console.log("🚀 ~ BookSeat ~ req.body:", req.body)
+  // console.log("🚀 ~ BookSeat ~ req.body:", req.body)
 
   try {
-    const library = await Library.findById(libraryId);
+    const library = await  prisma.library.findById(libraryId);
     if (!library) {
       console.error(`Library with ID ${libraryId} not found`);
       return res.status(404).json({ message: "Library not found" });
@@ -385,27 +385,35 @@ async function BookSeat(req, res) {
       return res.status(404).json({ message: "Room not found" });
     }
 
-    const seat = room.seatLayout.find(seat => seat.id === seatId);
-    if (!seat) {
-      console.error(`Seat with ID ${seatId} not found in room ${roomNo}`);
-      return res.status(404).json({ message: "Seat not found" });
-    }
+    const updatedSeat = await prisma.seat.update({
+      where: { id: seatId },
+      data: {
+        booked: true,
+        bookedBy: adminId,
+        bookingSource: "admin",
+        label: label,
+      },
+    });
+    // if (!seat) {
+    //   console.error(`Seat with ID ${seatId} not found in room ${roomNo}`);
+    //   return res.status(404).json({ message: "Seat not found" });
+    // }
 
-    if (seat.booked) {
-      console.error(`Seat with ID ${seatId} is already booked`);
-      return res.status(400).json({ message: "Seat is already booked" });
-    }
+    // if (seat.booked) {
+    //   console.error(`Seat with ID ${seatId} is already booked`);
+    //   return res.status(400).json({ message: "Seat is already booked" });
+    // }
 
-    if (seat.booked) {
-      return res.status(400).json({ message: "Seat is already booked" });
-    }
+    // if (seat.booked) {
+    //   return res.status(400).json({ message: "Seat is already booked" });
+    // }
 
-    seat.booked = true;
-    seat.bookedBy = adminId;
-    seat.bookingSource = "admin";
-    seat.label = label;
+    // seat.booked = true;
+    // seat.bookedBy = adminId;
+    // seat.bookingSource = "admin";
+    // seat.label = label;
 
-    await library.save();
+    // await library.save();
     res.status(200).json({ message: "Seat booked successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error booking seat", error });
@@ -413,30 +421,47 @@ async function BookSeat(req, res) {
 
 
 }
-
 async function RemoveSeatBooking(req, res) {
   const { libraryId, roomNo, seatId } = req.body;
 
-
   try {
-    const library = await Library.findById(libraryId);
-    const room = library.rooms.find(room => room.roomNo === Number(roomNo));
-    const seat = room.seatLayout.find(seat => seat.id === seatId);
+    // Find the seat by its ID
+    const seat = await prisma.seat.findUnique({
+      where: { id: seatId },
+      include: {
+        room: {
+          include: {
+            library: true,
+          },
+        },
+      },
+    });
 
-    if (!seat.booked) {
-      return res.status(400).json({ message: "Seat is not booked" });
+    if (!seat) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Seat not found" });
     }
 
-    seat.booked = false;
-    seat.bookedBy = null;
-    seat.bookingSource = null;
+    if (!seat.booked) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Seat is not booked" });
+    }
 
-    await library.save();
-    res.status(200).json({ message: "Seat booking removed successfully" });
+    // Update the seat information
+    const updatedSeat = await prisma.seat.update({
+      where: { id: seatId },
+      data: {
+        booked: false,
+        bookedBy: null,
+        bookingSource: null,
+      },
+    });
+
+    res.status(StatusCodes.OK).json({ message: "Seat booking removed successfully", data: updatedSeat });
   } catch (error) {
-    res.status(500).json({ message: "Error removing seat booking", error });
+    console.error("Error removing seat booking:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Error removing seat booking", error: error.message });
   }
 }
+
 module.exports = {
   pingAdminController: ping,
   RegisterAdmin,
