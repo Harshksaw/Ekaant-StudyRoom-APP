@@ -142,9 +142,9 @@ async function signIn(req, res, next) {
   try {
     const { phoneNumber, password } = req.body;
 
-    console.log(phoneNumber, password);
+    // console.log(phoneNumber, password);
 
-    const user = await User.findOne({ phoneNumber });
+    const user = await prisma.user.findOne ({ phoneNumber });
     const inputPassword = req.body.password;
     const storedHashedPassword = user.password;
     // Find user with requested email
@@ -194,7 +194,7 @@ async function sendOtp(req, res) {
     specialChars: false,
   });
 
-  console.log("OTP GENERATED => ", otp, phoneNumber, apiKey);
+  // console.log("OTP GENERATED => ", otp, phoneNumber, apiKey);
 
   if (!phoneNumber) {
     return res.status(400).json({
@@ -223,13 +223,14 @@ async function sendOtp(req, res) {
   }
   const response = await axios.get(url);
   const otpPayload = { phoneNumber, phoneotp: otp };
-  const otpBody = await phoneotp.create(otpPayload);
+  const otpBody = await prisma.phoneOtp.create(otpPayload);
 
 
   if (response.status == 200) {
     return res.status(200).json({
       success: true,
       message: `OTP sent to ${phoneNumber}`,
+      data: otpBody,
     });
   } else {
     return res.status(response.status).json({
@@ -242,10 +243,10 @@ async function sendOtp(req, res) {
 async function verifyOtp(req, res) {
   const { phoneNumber, otp } = req.body;
 
-  const response = await phoneotp.findOne({ phoneNumber }).sort({ createdAt: -1 });
-  console.log("🚀 ~ verifyOtp ~ response:", response)
+  const response = await prisma.phoneotp.findOne({ phoneNumber }).sort({ createdAt: -1 });
+  // console.log("🚀 ~ verifyOtp ~ response:", response)
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
-  console.log(response.phoneotp, otp, "RESPONSE123");
+  // console.log(response.phoneotp, otp, "RESPONSE123");
   if (response.length === 0) {
     // OTP not found for the email
     return res.status(400).json({
@@ -265,7 +266,7 @@ async function verifyOtp(req, res) {
 
 async function sendEmailOtp(req, res) {
   const { email } = req.body;
-  const existingAdmin = await Admin.findOne({ email });
+  const existingAdmin = await prisma.admin.findOne({ email });
   if (existingAdmin) {
     const token = jwt.sign({ admin_id: existingAdmin._id }, JWT_SECRET);
     return res.status(201).json({
@@ -277,38 +278,39 @@ async function sendEmailOtp(req, res) {
   }
 
   //check if user already present..
-  const checkUserPresent = await User.findOne({ email });
+  const checkUserPresent = await prisma.user.findOne({ email });
   //if user is already present
   if (checkUserPresent) {
     return res.status(401).json({
-      sucess: false,
+      success: false,
       message: "User Already Exists",
     });
   }
 
-  //genearating... otp
+
   var otp = otpGenerator.generate(4, {
     upperCaseAlphabets: false,
     lowerCaseAlphabets: false,
     specialChars: false,
   });
-  console.log("OTP GENERATED => ", otp);
+  // console.log("OTP GENERATED => ", otp);
 
   const otpPayload = { email, emailotp: otp };
 
-  const otpBody = await OTP.create(otpPayload);
-  console.log("otpBODY -> ", otpBody);
+  const otpBody = await prisma.otp.create({  data : {otpPayload}});
+  // console.log("otpBODY -> ", otpBody);
 
   return res.status(200).json({
     success: true,
     message: "OTP Sended SUCCESSFULLY !!",
+    data: otpBody,
   });
 }
 
 async function verifyEmailOtp(req, res) {
   const { email, otp } = req.body;
 
-  const response = await OTP.findOne({ email }).sort({ createdAt: -1 });
+  const response = await prisma.otp.findOne({ email }).sort({ createdAt: -1 });
 
   if (response.length === 0) {
     // OTP not found for the email
@@ -326,38 +328,78 @@ async function verifyEmailOtp(req, res) {
 
   return res.status(200).json({ message: "OTP verified successfully" });
 }
-// forget password--
+
 const forgetPasswordSchema = zod.object({
   userId: zod.string().min(3).max(255),
   password: zod.string().min(8),
   resetPassword: zod.string().min(8),
 });
 
-async function forgetPassword(req, res, next) {
-  // const { success } = forgetPasswordSchema.safeParse(req.body);
-  // console.log("success is ", success, req.body);
-  // if (!success) {
-  //   return res.status(StatusCodes.BAD_REQUEST).json({
-  //     success: false,
-  //     message: "Invalid data",
-  //     error: { 411: "Invalid data" },
-  //     data: {},
-  //   });
-  // }
-  try {
-    // const user = await User.findById(req.params._id);
-    const { userId, password, resetPassword } = req.body;
-    console.log(
-      "Received password:",
-      password,
-      "and resetPassword:",
-      resetPassword
-    );
+// async function forgetPassword(req, res, next) {
 
-    const user = await User.findOne({ _id: userId });
+//   try {
+//     // const user = await User.findById(req.params._id);
+//     const { userId, password, resetPassword } = req.body;
+//     // console.log(
+//     //   "Received password:",
+//     //   password,
+//     //   "and resetPassword:",
+//     //   resetPassword
+//     // );
+
+//     const user = await prisma.user.findOne({ _id: userId });
+//     if (user) {
+//       // validate the old password
+//       if (!(await user.validatePassword(password))) {
+//         return res.status(StatusCodes.BAD_REQUEST).json({
+//           success: false,
+//           message: "Invalid password",
+//           error: { 411: "Invalid password" },
+//           data: {},
+//         });
+//       }
+//       console.log(
+//         "validate password is ",
+//         await user.validatePassword(password)
+//       );
+//       const hashedPassword = await user.createHash(resetPassword);
+//       user.password = hashedPassword;
+//       await user.save();
+//       const userId = user._id;
+//       const token = jwt.sign({ userId }, JWT_SECRET);
+//       return res.status(StatusCodes.OK).json({
+//         success: true,
+//         message: "Password reset successfully",
+//         error: {},
+//         data: user,
+//         token: token,
+//       });
+//     } else {
+//       return res.status(StatusCodes.BAD_REQUEST).json({
+//         success: false,
+//         message: "User not found",
+//         error: { 411: "User not found" },
+//         data: {},
+//       });
+//     }
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
+
+async function forgetPassword(req, res, next) {
+  try {
+    const { userId, password, resetPassword } = req.body;
+
+    // Find the user by ID
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
     if (user) {
-      // validate the old password
-      if (!(await user.validatePassword(password))) {
+      // Validate the old password
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
         return res.status(StatusCodes.BAD_REQUEST).json({
           success: false,
           message: "Invalid password",
@@ -365,20 +407,24 @@ async function forgetPassword(req, res, next) {
           data: {},
         });
       }
-      console.log(
-        "validate password is ",
-        await user.validatePassword(password)
-      );
-      const hashedPassword = await user.createHash(resetPassword);
-      user.password = hashedPassword;
-      await user.save();
-      const userId = user._id;
-      const token = jwt.sign({ userId }, JWT_SECRET);
+
+      // Hash the new password
+      const hashedPassword = await bcrypt.hash(resetPassword, 10);
+
+      // Update the user's password
+      const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: { password: hashedPassword },
+      });
+
+      // Generate a new token
+      const token = jwt.sign({ userId: updatedUser.id }, JWT_SECRET);
+
       return res.status(StatusCodes.OK).json({
         success: true,
         message: "Password reset successfully",
         error: {},
-        data: user,
+        data: updatedUser,
         token: token,
       });
     } else {
@@ -390,22 +436,27 @@ async function forgetPassword(req, res, next) {
       });
     }
   } catch (e) {
-    console.log(e);
+    console.error("Error during password reset:", e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "An error occurred during password reset",
+      error: e.message,
+      data: {},
+    });
   }
 }
-
 async function changeProfilePic(req, res) {
   const userId = req.body.userId;
-  console.log("userId id ", userId);
-  const user = await User.findOne({ _id: userId });
+  // console.log("userId id ", userId);
+  const user = await prisma.user.findOne({ _id: userId });
   try {
     if (user) {
       const image = req.file.path;
       user.image = image;
-      console.log(user.image, "user image is ");
-      console.log(image, "image is ");
-      // Save the user object with the updated image path
-      await user.save();
+      // console.log(user.image, "user image is ");
+      // console.log(image, "image is ");
+
+
       return res.status(StatusCodes.OK).json({
         message: "Profile picture updated successfully",
       });
@@ -417,20 +468,36 @@ async function changeProfilePic(req, res) {
     console.log("error is  at profilepictore uplaoder", error);
   }
 }
-
 async function addFriend(req, res) {
   try {
     const { userId } = req.params;
     const friendDetails = req.body; // Assuming friendDetails contains name, email, etc.
-    const user = await User.findById(userId);
+
+    // Find the user by ID
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(userId) },
+      include: { friends: true },
+    });
+
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(StatusCodes.NOT_FOUND).send("User not found");
     }
-    user.friends.push(friendDetails);
-    await user.save();
-    res.status(201).send(user.friends);
+
+    // Add the new friend to the user's friends list
+    const newFriend = await prisma.friend.create({
+      data: {
+        name: friendDetails.name,
+        email: friendDetails.email,
+        phoneNumber: friendDetails.phoneNumber,
+        relationship: friendDetails.relationship,
+        user: { connect: { id: user.id } },
+      },
+    });
+
+    res.status(StatusCodes.CREATED).send(newFriend);
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Error adding friend:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }
 
@@ -450,14 +517,14 @@ async function getFriends(req, res) {
 async function otpLogin(req, res) {
   const { phoneNumber, otp } = req.body;
 
-  const response = await phoneotp
-    .find({ phoneNumber })
-    .sort({ createdAt: -1 })
-    .limit(1);
+  const response = await prisma.phoneOtp.findFirst({phoneNumber}).sort({
+    createdAt : -1
+  })
+
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
-  console.log(response[0].phoneotp, otp, "RESPONSE123");
+  // console.log(response[0].phoneotp, otp, "RESPONSE123");
   if (otp.length == 0) {
-    // OTP not found for the email
+
     return res.status(400).json({
       success: false,
       message: "The OTP is not valid",
@@ -476,7 +543,7 @@ async function otpLogin(req, res) {
       message: "User not found",
     });
   }
-  console.log("🚀 ~ otpLogin ~ response:", response);
+  // console.log("🚀 ~ otpLogin ~ response:", response);
 
   const token = jwt.sign({ user_id: response[0]._id }, JWT_SECRET);
   const user = await User.findOne({ phoneNumber });
