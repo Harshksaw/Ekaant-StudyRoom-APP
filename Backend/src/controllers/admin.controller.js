@@ -4,7 +4,9 @@ const axios = require("axios");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin.model");
 const JWT_SECRET = "MY_SECRET_KEY";
+const { PrismaClient, Prisma } = require('@prisma/client');
 
+const prisma = new PrismaClient();
 
 const bcrypt = require("bcrypt");
 
@@ -375,13 +377,14 @@ async function BookSeat(req, res) {
   try {
     const library = await  prisma.library.findById(libraryId);
     if (!library) {
-      console.error(`Library with ID ${libraryId} not found`);
+
       return res.status(404).json({ message: "Library not found" });
     }
 
-    const room = library.rooms.find(room => room.roomNo === Number(roomNo));
+    const room =  await prisma.library.findFirst( room => room.roomNo === Number(roomNo));
+    // const room = )  library.rooms.find(room => room.roomNo === Number(roomNo));
     if (!room) {
-      console.error(`Room with number ${roomNo} not found in library ${libraryId}`);
+      // console.error(`Room with number ${roomNo} not found in library ${libraryId}`);
       return res.status(404).json({ message: "Room not found" });
     }
 

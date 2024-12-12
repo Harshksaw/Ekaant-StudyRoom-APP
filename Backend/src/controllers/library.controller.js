@@ -13,7 +13,9 @@ const { db } = require("../models/user.model");
 const { Booking } = require("../models/booking.model");
 const { get, default: mongoose } = require("mongoose");
 const App = require("../models/app.model");
+const { PrismaClient, Prisma } = require('@prisma/client');
 
+const prisma = new PrismaClient();
 
 const calculateDistance = (coords1, coords2) => {
   // Haversine formula to calculate distance between two coordinates
