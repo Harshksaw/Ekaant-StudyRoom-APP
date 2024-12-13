@@ -40,7 +40,7 @@ async function RegisterAdmin(req, res, next) {
       Address,
       username,
     } = req.body;
-    // console.log("🚀 ~ RegisterAdmin ~ req.body:", req.body)
+
 
     const existingAdmin = await prisma.admin.findOne( { data : { email }});
     if (existingAdmin) {

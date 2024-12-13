@@ -194,7 +194,7 @@ async function sendOtp(req, res) {
     specialChars: false,
   });
 
-  // console.log("OTP GENERATED => ", otp, phoneNumber, apiKey);
+
 
   if (!phoneNumber) {
     return res.status(400).json({
@@ -266,7 +266,7 @@ async function verifyOtp(req, res) {
 
 async function sendEmailOtp(req, res) {
   const { email } = req.body;
-  const existingAdmin = await prisma.admin.findOne({ email });
+  const existingAdmin = await prisma.admin.findFirst({ email } ) 
   if (existingAdmin) {
     const token = jwt.sign({ admin_id: existingAdmin._id }, JWT_SECRET);
     return res.status(201).json({
@@ -278,7 +278,7 @@ async function sendEmailOtp(req, res) {
   }
 
   //check if user already present..
-  const checkUserPresent = await prisma.user.findOne({ email });
+  const checkUserPresent = await prisma.user.findFirst({ email });
   //if user is already present
   if (checkUserPresent) {
     return res.status(401).json({
