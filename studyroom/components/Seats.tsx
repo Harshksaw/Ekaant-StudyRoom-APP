@@ -11,25 +11,25 @@ import {
 } from "react-native";
 import { RotateInDownLeft } from "react-native-reanimated";
 
-const Seat = ({ seatData, isSelected, isBooked, onSeatSelect,roation }) => {
-  console.log("🚀 ~ Seat ~ roation:", roation)
+const Seat = ({ seatData, isSelected, isBooked, onSeatSelect,rotation}) => {
+  console.log("🚀 ~ Seat ~ roation:",rotation)
   const isFullyBooked = seatData.timeSlots.every((slot) => slot.booked);
   const isPartiallyBooked = seatData.timeSlots.some((slot) => slot.booked);
 
   const getIcon = () => {
     if (isFullyBooked) {
-      return <DeskGreen fill={"#ffcc7f64"} />;
+      return <DeskGreen fill={"#ffcc7f64"}  rotation={rotation} />;
     } else if (isPartiallyBooked) {
-      return <DeskGreen />;
+      return <DeskGreen rotation={rotation} />;
     } else {
-      return <DeskGreen fill={"#07f07b"} />;
+      return <DeskGreen fill={"#07f07b"}  rotation={rotation}/>;
     }
   };
 
   return (
     <TouchableOpacity
       onPress={() => onSeatSelect(seatData)}
-      style={styles.seat(isFullyBooked, isSelected,roation)}
+      style={styles.seat(isFullyBooked, isSelected,rotation)}
     >
       {getIcon()}
       <Text style={{ fontFamily: ff.deckRegular, fontSize: w(12) }}>
@@ -40,6 +40,7 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect,roation }) => {
 };
 
 const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
+  console.log("🚀 ~ SeatsComponent ~ layout:", layout)
   const [selectedSeat, setSelectedSeat] = useState(null);
 
   const handleSelect = (seatData) => {
@@ -82,7 +83,7 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
             const isBooked = bookedSeats.some(
               (bookedSeat) => bookedSeat.seatId === seat.seatId
             );
-
+            // console.log("🚀 ~ SeatsComponent ~ Seat:", seat)
             return (
               <Seat
                 key={`${rowIndex}-${colIndex}`}
@@ -90,7 +91,7 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
                 isSelected={isSelected}
                 isBooked={isBooked}
                 onSeatSelect={handleSelect}
-                roation={currentRoom.rotation}
+                rotation={seat?.rotation}
               />
             );
           }
@@ -138,9 +139,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexWrap: "nowrap",
   },
-  seat: (isBooked, isSelected, rotation) => ({
+  seat: (isBooked, isSelected) => ({
 
-    transform: [{ rotate: `${90}deg` }], // Apply rotation
+    // transform: [{ rotate: `${rotation}deg` }], // Apply rotation
 
     justifyContent: "center",
     alignItems: "center",
@@ -152,13 +153,15 @@ const styles = StyleSheet.create({
       ? "#8cf39c7d"
       : "transparent",
     borderWidth: 1.3,
+    aspectRatio: 1.1/1,
+
     borderColor: "#0077B6",
     padding: w(2),
     paddingHorizontal: w(6),
   }),
   emptySeat: {
     width: 70,
-    height: 70,
+    height: 75,
     margin: 5,
     backgroundColor: "transparent",
   },

@@ -366,6 +366,7 @@ const DeskGreen = ({ fill = "#ffd230", ...props }: any) => (
     xmlns="http://www.w3.org/2000/svg"
     width={50}
     height={50}
+    rotation={props.rotation}
     viewBox="0 0 48 48"
     {...props}
   >
