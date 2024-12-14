@@ -10,6 +10,9 @@ import {
   ScrollView,
 } from "react-native";
 import { RotateInDownLeft } from "react-native-reanimated";
+import { Image, ImageBackground } from 'expo-image';
+import { width } from '../constants/size';
+
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect,rotation}) => {
   console.log("🚀 ~ Seat ~ roation:",rotation)
@@ -100,13 +103,34 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
             <View key={`${rowIndex}-${colIndex}`} style={styles.emptySeat} />
           );
         })}
+      
       </View>
     ));
   };
 
   return (
-    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-      <View style={styles.container}>{createSeatGrid()}</View>
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} 
+
+
+    >
+      <View style={styles.container}>{createSeatGrid()}
+
+      <View
+  style={{
+    width: 60, 
+    height:40,
+    backgroundColor:'red',
+    position:'relative',
+    bottom:0,
+
+    // right:'20%',
+  }}
+  >
+
+  </View>
+
+      </View>
+    
     </ScrollView>
   );
 };
@@ -118,13 +142,23 @@ export default function Seats({ onSeatSelect, SeatLayout, currentRoom }) {
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView showsVerticalScrollIndicator={false}
+    style={{
+      borderColor:'black',
+      position:'relative',
+
+      borderWidth:2,
+    }}
+    >
       <SeatsComponent
         layout={SeatLayout}
         bookedSeats={[]}
         onSeatSelect={handleSeatSelect}
         currentRoom={currentRoom}
       />
+
+
+    
     </ScrollView>
   );
 }
