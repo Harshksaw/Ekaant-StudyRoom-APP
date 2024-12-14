@@ -4,10 +4,12 @@ const roomSchema = new mongoose.Schema({
     library: { type: mongoose.Schema.Types.ObjectId, ref: 'Library' },
     roomNo: { type: Number, required: true },
     Ac: { type: Boolean, default: false },
+    doorPosition: { type: [Number], default: [0, 0, 0, 0, 0] }, // Array to represent door position
     seats: [
       {
         seatId: { type: String, required: true },
         seatLabel: { type: String, required: true },
+        rotation: { type: Number, default: 0 }, // New field for seat rotation
         timeSlots: [
           {
             slotId: { type: String, required: true, default: uuidv4 },       
