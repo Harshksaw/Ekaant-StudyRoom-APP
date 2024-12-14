@@ -9,8 +9,10 @@ import {
   Text,
   ScrollView,
 } from "react-native";
+import { RotateInDownLeft } from "react-native-reanimated";
 
-const Seat = ({ seatData, isSelected, isBooked, onSeatSelect }) => {
+const Seat = ({ seatData, isSelected, isBooked, onSeatSelect,roation }) => {
+  console.log("🚀 ~ Seat ~ roation:", roation)
   const isFullyBooked = seatData.timeSlots.every((slot) => slot.booked);
   const isPartiallyBooked = seatData.timeSlots.some((slot) => slot.booked);
 
@@ -27,7 +29,7 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect }) => {
   return (
     <TouchableOpacity
       onPress={() => onSeatSelect(seatData)}
-      style={styles.seat(isFullyBooked, isSelected)}
+      style={styles.seat(isFullyBooked, isSelected,roation)}
     >
       {getIcon()}
       <Text style={{ fontFamily: ff.deckRegular, fontSize: w(12) }}>
@@ -88,6 +90,7 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
                 isSelected={isSelected}
                 isBooked={isBooked}
                 onSeatSelect={handleSelect}
+                roation={currentRoom.rotation}
               />
             );
           }
@@ -108,6 +111,7 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
 };
 
 export default function Seats({ onSeatSelect, SeatLayout, currentRoom }) {
+  console.log("🚀 ~ Seats ~ SeatLayout:", SeatLayout)
   const handleSeatSelect = (selectedSeat) => {
     onSeatSelect(selectedSeat);
   };
@@ -134,7 +138,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexWrap: "nowrap",
   },
-  seat: (isBooked, isSelected) => ({
+  seat: (isBooked, isSelected, rotation) => ({
+
+    transform: [{ rotate: `${90}deg` }], // Apply rotation
+
     justifyContent: "center",
     alignItems: "center",
     margin: 5,
