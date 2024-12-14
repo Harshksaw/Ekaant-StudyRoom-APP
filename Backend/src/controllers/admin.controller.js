@@ -42,7 +42,7 @@ async function RegisterAdmin(req, res, next) {
     } = req.body;
 
 
-    const existingAdmin = await prisma.admin.findOne( { data : { email }});
+    const existingAdmin = await prisma.admin.findFirst({ where : { email : email }});
     if (existingAdmin) {
       const token = jwt.sign({ admin_id: existingAdmin._id }, JWT_SECRET);
       return res.status(200).json({
@@ -91,24 +91,33 @@ async function RegisterAdmin(req, res, next) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newAdmin = await prisma.admin.create({
-      phoneNumber,
-      username,
-      email,
-      password: hashedPassword,
-      fullName,
-      Dob,
-      AddharNumber,
-      PanNumber,
-      address: Address,
-      adhaarCardDetails: {
-        adhaarNumber: AddharNumber,
-        adhaarCardFile: aadharUpload.Location,
-      },
-      panCardDetails: {
-        panNumber: PanNumber,
-        panCardFile: pancardUpload.Location,
-      },
-    });
+
+      data :{
+
+        phoneNumber,
+        username,
+        email,
+        password: hashedPassword,
+        fullName,
+        Dob : new Date(Dob),
+        AddharNumber,
+        PanNumber,
+        address: Address,
+        adhaarCardDetails: {
+          create: {
+            adhaarNumber: AddharNumber,
+            adhaarCardFile: aadharUpload.Location,
+          },
+        },
+        panCardDetails: {
+          create: {
+            panNumber: PanNumber,
+            panCardFile: pancardUpload.Location,
+          },
+        },
+      }
+      });
+    console.log("🚀 ~ RegisterAdmin ~ newAdmin:", newAdmin)
 
     const token = jwt.sign({ admin_id: newAdmin._id }, JWT_SECRET);
 

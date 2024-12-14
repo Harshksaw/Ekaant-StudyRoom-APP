@@ -8,9 +8,11 @@ const connectToDB = require("./config/db.config");
 const path = require('path'); 
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 require("dotenv").config();
-
+const cron = require('node-cron');
 // const StatsD = require('hot-shots');
 // const dogstatsd = new StatsD();
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 // // Increment a counter
 // dogstatsd.increment('page.views');
@@ -106,7 +108,31 @@ app.get('/health', (req, res) => {
 });
 
 app.use(errorHandler);
+// Schedule a task to run every minute
+cron.schedule('* * * * *', async () => {
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
 
+  try {
+    // Delete OTPs older than 5 minutes
+    await prisma.otp.deleteMany({
+      where: {
+        createdAt: {
+          lt: fiveMinutesAgo,
+        },
+      },
+    });
+    await prisma.phoneOtp.deleteMany({
+      where: {
+        createdAt: {
+          lt: fiveMinutesAgo,
+        },
+      },
+    });
+    console.log('Expired OTPs deleted successfully');
+  } catch (error) {
+    console.error('Error deleting expired OTPs:', error);
+  }
+});
 app.listen(PORT, async () => {
   console.log(`Server started at PORT: ${PORT}`);
   await connectToDB();

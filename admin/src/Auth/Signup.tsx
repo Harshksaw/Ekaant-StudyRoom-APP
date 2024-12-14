@@ -382,8 +382,8 @@ try{
 
         localStorage.setItem("role", "ADMIN");
         localStorage.setItem("token", response.data.token);
-        localStorage.setItem("userId", response.data.data._id);
-        setAdminId(response.data.data._id);
+        localStorage.setItem("userId", response.data.data.id);
+        setAdminId(response.data.data.id);
 
       }
       if (response.status !== 201) {
