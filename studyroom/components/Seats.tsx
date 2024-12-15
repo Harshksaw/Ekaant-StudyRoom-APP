@@ -42,9 +42,25 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect,rotation}) => {
   );
 };
 
-const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
+const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom,door }) => {
   console.log("🚀 ~ SeatsComponent ~ layout:", layout)
   const [selectedSeat, setSelectedSeat] = useState(null);
+
+  console.log(door)
+
+  const getDoorPosition = () => {
+    const doorPositions = [
+      { right: '50%' },
+      {  right: '25%' },
+      { left:'0%' },
+      {  left: '25%' },
+      { left:'50%'},
+    ];
+
+    return door.map((doorIndex) => doorPositions[doorIndex + 1 ] || { left:'0%' });
+  };
+
+  const doorPosition = getDoorPosition();
 
   const handleSelect = (seatData) => {
     if (selectedSeat && seatData.seatId === selectedSeat.seatId) {
@@ -116,15 +132,16 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
       <View style={styles.container}>{createSeatGrid()}
 
       <View
-  style={{
+  style={[{
     width: 60, 
     height:40,
     backgroundColor:'red',
     position:'relative',
     bottom:0,
 
-    // right:'20%',
-  }}
+
+
+  }, ...doorPosition]}
   >
 
   </View>
@@ -135,7 +152,7 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, currentRoom }) => {
   );
 };
 
-export default function Seats({ onSeatSelect, SeatLayout, currentRoom }) {
+export default function Seats({ onSeatSelect, SeatLayout, currentRoom, door }) {
   console.log("🚀 ~ Seats ~ SeatLayout:", SeatLayout)
   const handleSeatSelect = (selectedSeat) => {
     onSeatSelect(selectedSeat);
@@ -144,15 +161,16 @@ export default function Seats({ onSeatSelect, SeatLayout, currentRoom }) {
   return (
     <ScrollView showsVerticalScrollIndicator={false}
     style={{
-      borderColor:'black',
-      position:'relative',
+      // borderColor:'black',
+      // position:'relative',
 
-      borderWidth:2,
+      // borderWidth:2,
     }}
     >
       <SeatsComponent
         layout={SeatLayout}
         bookedSeats={[]}
+        door={door}
         onSeatSelect={handleSeatSelect}
         currentRoom={currentRoom}
       />

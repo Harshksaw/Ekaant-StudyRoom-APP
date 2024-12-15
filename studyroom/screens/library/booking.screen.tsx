@@ -395,6 +395,7 @@ const BookingScreen: React.FC = () => {
         {data && data[currentRoomNo - 1].seats.length !== 0 && (
           <Seats
             onSeatSelect={handleSeatSelect}
+            door={data[currentRoomNo - 1].doorPosition}
             SeatLayout={data[currentRoomNo - 1].seats}
             currentRoom={currentRoomNo}
           />
