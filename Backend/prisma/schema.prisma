@@ -36,7 +36,7 @@ model Admin {
   AddharNumber          String
   PanNumber             String
   address               Json
-  adhaarCardDetails     AdhaarCardDetails?
+  adhaarCardDetails     AdhaarCardDetails? 
   panCardDetails        PanCardDetails?
   profileImage          String?
   resetPasswordExpires  DateTime?

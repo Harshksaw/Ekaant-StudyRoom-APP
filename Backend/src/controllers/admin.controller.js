@@ -75,18 +75,7 @@ async function RegisterAdmin(req, res, next) {
 
     const pancardUpload = await uploadToS3(pancard[0], `admin/${username}`);
     const aadharUpload = await uploadToS3(aadhar[0], `admin/${username}`);
-    // const pancardFile = new File({
-    //   filename: pancard[0].originalname,
-    //   path: pancard[0].path,
-    // });
-
-    // const aadharFile = new File({
-    //   filename: aadhar[0].originalname,
-    //   path: aadhar[0].path,
-    // });
-
-    // const pancardPath = await pancardFile.save();
-    // const addharCardPath = await aadharFile.save();
+  
 
     const hashedPassword = await bcrypt.hash(password, 10);
 

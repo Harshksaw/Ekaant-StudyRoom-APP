@@ -15,6 +15,7 @@ const { get, default: mongoose } = require("mongoose");
 const App = require("../models/app.model");
 const { PrismaClient, Prisma } = require('@prisma/client');
 
+
 const prisma = new PrismaClient();
 
 const calculateDistance = (coords1, coords2) => {
@@ -44,7 +45,7 @@ const calculateDistances = async () => {
         const distance = calculateDistance(library.location, city.coords);
         console.log("🚀 ~ calculateDistances ~ distance:", distance)
         const distanceRecord = new Distance({
-          library: library._id,
+          library: library.id,
           city: city.city,
           distance: distance ? distance : 0
         });
@@ -66,7 +67,7 @@ const pingAdmin = (req, res) => {
 };
 
 const calculateLowestPrice = async (libraryId) => {
-  const library = await Library.findById(libraryId).populate({
+  const library = await prisma.library.findById(libraryId).populate({
     path: "rooms",
     populate: {
       path: "seats",
@@ -112,9 +113,10 @@ const createLibrary = async (req, res) => {
     const tan = req.files.tan ? req.files.tan[0].path : null;
     const msme = req.files.msme ? req.files.msme[0].path : null;
 
-    console.log(cardImage, images, gst, cin, tan, msme, ">>>>>uploadedFiles");
+    // console.log(cardImage, images, gst, cin, tan, msme, ">>>>>uploadedFiles");
 
     const jsonData = JSON.parse(req.body.jsonData);
+    console.log("🚀 ~ createLibrary ~ jsonData:", jsonData)
 
     const {
       libraryOwner,
@@ -132,35 +134,31 @@ const createLibrary = async (req, res) => {
     } = jsonData;
 
     const libraryData = {
-      libraryOwner,
+  libraryOwner: {
+    connect: { id: parseInt(libraryOwner) } // Ensure the libraryOwner is connected correctly
+  },
       name,
       longDescription,
       shortDescription,
       address,
-
       amenities,
-
-      cardimage: cardImage,
+      cardImage: cardImage,
       images: images,
       legal,
-
       gstNumber,
       gstCertificateFile: gst,
-
       cinNumber,
       cinCertificateFile: cin,
-
       tanNumber,
       tanCertificateFile: tan,
-
       msmeNumber,
       msmeCertificateFile: msme,
     };
 
-    const LibraryData = await Library.create(libraryData);
-    await LibraryData.save();
+    const LibraryData = await prisma.library.create({ data: libraryData });
 
-    calculateLowestPrice(LibraryData._id);
+
+    calculateLowestPrice(LibraryData.id);
     res.status(201).json({
       message: "Library created successfully",
       library: LibraryData,
@@ -176,7 +174,11 @@ const createRoom = async (req, res) => {
   try {
     console.log(req.body, "=================>");
     const libraryId = req.body.libraryId; // Assuming you're getting the library ID from the request parameters
-    const library = await Library.findById(libraryId);
+    const library = await prisma.library.findFirst({
+      where  : {
+        libraryId:libraryId
+      }
+    })
 
     if (!library) {
       return res.status(404).send({ message: "Library not found" });
@@ -223,7 +225,7 @@ const createRoom = async (req, res) => {
       library.location = location;
     }
 
-    library.rooms.push(newRoom._id);
+    library.rooms.push(newRoom.id);
 
     // Save the updated library document
     await library.save();
