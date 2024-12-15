@@ -65,14 +65,18 @@ const pingAdmin = (req, res) => {
     message: "Ping admin dummy API",
   });
 };
-
 const calculateLowestPrice = async (libraryId) => {
-  const library = await prisma.library.findById(libraryId).populate({
-    path: "rooms",
-    populate: {
-      path: "seats",
-      populate: {
-        path: "timeSlots",
+  const library = await prisma.library.findFirst({
+    where: { id: libraryId },
+    include: {
+      rooms: {
+        include: {
+          seats: {
+            include: {
+              timeSlots: true,
+            },
+          },
+        },
       },
     },
   });
@@ -95,14 +99,16 @@ const calculateLowestPrice = async (libraryId) => {
     });
   });
 
-  library.Price = lowestPrice === Infinity ? 0 : lowestPrice;
-  await library.save();
+  await prisma.library.update({
+    where: { id: libraryId },
+    data: { Price: lowestPrice === Infinity ? 0 : lowestPrice },
+  });
 };
 
 // Assuming LibraryController.createLibrary is an async function
 const createLibrary = async (req, res) => {
   try {
-    console.log(req.files, "=================>");
+    // console.log(req.files, "=================>");
 
     const cardImage = req.files.card[0].path;
     const images = req.files.images
@@ -141,7 +147,22 @@ const createLibrary = async (req, res) => {
       longDescription,
       shortDescription,
       address,
-      amenities,
+     amenities: {
+    create: {
+      coldWater: amenities.includes('coldWater'),
+      wifi: amenities.includes('wifi'),
+      ac: amenities.includes('ac'),
+      locker: amenities.includes('locker'),
+      separateWashroom: amenities.includes('separateWashroom'),
+      news: amenities.includes('News'),
+      discussionArea: amenities.includes('discussionArea'),
+      lunchArea: amenities.includes('LunchArea'),
+      movingChair: amenities.includes('MovingChair'),
+      floorMat: amenities.includes('FloorMat'),
+      separateParking: amenities.includes('SeparateParking'),
+      commonParking: amenities.includes('CommonParking'),
+    }
+  },
       cardImage: cardImage,
       images: images,
       legal,

@@ -84,7 +84,7 @@ model User {
 
 model Library {
   id                  Int       @id @default(autoincrement())
-  libraryId           Int?
+  libraryId           Int
   libraryOwnerId      Int?
   libraryOwner        Admin?    @relation(fields: [libraryOwnerId], references: [id], name: "OwnedProperties")
   name                String    
@@ -106,10 +106,15 @@ model Library {
   comingSoon          Boolean   @default(false)
   approved            Boolean   @default(false)
   legal               String?
-  gstDetails          GstDetails?
-  cinDetails          String?
-  tanDetails          String?
-  msmeDetails         String?
+  gstNumber           String?
+  gstCertificateFile  String?
+  cinNumber           String?
+  cinCertificateFile  String?
+  tanNumber           String?
+  tanCertificateFile  String?
+  msmeNumber          String?
+  msmeCertificateFile String?
+
   registrationFees    Float     @default(0)
   Price               Float     @default(0)
   users               User[]    @relation("OwnedProperties")
@@ -177,13 +182,13 @@ model Amenities {
   library           Library   @relation(fields: [libraryId], references: [id])
 }
 
-model GstDetails {
-  id                 Int     @id @default(autoincrement())
-  gstNumber           String?
-  gstCertificateFile String?
-  libraryId          Int      @unique
-  library            Library   @relation(fields: [libraryId], references: [id])
-}
+// model GstDetails {
+//   id                 Int     @id @default(autoincrement())
+//   gstNumber           String?
+//   gstCertificateFile String?
+//   libraryId          Int      @unique
+//   library            Library   @relation(fields: [libraryId], references: [id])
+// }
 
 model Room {
   id        Int      @id @default(autoincrement())
