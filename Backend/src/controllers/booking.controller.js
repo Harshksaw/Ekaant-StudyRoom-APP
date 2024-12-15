@@ -6,7 +6,9 @@ const { User, Invoice } = require("../models");
 const { Booking } = require("../models/booking.model");
 const { Library } = require("../models/library.model");
 const { sendInvoiceEmail } = require("../utils/mails/invoice.mail");
+const { PrismaClient, Prisma } = require('@prisma/client');
 
+const prisma = new PrismaClient();
 const JWT_SECRET = "MY_SECRET_KEY";
 const BookingSchema = zod.object({
   userId: zod.string(),

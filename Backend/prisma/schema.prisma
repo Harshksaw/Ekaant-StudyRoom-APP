@@ -26,19 +26,24 @@ model Location {
 //Admin
 model Admin {
   id                  Int                @id @default(autoincrement())
-  username            String             @unique
-  email               String             @unique
-  phoneNumber         String             @db.VarChar(10)
-  Dob                 DateTime? 
-  password            String    
-  accountType         String             @default("Admin")
-  ownedProperties     Library[]          @relation("OwnedProperties")
-  adhaarCardDetails   AdhaarCardDetails?
-  address             Json?
-  panCardDetails       PanCardDetails?
-  profileImage        String?
-  resetPasswordExpires DateTime?
-  libraries          Library[] @relation("LibraryBookings")
+  username              String    @unique
+  email                 String    @unique
+  phoneNumber           String    @db.VarChar(10)
+  Dob                   DateTime?
+  password              String
+  accountType           String    @default("Admin")
+  fullName              String
+  AddharNumber          String
+  PanNumber             String
+  address               Json
+  adhaarCardDetails     AdhaarCardDetails?
+  panCardDetails        PanCardDetails?
+  profileImage          String?
+  resetPasswordExpires  DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  ownedProperties       Library[] @relation("OwnedProperties")
+  libraryBookings       Library[] @relation("LibraryBookings")
 }
 
 
