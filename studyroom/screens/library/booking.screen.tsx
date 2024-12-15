@@ -194,37 +194,6 @@ const BookingScreen: React.FC = () => {
     }
   };
 
-  // const confirmBooking = async () => {
-  //   setBookingLoader(true);
-  //   await updateRoomDetails();
-
-  //   const res = await PreBook();
-  //   setBookingLoader(false);
-  //   if (res) {
-  //     setBookingLoader(false);
-  //     setIsModalVisible(false);
-
-  //     const newBookingData = {
-  //       bookedSeat: selectedSeat,
-  //       bookingDate: selectedDate,
-  //       bookingPeriod: selectedMonth,
-  //       roomNo: currentRoomNo,
-  //       timeSlot: selectedSlots,
-  //       price: finalPrice,
-  //     };
-
-  //     const Bookdata = { ...newBookingData, libraryId: libraryDetails };
-  //     router.push({
-  //       pathname: "/library/checkout.screen",
-  //       params: {
-  //         item: JSON.stringify(Bookdata),
-  //       },
-  //     });
-  //   } else {
-  //     setBookingLoader(false);
-  //     setIsModalVisible(false);
-  //   }
-  // };
 
   const resetBookingState = () => {
     setSelectedSeat(null);
@@ -426,6 +395,7 @@ const BookingScreen: React.FC = () => {
         {data && data[currentRoomNo - 1].seats.length !== 0 && (
           <Seats
             onSeatSelect={handleSeatSelect}
+            door={data[currentRoomNo - 1].doorPosition}
             SeatLayout={data[currentRoomNo - 1].seats}
             currentRoom={currentRoomNo}
           />
