@@ -187,6 +187,7 @@ model Room {
   roomNo    Int      
   Ac        Boolean  @default(false)
   seats     Seat[]
+  doorPosition Float[] @default(dbgenerated("ARRAY[0, 0, 0, 0, 0]::FLOAT[]"))
 }
 
 
@@ -195,6 +196,7 @@ model Seat {
   id        Int     @id @default(autoincrement())
   seatId    String  
   seatLabel String  
+  rotation Int  @default(0)
   roomId    Int
   room      Room    @relation(fields: [roomId], references: [id])
   timeSlots TimeSlot[]
