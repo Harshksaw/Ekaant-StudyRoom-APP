@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { MdEventSeat } from "react-icons/md";
 const Seat = ({ seatData, isSelected, onSelect, onRotate  , style}: any) => {
   const handleClick = () => {
     onSelect(seatData);
@@ -12,6 +12,7 @@ const Seat = ({ seatData, isSelected, onSelect, onRotate  , style}: any) => {
 
   return (
     <div className="flex flex-col items-center">
+  
     <button
 
 
@@ -20,12 +21,14 @@ const Seat = ({ seatData, isSelected, onSelect, onRotate  , style}: any) => {
       className={`
 
         w-20
-        m-5 text-lg font-bold
+        m-5 text-md font-bold
         ${isSelected ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}
         p-2 rounded-md hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+        justify-center items-center
       `}
       onClick={handleClick}
     >
+          <MdEventSeat  size={32} className="m-auto"/>
       {seatData.label}
     </button>
     <button
@@ -108,10 +111,17 @@ const Seats = ({ onSeatSelect }: SeatsProps) => {
       console.log("No seats selected");
       return;
     }
+    const seatLayoutData = {
+      rows,
+      columns,
+      selectedSeats,
+      rotationAngles,
+    };
+    console.log("Seat Layout Data:", seatLayoutData);
 
-    console.log("Selected Seats:");
-    onSeatSelect(selectedSeats);
-    console.log(selectedSeats);
+    // onSeatSelect(selectedSeats);
+    // console.log(selectedSeats);
+    onSeatSelect(seatLayoutData);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

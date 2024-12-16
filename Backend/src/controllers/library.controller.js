@@ -207,6 +207,7 @@ const createRoom = async (req, res) => {
     }
 
     const { seatLayout, timeSlot, location, ac } = req.body;
+    console.log("🚀 ~ createRoom ~ seatLayout:", seatLayout)
 
     if (!library) {
       return res.status(404).send({ message: "Library not found" });
@@ -221,27 +222,29 @@ const createRoom = async (req, res) => {
     console.log(newRoomNo, "newRoomNo");
 
     // Create the new room with the provided seatLayout
-    const newRoom = await prisma.room.create({
+     // Create the new room with the provided seatLayout
+     const newRoom = await prisma.room.create({
       data: {
-      libraryId: parseInt(libraryId),
-      roomNo: newRoomNo,
-      seats: {
-        create: seatLayout.map((seat) => ({
-        seatId: seat.id,
-        seatLabel: seat.label,
-        timeSlots: {
-          create: timeSlot
-          .filter((slot) => slot.from && slot.to)
-          .map((slot) => ({
-            slotId: uuidv4(), // Generate a unique slotId
-            from: slot.from,
-            to: slot.to,
-            price: parseInt(slot.price),
+        libraryId: parseInt(libraryId),
+        roomNo: newRoomNo,
+        seats: {
+          create: seatLayout.selectedSeats.map((seat) => ({
+            seatId: seat.id,
+            seatLabel: seat.label,
+            rotation: seatLayout.rotationAngles[seat.id] || 0,
+            timeSlots: {
+              create: timeSlot
+                .filter((slot) => slot.from && slot.to)
+                .map((slot) => ({
+                  slotId: uuidv4(), // Generate a unique slotId
+                  from: slot.from,
+                  to: slot.to,
+                  price: parseFloat(slot.price),
+                })),
+            },
           })),
         },
-        })),
-      },
-      Ac: ac,
+        Ac: ac,
       },
     });
 
