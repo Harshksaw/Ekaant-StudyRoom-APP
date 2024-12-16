@@ -28,7 +28,7 @@
 //         const accountType = response.data.data.user.accountType; // Extract accountType
         
 //         localStorage.setItem("token", token);
-//         localStorage.setItem("userId", response.data.data.user._id);
+//         localStorage.setItem("userId", response.data.data.user.id);
 //         localStorage.setItem("role", accountType); // Store accountType in localStorage
 //         const role = localStorage.getItem("role");
         

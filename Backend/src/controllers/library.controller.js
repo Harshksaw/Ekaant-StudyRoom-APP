@@ -67,7 +67,7 @@ const pingAdmin = (req, res) => {
 };
 const calculateLowestPrice = async (libraryId) => {
   const library = await prisma.library.findFirst({
-    where: { id: libraryId },
+    where: { id: parseInt(libraryId) },
     include: {
       rooms: {
         include: {
@@ -100,7 +100,7 @@ const calculateLowestPrice = async (libraryId) => {
   });
 
   await prisma.library.update({
-    where: { id: libraryId },
+    where: { id: parseInt(libraryId) },
     data: { Price: lowestPrice === Infinity ? 0 : lowestPrice },
   });
 };
@@ -194,11 +194,11 @@ const createLibrary = async (req, res) => {
 // createRoom
 const createRoom = async (req, res) => {
   try {
-    console.log(req.body, "=================>");
-    const libraryId = req.body.libraryId; // Assuming you're getting the library ID from the request parameters
+    // console.log(req.body, "=================>");
+    const libraryId = req.body.libraryId; 
     const library = await prisma.library.findFirst({
       where  : {
-        libraryId:libraryId
+       id: parseInt(libraryId)
       }
     })
 
@@ -214,43 +214,56 @@ const createRoom = async (req, res) => {
 
     // Determine the new roomNo
     let newRoomNo = 1;
-    if (library.rooms.length > 0) {
+    if (library.rooms && library.rooms.length > 0) {
       const maxRoomNo = library.rooms.length;
       newRoomNo = maxRoomNo + 1;
     }
     console.log(newRoomNo, "newRoomNo");
 
     // Create the new room with the provided seatLayout
-    const newRoom = new Room({
-      library: libraryId,
+    const newRoom = await prisma.room.create({
+      data: {
+      libraryId: parseInt(libraryId),
       roomNo: newRoomNo,
-      seats: seatLayout.map((seat) => ({
+      seats: {
+        create: seatLayout.map((seat) => ({
         seatId: seat.id,
         seatLabel: seat.label,
-        timeSlots: timeSlot
+        timeSlots: {
+          create: timeSlot
           .filter((slot) => slot.from && slot.to)
           .map((slot) => ({
             slotId: uuidv4(), // Generate a unique slotId
             from: slot.from,
             to: slot.to,
-            price: slot.price,
+            price: parseInt(slot.price),
           })),
-      })),
+        },
+        })),
+      },
       Ac: ac,
+      },
     });
 
-    // Save the new room document
 
-    await newRoom.save();
+
+
 
     if (location) {
       library.location = location;
     }
 
-    library.rooms.push(newRoom.id);
+    await prisma.library.update({
+      where: { id: parseInt(libraryId) },
+      data: {
+      rooms: {
+        connect: { id: newRoom.id },
+      },
+      },
+    });
 
     // Save the updated library document
-    await library.save();
+
 
     await calculateLowestPrice(libraryId);
 
@@ -496,9 +509,10 @@ const updateApproveStatus = async (req, res) => {
 const getAdminLibraries = async (req, res) => {
   try {
     const { userId } = req.body; // Assuming the userId is passed as a URL parameter
-    console.log(userId, "userId");
-    const libraries = await Library.find({ libraryOwner: userId });
-    console.log(libraries, "libraries");
+
+    const libraries = await prisma.library.findMany({ where : {libraryOwnerId : parseInt(userId) }});
+    console.log("🚀 ~ getAdminLibraries ~ libraries:", libraries)
+
     res.json({
       message: "Libraries retrieved successfully",
       data: libraries,
@@ -602,7 +616,7 @@ const deleteRoom = async (req, res) => {
     }
 
     const roomIndex = library.rooms.findIndex(
-      (room) => room._id.toString() === roomId
+      (room) => room.id.toString() === roomId
     );
 
     if (roomIndex === -1) {
@@ -612,7 +626,7 @@ const deleteRoom = async (req, res) => {
 
     await Room.findByIdAndDelete(roomId);
     for (let i = 0; i < library.rooms.length; i++) {
-      const room = await Room.findById(library.rooms[i]._id);
+      const room = await Room.findById(library.rooms[i].id);
       if (room) {
         room.roomNo = i + 1; // Room numbers start from 1
         await room.save();
@@ -691,7 +705,7 @@ const createReview = async (req, res) => {
    
 
     await Library.findByIdAndUpdate(libraryId, {
-      $push: { reviews: newReview._id },
+      $push: { reviews: newReview.id },
       $set: { avgRating: avgRating }
     });
 

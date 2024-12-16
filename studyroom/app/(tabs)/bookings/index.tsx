@@ -179,11 +179,11 @@ export default function Bookings() {
                   marginBottom: 13,
                   padding: 8,
                 }}
-                // key={item._id}
+                // key={item.id}
                 onPress={() =>
                   router.push({
                     pathname: "/(routes)/invoice",  
-                    params: { item: JSON.stringify(item), id: item._id },
+                    params: { item: JSON.stringify(item), id: item.id },
                   })
                 }
               >

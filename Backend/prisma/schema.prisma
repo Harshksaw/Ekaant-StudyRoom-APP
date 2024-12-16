@@ -11,7 +11,7 @@ model App {
   id             Int      @id @default(autoincrement())
   Banner         String[]
   locations      Location[]
-  RegistrationFee Float?   @map("RegistrationFee") 
+  RegistrationFee Int?   @map("RegistrationFee") 
 }
 
 model Location {
@@ -96,7 +96,7 @@ model Library {
   location            Json?      
   address             Json?      
   commingSoonMessage  String?   @default("false") // Note: This is a String with default "false" since you have type: String in Mongoose
-  rooms               Room[]    @relation("Rooms")
+  rooms               Room[]    @relation("Rooms") 
   coords              String?
   distances Distance[]
 
@@ -115,8 +115,8 @@ model Library {
   msmeNumber          String?
   msmeCertificateFile String?
 
-  registrationFees    Float     @default(0)
-  Price               Float     @default(0)
+  registrationFees    Int    @default(0)
+  Price               Int     @default(0)
   users               User[]    @relation("OwnedProperties")
   admins              Admin[]   @relation("LibraryBookings")
   bookings            Booking[] @relation("LibraryBookings")
@@ -197,7 +197,7 @@ model Room {
   roomNo    Int      
   Ac        Boolean  @default(false)
   seats     Seat[]
-  doorPosition Float[] @default(dbgenerated("ARRAY[0, 0, 0, 0, 0]::FLOAT[]"))
+  doorPosition Int[] @default(dbgenerated("ARRAY[0, 0, 0, 0, 0]::Int[]"))
 }
 
 
@@ -221,7 +221,7 @@ model TimeSlot {
   bookedById    Int?
   bookedBy      User?     @relation(fields: [bookedById], references: [id])
   bookingSource String    @default("app")
-  price         String    
+  price         Int       @default(0)   
   bookingEndDate DateTime?
   seatId        Int
   seat          Seat      @relation(fields: [seatId], references: [id])
@@ -255,8 +255,8 @@ model Invoice {
   libraryId           Int
   library             Library   @relation(fields: [libraryId], references: [id], name: "LibraryInvoices")
   // library             Library   @relation(fields: [libraryId], references: [id])
-  initialPrice        Float
-  finalPrice          Float
+  initialPrice        Int
+  finalPrice          Int
   paid                Boolean
   bookingDate         DateTime
   bookingPeriod       Int

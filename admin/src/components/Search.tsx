@@ -72,7 +72,7 @@ const AdminBookings = () => {
 
   useEffect(() => {
     if (selectedLibrary) {
-      const library = libraries.find((lib) => lib._id === selectedLibrary);
+      const library = libraries.find((lib) => lib.id === selectedLibrary);
       if (library) {
         setRooms(library.rooms);
       }
@@ -154,7 +154,7 @@ const AdminBookings = () => {
           <option value=''>Select a library</option>
 
           {libraries?.map((library) => (
-            <option key={library?._id} value={library?._id}>
+            <option key={library?.id} value={library?.id}>
               {library?.name}
             </option>
           ))}

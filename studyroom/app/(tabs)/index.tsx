@@ -177,7 +177,7 @@ export default function index() {
         marginBottom: 13,
         padding: 8,
       }}
-      key={item.library?._id}
+      key={item.library?.id}
       onPress={
         item?.library.approved
           ? () =>

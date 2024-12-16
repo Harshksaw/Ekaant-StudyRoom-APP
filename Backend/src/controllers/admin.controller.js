@@ -44,7 +44,7 @@ async function RegisterAdmin(req, res, next) {
 
     const existingAdmin = await prisma.admin.findFirst({ where : { email : email }});
     if (existingAdmin) {
-      const token = jwt.sign({ admin_id: existingAdmin._id }, JWT_SECRET);
+      const token = jwt.sign({ admin_id: existingAdmin.id }, JWT_SECRET);
       return res.status(200).json({
         success: true,
         message: 'Admin already registered',
@@ -108,7 +108,7 @@ async function RegisterAdmin(req, res, next) {
       });
     console.log("🚀 ~ RegisterAdmin ~ newAdmin:", newAdmin)
 
-    const token = jwt.sign({ admin_id: newAdmin._id }, JWT_SECRET);
+    const token = jwt.sign({ admin_id: newAdmin.id }, JWT_SECRET);
 
     return res.status(201).json({
       success: true,
@@ -151,7 +151,7 @@ async function LoginAdmin(req, res) {
     }
 
     // Generate token
-    const token = jwt.sign({ admin_id: admin._id }, JWT_SECRET);
+    const token = jwt.sign({ admin_id: admin.id }, JWT_SECRET);
     const libraries = await  prisma.library.findFirst({ where : {libraryOwnerId: admin.id } })
 
     if (libraries.length > 1) {

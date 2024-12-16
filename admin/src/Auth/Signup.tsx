@@ -251,8 +251,8 @@ function Signup() {
 
       localStorage.setItem("role", "ADMIN");
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("userId", res.data.data._id);
-      setAdminId(res.data.data._id);
+      localStorage.setItem("userId", res.data.data.id);
+      setAdminId(res.data.data.id);
 
 
       setCurrentStep(4);

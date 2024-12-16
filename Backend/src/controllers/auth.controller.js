@@ -109,7 +109,7 @@ async function signUp(req, res) {
     // await newUser.save();
 
     // Getting the user_id
-    const user_id = newUser._id;
+    const user_id = newUser.id;
     console.log("🚀 ~ signUp ~ user_id:", user_id)
 
     // Generating the token
@@ -158,12 +158,12 @@ async function signIn(req, res, next) {
     
         if (result) {
           // Passwords match
-          const token = jwt.sign({ user_id: user._id }, JWT_SECRET);
+          const token = jwt.sign({ user_id: user.id }, JWT_SECRET);
           return res.status(StatusCodes.OK).json({
             success: true,
             message: "User authenticated successfully",
             error: {},
-            data: { user, user_id: user._id },
+            data: { user, user_id: user.id },
             token: token,
           });
         } else {
@@ -276,7 +276,7 @@ async function sendEmailOtp(req, res) {
     email:email
   } } ) 
   if (existingAdmin) {
-    const token = jwt.sign({ admin_id: existingAdmin._id }, JWT_SECRET);
+    const token = jwt.sign({ admin_id: existingAdmin.id }, JWT_SECRET);
     return res.status(201).json({
       success: true,
       message: 'Admin already registered',
@@ -517,7 +517,7 @@ async function otpLogin(req, res) {
   }
   // console.log("🚀 ~ otpLogin ~ response:", response);
 
-  const token = jwt.sign({ user_id: response[0]._id }, JWT_SECRET);
+  const token = jwt.sign({ user_id: response[0].id }, JWT_SECRET);
   const user = await User.findOne({ phoneNumber });
 
 

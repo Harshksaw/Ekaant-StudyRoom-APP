@@ -193,12 +193,12 @@ async function ConfrimBooking(req, res) {
       throw new Error('Booking not found');
     }
 
-    const lib = await Library.findById(bookingData.libraryId._id).populate(
+    const lib = await Library.findById(bookingData.libraryId.id).populate(
       "rooms"
     );
     const roomNo = bookingData.roomNo;
-    const seatId = bookingData.bookedSeat._id;
-    const timeSlotId = bookingData.timeSlot[0]._id.toString(); // Assuming you want to book the first time slot
+    const seatId = bookingData.bookedSeat.id;
+    const timeSlotId = bookingData.timeSlot[0].id.toString(); // Assuming you want to book the first time slot
     // console.log("🚀 ~ ConfrimBooking ~ timeSlotId:", timeSlotId);
     // console.log("🚀 ~ ConfrimBooking ~ seatId:", seatId);
 
@@ -211,7 +211,7 @@ async function ConfrimBooking(req, res) {
       //   return { room: null, seat: null };
       // }
 
-      const seat = room.seats.find((seat) => seat._id.toString() === seatId);
+      const seat = room.seats.find((seat) => seat.id.toString() === seatId);
       return { room, seat };
     };
 
@@ -221,7 +221,7 @@ async function ConfrimBooking(req, res) {
     }
 
     const timeSlot = seat.timeSlots.find(
-      (slot) => slot._id.toString() === timeSlotId
+      (slot) => slot.id.toString() === timeSlotId
     );
 
     if (!timeSlot) {
@@ -249,7 +249,7 @@ async function ConfrimBooking(req, res) {
 
     // Create new invoice
     const invoice = new Invoice({
-      bookingId: booking._id,
+      bookingId: booking.id,
       customerName: booking.userId.username,
       customerEmail: booking.userId.email,
       customerPhoneNumber: booking.userId.phoneNumber,

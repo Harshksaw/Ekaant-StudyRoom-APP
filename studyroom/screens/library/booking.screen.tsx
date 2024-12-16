@@ -91,9 +91,9 @@ const BookingScreen: React.FC = () => {
   };
 
   const handleSelectSlot = (selectedSlot) => {
-    if (selectedSlots.find((slot) => slot._id === selectedSlot._id)) {
+    if (selectedSlots.find((slot) => slot.id === selectedSlot.id)) {
       setSelectedSlots(
-        selectedSlots.filter((slot) => slot._id !== selectedSlot._id)
+        selectedSlots.filter((slot) => slot.id !== selectedSlot.id)
       );
     } else {
       setSelectedSlots([...selectedSlots, selectedSlot]);
@@ -107,7 +107,7 @@ const BookingScreen: React.FC = () => {
 
   const updateRoomDetails = async () => {
     const details = {
-      id: libraryDetails?._id,
+      id: libraryDetails?.id,
       amenities: libraryDetails.amenities,
       images: libraryDetails.images,
       location: city,
@@ -138,7 +138,7 @@ const BookingScreen: React.FC = () => {
     // console.log("----",libraryDetails)
     const userid = JSON.parse(userData);
 
-    const userId = userid.data?.user_id?._id;
+    const userId = userid.data?.user_id?.id;
 
     if (!userId) {
       Toast.show("user data not confirgured properly, Relogin", {
@@ -162,7 +162,7 @@ const BookingScreen: React.FC = () => {
           `${BACKEND}/api/v1/booking/createBooking`,
           {
             userId,
-            libraryId: libraryDetails?._id,
+            libraryId: libraryDetails?.id,
             initialPrice: price,
             finalPrice: totalAmount,
 
@@ -175,7 +175,7 @@ const BookingScreen: React.FC = () => {
           }
         );
 
-        const bookingId = response.data.Booking._id;
+        const bookingId = response.data.Booking.id;
         // console.log("🚀 ~ PreBook ~ bookingId11:", bookingId)
         setBookingId(bookingId);
 
@@ -215,7 +215,7 @@ const BookingScreen: React.FC = () => {
       const response = await axios.post(
         `${BACKEND}/api/v1/library/getLibraryRooms`,
         {
-          id: Library._id,
+          id: Library.id,
         }
       );
       setLibraryDetails(response.data.data);
@@ -547,12 +547,12 @@ const BookingScreen: React.FC = () => {
               >
                 {available?.map((slot, index) => {
                   const selected = selectedSlots.some(
-                    (selectedSlot) => selectedSlot._id === slot._id
+                    (selectedSlot) => selectedSlot.id === slot.id
                   );
                   if (slot?.availability && slot?.from !== null) {
                     return (
                       <View
-                        key={slot._id}
+                        key={slot.id}
                         style={{
                           maxWidth: 70,
                           marginHorizontal: 50,
@@ -590,7 +590,7 @@ const BookingScreen: React.FC = () => {
                     // Render regular time slots
 
                     return (
-                      <View key={slot._id}>
+                      <View key={slot.id}>
                         <TouchableOpacity
                           style={{
                             flexDirection: "row",

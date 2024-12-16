@@ -248,11 +248,11 @@ const ManageRooms = () => {
       {roomData.length > 0 ? (
         roomData.map((roomDetail: { _id: string; roomNo: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; seats: any[]; }, index: React.Key | null | undefined) => (
           <div key={index} className="border-b border-gray-200 py-4">
-            <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleRoomExpansion(roomDetail._id)}>
+            <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleRoomExpansion(roomDetail.id)}>
               <p className='text-gray-600'>Room No: {roomDetail.roomNo}</p>
-              {expandedRoom === roomDetail._id ? <FaChevronUp /> : <FaChevronDown />}
+              {expandedRoom === roomDetail.id ? <FaChevronUp /> : <FaChevronDown />}
             </div>
-            {expandedRoom === roomDetail._id && (
+            {expandedRoom === roomDetail.id && (
               <div className="mt-2 ">
                 <div className="grid grid-cols-2 gap-4">
                   {roomDetail.seats.map((seat: { seatLabel: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; timeSlots: any[]; }, seatIndex: React.Key | null | undefined) => (
@@ -310,7 +310,7 @@ const ManageRooms = () => {
       {room && (
         <div className="col-span-2 flex justify-end gap-4">
           <button
-            onClick={() => handleApprove(room._id, room?.approved)}
+            onClick={() => handleApprove(room.id, room?.approved)}
             className={`px-4 py-2 rounded-lg ${room.approved ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}
           >
             {room.approved ? 'Disapprove' : 'Approve'}

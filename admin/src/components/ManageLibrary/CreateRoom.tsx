@@ -38,7 +38,7 @@ const CreateRoom: React.FC = () => {
     const fetchLibrary = async () => {
       try {
         const response = await getLibraryDataById();
-        console.log(response.data.data);
+        console.log(response.data.data, "--------");
         setLibraryData(response.data.data);
         setSelectedRoom(response.data.data?.rooms);
       } catch (error) {
@@ -51,7 +51,8 @@ const CreateRoom: React.FC = () => {
 
 
   useEffect(() => {
-    const libraryObject = libraryData.find(library => library?._id === libraryId);
+    const libraryObject = libraryData.find(library => library?.id === libraryId);
+    console.log("🚀 ~ useEffect ~ libraryObject:", libraryObject)
     setSelectedLibrary(libraryObject);
 
   }, [libraryId]);
@@ -79,10 +80,9 @@ const CreateRoom: React.FC = () => {
 
   const handleLibraryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLibraryId(event.target.value);
+    console.log("🚀 ~ handleLibraryChange ~ event.target.value:", event.target.value)
+};
 
-    // setRooms(libraryData?.rooms)
-
-  };
   function handlePriceChange(index: any, newValue: any) {
 
     const updatedTimeSlots = [...timeSlots];
@@ -101,6 +101,11 @@ const CreateRoom: React.FC = () => {
     }));
     console.log("Creating Room", libraryId, seatLayout, selectedRoom, selectedLibrary);
     try {
+
+      if(!libraryId){
+        toast.error("Please select a library")
+        return;
+      }
       setLoading(true);
       const response = await axios.post(
         `${BASEURL}/api/v1/library/createRoom`,
@@ -120,39 +125,6 @@ const CreateRoom: React.FC = () => {
       // Handle error
     }
   };
-
-
-  // const addDetails = async () => {
-
-  //   const formattedTimeSlots = timeSlots.map((timeSlot) => ({
-  //     ...timeSlot,
-  //     from: timeSlot.from ? dayjs(timeSlot.from).format("hh:mm A") : null,
-  //     to: timeSlot.to ? dayjs(timeSlot.to).format("hh:mm A") : null,
-  //   }));
-
-  //   console.log(formattedTimeSlots);
-  //   // console.log(seatLayout);
-
-  //   console.log("Adding Details", libraryId,  location);
-  //   try {
-  //        await axios.post(
-  //       `${BASEURL}/api/v1/library/updateRoom`,
-  //       {
-  //         libraryId: libraryId,
-
-  //         timeSlot: formattedTimeSlots,
-  //         location: location,
-  //       }
-  //     );
-  //     toast.success("Room Created/updated Successfully")
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.error("Error creating room:", error);
-  //     // Handle error
-  //   }
-  // };
-
-
 
 
   const handleSubmit = async () => {
@@ -214,17 +186,17 @@ const CreateRoom: React.FC = () => {
       setTimeSlots(updatedTimeSlots);
     }
   };
-
+console.log(libraryData)
 
   return (
     <div className="flex flex-col bg-gray-100 items-center  gap-y-25 overflow-y-scroll h-screen mb-20">
       <div className="mt-20 ">
         <select value={libraryId} onChange={handleLibraryChange}>
           <option value="">Select a Library</option>
-          {libraryData?.map((library: any) => (
+          { libraryData  && libraryData?.map((library: any) => (
             <option
-              key={library._id}
-              value={library._id}
+              key={library.id}
+              value={library.id}
               className="bg-gray-500  rounded-lg mt-2 mb-5  p-10"
             >
               {library.name}
@@ -236,10 +208,10 @@ const CreateRoom: React.FC = () => {
       <div className="mt-10 flex-col 
       justify-center items-center  gap-y-5
       ">
-        <h2 style={{ fontSize: '24px', color: '#333', textAlign: 'center', margin: '20px 10px' }}>
+        <h2 style={{ fontSize: '32px', color: '#333', textAlign: 'center', margin: '20px 10px' }}>
           You are creating Room no
-          <span style={{ background: '#4CAF50', color: '#fff', padding: '5px 15px', borderRadius: '5px' }}>
-            {selectedLibrary?.rooms.length + 1}
+          <span style={{ background: '#4CAF50', color: '#fff', padding: '15px 25px', margin:'20px', borderRadius: '5px' }}>
+            {selectedLibrary?.rooms  ?  selectedLibrary?.rooms.length + 1 : "1"}
           </span>
         </h2>
 

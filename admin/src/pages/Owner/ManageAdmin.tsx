@@ -52,9 +52,9 @@ console.log(library)
         <tbody className=" bg-gray-100">
           {library?.map((lib: Lib) => (
             <tr
-              key={lib?._id}
+              key={lib?.id}
               className="cursor-pointer hover:bg-gray-100 transition duration-300 justify-center text-center"
-              onClick={() => navigate(`/admin/manage-rooms/${lib._id}`)}
+              onClick={() => navigate(`/admin/manage-rooms/${lib.id}`)}
             >
               <td className="py-2 px-4 border-b align-center ">
                 <img

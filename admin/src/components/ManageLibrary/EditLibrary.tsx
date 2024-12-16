@@ -441,10 +441,10 @@ const EditLibrary = () => {
       <h3 className='text-xl font-bold mt-8 mb-4'>Rooms</h3>
       <div className='grid grid-cols-1 gap-4'>
         {library?.rooms?.map((room) => (
-          <div key={room._id} className='flex justify-between items-center p-4 border rounded'>
+          <div key={room.id} className='flex justify-between items-center p-4 border rounded'>
             <span>Room {room.roomNo}</span>
             <button
-              onClick={() => handleDeleteRoom(room._id)}
+              onClick={() => handleDeleteRoom(room.id)}
               className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline'
             >
               Delete
