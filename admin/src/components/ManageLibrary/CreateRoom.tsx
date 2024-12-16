@@ -82,7 +82,7 @@ const CreateRoom: React.FC = () => {
   const handleLibraryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLibraryId(event.target.value);
     console.log("🚀 ~ handleLibraryChange ~ event.target.value:", event.target.value)
-};
+  };
 
   function handlePriceChange(index: any, newValue: any) {
 
@@ -104,7 +104,7 @@ const CreateRoom: React.FC = () => {
     try {
 
 
-      if(!libraryId){
+      if (!libraryId) {
         toast.error("Please select a library")
         return;
       }
@@ -188,14 +188,14 @@ const CreateRoom: React.FC = () => {
       setTimeSlots(updatedTimeSlots);
     }
   };
-console.log(libraryData, "libraryData")
+
 
   return (
     <div className="flex flex-col bg-gray-100 items-center  gap-y-25 overflow-y-scroll h-screen mb-20">
       <div className="mt-20 ">
         <select value={libraryId} onChange={handleLibraryChange}>
           <option value="">Select a Library</option>
-          { libraryData  && libraryData?.map((library: any) => (
+          {libraryData && libraryData?.map((library: any) => (
             <option
               key={library.id}
               value={library.id}
@@ -212,31 +212,31 @@ console.log(libraryData, "libraryData")
       ">
         <h2 style={{ fontSize: '32px', color: '#333', textAlign: 'center', margin: '20px 10px' }}>
           You are creating Room no
-          <span style={{ background: '#4CAF50', color: '#fff', padding: '15px 25px', margin:'20px', borderRadius: '5px' }}>
-            {selectedLibrary?.rooms  ?  selectedLibrary?.rooms.length + 1 : "1"}
+          <span style={{ background: '#4CAF50', color: '#fff', padding: '15px 25px', margin: '20px', borderRadius: '5px' }}>
+            {selectedLibrary?.rooms ? selectedLibrary?.rooms.length + 1 : "1"}
           </span>
         </h2>
 
 
-<div>
-        <label className="flex justify-center items-center p-10">
-          <input
-            className="mr-2 text-2xl p-10 "
-            size={30}
-            type="checkbox"
-            checked={Ac}
-            onChange={() => setAc(!Ac)}
-          />
-          <h2 className="text-2xl">
-            AC
-          </h2>
-          </label>  
-</div>
+        <div>
+          <label className="flex justify-center items-center p-10">
+            <input
+              className="mr-2 text-2xl p-10 "
+              size={30}
+              type="checkbox"
+              checked={Ac}
+              onChange={() => setAc(!Ac)}
+            />
+            <h2 className="text-2xl">
+              AC
+            </h2>
+          </label>
+        </div>
 
 
       </div>
 
-      <div className="mt-20 mb-48  h-[60vh] ">
+      <div className="mt-20 mb-48  h-[90vh] w-[80%] ">
 
         <Seats onSeatSelect={handleSeatSelect} />
 
@@ -246,32 +246,32 @@ console.log(libraryData, "libraryData")
       </div>
 
       <div className="w-[90%] mx-20 mt-60 flex flex-col  ">
-      <h2 className="text-center bg-blue-200 p-2  rounded-md text-3xl">Select Time Slots</h2>
-          <div className="flex  justify-center items-center gap-10 ">
+        <h2 className="text-center bg-blue-200 p-2  rounded-md text-3xl">Select Time Slots</h2>
+        <div className="flex  justify-center items-center gap-10 ">
           <label className="flex justify-center items-center ">
-          <input
-          className="mr-2 text-2xl "
-            type="checkbox"
-            checked={autoFill24Hr}
-            onChange={handleAutoFill24HrChange}
-          />
-          <h2 className="text-2xl">
-
-          Auto-fill 24-hour time slot
-          </h2>
-        </label>
-        {autoFill24Hr && (
-          <label className=" flex flex-row justify-center items-center gap-5">
-            Price 
             <input
-              type="number"
-              value={price24Hr || ""}
-              onChange={(e) => setPrice24Hr(Number(e.target.value))}
-              required
+              className="mr-2 text-2xl "
+              type="checkbox"
+              checked={autoFill24Hr}
+              onChange={handleAutoFill24HrChange}
             />
+            <h2 className="text-2xl">
+
+              Auto-fill 24-hour time slot
+            </h2>
           </label>
-        )}
-          </div>
+          {autoFill24Hr && (
+            <label className=" flex flex-row justify-center items-center gap-5">
+              Price
+              <input
+                type="number"
+                value={price24Hr || ""}
+                onChange={(e) => setPrice24Hr(Number(e.target.value))}
+                required
+              />
+            </label>
+          )}
+        </div>
 
         {timeSlots.map((timeRange, index) => (
           <div className="flex-col  justify-center items-center">
