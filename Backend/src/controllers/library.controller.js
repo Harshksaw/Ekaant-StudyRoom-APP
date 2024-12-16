@@ -140,6 +140,7 @@ const createLibrary = async (req, res) => {
     } = jsonData;
 
     const libraryData = {
+
   libraryOwner: {
     connect: { id: parseInt(libraryOwner) } // Ensure the libraryOwner is connected correctly
   },

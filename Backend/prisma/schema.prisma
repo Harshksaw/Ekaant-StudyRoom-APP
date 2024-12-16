@@ -84,7 +84,7 @@ model User {
 
 model Library {
   id                  Int       @id @default(autoincrement())
-  libraryId           Int
+
   libraryOwnerId      Int?
   libraryOwner        Admin?    @relation(fields: [libraryOwnerId], references: [id], name: "OwnedProperties")
   name                String    

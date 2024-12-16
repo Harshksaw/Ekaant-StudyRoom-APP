@@ -544,6 +544,8 @@ try{
         // setImages([]);
       }
 
+      return response.status;
+
     } catch (error) {
       setLoading(false);
       console.error("Error:");
@@ -583,7 +585,21 @@ try{
         return
 
       }
-      await createInitialLib();
+     const res =  await createInitialLib();
+     if(res == 500){
+      toast.error("Please fill all the fields",{
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+
+     }
     }
     if (currentStep === 1) {
       if(userInfo.phone.toString().length !== 10 || userInfo.email === "" || userInfo.password === ""){
