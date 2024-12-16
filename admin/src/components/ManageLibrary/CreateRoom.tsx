@@ -51,7 +51,8 @@ const CreateRoom: React.FC = () => {
 
 
   useEffect(() => {
-    const libraryObject = libraryData.find(library => library?.id === libraryId);
+    console.log(libraryData, "00000")
+    const libraryObject = libraryData.find(library => library?.id === parseInt(libraryId));
     console.log("🚀 ~ useEffect ~ libraryObject:", libraryObject)
     setSelectedLibrary(libraryObject);
 
@@ -101,6 +102,7 @@ const CreateRoom: React.FC = () => {
     }));
     console.log("Creating Room", libraryId, seatLayout, selectedRoom, selectedLibrary);
     try {
+
 
       if(!libraryId){
         toast.error("Please select a library")
@@ -186,7 +188,7 @@ const CreateRoom: React.FC = () => {
       setTimeSlots(updatedTimeSlots);
     }
   };
-console.log(libraryData)
+console.log(libraryData, "libraryData")
 
   return (
     <div className="flex flex-col bg-gray-100 items-center  gap-y-25 overflow-y-scroll h-screen mb-20">

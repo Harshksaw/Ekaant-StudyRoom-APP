@@ -505,17 +505,28 @@ const updateApproveStatus = async (req, res) => {
     res.status(500).json({ error: "cannot get room" });
   }
 };
-
 const getAdminLibraries = async (req, res) => {
   try {
-    const { userId } = req.body; // Assuming the userId is passed as a URL parameter
+    const { userId } = req.body; 
 
-    const libraries = await prisma.library.findMany({ where : {libraryOwnerId : parseInt(userId) }});
-    console.log("🚀 ~ getAdminLibraries ~ libraries:", libraries)
+    const libraries = await prisma.library.findMany({
+      where: { libraryOwnerId: parseInt(userId) },
+      include: {
+        rooms: true,
+      },
+    });
+
+    const librariesWithRoomCount = libraries.map(library => ({
+      ...library,
+      roomCount: library.rooms.length,
+    }));
+
+    console.log("🚀 ~ getAdminLibraries ~ librariesWithRoomCount:", librariesWithRoomCount);
 
     res.json({
       message: "Libraries retrieved successfully",
-      data: libraries,
+      libraries: librariesWithRoomCount,
+      data: libraries
     });
   } catch (error) {
     console.error("Error retrieving libraries by user _id:", error);

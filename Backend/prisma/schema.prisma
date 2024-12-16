@@ -123,6 +123,17 @@ model Library {
   invoices            Invoice[] @relation("LibraryInvoices")
 }
 
+model Room {
+  id        Int      @id @default(autoincrement())
+  libraryId Int
+  library   Library  @relation(fields: [libraryId], references: [id], name: "Rooms")
+  roomNo    Int      
+  Ac        Boolean  @default(false)
+  seats     Seat[]
+  doorPosition Int[] @default(dbgenerated("ARRAY[0, 0, 0, 0, 0]::Int[]"))
+}
+
+
 
 model Booking {
   id        Int      @id @default(autoincrement())
@@ -189,17 +200,6 @@ model Amenities {
 //   libraryId          Int      @unique
 //   library            Library   @relation(fields: [libraryId], references: [id])
 // }
-
-model Room {
-  id        Int      @id @default(autoincrement())
-  libraryId Int
-  library   Library  @relation(fields: [libraryId], references: [id], name: "Rooms")
-  roomNo    Int      
-  Ac        Boolean  @default(false)
-  seats     Seat[]
-  doorPosition Int[] @default(dbgenerated("ARRAY[0, 0, 0, 0, 0]::Int[]"))
-}
-
 
 
 model Seat {
