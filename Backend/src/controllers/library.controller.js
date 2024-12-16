@@ -206,7 +206,7 @@ const createRoom = async (req, res) => {
       return res.status(404).send({ message: "Library not found" });
     }
 
-    const { seatLayout, timeSlot, location, ac } = req.body;
+    const { seatLayout, timeSlot, location, ac , doorPositions} = req.body;
     console.log("🚀 ~ createRoom ~ seatLayout:", seatLayout)
 
     if (!library) {
@@ -227,6 +227,7 @@ const createRoom = async (req, res) => {
       data: {
         libraryId: parseInt(libraryId),
         roomNo: newRoomNo,
+        doorPosition: doorPositions,
         seats: {
           create: seatLayout.selectedSeats.map((seat) => ({
             seatId: seat.id,

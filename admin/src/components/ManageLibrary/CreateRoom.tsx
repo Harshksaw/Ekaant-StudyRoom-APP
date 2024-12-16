@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { Progress } from "@/components/ui/progress"
 import { toast } from "react-toastify";
 import { getLibraryDataById } from "@/hooks/libraryData";
+import DoorLayout from "../seatinglayout/doorLayout";
 
 
 const CreateRoom: React.FC = () => {
@@ -34,11 +35,20 @@ const CreateRoom: React.FC = () => {
 
   const [autoFill24Hr, setAutoFill24Hr] = useState(false);
   const [price24Hr, setPrice24Hr] = useState<number | null>(null);
+
+
+  const [doorPositions, setDoorPositions] = useState([0, 0, 1, 0, 0]);
+
+  const handleSelectPosition = (index: number) => {
+    const newPositions = doorPositions.map((pos, i) => (i === index ? 1 : 0));
+    setDoorPositions(newPositions);
+  };
+
   useEffect(() => {
     const fetchLibrary = async () => {
       try {
         const response = await getLibraryDataById();
-        console.log(response.data.data, "--------");
+        // console.log(response.data.data, "--------");
         setLibraryData(response.data.data);
         setSelectedRoom(response.data.data?.rooms);
       } catch (error) {
@@ -51,9 +61,9 @@ const CreateRoom: React.FC = () => {
 
 
   useEffect(() => {
-    console.log(libraryData, "00000")
+    // console.log(libraryData, "00000")
     const libraryObject = libraryData.find(library => library?.id === parseInt(libraryId));
-    console.log("🚀 ~ useEffect ~ libraryObject:", libraryObject)
+    // console.log("🚀 ~ useEffect ~ libraryObject:", libraryObject)
     setSelectedLibrary(libraryObject);
 
   }, [libraryId]);
@@ -118,6 +128,7 @@ const CreateRoom: React.FC = () => {
           timeSlot: formattedTimeSlots,
           location: location,
           ac: Ac,
+          doorPositions: doorPositions,
         }
       );
       console.log(seatLayout, typeof seatLayout)
@@ -244,6 +255,11 @@ const CreateRoom: React.FC = () => {
 
 
       </div>
+
+      <div className=" mt-20 mb-20 flex justify-center items-center rounded-lg flex-col">
+      <h2 className="text-3xl mb-10 ">Select Door Position</h2>
+      <DoorLayout doorPositions={doorPositions} onSelectPosition={handleSelectPosition} />
+    </div>
 
       <div className="w-[90%] mx-20 mt-60 flex flex-col  ">
         <h2 className="text-center bg-blue-200 p-2  rounded-md text-3xl">Select Time Slots</h2>
