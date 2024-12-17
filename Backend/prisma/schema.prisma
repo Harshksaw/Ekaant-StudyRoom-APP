@@ -132,7 +132,30 @@ model Room {
   seats     Seat[]
   doorPosition Int[] @default(dbgenerated("ARRAY[0, 0, 0, 0, 0]::Int[]"))
 }
+model Seat {
+  id        Int     @id @default(autoincrement())
+  seatId    String  
+  seatLabel String  
+  rotation Int  @default(0)
+  roomId    Int
+  room      Room    @relation(fields: [roomId], references: [id])
+  timeSlots TimeSlot[]
+}
 
+model TimeSlot {
+  id            Int       @id @default(autoincrement())
+  slotId        String    @default(uuid())
+  from          String    
+  to            String    
+  booked        Boolean   @default(false)
+  bookedById    Int?
+  bookedBy      User?     @relation(fields: [bookedById], references: [id])
+  bookingSource String    @default("app")
+  price         Int       @default(0)   
+  bookingEndDate DateTime?
+  seatId        Int
+  seat          Seat      @relation(fields: [seatId], references: [id])
+}
 
 
 model Booking {
@@ -202,30 +225,7 @@ model Amenities {
 // }
 
 
-model Seat {
-  id        Int     @id @default(autoincrement())
-  seatId    String  
-  seatLabel String  
-  rotation Int  @default(0)
-  roomId    Int
-  room      Room    @relation(fields: [roomId], references: [id])
-  timeSlots TimeSlot[]
-}
 
-model TimeSlot {
-  id            Int       @id @default(autoincrement())
-  slotId        String    @default(uuid())
-  from          String    
-  to            String    
-  booked        Boolean   @default(false)
-  bookedById    Int?
-  bookedBy      User?     @relation(fields: [bookedById], references: [id])
-  bookingSource String    @default("app")
-  price         Int       @default(0)   
-  bookingEndDate DateTime?
-  seatId        Int
-  seat          Seat      @relation(fields: [seatId], references: [id])
-}
 
 model PhoneOtp {
   id          Int      @id @default(autoincrement())

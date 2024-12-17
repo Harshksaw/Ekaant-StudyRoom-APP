@@ -748,7 +748,15 @@ const deleteRoom = async (req, res) => {
       where: { id: parseInt(libraryId) },
       include: {
 
-        rooms: true,
+        rooms: {
+          include: {
+            seats: {
+              include: {
+                timeSlots: true,
+              },
+            },
+          },
+        }
       },
     });
     console.log("🚀 ~ deleteRoom ~ library:", library)
@@ -763,10 +771,20 @@ const deleteRoom = async (req, res) => {
     if (roomIndex === -1) {
       return res.status(404).json({ message: "Room not found" });
     }
-    library.rooms.splice(roomIndex, 1);
+    // library.rooms.splice(roomIndex, 1);
+
+    const room = library.rooms[roomIndex];
+    console.log("🚀 ~ deleteRoom ~ room:", room)
+
+    // Delete time slots associated with the seats
+    for (const seat of room.seats) {
+      await prisma.timeSlot.deleteMany({
+        where: { seatId: seat.id },
+      });
+    }
 
     await prisma.seat.deleteMany({
-      where: { id : roomId },
+      where: { roomId: roomId },
     });
 
     // Delete the room
