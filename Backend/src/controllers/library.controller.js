@@ -666,23 +666,35 @@ const EditAdminLibrary = async (req, res) => {
       registrationFees,
     } = req.body;
 
-    const library = await Library.findByIdAndUpdate(
-      libraryId,
-      {
+    const library = await prisma.library.updateMany({
+      where: { id: parseInt(libraryId) },
+      data: {
         name,
         shortDescription,
         longDescription,
         amenities,
         address,
-        registrationFees
+        registrationFees,
       },
-      { new: true } // Return the updated document
-    );
+    })
+    
+    // findByIdAndUpdate(
+    //   libraryId,
+    //   {
+    //     name,
+    //     shortDescription,
+    //     longDescription,
+    //     amenities,
+    //     address,
+    //     registrationFees
+    //   },
+    //   { new: true } // Return the updated document
+    // );
     if (!library) {
       return res.status(404).json({ message: "Library not found" });
     }
 
-    await library.save();
+
     await calculateLowestPrice(libraryId);
     res.status(200).json({ message: "Room deleted successfully" });
   } catch (error) {
@@ -695,7 +707,7 @@ const updateLibraryImages = async (req, res) => {
   try {
     const libraryId = req.params.id;
 
-    console.log("---", req.files);
+    // console.log("---", req.files);
 
     const cardImage = req.files?.cardImage ? req.files.cardImage[0].path : null;
     const images = req.files?.images
@@ -704,7 +716,7 @@ const updateLibraryImages = async (req, res) => {
     // const images = req.files?.images
     console.log("🚀 ~ updateLibraryImages ~ images:", images);
 
-    const library = await Library.findById(libraryId);
+    const library = await prisma.library.findFirst({ where :{ id : parseInt(libraryId)}  });
     if (!library) {
       return res.status(404).json({ message: "Library not found" });
     }
@@ -717,7 +729,7 @@ const updateLibraryImages = async (req, res) => {
       library.images = images;
     }
 
-    await library.save();
+    // await library.save();
 
     res
       .status(200)
@@ -732,13 +744,20 @@ const deleteRoom = async (req, res) => {
   try {
     const { libraryId, roomId } = req.body;
 
-    const library = await Library.findById(libraryId).populate("rooms");
+    const library = await prisma.library.findFirst({
+      where: { id: parseInt(libraryId) },
+      include: {
+
+        rooms: true,
+      },
+    });
+    console.log("🚀 ~ deleteRoom ~ library:", library)
     if (!library) {
       return res.status(404).json({ message: "Library not found" });
     }
 
     const roomIndex = library.rooms.findIndex(
-      (room) => room.id.toString() === roomId
+      (room) => room.id === roomId
     );
 
     if (roomIndex === -1) {
@@ -746,18 +765,26 @@ const deleteRoom = async (req, res) => {
     }
     library.rooms.splice(roomIndex, 1);
 
-    await Room.findByIdAndDelete(roomId);
-    for (let i = 0; i < library.rooms.length; i++) {
-      const room = await Room.findById(library.rooms[i].id);
-      if (room) {
-        room.roomNo = i + 1; // Room numbers start from 1
-        await room.save();
+    await prisma.seat.deleteMany({
+      where: { id : roomId },
+    });
+
+    // Delete the room
+    await prisma.room.delete({
+      where: { id: roomId },
+    });
+
+   for (let i = 0; i < library.rooms.length; i++) {
+      if (library.rooms[i].id !== roomId) {
+        await prisma.room.update({
+          where: { id: library.rooms[i].id },
+          data: { roomNo: i + 1 },
+        });
       }
     }
 
-    const lib = await library.save();
     await calculateLowestPrice(libraryId);
-    res.status(200).json({ message: "Room deleted successfully", data: lib });
+    res.status(200).json({ message: "Room deleted successfully" });
   } catch (error) {
     console.error("Error deleting room:", error);
     res.status(500).json({ message: "Error deleting room", error });
@@ -768,7 +795,7 @@ const deleteDummy = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const deletedLibrary = await Library.findByIdAndDelete(id);
+    const deletedLibrary = await prisma.library.delete({where : {id: parseInt(id)} });
 
     if (!deletedLibrary) {
       return res.status(404).json({ message: "Library not found." });
@@ -801,19 +828,33 @@ const createReview = async (req, res) => {
     const { libraryId } = req.params;
     const { user, review, stars } = req.body;
 
-    console.log(req.body, "req.body");
+    // console.log(req.body, "req.body");
 
     const ifUser = await Review.findOne({
       user
     })
-    console.log("🚀 ~ createReview ~ ifUser:", ifUser)
+    // console.log("🚀 ~ createReview ~ ifUser:", ifUser)
     // if(ifUser){
     //    res.status(400).json({ message: 'You have already reviewed this library' });
     // }
 
-    const newReview = new Review({ user, review, stars, library: libraryId });
-    await newReview.save();
-    const reviews = await Review.find({ library: libraryId });
+    const newReview = prisma.review.create({
+      data:{
+        user: user,
+        review: review,
+        stars: stars,
+        library: {
+          connect: {
+            id: parseInt(libraryId)
+          }
+        }
+      }
+    });
+    
+
+
+    const reviews = await prisma.review.findFirst({ where: { library: libraryId }});
+
 
     // Calculate the average rating manually
     let totalStars = 0;
@@ -826,10 +867,16 @@ const createReview = async (req, res) => {
 
    
 
-    await Library.findByIdAndUpdate(libraryId, {
-      $push: { reviews: newReview.id },
-      $set: { avgRating: avgRating }
-    });
+    await prisma.library.update(
+      {
+        where: { id: parseInt(libraryId) },
+        data: {
+          avgRating: avgRating,
+          reviews: {
+            connect: { id: newReview.id }
+          }
+        }
+      });
 
     res.status(201).json(newReview);
   } catch (error) {
@@ -843,13 +890,24 @@ const getReviews = async (req, res) => {
   try {
     const { libraryId } = req.params;
 
-    const library = await Library.findById(libraryId).populate({
-      path: "reviews",
-      populate: {
-        path: "user", // Specify the path for the nested population
-        model: "User" // Specify the model if necessary
-      }
-    });
+    const library = await prisma.library.findFirst(
+      {
+        data : {
+          id: parseInt(libraryId)
+        }
+      },
+      {
+        include: {
+          reviews: {
+            include: {
+              user: true
+            }
+          }
+        },
+        
+      });
+
+    
     if (!library) {
       return res.status(404).json({ message: 'Library not found' });
     }

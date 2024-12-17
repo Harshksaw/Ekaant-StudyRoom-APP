@@ -16,7 +16,7 @@ interface Library {
     name: string;
     shortDescription: string;
     longDescription: string;
-    cardimage: string;
+    cardImage: string;
     images: string[];
     amenities: Amenities;
     rooms: Room[];
@@ -253,7 +253,7 @@ const EditLibrary = () => {
         <label className='flex flex-row justify-center items-center text-gray-700 text-sm font-bold mb-2' htmlFor='cardImage'>
           Card Image
         </label>
-        {library.cardimage && <img src={library.cardimage} alt='Card' className='mb-4 w-96 h-72' />}
+        {library.cardImage && <img src={library.cardImage} alt='Card' className='mb-4 w-96 h-72' />}
         <input
           id='cardImage'
           type='file'
