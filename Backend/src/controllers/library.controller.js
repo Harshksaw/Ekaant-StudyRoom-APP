@@ -796,7 +796,7 @@ const deleteRoom = async (req, res) => {
       if (library.rooms[i].id !== roomId) {
         await prisma.room.update({
           where: { id: library.rooms[i].id },
-          data: { roomNo: i + 1 },
+          data: { roomNo: i +1 },
         });
       }
     }
