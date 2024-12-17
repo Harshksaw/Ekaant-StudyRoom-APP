@@ -27,7 +27,14 @@ async function createApp(req, res) {
     }
 
     // console.log(location, "body", images);
-    const app = new App({
+    const app =    await prisma.app.create({
+      data: {
+        Banner: images, 
+        locations: parsedLocations
+      }
+    })
+    
+    new App({
       Banner: images,
       locations: parsedLocations,
     });
