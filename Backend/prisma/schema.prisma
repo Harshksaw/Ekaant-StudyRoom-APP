@@ -158,18 +158,49 @@ model TimeSlot {
 }
 
 
+// model Booking {
+//   id        Int      @id @default(autoincrement())
+//   date      DateTime
+//   libraryId    Int
+//   library   Library? @relation(fields: [libraryId], references: [id], name: "LibraryBookings")
+//   userId     Int
+//   user       User?    @relation(fields: [userId], references: [id], name: "UserBookings")
+
+
+//   friend    Friend?  @relation(fields: [friendId], references: [id], name: "BookingFriend")
+//   friendId  Int?     @unique
+//   invoice   Invoice?
+// }
+
 model Booking {
-  id        Int      @id @default(autoincrement())
-  date      DateTime
-  libraryId    Int
-  library   Library? @relation(fields: [libraryId], references: [id], name: "LibraryBookings")
-  userId     Int
-  user       User?    @relation(fields: [userId], references: [id], name: "UserBookings")
+  id                Int       @id @default(autoincrement())
+  userId            Int
+   user       User?    @relation(fields: [userId], references: [id], name: "UserBookings")
 
-
+  libraryId         Int
+library   Library? @relation(fields: [libraryId], references: [id], name: "LibraryBookings")
+  initialPrice      Float
+  finalPrice        Float
+  paid              Boolean   @default(false)
+  timeSlotDetails   Json      // Details of the booked time slot
+  roomNo            Int
+  bookedSeat        Json      // Details of the booked seat
+  bookingDate       DateTime
+  bookingFinalDate  DateTime?
+  friendId  Int?     @unique @default(autoincrement())
   friend    Friend?  @relation(fields: [friendId], references: [id], name: "BookingFriend")
-  friendId  Int?     @unique
+  bookingPeriod     Int       @default(1)
+  transactionDetails Json?    // Details of the transaction
+  bookingStatus     BookingStatus @default(PENDING)
+  approved          Boolean   @default(false)
+  timeStamp         DateTime  @default(now())
   invoice   Invoice?
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
 }
 
 model Friend {
@@ -244,8 +275,8 @@ model Otp {
 model Invoice {
   id                  Int       @id @default(autoincrement())
   bookingId           Int       @unique
-  booking             Booking   @relation(fields: [bookingId], references: [id])
   invoiceNumber       String    @default("INV-0")
+  booking             Booking   @relation(fields: [bookingId], references: [id])
   libraryAddress      String    @map("libraryaddress")
   libraryName         String
   invoiceDate         DateTime  @default(now())
