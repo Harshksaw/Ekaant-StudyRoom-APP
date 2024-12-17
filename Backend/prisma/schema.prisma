@@ -102,7 +102,7 @@ model Library {
 
   reviews             Review[]  @relation("Reviews")
   deleted             Boolean   @default(false)
-  amenities           Amenities?
+  amenities           Amenities? 
   comingSoon          Boolean   @default(false)
   approved            Boolean   @default(false)
   legal               String?

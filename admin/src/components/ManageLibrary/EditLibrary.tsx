@@ -333,7 +333,11 @@ const EditLibrary = () => {
 
     <div className='mb-6'>
         <h3 className='text-lg font-bold mb-2'>Amenities</h3>
-        {Object.keys(amenities).map((amenity) => (
+
+        {
+          !amenities && <p className='text-2xl bg-red-500'>No Amenities</p>
+        }
+         {amenities &&      Object.keys(amenities).map((amenity) => (
           <div key={amenity} className='flex items-center mb-2'>
             <input
               id={amenity}

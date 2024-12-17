@@ -325,23 +325,35 @@ const addOrUpdateRoomDetails = async (req, res) => {
   try {
     const { libraryId, timeSlot, location } = req.body;
 
-    const library = await Library.findById(libraryId);
+    const library = await prisma.library.findFirst({
+      where: {
+        id: parseInt(libraryId)
+      }
+    })
 
     if (!library) {
       return res.status(404).send({ message: "Library not found" });
     }
 
-    const updateLibrary = await Library.findByIdAndUpdate(
-      libraryId,
-      {
+    const updateLibrary = await prisma.library.update({
+      where: {
+        id: parseInt(libraryId)
+      },
+      data:{
         timeSlot: timeSlot,
         location: location,
-      },
-      { new: true }
-    );
+      }
+    })
+    //   libraryId,
+    //   {
+    //     timeSlot: timeSlot,
+    //     location: location,
+    //   },
+    //   { new: true }
+    // );
 
     // Save the updated library document
-    await updateLibrary.save();
+
 
     await calculateLowestPrice(libraryId);
     res.status(200).json({
@@ -378,11 +390,34 @@ const getAllLibrary = async (req, res) => {
     if (!city) {
       return res.status(400).json({ success: false, message: "City is required" });
     }
-
-    const distances = await Distance.find({ city }).populate({
-      path: "library",
-      populate: "rooms"
-    }).sort({ distance: 1 });
+    const distances = await prisma.distance.findMany({
+      where: {
+        city
+      },
+      include: {
+        library: {
+          include: {
+            rooms: {
+              include: {
+                seats: {
+                  include: {
+                    timeSlots: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      orderBy: {
+        distance: 'asc'
+      }
+    });
+    
+    // Distance.find({ city }).populate({
+    //   path: "library",
+    //   populate: "rooms"
+    // }).sort({ distance: 1 });
 
 
     const filterLibrary = distances.filter((distance) => distance.library.approved === true && distance.library.rooms.length > 0);
@@ -436,9 +471,27 @@ const getLibraryById = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room = await Library.findById(id)
-      .populate("rooms")
-      .populate("libraryOwner");
+
+    const room = await prisma.library.findFirst({
+      where: {
+        id: parseInt(id)
+      },
+      include: {
+        rooms: {
+          include: {
+            seats: {
+              include: {
+                timeSlots: true,
+              },
+            },
+          },
+        },
+        libraryOwner: true,
+        amenities: true,
+      },
+    });
+      // .populate("rooms")
+      // .populate("libraryOwner");
     res.status(200).json({
       success: true,
       message: "Library data",
@@ -454,15 +507,35 @@ const getLibraryRooms = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room = await Library.findById(id).populate({
-      path: "rooms",
-      populate: {
-        path: "seats",
-        populate: {
-          path: "timeSlots",
-        },
+
+
+    const room = await prisma.library.findFirst({
+      where: {
+        id: parseInt(id)
       },
+      include: {
+        rooms: {
+          include: {
+            seats: {
+              include: {
+                timeSlots: true,
+              },
+            },
+          },
+        },
+        libraryOwner: true,
+        amenities: true
+      }
     });
+    // const room = await Library.findById(id).populate({
+    //   path: "rooms",
+    //   populate: {
+    //     path: "seats",
+    //     populate: {
+    //       path: "timeSlots",
+    //     },
+    //   },
+    // });
     res.status(200).json({
       success: true,
       message: "Library data",
@@ -478,9 +551,27 @@ const getLibraryByUserId = async (req, res) => {
   const { id } = req.body;
   console.log(id);
   try {
-    const room = await Library.findOne({ libraryOwner: id })
-      .populate("rooms")
-      .populate("libraryOwner");
+    const room = await prisma.library.findFirst({ 
+        where: {
+          libraryOwnerId: parseInt(id)
+        },
+        include: {
+          rooms: {
+            include: {
+              seats: {
+                include: {
+                  timeSlots: true,
+                },
+              },
+            },
+          },
+          libraryOwner: true,
+          amenities: true,
+        },
+      });
+
+      // .populate("rooms")
+      // .populate("libraryOwner");
     res.status(200).json({
       success: true,
       message: "Library data",
@@ -492,13 +583,19 @@ const getLibraryByUserId = async (req, res) => {
   }
 };
 const updateApproveStatus = async (req, res) => {
-  console.log(req.body, "reqqq");
+  // console.log(req.body, "reqqq");
   const { id, status } = req.body;
   try {
-    const room = await Library.findByIdAndUpdate(id, {
-      approved: status,
-    });
-    console.log(room?.approved);
+    const room = await prisma.library.update(
+      {
+        where: { id: parseInt(id) },
+        data: {
+          approved: status,
+        },
+      }
+
+    );
+    console.log(room?.approved, "room");
     res.status(200).json({
       success: true,
       message: "Library status ",
@@ -540,7 +637,17 @@ const getAdminLibraries = async (req, res) => {
 
 async function getAllBookings(req, res) {
   try {
-    const bookings = await Booking.find().populate("userId").exec();
+    const bookings = await prisma.booking.findMany({
+      include:{
+        user: true,
+        room: {
+          include: {
+            library: true
+          }
+        }
+      }
+    })
+    // .find().populate("userId").exec();
     return res.status(StatusCodes.OK).json({ bookings });
   } catch (error) {
     console.error(error);
