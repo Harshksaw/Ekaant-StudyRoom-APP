@@ -95,7 +95,7 @@ const CheckoutScreen: React.FC = () => {
         const res = await axios.post(
           `${BACKEND}/api/v1/library/getLibraryById`,
           {
-            id: BookedData?.libraryId?._id,
+            id: BookedData?.libraryId?.id,
           }
         );
         setLibraryData(res.data);

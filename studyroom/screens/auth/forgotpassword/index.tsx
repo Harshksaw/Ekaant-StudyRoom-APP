@@ -36,8 +36,8 @@ export default function ForgotPassword() {
   const getUserId = async () => {
     const res = await AsyncStorage.getItem("userData");
     const dataa = JSON.parse(res);
-    // console.log(",,,", data.data.user._id);
-    setUserId(dataa.data.user._id);
+    // console.log(",,,", data.data.user.id);
+    setUserId(dataa.data.user.id);
   };
 
   const forgetPassword = async () => {

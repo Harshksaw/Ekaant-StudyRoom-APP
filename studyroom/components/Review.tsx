@@ -119,12 +119,12 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
   const createReview = async () => {
     const user = await AsyncStorage.getItem("userData");
     const u = JSON.parse(user);
-    console.log(libraryId, reviewMessage, rating, u.data.user_id._id);
+    console.log(libraryId, reviewMessage, rating, u.data.user_id.id);
     try {
       const response = await axios.post(
         `${BACKEND}/api/v1/library/createReview/${libraryId}`,
         {
-          user: u.data.user_id._id,
+          user: u.data.user_id.id,
           review: reviewMessage,
           stars: Number(rating),
         }

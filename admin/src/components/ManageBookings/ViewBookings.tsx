@@ -25,7 +25,7 @@ const ViewBookings = () => {
         const resp = await axios.post(
           `${BASEURL}/api/v1/booking/getBookingByLibId`,
           {
-            lib_id: response.data.data[0]._id,
+            lib_id: response.data.data[0].id,
           }
         );
 
@@ -51,8 +51,8 @@ const ViewBookings = () => {
           {bookings.map((booking: any) => (
             <Link
 
-                  to={`/manage-library/view-library/${booking?._id}`}
-              key={booking?._id}
+                  to={`/manage-library/view-library/${booking?.id}`}
+              key={booking?.id}
               className="flex flex-1 border border-gray-200 p-5 m-5"
             >
               <div className="w-1/5 h-1/5">

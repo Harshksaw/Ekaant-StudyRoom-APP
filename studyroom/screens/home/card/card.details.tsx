@@ -70,7 +70,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     // Fetch user reviews here
     try {
       const res = await axios.post(
-        `${BACKEND}/api/v1/library/getReviews/${data._id}`
+        `${BACKEND}/api/v1/library/getReviews/${data.id}`
       );
 
       setUserReviews(res.data);
@@ -300,7 +300,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
             {/* //ratings */}
           </View>
-          <ReviewList libraryId={data._id} />
+          <ReviewList libraryId={data.id} />
 
           <View
             style={{

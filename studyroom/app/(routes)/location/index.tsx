@@ -90,7 +90,7 @@ const LocationsScreen = () => {
       />
       <FlatList
         data={filteredLocations}
-        keyExtractor={(item) => item._id} // Ensure each item has a unique key
+        keyExtractor={(item) => item.id} // Ensure each item has a unique key
         numColumns={3}
         renderItem={({ item }) => (
           <TouchableOpacity

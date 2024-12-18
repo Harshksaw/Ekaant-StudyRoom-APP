@@ -44,7 +44,7 @@ async function RegisterAdmin(req, res, next) {
 
     const existingAdmin = await prisma.admin.findFirst({ where : { email : email }});
     if (existingAdmin) {
-      const token = jwt.sign({ admin_id: existingAdmin._id }, JWT_SECRET);
+      const token = jwt.sign({ admin_id: existingAdmin.id }, JWT_SECRET);
       return res.status(200).json({
         success: true,
         message: 'Admin already registered',
@@ -75,18 +75,7 @@ async function RegisterAdmin(req, res, next) {
 
     const pancardUpload = await uploadToS3(pancard[0], `admin/${username}`);
     const aadharUpload = await uploadToS3(aadhar[0], `admin/${username}`);
-    // const pancardFile = new File({
-    //   filename: pancard[0].originalname,
-    //   path: pancard[0].path,
-    // });
-
-    // const aadharFile = new File({
-    //   filename: aadhar[0].originalname,
-    //   path: aadhar[0].path,
-    // });
-
-    // const pancardPath = await pancardFile.save();
-    // const addharCardPath = await aadharFile.save();
+  
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -119,7 +108,7 @@ async function RegisterAdmin(req, res, next) {
       });
     console.log("🚀 ~ RegisterAdmin ~ newAdmin:", newAdmin)
 
-    const token = jwt.sign({ admin_id: newAdmin._id }, JWT_SECRET);
+    const token = jwt.sign({ admin_id: newAdmin.id }, JWT_SECRET);
 
     return res.status(201).json({
       success: true,
@@ -136,12 +125,12 @@ async function RegisterAdmin(req, res, next) {
 // login--
 async function LoginAdmin(req, res) {
   const { email, password } = req.body;
-  console.log("🚀 ~ LoginAdmin ~ req.body:", req.body)
+  // console.log("🚀 ~ LoginAdmin ~ req.body:", req.body)
 
 
 
   try {
-    const admin = await prisma.admin.findOne({ email });
+    const admin = await prisma.admin.findFirst({ where: { email : email} });
     console.log(admin)
     if (!admin) {
       return res
@@ -162,8 +151,8 @@ async function LoginAdmin(req, res) {
     }
 
     // Generate token
-    const token = jwt.sign({ admin_id: admin._id }, JWT_SECRET);
-    const libraries = await  prisma.Library.find({ libraryOwner: admin._id })
+    const token = jwt.sign({ admin_id: admin.id }, JWT_SECRET);
+    const libraries = await  prisma.library.findFirst({ where : {libraryOwnerId: admin.id } })
 
     if (libraries.length > 1) {
       // User owns more than one library, considered an existing user
@@ -173,8 +162,10 @@ async function LoginAdmin(req, res) {
         data: admin,
         token,
       });
+
+
     } else if (libraries.length === 1) {
-      // User owns exactly one library, check for rooms
+
 
       const hasRooms = libraries[0].rooms ;
       console.log(hasRooms);
@@ -209,6 +200,8 @@ async function LoginAdmin(req, res) {
     }
   
   } catch (error) {
+
+    console.log(error)
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: error.message });

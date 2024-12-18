@@ -6,7 +6,7 @@ const { User, Invoice } = require("../models");
 const { Booking } = require("../models/booking.model");
 const { Library } = require("../models/library.model");
 const { sendInvoiceEmail } = require("../utils/mails/invoice.mail");
-const { PrismaClient, Prisma } = require('@prisma/client');
+const { PrismaClient, Prisma } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 const JWT_SECRET = "MY_SECRET_KEY";
@@ -39,11 +39,7 @@ function pingBookingController(req, res) {
   return res.json({ message: "Booking controller is up" });
 }
 async function createBooking(req, res) {
-
-
   try {
-
-
     const {
       userId,
       libraryId,
@@ -55,15 +51,17 @@ async function createBooking(req, res) {
       bookingDate,
       forFriend,
       bookingPeriod,
-
     } = req.body;
 
-    const user = await User.findById(userId);
+    const user = await prisma.user.findFirst({ where: { id: userId } });
 
+    const bookingFinalDate = prisma.booking.create({
+      data: {
+        bookingFinalDate: bookingFinalDate,
+      },
+    });
 
-    const bookingFinalDate = new Date(bookingDate)
     bookingFinalDate.setMonth(bookingFinalDate.getMonth() + bookingPeriod);
-
 
     if (!user) {
       return res
@@ -71,27 +69,26 @@ async function createBooking(req, res) {
         .json({ message: "User not found" });
     }
     const bookingData = {
-      userId,
+      id: parseInt(userId),
+
       libraryId,
       initialPrice,
       finalPrice,
       roomNo,
       forFriend: !forFriend ? null : forFriend,
-      timeSlotDetails : timeSlot,
+      timeSlotDetails: timeSlot,
       bookedSeat,
       bookingDate,
       bookingPeriod,
-      bookingFinalDate : bookingFinalDate,
+      bookingFinalDate: bookingFinalDate,
     };
 
-    const newBooking = await Booking.create(bookingData);
+    const newBooking = await prisma.booking.create({ data: { bookingData } });
 
     // Now retrieve the booking with populate
     // const populatedBooking = await
     //   .populate("userId")
     //   .populate("libraryId");
-
-    await newBooking.save();
 
     return res.status(StatusCodes.CREATED).json({
       message: "Booking created successfully",
@@ -106,7 +103,12 @@ async function getUserBookings(req, res) {
   try {
     const { id } = req.params;
 
-    const bookings = await Booking.find({ userId: id, bookingStatus: "CONFIRMED"}).populate("libraryId").populate("userId");
+    const bookings = await Booking.find({
+      userId: id,
+      bookingStatus: "CONFIRMED",
+    })
+      .populate("libraryId")
+      .populate("userId");
 
     return res.status(StatusCodes.OK).json({ bookings });
   } catch (error) {
@@ -116,13 +118,18 @@ async function getUserBookings(req, res) {
 
 async function getBookingById(req, res) {
   try {
-    console.log(req.body, "getBookingById");
+    // console.log(req.body, "getBookingById");
 
     const { id } = req.body;
     if (!id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: "id not found" });
     }
-    const bookings = await Booking.find({ _id: id }).populate("userId");
+    const bookings = await prisma.booking.findFirst({
+      where: { id: id },
+      include: {
+        userId: true,
+      },
+    });
     return res.status(StatusCodes.OK).json({ bookings });
   } catch (error) {
     console.error(error);
@@ -131,17 +138,20 @@ async function getBookingById(req, res) {
 
 async function getBookingByLibId(req, res) {
   try {
-    console.log(req.body, "getBookingByLibId");
+    // console.log(req.body, "getBookingByLibId");
 
     const { lib_id } = req.body;
     if (!lib_id) {
       res.status(StatusCodes.BAD_REQUEST).json({ message: "lib_id not found" });
     }
-    const bookings = await Booking.find({ libraryId: lib_id }).populate(
-      "userId"
-    ).sort({
-      createdAt : -1
-    })
+    const bookings = await prisma.booking.findFirst({
+      where: { libraryId: lib_id },
+      include: {
+        userId: true,
+      },
+      orderBy: Desc,
+    });
+
     console.log("🚀 ~ getBookingByLibId ~ bookings:", bookings);
 
     return res.status(StatusCodes.OK).json({
@@ -160,45 +170,74 @@ async function ConfrimBooking(req, res) {
 
     const { id } = req.params;
 
-    const {
-      bookingId,
-      paymentId,
-      paymentData,
-      bookingData,
-    } = req.body;
-
+    const { bookingId, paymentId, paymentData, bookingData } = req.body;
 
     const transactionDetailsData = {
       bookingId,
       paymentId,
       paymentData,
+    };
 
-    }
-
-    const updatedBooking = await Booking.findByIdAndUpdate(
-      id,
+    const updatedBooking = await prisma.booking.update(
       {
-        $set: {
+        where: {
+          id: id,
+        },
+        data: {
           transactionDetails: transactionDetailsData,
           paid: true,
           bookingStatus: "CONFIRMED",
-          "timeSlotDetails.$[].booked": true
-        }
-      },
-
-      { new: true }
+        },
+      }
+      // id,
+      // {
+      //   $set: {
+      //     transactionDetails: transactionDetailsData,
+      //     paid: true,
+      //     bookingStatus: "CONFIRMED",
+      //     "timeSlotDetails.$[].booked": true
+      //   }
+      // },
     );
     // console.log("🚀 ~ ConfrimBooking ~ updatedBooking:", updatedBooking)
     if (!updatedBooking) {
-      throw new Error('Booking not found');
+      throw new Error("Booking not found");
     }
 
-    const lib = await Library.findById(bookingData.libraryId._id).populate(
+    const updatedTimeSlots = updatedBooking.timeSlotDetails.map((slot) => ({
+      ...slot,
+      booked: true,
+    }));
+
+    await prisma.booking.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: {
+        timeSlotDetails: updatedTimeSlots,
+      },
+    });
+
+    for (const slot of updatedBooking.timeSlotDetails) {
+      await prisma.timeSlot.update({
+        where: {
+          id: parseInt(slot.id),
+        },
+        data: {
+          booked: true,
+        },
+      });
+    }
+
+    //TODO
+
+    const lib = await Library.findById(bookingData.libraryId.id).populate(
       "rooms"
     );
     const roomNo = bookingData.roomNo;
-    const seatId = bookingData.bookedSeat._id;
-    const timeSlotId = bookingData.timeSlot[0]._id.toString(); // Assuming you want to book the first time slot
+    const seatId = bookingData.bookedSeat.id;
+    const timeSlotId = bookingData.timeSlot[0].id.toString();
+     // Assuming you want to book the first time slot
     // console.log("🚀 ~ ConfrimBooking ~ timeSlotId:", timeSlotId);
     // console.log("🚀 ~ ConfrimBooking ~ seatId:", seatId);
 
@@ -211,7 +250,7 @@ async function ConfrimBooking(req, res) {
       //   return { room: null, seat: null };
       // }
 
-      const seat = room.seats.find((seat) => seat._id.toString() === seatId);
+      const seat = room.seats.find((seat) => seat.id.toString() === seatId);
       return { room, seat };
     };
 
@@ -221,7 +260,7 @@ async function ConfrimBooking(req, res) {
     }
 
     const timeSlot = seat.timeSlots.find(
-      (slot) => slot._id.toString() === timeSlotId
+      (slot) => slot.id.toString() === timeSlotId
     );
 
     if (!timeSlot) {
@@ -239,7 +278,9 @@ async function ConfrimBooking(req, res) {
     await lib.save();
     await room.save();
 
-    const booking = await Booking.findById(bookingId).populate("userId").populate("libraryId")
+    const booking = await Booking.findById(bookingId)
+      .populate("userId")
+      .populate("libraryId");
 
     // console.log("🚀 ~ generateInvoice ~ booking:", booking);
 
@@ -249,13 +290,22 @@ async function ConfrimBooking(req, res) {
 
     // Create new invoice
     const invoice = new Invoice({
-      bookingId: booking._id,
+      bookingId: booking.id,
       customerName: booking.userId.username,
       customerEmail: booking.userId.email,
       customerPhoneNumber: booking.userId.phoneNumber,
       libraryId: booking.libraryId,
       libraryName: booking.libraryId.name,
-      libraryaddress: booking.libraryId.address.line1 + " " + booking.libraryId.address.line2 + " " + booking.libraryId.address.city + " " + booking.libraryId.address.state + " " + booking.libraryId.address.pincode,
+      libraryaddress:
+        booking.libraryId.address.line1 +
+        " " +
+        booking.libraryId.address.line2 +
+        " " +
+        booking.libraryId.address.city +
+        " " +
+        booking.libraryId.address.state +
+        " " +
+        booking.libraryId.address.pincode,
       initialPrice: booking.initialPrice,
       finalPrice: booking.finalPrice,
       paid: booking.paid,
@@ -265,8 +315,7 @@ async function ConfrimBooking(req, res) {
       approved: booking.approved,
       seatLabel: booking.bookedSeat.seatLabel,
       bookingFinalDate: booking.bookingFinalDate,
-      timeSlotDetails: booking.timeSlotDetails
-
+      timeSlotDetails: booking.timeSlotDetails,
     });
 
     await invoice.save();
@@ -289,23 +338,17 @@ async function generateInvoice(req, res) {
   try {
     const { bookingId } = req.params;
 
-
-    const invoice = await Invoice.findOne({ bookingId: bookingId });
+    const invoice = await prisma.invoice.findFirst({data: { bookingId: bookingId }});
 
     if (!invoice) {
       return res.status(404).json({ error: "Invoice not found" });
     }
 
     return res.status(200).json({
-
       success: true,
       message: "Invoice fetched successfully",
       data: invoice,
     });
-    
-   
-
- 
   } catch (error) {
     console.error(error);
     res.status(500).json({

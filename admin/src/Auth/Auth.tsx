@@ -41,7 +41,7 @@ const Auth = ({ type }: { type: "signin" }) => {
           const token = response.data.token;
 
           const accountType = response.data.data.accountType;
-          const accountId = response.data.data._id;
+          const accountId = response.data.data.id;
 
 
           localStorage.setItem("token", token);

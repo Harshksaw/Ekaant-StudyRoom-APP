@@ -11,7 +11,7 @@ model App {
   id             Int      @id @default(autoincrement())
   Banner         String[]
   locations      Location[]
-  RegistrationFee Float?   @map("RegistrationFee") 
+  RegistrationFee Int?   @map("RegistrationFee") 
 }
 
 model Location {
@@ -36,7 +36,7 @@ model Admin {
   AddharNumber          String
   PanNumber             String
   address               Json
-  adhaarCardDetails     AdhaarCardDetails?
+  adhaarCardDetails     AdhaarCardDetails? 
   panCardDetails        PanCardDetails?
   profileImage          String?
   resetPasswordExpires  DateTime?
@@ -84,7 +84,7 @@ model User {
 
 model Library {
   id                  Int       @id @default(autoincrement())
-  libraryId           Int?
+
   libraryOwnerId      Int?
   libraryOwner        Admin?    @relation(fields: [libraryOwnerId], references: [id], name: "OwnedProperties")
   name                String    
@@ -96,41 +96,111 @@ model Library {
   location            Json?      
   address             Json?      
   commingSoonMessage  String?   @default("false") // Note: This is a String with default "false" since you have type: String in Mongoose
-  rooms               Room[]    @relation("Rooms")
+  rooms               Room[]    @relation("Rooms") 
   coords              String?
   distances Distance[]
 
   reviews             Review[]  @relation("Reviews")
   deleted             Boolean   @default(false)
-  amenities           Amenities?
+  amenities           Amenities? 
   comingSoon          Boolean   @default(false)
   approved            Boolean   @default(false)
   legal               String?
-  gstDetails          GstDetails?
-  cinDetails          String?
-  tanDetails          String?
-  msmeDetails         String?
-  registrationFees    Float     @default(0)
-  Price               Float     @default(0)
+  gstNumber           String?
+  gstCertificateFile  String?
+  cinNumber           String?
+  cinCertificateFile  String?
+  tanNumber           String?
+  tanCertificateFile  String?
+  msmeNumber          String?
+  msmeCertificateFile String?
+
+  registrationFees    Int    @default(0)
+  Price               Int     @default(0)
   users               User[]    @relation("OwnedProperties")
   admins              Admin[]   @relation("LibraryBookings")
   bookings            Booking[] @relation("LibraryBookings")
   invoices            Invoice[] @relation("LibraryInvoices")
 }
 
+model Room {
+  id        Int      @id @default(autoincrement())
+  libraryId Int
+  library   Library  @relation(fields: [libraryId], references: [id], name: "Rooms")
+  roomNo    Int      
+  Ac        Boolean  @default(false)
+  seats     Seat[]
+  doorPosition Int[] @default(dbgenerated("ARRAY[0, 0, 0, 0, 0]::Int[]"))
+}
+model Seat {
+  id        Int     @id @default(autoincrement())
+  seatId    String  
+  seatLabel String  
+  rotation Int  @default(0)
+  roomId    Int
+  room      Room    @relation(fields: [roomId], references: [id])
+  timeSlots TimeSlot[]
+}
+
+model TimeSlot {
+  id            Int       @id @default(autoincrement())
+  slotId        String    @default(uuid())
+  from          String    
+  to            String    
+  booked        Boolean   @default(false)
+  bookedById    Int?
+  bookedBy      User?     @relation(fields: [bookedById], references: [id])
+  bookingSource String    @default("app")
+  price         Int       @default(0)   
+  bookingEndDate DateTime?
+  seatId        Int
+  seat          Seat      @relation(fields: [seatId], references: [id])
+}
+
+
+// model Booking {
+//   id        Int      @id @default(autoincrement())
+//   date      DateTime
+//   libraryId    Int
+//   library   Library? @relation(fields: [libraryId], references: [id], name: "LibraryBookings")
+//   userId     Int
+//   user       User?    @relation(fields: [userId], references: [id], name: "UserBookings")
+
+
+//   friend    Friend?  @relation(fields: [friendId], references: [id], name: "BookingFriend")
+//   friendId  Int?     @unique
+//   invoice   Invoice?
+// }
 
 model Booking {
-  id        Int      @id @default(autoincrement())
-  date      DateTime
-  libraryId    Int
-  library   Library? @relation(fields: [libraryId], references: [id], name: "LibraryBookings")
-  userId     Int
-  user       User?    @relation(fields: [userId], references: [id], name: "UserBookings")
+  id                Int       @id @default(autoincrement())
+  userId            Int
+   user       User?    @relation(fields: [userId], references: [id], name: "UserBookings")
 
-
+  libraryId         Int
+library   Library? @relation(fields: [libraryId], references: [id], name: "LibraryBookings")
+  initialPrice      Float
+  finalPrice        Float
+  paid              Boolean   @default(false)
+  timeSlotDetails   Json      // Details of the booked time slot
+  roomNo            Int
+  bookedSeat        Json      // Details of the booked seat
+  bookingDate       DateTime
+  bookingFinalDate  DateTime?
+  friendId  Int?     @unique @default(autoincrement())
   friend    Friend?  @relation(fields: [friendId], references: [id], name: "BookingFriend")
-  friendId  Int?     @unique
+  bookingPeriod     Int       @default(1)
+  transactionDetails Json?    // Details of the transaction
+  bookingStatus     BookingStatus @default(PENDING)
+  approved          Boolean   @default(false)
+  timeStamp         DateTime  @default(now())
   invoice   Invoice?
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
 }
 
 model Friend {
@@ -177,50 +247,16 @@ model Amenities {
   library           Library   @relation(fields: [libraryId], references: [id])
 }
 
-model GstDetails {
-  id                 Int     @id @default(autoincrement())
-  gstNumber           String?
-  gstCertificateFile String?
-  libraryId          Int      @unique
-  library            Library   @relation(fields: [libraryId], references: [id])
-}
-
-model Room {
-  id        Int      @id @default(autoincrement())
-  libraryId Int
-  library   Library  @relation(fields: [libraryId], references: [id], name: "Rooms")
-  roomNo    Int      
-  Ac        Boolean  @default(false)
-  seats     Seat[]
-  doorPosition Float[] @default(dbgenerated("ARRAY[0, 0, 0, 0, 0]::FLOAT[]"))
-}
+// model GstDetails {
+//   id                 Int     @id @default(autoincrement())
+//   gstNumber           String?
+//   gstCertificateFile String?
+//   libraryId          Int      @unique
+//   library            Library   @relation(fields: [libraryId], references: [id])
+// }
 
 
 
-model Seat {
-  id        Int     @id @default(autoincrement())
-  seatId    String  
-  seatLabel String  
-  rotation Int  @default(0)
-  roomId    Int
-  room      Room    @relation(fields: [roomId], references: [id])
-  timeSlots TimeSlot[]
-}
-
-model TimeSlot {
-  id            Int       @id @default(autoincrement())
-  slotId        String    @default(uuid())
-  from          String    
-  to            String    
-  booked        Boolean   @default(false)
-  bookedById    Int?
-  bookedBy      User?     @relation(fields: [bookedById], references: [id])
-  bookingSource String    @default("app")
-  price         String    
-  bookingEndDate DateTime?
-  seatId        Int
-  seat          Seat      @relation(fields: [seatId], references: [id])
-}
 
 model PhoneOtp {
   id          Int      @id @default(autoincrement())
@@ -239,8 +275,8 @@ model Otp {
 model Invoice {
   id                  Int       @id @default(autoincrement())
   bookingId           Int       @unique
-  booking             Booking   @relation(fields: [bookingId], references: [id])
   invoiceNumber       String    @default("INV-0")
+  booking             Booking   @relation(fields: [bookingId], references: [id])
   libraryAddress      String    @map("libraryaddress")
   libraryName         String
   invoiceDate         DateTime  @default(now())
@@ -250,8 +286,8 @@ model Invoice {
   libraryId           Int
   library             Library   @relation(fields: [libraryId], references: [id], name: "LibraryInvoices")
   // library             Library   @relation(fields: [libraryId], references: [id])
-  initialPrice        Float
-  finalPrice          Float
+  initialPrice        Int
+  finalPrice          Int
   paid                Boolean
   bookingDate         DateTime
   bookingPeriod       Int

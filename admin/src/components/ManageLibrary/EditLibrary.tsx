@@ -16,7 +16,7 @@ interface Library {
     name: string;
     shortDescription: string;
     longDescription: string;
-    cardimage: string;
+    cardImage: string;
     images: string[];
     amenities: Amenities;
     rooms: Room[];
@@ -253,7 +253,7 @@ const EditLibrary = () => {
         <label className='flex flex-row justify-center items-center text-gray-700 text-sm font-bold mb-2' htmlFor='cardImage'>
           Card Image
         </label>
-        {library.cardimage && <img src={library.cardimage} alt='Card' className='mb-4 w-96 h-72' />}
+        {library.cardImage && <img src={library.cardImage} alt='Card' className='mb-4 w-96 h-72' />}
         <input
           id='cardImage'
           type='file'
@@ -333,7 +333,11 @@ const EditLibrary = () => {
 
     <div className='mb-6'>
         <h3 className='text-lg font-bold mb-2'>Amenities</h3>
-        {Object.keys(amenities).map((amenity) => (
+
+        {
+          !amenities && <p className='text-2xl bg-red-500'>No Amenities</p>
+        }
+         {amenities &&      Object.keys(amenities).map((amenity) => (
           <div key={amenity} className='flex items-center mb-2'>
             <input
               id={amenity}
@@ -441,10 +445,10 @@ const EditLibrary = () => {
       <h3 className='text-xl font-bold mt-8 mb-4'>Rooms</h3>
       <div className='grid grid-cols-1 gap-4'>
         {library?.rooms?.map((room) => (
-          <div key={room._id} className='flex justify-between items-center p-4 border rounded'>
+          <div key={room.id} className='flex justify-between items-center p-4 border rounded'>
             <span>Room {room.roomNo}</span>
             <button
-              onClick={() => handleDeleteRoom(room._id)}
+              onClick={() => handleDeleteRoom(room.id)}
               className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline'
             >
               Delete

@@ -157,7 +157,7 @@ const LibraryPage = () => {
         {libraries?.length > 0 ? (
           libraries.map((library) => (
             <div
-              key={library?._id}
+              key={library?.id}
               className="flex justify-between items-center p-4 mb-4 border-b border-gray-200"
             >
               <div>
@@ -165,7 +165,7 @@ const LibraryPage = () => {
                 <p className="text-gray-600">{library?.shortDescription}</p>
               </div>
               <button
-                onClick={() => handleDeleteLibrary(library?._id)}
+                onClick={() => handleDeleteLibrary(library?.id)}
                 className="text-red-500 hover:text-red-700"
               >
                 Delete
