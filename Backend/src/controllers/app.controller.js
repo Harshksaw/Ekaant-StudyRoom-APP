@@ -60,8 +60,7 @@ async function createApp(req, res) {
 
 async function getApp(req, res) {
   try {
-    //6693fe2eb4e16e6d87026d1d
-    // const id = req.params.id;
+   
 
 
     const app = await prisma.app.findFirst({ where: { id: 1 }, include:{
