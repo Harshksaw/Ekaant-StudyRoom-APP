@@ -507,7 +507,7 @@ async function otpLogin(req, res) {
       success: false,
       message: "The OTP is not valid",
     });
-  } else if (otp != response[0].phoneOtp) {
+  } else if (otp != response[0].phoneotp) {
     // Invalid OTP
     return res.status(400).json({
       success: false,
