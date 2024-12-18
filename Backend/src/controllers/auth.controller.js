@@ -498,7 +498,7 @@ async function otpLogin(req, res) {
     }  
   
   })
-  console.log("🚀 ~ otpLogin ~ response:", response)
+  // console.log("🚀 ~ otpLogin ~ response:", response)
 
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
   // console.log(response[0].phoneotp, otp, "RESPONSE123");
@@ -508,7 +508,7 @@ async function otpLogin(req, res) {
       success: false,
       message: "The OTP is not valid",
     });
-  } else if (otp != response[0].phoneotp) {
+  } else if (otp != response[0].phoneOtp) {
     // Invalid OTP
     return res.status(400).json({
       success: false,
