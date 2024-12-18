@@ -493,7 +493,9 @@ async function otpLogin(req, res) {
     where: {
       phoneNumber: phoneNumber,
     },
-    orderBy: Desc  
+    orderBy:{
+      createdAt: 'desc'
+    }  
   
   })
 
