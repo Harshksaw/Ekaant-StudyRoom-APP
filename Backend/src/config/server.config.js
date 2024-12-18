@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 module.exports = {
 
-  PORT: 3009,
+  PORT: 3000,
 
 
   NODE_ENV: process.env.NODE_ENV || "development",

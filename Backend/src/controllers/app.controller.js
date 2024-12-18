@@ -3,7 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = "MY_SECRET_KEY";
-const { PrismaClient, Prisma } = require('@prisma/client');
+const { PrismaClient, Prisma } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 const multer = require("multer");
@@ -19,28 +19,28 @@ const ping = (req, res) => {
 async function createApp(req, res) {
   try {
     const images = req.files.map((file) => file.path);
-    const { location } = req.body;
+    // const { location } = req.body;
 
-    let parsedLocations = location;
-    if (typeof location === "string") {
-      parsedLocations = JSON.parse(location);
-    }
+    // let parsedLocations = location;
+    // if (typeof location === "string") {
+    //   parsedLocations = JSON.parse(location);
+    // }
+
+    // for(let i = 0 ; i < parsedLocations.length; i++){
+
+    // }
+    // await getCityCoordinates(city);
 
     // console.log(location, "body", images);
-    const app =    await prisma.app.create({
+    const app = await prisma.app.create({
       data: {
-        Banner: images, 
-        locations: parsedLocations
-      }
-    })
-    
-
+        Banner: images,
+      },
+    });
 
     // const appdata = await app.save();
 
     // console.log(appdata);
-
-    // Add code to handle file uploads using multer and cloudinary
 
     return res.status(StatusCodes.CREATED).json({
       success: true,
@@ -64,7 +64,7 @@ async function getApp(req, res) {
     // const id = req.params.id;
 
     console.log(req.file, "file");
-    const app = await prisma.app.findFirst({where: {id: 1}});
+    const app = await prisma.app.findFirst({ where: { id: 1 } });
 
     return res.status(StatusCodes.OK).json({
       success: true,
@@ -87,18 +87,14 @@ async function editBanner(req, res) {
     // console.log("🚀 ~ editBanner ~ images:", images);
     const app = await prisma.app.update({
       where: {
-        id: 1
+        id: 1,
       },
 
-      data:{
+      data: {
         Banner: images,
       },
-    
+    });
 
-
-    })
-    
-  
     return res.status(StatusCodes.OK).json({
       success: true,
       message: "Banner edited successfully",
@@ -116,7 +112,7 @@ async function editBanner(req, res) {
 
 async function getCityCoord(req, res) {
   try {
-    const { city } = req.body;
+    const city = req.params.id;
 
     const response = await getCityCoordinates(city);
 
@@ -139,7 +135,7 @@ async function editLocations(req, res) {
     const { location } = req.body;
     const locationImage = req.file.path;
 
-    // console.log("🚀 ~ editLocations ~ locations:", location)
+
     const coord = await getCityCoordinates(location);
     // console.log("🚀 ~ editLocations ~ coord:", coord)
 
@@ -151,12 +147,16 @@ async function editLocations(req, res) {
     };
     console.log("🚀 ~ editLocations ~ locationObj:", locationObj);
 
-    const updatedLocations = await prisma.app.update({
-      where: {id: 1},
+ 
+  
+    const updatedLocations = await prisma.location.create({
       data: {
-        locations: locationObj
-      }
-    })
+        ...locationObj,
+        app: {
+          connect: { id: 1 },
+        },
+      },
+    });
 
 
     return res.status(StatusCodes.OK).json({
@@ -177,11 +177,11 @@ async function editLocations(req, res) {
 async function getLocations(req, res) {
   try {
     const app = await prisma.app.findFirst({
-      where: {id:1},
+      where: { id: 1 },
       include: {
-        locations: true
-      }
-    })
+        locations: true,
+      },
+    });
     return res.status(StatusCodes.OK).json({
       success: true,
       message: "App details fetched successfully",
@@ -203,8 +203,8 @@ async function deleteLocations(req, res) {
     console.log("🚀 ~ deleteLocations ~ locationId:", locationId);
 
     const updatedLocations = await prisma.app.delete({
-      where: {id:1}
-    })
+      where: { id: 1 },
+    });
 
     return res.status(StatusCodes.OK).json({
       success: true,

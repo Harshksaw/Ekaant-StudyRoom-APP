@@ -10,8 +10,8 @@ datasource db {
 model App {
   id             Int      @id @default(autoincrement())
   Banner         String[]
-  locations      Location[]
-  RegistrationFee Int?   @map("RegistrationFee") 
+  locations     Location[]
+
 }
 
 model Location {
@@ -19,7 +19,7 @@ model Location {
   location      String  
   locationImage String?
   coords        Float[]
-  appId         Int
+  appId         Int   @default(autoincrement())
   app           App     @relation(fields: [appId], references: [id])
 }
 
