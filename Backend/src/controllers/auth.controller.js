@@ -507,7 +507,7 @@ async function otpLogin(req, res) {
       success: false,
       message: "The OTP is not valid",
     });
-  } else if (otp != response[0].phoneotp) {
+  } else if (otp != response[0].phoneOtp) {
     // Invalid OTP
     return res.status(400).json({
       success: false,
@@ -524,7 +524,7 @@ async function otpLogin(req, res) {
   // console.log("🚀 ~ otpLogin ~ response:", response);
 
   const token = jwt.sign({ user_id: response[0].id }, JWT_SECRET);
-  const user = await User.findOne({ phoneNumber });
+  const user = await prisma.user.findFirst({ where: { phoneNumber: phoneNumber } });
 
 
   return res.status(200).json({
