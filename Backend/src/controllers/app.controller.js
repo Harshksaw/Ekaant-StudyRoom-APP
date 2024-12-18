@@ -63,8 +63,10 @@ async function getApp(req, res) {
     //6693fe2eb4e16e6d87026d1d
     // const id = req.params.id;
 
-    console.log(req.file, "file");
-    const app = await prisma.app.findFirst({ where: { id: 1 } });
+
+    const app = await prisma.app.findFirst({ where: { id: 1 }, include:{
+      locations: true
+    } });
 
     return res.status(StatusCodes.OK).json({
       success: true,
