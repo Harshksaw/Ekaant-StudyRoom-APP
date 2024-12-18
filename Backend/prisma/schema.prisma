@@ -115,8 +115,8 @@ model Library {
   msmeNumber          String?
   msmeCertificateFile String?
 
-  registrationFees    Int    @default(0)
-  Price               Int     @default(0)
+  registrationFees    Int    @default(500)
+
   users               User[]    @relation("OwnedProperties")
   admins              Admin[]   @relation("LibraryBookings")
   bookings            Booking[] @relation("LibraryBookings")
