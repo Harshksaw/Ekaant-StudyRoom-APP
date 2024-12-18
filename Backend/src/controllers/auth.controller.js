@@ -489,7 +489,7 @@ async function getFriends(req, res) {
 async function otpLogin(req, res) {
   const { phoneNumber, otp } = req.body;
 
-  const response = await prisma.phoneOtp.findFirst({
+  const response = await prisma.phoneOtp.findMany({
     where: {
       phoneNumber: phoneNumber,
     },
@@ -498,6 +498,7 @@ async function otpLogin(req, res) {
     }  
   
   })
+  console.log("🚀 ~ otpLogin ~ response:", response)
 
   // const response = await OTP.find({ email }).sort({ createdAt: -1 });
   // console.log(response[0].phoneotp, otp, "RESPONSE123");
