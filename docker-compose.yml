@@ -6,6 +6,8 @@ services:
       POSTGRES_PASSWORD: ekaant  # Replace with your actual password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
   pgadmin:
     image: dpage/pgadmin4
     ports:
