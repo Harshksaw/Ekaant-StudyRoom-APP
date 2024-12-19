@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const prisma = new PrismaClient();
 async function connectToDB() {
-  const DB_URL = process.env.DATABASE_URI;
+
   try {
 
 
