@@ -109,7 +109,7 @@ app.get('/health', (req, res) => {
 
 app.use(errorHandler);
 // Schedule a task to run every minute
-cron.schedule('*/45 * * * *', async () => {
+cron.schedule('0 */3 * * *', async () => {
   const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
 
   try {

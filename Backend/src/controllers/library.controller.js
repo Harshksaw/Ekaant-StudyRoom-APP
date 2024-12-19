@@ -32,26 +32,41 @@ const calculateDistance = (coords1, coords2) => {
   const distance = R * c;
   return distance;
 };
-const calculateDistances = async () => {
+const calculateDistances = async (req, res) => {
   try {
-    const libraries = await Library.find({ approved: true });
-    const cities = await App.aggregate([
-      { $unwind: "$locations" },
-      { $project: { city: "$locations.location", coords: "$locations.coords" } }
-    ]);
-
+    const libraries = await prisma.library.findMany({ where: { approved: true } });
+    console.log("🚀 ~ calculateDistances ~ libraries:", libraries)
+    const cities = await prisma.app.findMany({
+      select: {
+        locations: {
+          select: {
+            location: true,
+            coords: true
+          }
+        }
+      }
+    });
+    console.log("🚀 ~ calculateDistances ~ cities:", cities)
+    var logs = []
     for (const library of libraries) {
       for (const city of cities) {
-        const distance = calculateDistance(library.location, city.coords);
-        console.log("🚀 ~ calculateDistances ~ distance:", distance)
-        const distanceRecord = new Distance({
-          library: library.id,
-          city: city.city,
-          distance: distance ? distance : 0
-        });
-        await distanceRecord.save();
+        for (const location of city.locations) {
+
+          const distance = calculateDistance(library.coords, location.coords);
+          console.log("🚀 ~ calculateDistances ~ distance:", distance);
+         const  resp = await prisma.distance.create({
+            data: {
+              libraryId: library.id,
+              city: location.location,
+              distance: distance ? distance : 0
+            }
+          });
+          logs.push(resp)
+        }
       }
     }
+
+    res.status(200).json({ message: "Distances calculated and saved successfully.", data: logs });
     console.log('Distances calculated and saved successfully.');
   } catch (error) {
     console.error('Error calculating distances:', error);
@@ -269,7 +284,7 @@ const createRoom = async (req, res) => {
     // Save the updated library document
 
 
-    await calculateLowestPrice(libraryId);
+    // await calculateLowestPrice(libraryId);
 
     res.status(201).json({
       message: "Library created successfully",
@@ -281,7 +296,7 @@ const createRoom = async (req, res) => {
   }
 };
 
-// get all rooms
+
 const createDummyLibrary = async (req, res) => {
   try {
     const { name, shortDescription, comingSoonMessage, location } = req.body;

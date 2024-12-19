@@ -90,14 +90,14 @@ model Library {
   name                String    
   longDescription     String?
   shortDescription    String    
-  thumbnail           String[]
+  // thumbnail           String[]
   cardImage           String?
   images              String[]
   location            Json?      
   address             Json?      
   commingSoonMessage  String?   @default("false") // Note: This is a String with default "false" since you have type: String in Mongoose
   rooms               Room[]    @relation("Rooms") 
-  coords              String?
+  coords              Float[]
   distances Distance[]
 
   reviews             Review[]  @relation("Reviews")
