@@ -440,9 +440,9 @@ const getAllLibrary = async (req, res) => {
 
 
 
-    if (!filterLibrary.length) {
-      return res.status(404).json({ success: false, message: "No libraries found for the specified city" });
-    }
+    // if (!filterLibrary.length) {
+    //   return res.status(404).json({ success: false, message: "No libraries found for the specified city" });
+    // }
 
 
 
