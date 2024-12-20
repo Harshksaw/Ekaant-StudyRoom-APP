@@ -431,6 +431,7 @@ const getAllLibrary = async (req, res) => {
         distance: 'asc'
       }
     });
+    console.log("🚀 ~ getAllLibrary ~ distances:", distances)
 
 
 
