@@ -50,7 +50,7 @@ function Signup() {
 
   //parent compoenent
   const [loading, setLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(6);
+  const [currentStep, setCurrentStep] = useState(1);
   // @ts-ignore
   const [token, setToken] = useState("");
 
@@ -623,7 +623,7 @@ try{
       
     }
 
-    //setCurrentStep(currentStep + 1);
+    setCurrentStep(currentStep + 1);
   };
   const prevStep = () =>  setCurrentStep(currentStep - 1);
 
