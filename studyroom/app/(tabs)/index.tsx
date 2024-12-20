@@ -107,8 +107,10 @@ export default function index() {
       }
 
       const fetchedData = await fetchRoomData({ selectedLocation });
+      console.log("🚀 ~ fetchLibraryDate ~ fetchedData:", fetchedData)
 
       setData(fetchedData || []);
+      
 
       Toast.show(" fetched room data", {
         type: "Success",

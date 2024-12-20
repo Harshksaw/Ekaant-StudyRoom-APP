@@ -197,7 +197,7 @@ const createLibrary = async (req, res) => {
     const LibraryData = await prisma.library.create({ data: libraryData });
 
 
-    calculateLowestPrice(LibraryData.id);
+    // calculateLowestPrice(LibraryData.id);
     res.status(201).json({
       message: "Library created successfully",
       library: LibraryData,
@@ -422,7 +422,8 @@ const getAllLibrary = async (req, res) => {
                   }
                 }
               }
-            }
+            },
+            amenities: true // Include amenities if needed
           }
         }
       },
@@ -430,11 +431,7 @@ const getAllLibrary = async (req, res) => {
         distance: 'asc'
       }
     });
-    
-    // Distance.find({ city }).populate({
-    //   path: "library",
-    //   populate: "rooms"
-    // }).sort({ distance: 1 });
+
 
 
     const filterLibrary = distances.filter((distance) => distance.library.approved === true && distance.library.rooms.length > 0);
@@ -446,27 +443,13 @@ const getAllLibrary = async (req, res) => {
       return res.status(404).json({ success: false, message: "No libraries found for the specified city" });
     }
 
-    // const cityCoordinates = await App.aggregate([
-    //   { $match: {} }, // Match all documents or apply specific conditions
-    //   { $unwind: "$locations" }, // Deconstruct the locations array
-    //   { $match: { "locations.location": city } }, // Match the specific city
-    //   { $project: { _id: 0, coords: "$locations.coords" } }, // Project the coordinates
-    // ]);
 
-    // console.log("🚀 ~ getAllLibrary ~ cityCoordinates:", cityCoordinates[0].coords)
+
 
     const libraries = filterLibrary.map(distance => ({
       library: distance.library,
       distance: distance.distance
     }));
-
-    // const roomsData = await Library.find({ approved: true });
-
-    // const getSortedData = await GetNearestLibraries(
-    //   roomsData,
-    //   cityCoordinates[0].coords
-    // );
-    // console.log("🚀 ~ getAllLibrary ~ getSortedData:", getSortedData);
 
   
     res.status(200).json({
