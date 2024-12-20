@@ -184,8 +184,8 @@ const doorPosition = getDoorPosition();
     >
       <View style={styles.container}>
         {createSeatGrid()}
-
-        <MaterialCommunityIcons
+    <Trapezoid/>
+        {/* <MaterialCommunityIcons
    style={[
     doorPosition,
     {
@@ -200,7 +200,7 @@ const doorPosition = getDoorPosition();
           name="door-sliding"
           size={45}
           color="black"
-        />
+        /> */}
       </View>
     </ScrollView>
   );
@@ -233,11 +233,27 @@ export default function Seats({ onSeatSelect, SeatLayout, currentRoom, door }) {
     </ScrollView>
   );
 }
+
+const Trapezoid = () => {
+  return (
+    <View style={styles.container1}>
+      <View style={styles.shape} /> 
+      <View style={styles.topBorder} />
+      {/* <View style={styles.bottomBorder} /> */}
+    </View>
+  );
+};
+
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 20,
+    borderBlockColor:'black',
+    borderWidth:2,
+    padding:5,
+    marginHorizontal:5,
   },
   seatRow: {
     flexDirection: "row",
@@ -269,4 +285,47 @@ const styles = StyleSheet.create({
     margin: 5,
     backgroundColor: "transparent",
   },
+  container1: {
+    width: 100,
+    height: 80,
+    alignItems: 'center', 
+    justifyContent: 'center', 
+  },
+  shape: {
+    width: 80, 
+    height: 60, 
+    backgroundColor: 'white', // Fill color
+    borderLeftWidth: 2, 
+    borderLeftColor: 'black',
+    borderRightWidth: 2,
+    borderRightColor: 'black',
+    
+
+  },
+  topBorder: {
+    position: 'absolute',
+
+    top: 0,
+    left: 10, 
+    width: 20, 
+    height: 2, 
+    backgroundColor: 'blue',
+  },
+  bottomBorder: {
+    position: 'absolute',
+    bottom: 0,
+    left: 10, 
+    width: 80,
+    height: 2,
+    backgroundColor: 'white',
+  },
 });
+
+
+
+
+
+
+
+
+

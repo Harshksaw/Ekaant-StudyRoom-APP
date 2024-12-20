@@ -392,6 +392,7 @@ const BookingScreen: React.FC = () => {
           justifyContent: "center",
         }}
       >
+        
         {data && data[currentRoomNo - 1].seats.length !== 0 && (
           <Seats
             onSeatSelect={handleSeatSelect}
