@@ -435,6 +435,7 @@ const getAllLibrary = async (req, res) => {
 
 
     const filterLibrary = distances.filter((distance) => distance.library.approved === true && distance.library.rooms.length > 0);
+    console.log("🚀 ~ getAllLibrary ~ filterLibrary:", filterLibrary)
 
 
 
