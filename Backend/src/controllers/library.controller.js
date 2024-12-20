@@ -407,6 +407,8 @@ const getAllLibrary = async (req, res) => {
     if (!city) {
       return res.status(400).json({ success: false, message: "City is required" });
     }
+    
+    // Fetch distances for the specified city, including related library data and nested relationships
     const distances = await prisma.distance.findMany({
       where: {
         city
@@ -433,27 +435,21 @@ const getAllLibrary = async (req, res) => {
     });
     console.log("🚀 ~ getAllLibrary ~ distances:", distances)
 
-
-
+    // Filter libraries to include only those that are approved and have rooms
     const filterLibrary = distances.filter((distance) => distance.library.approved === true && distance.library.rooms.length > 0);
     console.log("🚀 ~ getAllLibrary ~ filterLibrary:", filterLibrary)
 
+    if (!filterLibrary.length) {
+      return res.status(404).json({ success: false, message: "No libraries found for the specified city" });
+    }
 
-
-
-    // if (!filterLibrary.length) {
-    //   return res.status(404).json({ success: false, message: "No libraries found for the specified city" });
-    // }
-
-
-
-
+    // Map the filtered distances to include the library and distance
     const libraries = filterLibrary.map(distance => ({
       library: distance.library,
       distance: distance.distance
     }));
 
-  
+    // Return the sorted libraries in the response
     res.status(200).json({
       success: true,
       count: libraries.length,
@@ -467,7 +463,6 @@ const getAllLibrary = async (req, res) => {
     });
   }
 };
-
 // get room by id
 const getLibraryById = async (req, res) => {
   const { id } = req.body;
