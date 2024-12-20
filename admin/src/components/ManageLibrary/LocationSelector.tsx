@@ -70,7 +70,7 @@ const LocationSelector = ({ onLocationSelect }: any) => {
   };
 
   return (
-    <div style={{ height: "400px", width: "90%" }} className="flex-col justify-center  items-center">
+    <div style={{ height: "500px", width: "100%" }} className="flex-col justify-center bg-red-400  items-center">
       {position && (
         <MapContainer
           center={position}

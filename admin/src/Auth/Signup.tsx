@@ -19,6 +19,7 @@ import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from "@/components/Loader";
 import tick from "@/assets/images/tick.png"
+import Step6 from "./Signup/Step6";
 interface LibraryDetails {
   name: string;
   librarySliders: string
@@ -49,7 +50,7 @@ function Signup() {
 
   //parent compoenent
   const [loading, setLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(6);
   // @ts-ignore
   const [token, setToken] = useState("");
 
@@ -77,7 +78,7 @@ function Signup() {
       pincode: "",
     },
   });
-
+  const [location , setLocation] = useState("")
   const [libraryDetails, setLibraryDetails] = useState<any>({
     libraryName: "",
     libraryApp: {
@@ -143,14 +144,14 @@ function Signup() {
     const token = localStorage.getItem("token");
     const admin = localStorage.getItem("userId")
     if (token !== "" && admin !== "") {
-      setCurrentStep(4);
+      //setCurrentStep(4);
       setToken(token || "");
     }
 
 
     if (!token) {
       console.log(token, "token");
-      setCurrentStep(1);
+      //setCurrentStep(1);
     }
   }, []);
 
@@ -255,7 +256,7 @@ function Signup() {
       setAdminId(res.data.data.id);
 
 
-      setCurrentStep(4);
+      //setCurrentStep(4);
     }
 
   };
@@ -423,7 +424,7 @@ try{
       });
     } catch (error) {
       setLoading(false);
-      setCurrentStep(1);
+      //setCurrentStep(1);
       console.error("Error:");
 
     }
@@ -468,6 +469,8 @@ try{
       amenities: amenitiesArray,
       address: libraryDetails.libraryAddress,
       legal: libraryDetails.libraryLegal.registration,
+      location: location,
+      coords: location,
 
       gstNumber: libraryDetails.libraryLegal.gst,
 
@@ -539,7 +542,7 @@ try{
         setLoading(false);
 
 
-        // setCurrentStep(0);
+        // //setCurrentStep(0);
 
         // setImages([]);
       }
@@ -578,7 +581,7 @@ try{
            }
       createUser();
     }
-    if (currentStep === 5) {
+    if (currentStep === 6) {
       const AdminId = localStorage.getItem("userId");
       if (!AdminId) {
         toast('Please login again')
@@ -620,9 +623,15 @@ try{
       
     }
 
-    setCurrentStep(currentStep + 1);
+    //setCurrentStep(currentStep + 1);
   };
   const prevStep = () =>  setCurrentStep(currentStep - 1);
+
+
+  const handleLocationSelect = (location: any) => {
+    console.log("Selected Location:", location);
+    setLocation(location);
+  };
 
   const renderStep = () => {
     switch (currentStep) {
@@ -700,7 +709,14 @@ try{
             handleFileChange={handleFileChange}
           />
         );
+
       case 6:
+        return(
+
+          <Step6 handleLocationSelect={handleLocationSelect}       nextStep={nextStep}
+          prevStep={prevStep} />
+        )
+      case 7:
         return (
           <FinalStep
 

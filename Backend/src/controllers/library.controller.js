@@ -163,6 +163,7 @@ const createLibrary = async (req, res) => {
       longDescription,
       shortDescription,
       address,
+      coords,
      amenities: {
     create: {
       coldWater: amenities.includes('coldWater'),
