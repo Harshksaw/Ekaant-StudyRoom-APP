@@ -221,6 +221,9 @@ const createRoom = async (req, res) => {
       where: {
         id: parseInt(libraryId),
       },
+      include:{
+        rooms: true,
+      }
     });
 
     if (!library) {
@@ -238,7 +241,7 @@ const createRoom = async (req, res) => {
     let newRoomNo = 1;
     if (library.rooms && library.rooms.length > 0) {
       const maxRoomNo = library.rooms.length;
-      newRoomNo = maxRoomNo + 2;
+      newRoomNo = maxRoomNo + 1;
     }
     console.log(newRoomNo, "newRoomNo", timeSlot);
     //   return res.status(200).json({
