@@ -238,10 +238,12 @@ const createRoom = async (req, res) => {
     let newRoomNo = 1;
     if (library.rooms && library.rooms.length > 0) {
       const maxRoomNo = library.rooms.length;
-      newRoomNo = maxRoomNo + 1;
+      newRoomNo = maxRoomNo + 2;
     }
-    console.log(newRoomNo, "newRoomNo", timeSlot);
-
+    // console.log(newRoomNo, "newRoomNo", timeSlot);
+    //   return res.status(200).json({
+    //     message: "9182821"
+    //   })
     // Create the new room with the provided seatLayout
     // Create the new room with the provided seatLayout
     const newRoom = await prisma.room.create({

@@ -135,6 +135,6 @@ cron.schedule('0 */3 * * *', async () => {
 });
 app.listen(PORT, async () => {
   console.log(`Server started at PORT: ${PORT}`);
-  await connectToDB();
+  // await connectToDB();
   console.log("Successfully connected to db");
 });
