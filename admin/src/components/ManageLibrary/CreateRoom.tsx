@@ -70,10 +70,10 @@ const CreateRoom: React.FC = () => {
 
 
 
-  const handleLocationSelect = (location: any) => {
+  // const handleLocationSelect = (location: any) => {
 
-    setLocation(location);
-  };
+  //   setLocation(location);
+  // };
 
   const handleSeatSelect = (seat: any) => {
 
@@ -126,7 +126,7 @@ const CreateRoom: React.FC = () => {
 
           seatLayout: seatLayout,
           timeSlot: formattedTimeSlots,
-          location: location,
+
           ac: Ac,
           doorPositions: doorPositions,
         }
@@ -321,9 +321,9 @@ const CreateRoom: React.FC = () => {
         ))}
       </div>
 
-      <div className=" w-full h-96 mt-20 mb-20 flex justify-center items-center rounded-lg">
+      {/* <div className=" w-full h-96 mt-20 mb-20 flex justify-center items-center rounded-lg">
         <LocationSelector onLocationSelect={handleLocationSelect} />
-      </div>
+      </div> */}
       <div className="flex-col  h-96 mt-20 mb-20 flex justify-center items-center rounded-lg">
 
 
