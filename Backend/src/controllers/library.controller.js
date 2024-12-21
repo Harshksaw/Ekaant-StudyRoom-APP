@@ -754,6 +754,7 @@ const deleteRoom = async (req, res) => {
   try {
     const { libraryId, roomId } = req.body;
 
+    // Fetch the library with its rooms, seats, and timeslots
     const library = await prisma.library.findFirst({
       where: { id: parseInt(libraryId) },
       include: {
@@ -768,47 +769,44 @@ const deleteRoom = async (req, res) => {
         },
       },
     });
-    console.log("🚀 ~ deleteRoom ~ library:", library);
+
     if (!library) {
       return res.status(404).json({ message: "Library not found" });
     }
 
-    const roomIndex = library.rooms.findIndex((room) => room.id === roomId);
+    const room = library.rooms.find((room) => room.id === parseInt(roomId));
 
-    if (roomIndex === -1) {
+    if (!room) {
       return res.status(404).json({ message: "Room not found" });
     }
-    // library.rooms.splice(roomIndex, 1);
-
-    const room = library.rooms[roomIndex];
-    console.log("🚀 ~ deleteRoom ~ room:", room);
 
     // Delete time slots associated with the seats
-    for (const seat of room.seats) {
-      await prisma.timeSlot.deleteMany({
-        where: { seatId: seat.id },
-      });
-    }
+    await prisma.timeSlot.deleteMany({
+      where: { seatId: { in: room.seats.map(seat => seat.id) } },
+    });
 
+    // Delete seats associated with the room
     await prisma.seat.deleteMany({
-      where: { roomId: roomId },
+      where: { roomId: parseInt(roomId) },
     });
 
     // Delete the room
     await prisma.room.delete({
-      where: { id: roomId },
+      where: { id: parseInt(roomId) },
     });
 
-    for (let i = 0; i < library.rooms.length; i++) {
-      if (library.rooms[i].id !== roomId) {
-        await prisma.room.update({
-          where: { id: library.rooms[i].id },
-          data: { roomNo: i + 1 },
-        });
-      }
+    // Update room numbers for the remaining rooms
+    const remainingRooms = library.rooms.filter(r => r.id !== parseInt(roomId));
+    for (let i = 0; i < remainingRooms.length; i++) {
+      await prisma.room.update({
+        where: { id: remainingRooms[i].id },
+        data: { roomNo: i + 1 },
+      });
     }
 
+    // Recalculate the lowest price for the library
     await calculateLowestPrice(libraryId);
+
     res.status(200).json({ message: "Room deleted successfully" });
   } catch (error) {
     console.error("Error deleting room:", error);

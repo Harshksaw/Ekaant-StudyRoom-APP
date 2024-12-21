@@ -98,6 +98,7 @@ const BookingScreen: React.FC = () => {
     } else {
       setSelectedSlots([...selectedSlots, selectedSlot]);
     }
+    console.log(selectedSlots, "----------")
   };
 
   const toggleModal = () => {
