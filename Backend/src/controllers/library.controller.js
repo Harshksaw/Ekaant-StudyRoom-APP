@@ -240,7 +240,7 @@ const createRoom = async (req, res) => {
       const maxRoomNo = library.rooms.length;
       newRoomNo = maxRoomNo + 1;
     }
-    console.log(newRoomNo, "newRoomNo");
+    console.log(newRoomNo, "newRoomNo", timeSlot);
 
     // Create the new room with the provided seatLayout
     // Create the new room with the provided seatLayout
@@ -261,7 +261,7 @@ const createRoom = async (req, res) => {
                   slotId: uuidv4(), // Generate a unique slotId
                   from: slot.from,
                   to: slot.to,
-                  price: parseFloat(slot.price),
+                  price: parseInt(slot.price),
                 })),
             },
           })),
