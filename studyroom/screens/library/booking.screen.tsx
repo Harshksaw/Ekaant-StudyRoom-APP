@@ -98,7 +98,7 @@ const BookingScreen: React.FC = () => {
     } else {
       setSelectedSlots([...selectedSlots, selectedSlot]);
     }
-    console.log(selectedSlots, "----------")
+    // console.log(selectedSlots, "----------")
   };
 
   const toggleModal = () => {
@@ -235,6 +235,7 @@ const BookingScreen: React.FC = () => {
     fetchRooms().then((data) => {
       setData(data.rooms);
       setLoading(false);
+      console.log("🚀 ~ fetchRooms ~ data.rooms:", data.rooms)
     });
   }, []);
 
@@ -397,7 +398,7 @@ const BookingScreen: React.FC = () => {
         {data && data[currentRoomNo - 1].seats.length !== 0 && (
           <Seats
             onSeatSelect={handleSeatSelect}
-            door={data[currentRoomNo - 1].doorPosition}
+            door={data[currentRoomNo -1].doorPosition}
             SeatLayout={data[currentRoomNo - 1].seats}
             currentRoom={currentRoomNo}
           />

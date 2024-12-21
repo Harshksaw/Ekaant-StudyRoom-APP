@@ -55,14 +55,15 @@ const SeatsComponent = ({
 
   const getDoorPosition = () => {
     const doorPositions = [
-      { right: "50%" },
-      { right: "25%" },
+      { right: "45%" },
+      { right: "20%" },
       { left: "0%" },
-      { left: "25%" },
-      { left: "50%" },
+      { left: "20%" },
+      { left: "45%" },
     ];
 
     const doorIndex = door.findIndex((value) => value === 1);
+    console.log("🚀 ~ getDoorPosition ~ door:", door)
     console.log("🚀 ~ getDoorPosition ~ doorIndex:", doorIndex);
 
     switch (doorIndex) {
@@ -82,42 +83,11 @@ const SeatsComponent = ({
   };
 
 
-useEffect(() => {
+  useEffect(() => {
 
-}, [door]);
-const doorPosition = getDoorPosition();
-  // console.log("🚀 ~ doorPosition:", doorPosition)
+  }, [door]);
+  const doorPosition = getDoorPosition();
 
-
-
-  // const scrollViewRef =useRef<ScrollView>(null)
-
-  // useEffect(() => {
-  //   const doorInde= door.filter((x) => x == 1)
-  //   let scrollToX  = 0;
-
-  //   switch (doorInde) {
-  //     case -1: // Leftmost
-  //       scrollToX = 0;
-  //       break;
-  //     case 0: // Left
-  //       scrollToX = 100; // Adjust as needed
-  //       break;
-  //     case 1: // Center
-  //       scrollToX = 300; // Adjust as needed
-  //       break;
-  //     case 2: // Right
-  //       scrollToX = 500; // Adjust as needed
-  //       break;
-  //     case 3: // Rightmost
-  //       scrollToX = 700; // Adjust as needed
-  //       break;
-  //     default:
-  //       scrollToX = 300; // Default to center
-  //   }
-
-  //   scrollViewRef.current?.scrollTo({ x: scrollToX, animated: true });
-  // }, [door]);
 
   const handleSelect = (seatData) => {
     if (selectedSeat && seatData.seatId === selectedSeat.seatId) {
@@ -179,15 +149,35 @@ const doorPosition = getDoorPosition();
       </View>
     ));
   };
-
+  const boxWidth = windowWidth > 480 ? 100 : 50;
+  const boxHeight = windowWidth > 480 ? 100 : 50;
   return (
-    <ScrollView horizontal={true}       showsHorizontalScrollIndicator={false}
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
     // contentContainerStyle={{ alignItems: "center" }} // Center content horizontally
     >
       <View style={styles.container}>
         {createSeatGrid()}
-    <Trapezoid/>
-       
+
+        <View style={[
+          doorPosition,
+          {
+            position: 'relative',
+            top: 20,
+            marginHorizontal: 30,
+            paddingHorizontal:20,
+
+            bottom: 0,
+
+
+
+          },
+        ]}>
+          <View style={[styles.box, { width: boxWidth, height: boxHeight }]}>
+            <View style={[styles.line, styles.lineLeft]} />
+            <View style={[styles.line, styles.lineRight]} />
+          </View>
+        </View>
+
       </View>
     </ScrollView>
   );
@@ -242,10 +232,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 20,
-    borderBlockColor:'black',
-    borderWidth:2,
-    padding:5,
-    marginHorizontal:5,
+    borderBlockColor: 'black',
+    borderWidth: 2,
+    padding: 5,
+    marginHorizontal: 5,
   },
   seatRow: {
     flexDirection: "row",
@@ -262,8 +252,8 @@ const styles = StyleSheet.create({
     backgroundColor: isBooked
       ? "#ffcc7f64"
       : isSelected
-      ? "#8cf39c7d"
-      : "transparent",
+        ? "#8cf39c7d"
+        : "transparent",
     borderWidth: 1.3,
     aspectRatio: 1.1 / 1,
 
@@ -279,7 +269,7 @@ const styles = StyleSheet.create({
   },
   container1: {
     position: 'relative',
-    top:20,
+    top: 20,
     // flex: 1,
     // marginTop:40,
     // justifyContent: 'center',
@@ -291,6 +281,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 5, // Optional border
     borderColor: '#fff', // Optional border
+
   },
   line: {
     position: 'absolute',
