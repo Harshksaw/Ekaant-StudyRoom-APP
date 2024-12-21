@@ -8,9 +8,11 @@ import {
   TouchableOpacity,
   Text,
   ScrollView,
+  Dimensions,
 } from "react-native";
 
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+const windowWidth = Dimensions.get('window').width;
+
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
   console.log("🚀 ~ Seat ~ roation:", rotation);
   const isFullyBooked = seatData.timeSlots.every((slot) => slot.booked);
@@ -185,22 +187,7 @@ const doorPosition = getDoorPosition();
       <View style={styles.container}>
         {createSeatGrid()}
     <Trapezoid/>
-        {/* <MaterialCommunityIcons
-   style={[
-    doorPosition,
-    {
-      width: 60,
-      height: 40,
-      marginHorizontal:10,
-
-      position: "relative",
-      bottom: 0,
-    },
-  ]}
-          name="door-sliding"
-          size={45}
-          color="black"
-        /> */}
+       
       </View>
     </ScrollView>
   );
@@ -235,11 +222,16 @@ export default function Seats({ onSeatSelect, SeatLayout, currentRoom, door }) {
 }
 
 const Trapezoid = () => {
+  // Responsive box dimensions
+  const boxWidth = windowWidth > 480 ? 120 : 60;
+  const boxHeight = windowWidth > 480 ? 100 : 50;
+
   return (
     <View style={styles.container1}>
-      <View style={styles.shape} /> 
-      <View style={styles.topBorder} />
-      {/* <View style={styles.bottomBorder} /> */}
+      <View style={[styles.box, { width: boxWidth, height: boxHeight }]}>
+        <View style={[styles.line, styles.lineLeft]} />
+        <View style={[styles.line, styles.lineRight]} />
+      </View>
     </View>
   );
 };
@@ -286,38 +278,35 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   container1: {
-    width: 100,
-    height: 80,
-    alignItems: 'center', 
-    justifyContent: 'center', 
+    position: 'relative',
+    top:20,
+    // flex: 1,
+    // marginTop:40,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // backgroundColor: '#f0f0f0', // Optional background for visibility
   },
-  shape: {
-    width: 80, 
-    height: 60, 
-    backgroundColor: 'white', // Fill color
-    borderLeftWidth: 2, 
-    borderLeftColor: 'black',
-    borderRightWidth: 2,
-    borderRightColor: 'black',
-    
-
-  },
-  topBorder: {
-    position: 'absolute',
-
-    top: 0,
-    left: 10, 
-    width: 20, 
-    height: 2, 
-    backgroundColor: 'blue',
-  },
-  bottomBorder: {
-    position: 'absolute',
-    bottom: 0,
-    left: 10, 
-    width: 80,
-    height: 2,
+  box: {
+    position: 'relative',
     backgroundColor: 'white',
+    borderWidth: 5, // Optional border
+    borderColor: '#fff', // Optional border
+  },
+  line: {
+    position: 'absolute',
+    height: '80%',
+    width: 2, // Adjust line thickness
+    backgroundColor: '#0078d7', // Adjust line color
+  },
+  lineLeft: {
+    top: '10%',
+    left: '10%',
+    transform: [{ rotate: '30deg' }], // Adjust angle
+  },
+  lineRight: {
+    top: '10%',
+    right: '10%',
+    transform: [{ rotate: '-30deg' }], // Adjust angle
   },
 });
 
