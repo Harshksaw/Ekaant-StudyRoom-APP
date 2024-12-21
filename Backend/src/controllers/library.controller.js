@@ -240,7 +240,7 @@ const createRoom = async (req, res) => {
       const maxRoomNo = library.rooms.length;
       newRoomNo = maxRoomNo + 2;
     }
-    // console.log(newRoomNo, "newRoomNo", timeSlot);
+    console.log(newRoomNo, "newRoomNo", timeSlot);
     //   return res.status(200).json({
     //     message: "9182821"
     //   })
