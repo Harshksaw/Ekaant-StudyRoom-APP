@@ -93,7 +93,7 @@ model Library {
 
   cardImage           String?
   images              String[]
- 
+  Price               Int?
   address             Json?      
   commingSoonMessage  String?   @default("false") // Note: This is a String with default "false" since you have type: String in Mongoose
   rooms               Room[]    @relation("Rooms") 
