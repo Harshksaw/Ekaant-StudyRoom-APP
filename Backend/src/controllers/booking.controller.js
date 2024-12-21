@@ -103,12 +103,18 @@ async function getUserBookings(req, res) {
   try {
     const { id } = req.params;
 
-    const bookings = await Booking.find({
-      userId: id,
-      bookingStatus: "CONFIRMED",
-    })
-      .populate("libraryId")
-      .populate("userId");
+    const bookings = await prisma.booking.findMany({
+      where: {
+        userId: id,
+        bookingStatus: "CONFIRMED",
+      },
+      include: {
+        userId: true,
+        libraryId: true,
+      },
+    });
+    // .populate("libraryId")
+    // .populate("userId");
 
     return res.status(StatusCodes.OK).json({ bookings });
   } catch (error) {
@@ -231,13 +237,21 @@ async function ConfrimBooking(req, res) {
 
     //TODO
 
-    const lib = await Library.findById(bookingData.libraryId.id).populate(
-      "rooms"
-    );
+    // const lib = await Library.findById(bookingData.libraryId.id).populate(
+    //   "rooms"
+    // );
+    const lib = await prisma.library.findUnique({
+      where: {
+        id: bookingData.libraryId.id,
+      },
+      include: {
+        rooms: true,
+      },
+    });
     const roomNo = bookingData.roomNo;
     const seatId = bookingData.bookedSeat.id;
     const timeSlotId = bookingData.timeSlot[0].id.toString();
-     // Assuming you want to book the first time slot
+    // Assuming you want to book the first time slot
     // console.log("🚀 ~ ConfrimBooking ~ timeSlotId:", timeSlotId);
     // console.log("🚀 ~ ConfrimBooking ~ seatId:", seatId);
 
@@ -278,9 +292,19 @@ async function ConfrimBooking(req, res) {
     await lib.save();
     await room.save();
 
-    const booking = await Booking.findById(bookingId)
-      .populate("userId")
-      .populate("libraryId");
+    // const booking = await Booking.findById(bookingId)
+    //   .populate("userId")
+    //   .populate("libraryId");
+
+    const booking = await prisma.booking.findUnique({
+      where: {
+        id: bookingId,
+      },
+      include: {
+        userId: true,
+        libraryId: true,
+      },
+    });
 
     // console.log("🚀 ~ generateInvoice ~ booking:", booking);
 
@@ -289,36 +313,66 @@ async function ConfrimBooking(req, res) {
     }
 
     // Create new invoice
-    const invoice = new Invoice({
-      bookingId: booking.id,
-      customerName: booking.userId.username,
-      customerEmail: booking.userId.email,
-      customerPhoneNumber: booking.userId.phoneNumber,
-      libraryId: booking.libraryId,
-      libraryName: booking.libraryId.name,
-      libraryaddress:
-        booking.libraryId.address.line1 +
-        " " +
-        booking.libraryId.address.line2 +
-        " " +
-        booking.libraryId.address.city +
-        " " +
-        booking.libraryId.address.state +
-        " " +
-        booking.libraryId.address.pincode,
-      initialPrice: booking.initialPrice,
-      finalPrice: booking.finalPrice,
-      paid: booking.paid,
-      bookingDate: booking.bookingDate,
-      bookingPeriod: booking.bookingPeriod,
-      bookingStatus: booking.bookingStatus,
-      approved: booking.approved,
-      seatLabel: booking.bookedSeat.seatLabel,
-      bookingFinalDate: booking.bookingFinalDate,
-      timeSlotDetails: booking.timeSlotDetails,
+    // const invoice = new Invoice({
+    //   bookingId: booking.id,
+    //   customerName: booking.userId.username,
+    //   customerEmail: booking.userId.email,
+    //   customerPhoneNumber: booking.userId.phoneNumber,
+    //   libraryId: booking.libraryId,
+    //   libraryName: booking.libraryId.name,
+    //   libraryaddress:
+    //     booking.libraryId.address.line1 +
+    //     " " +
+    //     booking.libraryId.address.line2 +
+    //     " " +
+    //     booking.libraryId.address.city +
+    //     " " +
+    //     booking.libraryId.address.state +
+    //     " " +
+    //     booking.libraryId.address.pincode,
+    //   initialPrice: booking.initialPrice,
+    //   finalPrice: booking.finalPrice,
+    //   paid: booking.paid,
+    //   bookingDate: booking.bookingDate,
+    //   bookingPeriod: booking.bookingPeriod,
+    //   bookingStatus: booking.bookingStatus,
+    //   approved: booking.approved,
+    //   seatLabel: booking.bookedSeat.seatLabel,
+    //   bookingFinalDate: booking.bookingFinalDate,
+    //   timeSlotDetails: booking.timeSlotDetails,
+    // });
+    const invoice = await prisma.invoice.create({
+      data: {
+        bookingId: booking.id,
+        customerName: booking.userId.username,
+        customerEmail: booking.userId.email,
+        customerPhoneNumber: booking.userId.phoneNumber,
+        libraryId: booking.libraryId,
+        libraryName: booking.libraryId.name,
+        libraryaddress:
+          booking.libraryId.address.line1 +
+          " " +
+          booking.libraryId.address.line2 +
+          " " +
+          booking.libraryId.address.city +
+          " " +
+          booking.libraryId.address.state +
+          " " +
+          booking.libraryId.address.pincode,
+        initialPrice: booking.initialPrice,
+        finalPrice: booking.finalPrice,
+        paid: booking.paid,
+        bookingDate: booking.bookingDate,
+        bookingPeriod: booking.bookingPeriod,
+        bookingStatus: booking.bookingStatus,
+        approved: booking.approved,
+        seatLabel: booking.bookedSeat.seatLabel,
+        bookingFinalDate: booking.bookingFinalDate,
+        timeSlotDetails: booking.timeSlotDetails,
+      },
     });
 
-    await invoice.save();
+    // await invoice.save();
     // Send invoice to user
     await sendInvoiceEmail(booking.userId.email, invoice);
 
@@ -338,7 +392,9 @@ async function generateInvoice(req, res) {
   try {
     const { bookingId } = req.params;
 
-    const invoice = await prisma.invoice.findFirst({data: { bookingId: bookingId }});
+    const invoice = await prisma.invoice.findFirst({
+      data: { bookingId: bookingId },
+    });
 
     if (!invoice) {
       return res.status(404).json({ error: "Invoice not found" });
