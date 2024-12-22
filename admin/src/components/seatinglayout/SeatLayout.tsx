@@ -1,24 +1,20 @@
 import { useState } from "react";
 import { MdEventSeat } from "react-icons/md";
-const Seat = ({ seatData, isSelected, onSelect, onRotate  , style}: any) => {
+const Seat = ({ seatData, isSelected, onSelect, onRotate, style }: any) => {
   const handleClick = () => {
     onSelect(seatData);
   };
-  const handleRotateClick = (e) => {
+  const handleRotateClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the seat selection when rotating
     onRotate(seatData);
   };
-  console.log(style)
+  console.log(style);
 
   return (
     <div className="flex flex-col items-center">
-  
-    <button
-
-
-      style={isSelected ?  style : null} 
-
-      className={`
+      <button
+        style={isSelected ? style : null}
+        className={`
 
         w-20
         m-5 text-md font-bold
@@ -26,34 +22,41 @@ const Seat = ({ seatData, isSelected, onSelect, onRotate  , style}: any) => {
         p-2 rounded-md hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
         justify-center items-center
       `}
-      onClick={handleClick}
-    >
-          <MdEventSeat  size={32} className="m-auto"/>
-      {seatData.label}
-    </button>
-    <button
-      onClick={handleRotateClick}
-      className="mt-2 bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-    >
-      Rotate
-    </button>
-  </div>
+        onClick={handleClick}
+      >
+        <MdEventSeat size={32} className="m-auto" />
+        {seatData.label}
+      </button>
+      <button
+        onClick={handleRotateClick}
+        className="mt-2 bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        Rotate
+      </button>
+    </div>
   );
 };
 type SeatData = {
   id: string;
   label: string;
-
 };
+interface SeatLayoutData {
+  rows: number;
+  columns: number;
+  selectedSeats: SeatData[];
+  rotationAngles: { [key: string]: number };
+}
 interface SeatsProps {
-  onSeatSelect: (seatData: SeatData[]) => void;
+  onSeatSelect: (seatLayoutData: SeatLayoutData) => void;
 }
 const Seats = ({ onSeatSelect }: SeatsProps) => {
   const [rows, setRows] = useState(0);
   const [columns, setColumns] = useState(0);
   // const [showGrid, setShowGrid] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState<SeatData[]>([]);
-  const [rotationAngles, setRotationAngles] = useState({});
+  const [rotationAngles, setRotationAngles] = useState<{
+    [key: string]: number;
+  }>({});
 
   const handleRotate = (seatData: SeatData) => {
     const seatKey = seatData.id;
@@ -100,11 +103,15 @@ const Seats = ({ onSeatSelect }: SeatsProps) => {
       );
     }
     seatRows.push(
-      <div key={row} style={{ display: "flex", flexDirection: "row"   }}>
+      <div key={row} style={{ display: "flex", flexDirection: "row" }}>
         {seatRow}
       </div>
     );
   }
+
+  // interface SeatsProps {
+  //   onSeatSelect: (seatLayoutData: SeatLayoutData) => void;
+  // }
 
   const handleSave = () => {
     if (selectedSeats.length === 0) {
@@ -226,8 +233,6 @@ const Seats = ({ onSeatSelect }: SeatsProps) => {
         >
           Save Selected Seats
         </button>
-
-        
       </div>
     </div>
   );

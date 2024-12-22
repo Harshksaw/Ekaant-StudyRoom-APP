@@ -18,7 +18,7 @@ const LibraryPage = () => {
     shortDescription: "",
     cardImage: null as File | null,
     comingSoonMessage: "",
-    location:[],
+    location: [],
   });
 
   // Fetch Libraries
@@ -61,7 +61,7 @@ const LibraryPage = () => {
         shortDescription: "",
         cardImage: null as File | null,
         comingSoonMessage: "",
-        location:[],
+        location: [],
       });
       fetchLibraries();
     } catch (error) {
@@ -83,17 +83,19 @@ const LibraryPage = () => {
     fetchLibraries();
   }, []);
   const handleLocationSelect = (location: any) => {
-
-    setFormData({...formData, location});
+    setFormData({ ...formData, location });
   };
   console.log("Location:", formData.location);
   return (
     <div className="flex  w-full min-h-screen bg-gray-100 p-8 overflow-y-auto">
-    {/* Form Column */}
+      {/* Form Column */}
 
       <div className="overflow-y-auto max-h-screen w-7/12">
-        <form onSubmit={handleCreateLibrary} className="flex flex-col gap-10 pb-96">
-      <h2 className="text-2xl font-semibold mb-6">Create New Library</h2>
+        <form
+          onSubmit={handleCreateLibrary}
+          className="flex flex-col gap-10 pb-96"
+        >
+          <h2 className="text-2xl font-semibold mb-6">Create New Library</h2>
           <input
             type="text"
             placeholder="Library Name"
@@ -111,7 +113,7 @@ const LibraryPage = () => {
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             required
           />
-  <input
+          <input
             type="file"
             placeholder="Card Image URL"
             // value={formData.cardImage}
@@ -126,11 +128,10 @@ const LibraryPage = () => {
             }}
             className="w-full p-2 border border-gray-300 mt-20 rounded-md focus:outline-none focus:border-indigo-500"
           />
-<div className=" w-full h-96 mt-20 mb-32 flex justify-center items-center rounded-lg">
-        <LocationSelector onLocationSelect={handleLocationSelect} />
-      </div>
+          <div className=" w-full h-96 mt-20 mb-32 flex justify-center items-center rounded-lg">
+            <LocationSelector onLocationSelect={handleLocationSelect} />
+          </div>
 
-        
           <textarea
             placeholder="Coming Soon Message"
             value={formData.comingSoonMessage}
@@ -140,7 +141,6 @@ const LibraryPage = () => {
             className="w-full p-2 border mt-32 border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             required
           />
-
 
           <button
             type="submit"
@@ -157,7 +157,7 @@ const LibraryPage = () => {
         {libraries?.length > 0 ? (
           libraries.map((library) => (
             <div
-              key={library?.id}
+              key={library?._id}
               className="flex justify-between items-center p-4 mb-4 border-b border-gray-200"
             >
               <div>
@@ -165,7 +165,7 @@ const LibraryPage = () => {
                 <p className="text-gray-600">{library?.shortDescription}</p>
               </div>
               <button
-                onClick={() => handleDeleteLibrary(library?.id)}
+                onClick={() => handleDeleteLibrary(library?._id)}
                 className="text-red-500 hover:text-red-700"
               >
                 Delete

@@ -5,8 +5,6 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 
-
-
 const ViewBookings = () => {
   const [bookings, setBookings] = React.useState([]);
   const [librarybookings, setLibraryBookings] = React.useState([]);
@@ -14,6 +12,7 @@ const ViewBookings = () => {
   React.useEffect(() => {
     setIsLoading(true);
     const fetchBookings = async () => {
+      console.log(librarybookings);
       try {
         const response = await getLibraryDataById();
         // const response = await getBookings();
@@ -50,8 +49,7 @@ const ViewBookings = () => {
         <div className="flex-col">
           {bookings.map((booking: any) => (
             <Link
-
-                  to={`/manage-library/view-library/${booking?.id}`}
+              to={`/manage-library/view-library/${booking?.id}`}
               key={booking?.id}
               className="flex flex-1 border border-gray-200 p-5 m-5"
             >
@@ -75,8 +73,6 @@ const ViewBookings = () => {
               </div>
             </Link>
           ))}
-
-         
         </div>
       )}
     </div>
