@@ -909,7 +909,7 @@ const createReview = async (req, res) => {
 const getReviews = async (req, res) => {
   try {
     const { libraryId } = req.params;
-    const library = await prisma.library.findUnique({
+    const library = await prisma.library.findMany({
       where: {
       id: parseInt(libraryId),
       },
