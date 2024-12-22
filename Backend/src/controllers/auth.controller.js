@@ -527,7 +527,7 @@ async function otpLogin(req, res) {
   const token = jwt.sign({ user_id: response[0].id }, JWT_SECRET);
   const user = await prisma.user.findFirst({ where: { phoneNumber: phoneNumber } });
   console.log("🚀 ~ otpLogin ~ user:", user)
-  console.log("🚀 ~ otpLogin ~ e:", e)
+
 
 
   return res.status(200).json({
