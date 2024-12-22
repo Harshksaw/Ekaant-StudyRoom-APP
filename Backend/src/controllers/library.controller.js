@@ -879,6 +879,11 @@ const createReview = async (req, res) => {
             id: parseInt(libraryId),
           },
         },
+        user: {
+          connect: {
+            id: parseInt(userId),
+          },
+        },
       },
     });
     // Fetch all reviews for the library to calculate the average rating
