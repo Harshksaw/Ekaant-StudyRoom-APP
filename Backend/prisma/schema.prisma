@@ -116,7 +116,7 @@ model Library {
   msmeCertificateFile String?
 
   registrationFees    Int    @default(500)
-
+  avgRating      Float?   // Add this line to define avgRating
   users               User[]    @relation("OwnedProperties")
   admins              Admin[]   @relation("LibraryBookings")
   bookings            Booking[] @relation("LibraryBookings")
