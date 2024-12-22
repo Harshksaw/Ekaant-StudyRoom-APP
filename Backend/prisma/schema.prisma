@@ -126,6 +126,7 @@ model Library {
 model Room {
   id        Int      @id @default(autoincrement())
   libraryId Int
+  roomName  String?
   library   Library  @relation(fields: [libraryId], references: [id], name: "Rooms")
   roomNo    Int      
   Ac        Boolean  @default(false)
@@ -135,6 +136,7 @@ model Room {
 model Seat {
   id        Int     @id @default(autoincrement())
   seatId    String  
+  seatName  String?
   seatLabel String  
   rotation Int  @default(0)
   roomId    Int
