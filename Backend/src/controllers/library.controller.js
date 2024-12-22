@@ -854,7 +854,7 @@ const createReview = async (req, res) => {
 
     // console.log(req.body, "req.body");
 
-    const ifUser = await prisma.review.findFirst({
+    const ifUser = await prisma.user.findFirst({
       where : {id : user},
     });
     console.log("🚀 ~ createReview ~ ifUser:", ifUser)
