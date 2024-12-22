@@ -206,7 +206,7 @@ model Friend {
 
 model Review {
   id        Int      @id @default(autoincrement())
-
+  userId    Int
   user      User     @relation(fields: [userId], references: [id])
   review    String   
   stars     Int      
