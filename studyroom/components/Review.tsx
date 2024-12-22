@@ -142,6 +142,10 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
     } catch (err) {
       console.log("Error", err.message);
       setError(err.message);
+
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
     } finally {
       setLoading(false);
     }
@@ -153,6 +157,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
 
   if (error) {
     return (
+
       <Text
         style={{
           color: "red",
@@ -161,7 +166,9 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
           margin: 20,
         }}
       >
-        Error: {error}
+        Retry
+        <ActivityIndicator size="small" color="red" />
+        {/* Error: {error} */}
       </Text>
     );
   }

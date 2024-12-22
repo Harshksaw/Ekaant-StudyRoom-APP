@@ -249,13 +249,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 5,
     borderRadius: 7,
+
     backgroundColor: isBooked
       ? "#ffcc7f64"
       : isSelected
         ? "#8cf39c7d"
         : "transparent",
     borderWidth: 1.3,
-    aspectRatio: 1.1 / 1,
+    aspectRatio: 1.2 / 0.8,
 
     borderColor: "#0077B6",
     padding: w(2),
