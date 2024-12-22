@@ -851,20 +851,27 @@ const createReview = async (req, res) => {
   try {
     const { libraryId } = req.params;
     const { user, review, stars } = req.body;
-
+    const userId = user
     // console.log(req.body, "req.body");
 
-    const ifUser = await prisma.user.findFirst({
-      where : {id : user},
+    // Check if the user has already reviewed the library
+    const existingReview = await prisma.review.findFirst({
+      where: {
+        userId: parseInt(userId),
+        libraryId: parseInt(libraryId),
+      },
     });
-    console.log("🚀 ~ createReview ~ ifUser:", ifUser)
-    if(ifUser){
-       res.status(400).json({ message: 'You have already reviewed this library' });
+
+    if (existingReview) {
+      return res.status(400).json({ message: 'You have already reviewed this library' });
     }
+
+
+
 
     const newReview = await prisma.review.create({
       data: {
-        userId: parseInt(user),
+        userId: parseInt(userId),
         review: review,
         stars: stars,
         library: {
