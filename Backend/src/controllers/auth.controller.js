@@ -488,7 +488,10 @@ async function getFriends(req, res) {
 
 async function otpLogin(req, res) {
   const { phoneNumber, otp } = req.body;
-
+  const userPresent = await prisma.user.findFirst({ where: { phoneNumber: phoneNumber } });
+  if (!userPresent) {
+    return res.status(404).json({ message: "User not found" });
+  }
   const response = await prisma.phoneOtp.findMany({
     where: {
       phoneNumber: phoneNumber,
