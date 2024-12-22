@@ -69,9 +69,11 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const getUserReviews = async () => {
     // Fetch user reviews here
     try {
+      console.log("🚀 ~ getUserReviews ~ data:", data.id)
       const res = await axios.post(
         `${BACKEND}/api/v1/library/getReviews/${data.id}`
       );
+      console.log("🚀 ~ getUserReviews ~ res:", res.data)
 
       setUserReviews(res.data);
     } catch (error) {

@@ -909,18 +909,22 @@ const createReview = async (req, res) => {
 const getReviews = async (req, res) => {
   try {
     const { libraryId } = req.params;
-    const library = await prisma.library.findFirst({
+    const library = await prisma.library.findUnique({
       where: {
-        id: parseInt(libraryId),
+      id: parseInt(libraryId),
       },
       include: {
-        reviews: {
-          include: {
-            user: true,
-          },
+      reviews: {
+        include: {
+        user: true,
         },
       },
+      },
+      orderBy: {
+      createdAt: 'desc',
+      },
     });
+    console.log("🚀 ~ getReviews ~ library:", library)
 
     if (!library) {
       return res.status(404).json({ message: "Library not found" });
