@@ -871,7 +871,7 @@ const createReview = async (req, res) => {
 
     const newReview = await prisma.review.create({
       data: {
-        userId: parseInt(userId),
+
         review: review,
         stars: stars,
         library: {
