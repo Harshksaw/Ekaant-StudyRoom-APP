@@ -855,7 +855,7 @@ const createReview = async (req, res) => {
     // console.log(req.body, "req.body");
 
     const ifUser = await prisma.review.findUnique({
-      user,
+      where : {id : user},
     });
     // console.log("🚀 ~ createReview ~ ifUser:", ifUser)
     // if(ifUser){
@@ -909,23 +909,18 @@ const createReview = async (req, res) => {
 const getReviews = async (req, res) => {
   try {
     const { libraryId } = req.params;
-
-    const library = await prisma.library.findFirst(
-      {
-        data: {
-          id: parseInt(libraryId),
-        },
+    const library = await prisma.library.findFirst({
+      where: {
+        id: parseInt(libraryId),
       },
-      {
-        include: {
-          reviews: {
-            include: {
-              user: true,
-            },
+      include: {
+        reviews: {
+          include: {
+            user: true,
           },
         },
-      }
-    );
+      },
+    });
 
     if (!library) {
       return res.status(404).json({ message: "Library not found" });
