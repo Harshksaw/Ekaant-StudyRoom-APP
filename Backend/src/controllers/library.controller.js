@@ -854,17 +854,17 @@ const createReview = async (req, res) => {
 
     // console.log(req.body, "req.body");
 
-    const ifUser = await prisma.review.findUnique({
+    const ifUser = await prisma.review.findFirst({
       where : {id : user},
     });
-    // console.log("🚀 ~ createReview ~ ifUser:", ifUser)
-    // if(ifUser){
-    //    res.status(400).json({ message: 'You have already reviewed this library' });
-    // }
+    console.log("🚀 ~ createReview ~ ifUser:", ifUser)
+    if(ifUser){
+       res.status(400).json({ message: 'You have already reviewed this library' });
+    }
 
-    const newReview = prisma.review.create({
+    const newReview = await prisma.review.create({
       data: {
-        user: user,
+        userId: parseInt(userId),
         review: review,
         stars: stars,
         library: {
@@ -874,18 +874,17 @@ const createReview = async (req, res) => {
         },
       },
     });
-
-    const reviews = await prisma.review.findFirst({
-      where: { library: libraryId },
+    // Fetch all reviews for the library to calculate the average rating
+    const reviews = await prisma.review.findMany({
+      where: { libraryId: parseInt(libraryId) },
     });
 
     // Calculate the average rating manually
-    let totalStars = 0;
-    reviews.forEach((review) => {
-      totalStars += review.stars;
-    });
-
+    const totalStars = reviews.reduce((sum, review) => sum + review.stars, 0);
     const avgRating = reviews.length > 0 ? totalStars / reviews.length : 0;
+
+
+
     console.log("🚀 ~ avgRating:", avgRating);
 
     await prisma.library.update({

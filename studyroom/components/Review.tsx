@@ -205,7 +205,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
         }}
       >
         {/* <Text>4.5</Text> */}
-        <StarRating rating={avgRating.toFixed(0) || 0} />
+        <StarRating rating={avgRating?.toFixed(0) || 0} />
         <Text
           style={{
             padding: 0,
