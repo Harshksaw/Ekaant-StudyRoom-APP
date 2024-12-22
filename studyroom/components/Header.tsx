@@ -6,9 +6,10 @@ import { useAssets } from "expo-asset";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
 import ff from "@/constants/fonts";
+import { Toast } from "react-native-toast-notifications";
 
 const Header = ({ color }: any) => {
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
 
   const [assets, error] = useAssets([
     require("../assets/icons/headerlogo.svg"),
@@ -33,6 +34,10 @@ const Header = ({ color }: any) => {
       fetchLocation();
     }, [])
   );
+
+  if(error){
+    Toast.show("Failed to load assets", {});
+  }
   return (
     <View style={styles.header}>
       <View style={styles.citySelector}>
