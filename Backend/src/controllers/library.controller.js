@@ -272,9 +272,9 @@ const createRoom = async (req, res) => {
       },
     });
 
-    if (location) {
-      library.location = location;
-    }
+    // if (location) {
+    //   library.location = location;
+    // }
 
     await prisma.library.update({
       where: { id: parseInt(libraryId) },
