@@ -8,7 +8,7 @@ const Seat = ({ seatData, isSelected, onSelect, onRotate,onNameChange, style }: 
     e.stopPropagation(); // Prevent the seat selection when rotating
     onRotate(seatData);
   };
-  // console.log(style);
+
 
 
 
@@ -67,8 +67,9 @@ interface SeatLayoutData {
 }
 interface SeatsProps {
   onSeatSelect: (seatLayoutData: SeatLayoutData) => void;
+  seatLayout: any;
 }
-const Seats = ({ onSeatSelect }: SeatsProps) => {
+const Seats = ({ onSeatSelect ,seatLayout }: SeatsProps) => {
   const [rows, setRows] = useState(0);
   const [columns, setColumns] = useState(0);
   // const [showGrid, setShowGrid] = useState(false);
@@ -77,7 +78,7 @@ const Seats = ({ onSeatSelect }: SeatsProps) => {
     [key: string]: number;
   }>({});
   const [seatNames, setSeatNames] = useState<{[key: string]: string }>({});
-  console.log("🚀 ~ Seats ~ seatName:", seatNames)
+  console.log("🚀 ~ Seats ~ seatName:", seatLayout)
 
   const handleRotate = (seatData: SeatData) => {
     const seatKey = seatData.id;
@@ -161,11 +162,11 @@ const Seats = ({ onSeatSelect }: SeatsProps) => {
       columns,
       selectedSeats,
       rotationAngles,
+      seatNames,
     };
     console.log("Seat Layout Data:", seatLayoutData);
 
-    // onSeatSelect(selectedSeats);
-    // console.log(selectedSeats);
+
     onSeatSelect(seatLayoutData);
   };
 

@@ -3,12 +3,14 @@ import axios from "axios";
 import { BASEURL } from "@/lib/utils";
 // import LocationSelector from "./LocationSelector";
 import Seats from "../seatinglayout/SeatLayout";
+import { FaDoorOpen } from "react-icons/fa";
+
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs from "dayjs";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "react-toastify";
 import { getLibraryDataById } from "@/hooks/libraryData";
-import DoorLayout from "../seatinglayout/doorLayout";
+
 
 const CreateRoom: React.FC = () => {
   const [libraryId, setLibraryId] = React.useState("");
@@ -34,13 +36,13 @@ const CreateRoom: React.FC = () => {
   const [autoFill24Hr, setAutoFill24Hr] = useState(false);
   const [price24Hr, setPrice24Hr] = useState<number>(0);
 
-  const [doorPositions, setDoorPositions] = useState([0, 0, 1, 0, 0]);
+  const [doorPositions, setDoorPositions] = useState([0, 1, 0, 0, 0]);
 
   const handleSelectPosition = (index: number) => {
-    // const newPositions = doorPositions.map((pos, i) => (i === index ? 1 : 0));
-    const newPositions = doorPositions.map((i) => (i === index ? 1 : 0));
+    const newPositions = doorPositions.map((pos, i) => (i === index ? 1 : 0));
     setDoorPositions(newPositions);
   };
+
 
   useEffect(() => {
     const fetchLibrary = async () => {
@@ -62,14 +64,11 @@ const CreateRoom: React.FC = () => {
     const libraryObject = libraryData.find(
       (library) => library?.id === parseInt(libraryId)
     );
-    // console.log("🚀 ~ useEffect ~ libraryObject:", libraryObject)
+
     setSelectedLibrary(libraryObject);
   }, [libraryId]);
 
-  // const handleLocationSelect = (location: any) => {
-
-  //   setLocation(location);
-  // };
+ 
 
   const handleSeatSelect = (seat: any) => {
     setSeatLayout(seat);
@@ -103,13 +102,7 @@ const CreateRoom: React.FC = () => {
       from: timeSlot.from ? dayjs(timeSlot.from).format("hh:mm A") : null,
       to: timeSlot.to ? dayjs(timeSlot.to).format("hh:mm A") : null,
     }));
-    console.log(
-      "Creating Room",
-      libraryId,
-      seatLayout,
-      selectedRoom,
-      selectedLibrary
-    );
+
     try {
       if (!libraryId) {
         toast.error("Please select a library");
@@ -172,7 +165,7 @@ const CreateRoom: React.FC = () => {
       // Handle error
     }
   };
-  // console.log(selectedRoom)
+
 
   React.useEffect(() => {
     const timer = setTimeout(() => setProgress(66), 500);
@@ -282,10 +275,19 @@ const CreateRoom: React.FC = () => {
 
       <div className=" mt-20 mb-20 flex justify-center items-center rounded-lg flex-col">
         <h2 className="text-3xl mb-10 ">Select Door Position</h2>
-        <DoorLayout
-          doorPositions={doorPositions}
-          onSelectPosition={handleSelectPosition}
-        />
+    
+         <div className="door-layout flex space-x-4">
+              {doorPositions.map((position, index) => (
+                <button
+                  key={index}
+                  className={`door-position p-4 rounded-md ${position == 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+                  onClick={() => handleSelectPosition(index)}
+                >
+                  <FaDoorOpen className="inline-block mr-2" />
+                  {position === 1 ? 'Door' : 'No Door'}
+                </button>
+              ))}
+            </div>
       </div>
 
       <div className="w-[90%] mx-20 mt-60 flex flex-col  ">
