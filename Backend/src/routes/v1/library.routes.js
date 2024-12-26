@@ -77,4 +77,5 @@ Library.post("/getReviews/:libraryId", LibraryController.getReviews);
 
 
 Library.get("/calculateDistance", LibraryController.calculateDistances);
+Library.post("/editRoomName/:roomId", LibraryController.editRoomName);
 module.exports = Library;

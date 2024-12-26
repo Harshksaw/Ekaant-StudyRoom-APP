@@ -950,7 +950,32 @@ const getReviews = async (req, res) => {
   }
 };
 
+const editRoomName = async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const { newName } = req.body;
+
+    if (!newName) {
+      return res.status(400).json({ message: "New room name is required" });
+    }
+
+    const updatedRoom = await prisma.room.update({
+      where: { id: parseInt(roomId) },
+      data: { roomName: newName },
+    });
+
+    res.status(200).json({
+      message: "Room name updated successfully",
+      room: updatedRoom,
+    });
+  } catch (error) {
+    console.error("Error updating room name:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
+  editRoomName,
   pingAdmin,
   createLibrary,
   getLibrary,
