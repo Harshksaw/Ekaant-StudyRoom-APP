@@ -243,7 +243,7 @@ const createRoom = async (req, res) => {
       const maxRoomNo = library.rooms.length;
       newRoomNo = maxRoomNo + 1;
     }
-    console.log(newRoomNo, "newRoomNo", timeSlot);
+    // console.log(newRoomNo, "newRoomNo", timeSlot);
 
     const newRoom = await prisma.room.create({
       data: {
@@ -254,6 +254,7 @@ const createRoom = async (req, res) => {
           create: seatLayout.selectedSeats.map((seat) => ({
             seatId: seat.id,
             seatLabel: seat.label,
+            seatName : seat.seatName,
             rotation: seatLayout.rotationAngles[seat.id] || 0,
             timeSlots: {
               create: timeSlot

@@ -201,7 +201,14 @@ const EditLibrary = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <ClipLoader color="#4A90E2" size={50} />
+       <ClipLoader
+        color={"blue"}
+        loading={loading}
+        // cssOverride={override}npm run
+        size={150}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      />
       </div>
     );
   }
