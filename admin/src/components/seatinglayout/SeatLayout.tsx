@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MdEventSeat } from "react-icons/md";
-const Seat = ({ seatData, isSelected, onSelect, onRotate, style }: any) => {
+const Seat = ({ seatData, isSelected, onSelect, onRotate,onNameChange, style }: any) => {
   const handleClick = () => {
     onSelect(seatData);
   };
@@ -8,10 +8,16 @@ const Seat = ({ seatData, isSelected, onSelect, onRotate, style }: any) => {
     e.stopPropagation(); // Prevent the seat selection when rotating
     onRotate(seatData);
   };
-  console.log(style);
+  // console.log(style);
+
+
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onNameChange(seatData.id, e.target.value);
+  };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center rounded-full">
       <button
         style={isSelected ? style : null}
         className={`
@@ -25,8 +31,21 @@ const Seat = ({ seatData, isSelected, onSelect, onRotate, style }: any) => {
         onClick={handleClick}
       >
         <MdEventSeat size={32} className="m-auto" />
-        {seatData.label}
+
+    
+
       </button>
+          <div className="w-16 ">
+
+      {isSelected && (
+        <input
+        type="text"
+        value={seatData.seatName}
+        onChange={handleNameChange}
+        className="seat-name-input"
+        />
+      )}
+      </div>
       <button
         onClick={handleRotateClick}
         className="mt-2 bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -57,6 +76,8 @@ const Seats = ({ onSeatSelect }: SeatsProps) => {
   const [rotationAngles, setRotationAngles] = useState<{
     [key: string]: number;
   }>({});
+  const [seatNames, setSeatNames] = useState<{[key: string]: string }>({});
+  console.log("🚀 ~ Seats ~ seatName:", seatNames)
 
   const handleRotate = (seatData: SeatData) => {
     const seatKey = seatData.id;
@@ -82,25 +103,42 @@ const Seats = ({ onSeatSelect }: SeatsProps) => {
 
     setSelectedSeats(newSelectedSeats);
   };
+
+
+  const handleSeatNameChange = (seatId: string, newName: string) => {
+    setSeatNames((prevNames) => ({
+      ...prevNames,
+      [seatId]: newName,
+    }));
+  };
+
   const seatRows = []; // This will store rows of seats
+
+  let seatNumber = 1;
   for (let row = 0; row < rows; row++) {
     const seatRow = []; // This will store each seat in the current row
     for (let col = 0; col < columns; col++) {
-      const seatData = { id: `${row}-${col}`, label: `${row}-${col}` };
+      const seatId = `${row}-${col}`;
+      const seatName = seatNames[seatId] || `${seatNumber}`;
+      const seatData = { id: `${row}-${col}`, label:`${seatNumber}`, seatName };
       const isSelected = selectedSeats.some((seat) => seat?.id === seatData.id);
       const rotationAngle = rotationAngles[seatData.id] || 0;
       seatRow.push(
         <Seat
           key={`${row}-${col}`}
+          seatId={seatId}
           seatData={seatData}
           isSelected={isSelected}
           onSelect={handleSelect}
           onRotate={handleRotate}
+
+          onNameChange={handleSeatNameChange}
           style={{
             transform: `rotate(${rotationAngle}deg)`,
           }}
         />
       );
+      seatNumber++; 
     }
     seatRows.push(
       <div key={row} style={{ display: "flex", flexDirection: "row" }}>
