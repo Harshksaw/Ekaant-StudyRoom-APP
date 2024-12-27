@@ -501,6 +501,7 @@ async function otpLogin(req, res) {
     }  
   
   })
+  console.log("🚀 ~ otpLogin ~ response:", response, otp.length)
 
   if (otp.length == 0) {
 
@@ -522,7 +523,7 @@ async function otpLogin(req, res) {
       message: "User not found",
     });
   }
-  // console.log("🚀 ~ otpLogin ~ response:", response);
+
 
   const token = jwt.sign({ user_id: response[0].id }, JWT_SECRET);
   const user = await prisma.user.findFirst({ where: { phoneNumber: phoneNumber } });
