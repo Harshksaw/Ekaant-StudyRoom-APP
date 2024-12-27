@@ -1,6 +1,6 @@
 import { DeskGreen } from "@/assets";
 import ff from "@/constants/fonts";
-import { w } from "@/constants/size";
+import { height, w, width } from "@/constants/size";
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
@@ -211,21 +211,6 @@ export default function Seats({ onSeatSelect, SeatLayout, currentRoom, door }) {
   );
 }
 
-const Trapezoid = () => {
-  // Responsive box dimensions
-  const boxWidth = windowWidth > 480 ? 120 : 60;
-  const boxHeight = windowWidth > 480 ? 100 : 50;
-
-  return (
-    <View style={styles.container1}>
-      <View style={[styles.box, { width: boxWidth, height: boxHeight }]}>
-        <View style={[styles.line, styles.lineLeft]} />
-        <View style={[styles.line, styles.lineRight]} />
-      </View>
-    </View>
-  );
-};
-
 
 const styles = StyleSheet.create({
   container: {
@@ -249,6 +234,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 5,
     borderRadius: 7,
+    width: 70,
+    height: 70,
 
     backgroundColor: isBooked
       ? "#ffcc7f64"
@@ -256,14 +243,14 @@ const styles = StyleSheet.create({
         ? "#8cf39c7d"
         : "transparent",
     borderWidth: 1.3,
-    aspectRatio: 1.2 / 0.8,
+    aspectRatio: 1.1 / 0.9,
 
     borderColor: "#0077B6",
     padding: w(2),
-    paddingHorizontal: w(6),
+    paddingHorizontal: w(4),
   }),
   emptySeat: {
-    width: 70,
+    width: 75,
     height: 75,
     margin: 5,
     backgroundColor: "transparent",

@@ -59,6 +59,8 @@ const EditLibrary = () => {
     pincode: "",
   });
 
+  const [roomName, setRoomName] = useState<number>(0);
+
   const [amenities, setAmenities] = useState<Amenities>({
     CommonParking: false,
     FloorMat: false,
@@ -201,14 +203,14 @@ const EditLibrary = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-       <ClipLoader
-        color={"blue"}
-        loading={loading}
-        // cssOverride={override}npm run
-        size={150}
-        aria-label="Loading Spinner"
-        data-testid="loader"
-      />
+        <ClipLoader
+          color={"blue"}
+          loading={loading}
+          // cssOverride={override}npm run
+          size={150}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
       </div>
     );
   }
@@ -238,6 +240,22 @@ const EditLibrary = () => {
       }
     }
   };
+  const handleRoomNameChange = async (room) => {
+    console.log("🚀 ~ handleRoomNameChange ~ roomId:", room)
+    try {
+      const res = await axios.post(`${BASEURL}/api/v1/library/editRoomName/${room.id}`, {
+        newName: roomName
+      })
+      if (res.status === 200) {
+        toast.success("Room Name Updated Successfully")
+      }
+
+
+    } catch (error) {
+      console.log("🚀 ~ handleRoomNameChange ~ error", error)
+
+    }
+  }
 
   return (
     <div className="w-full h-full flex-1 p-6">
@@ -475,11 +493,34 @@ const EditLibrary = () => {
         {library?.rooms?.map((room) => (
           <div
             key={room?._id}
-            className="flex justify-between items-center p-4 border rounded"
+            className="flex  flex-row justify-between items-center p-4 border rounded"
           >
-            <span>Room {room.roomNo}</span>
+
+
+            <div className="w-32 flex flex-row gap-5">
+
+
+              <p>
+                {room.roomNo}
+              </p>
+              <input
+                type="number"
+                className="mr-2 w-8"
+                onChange={(e) => {
+                  setRoomName(e.target.value);
+
+                }}
+                value={room?.roomName}
+              />
+            </div>
             <button
-              onClick={() => handleDeleteRoom(room?._id)}
+              onClick={() => handleRoomNameChange(room)}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline">
+              Save
+            </button>
+
+            <button
+              onClick={() => handleDeleteRoom(room?.id)}
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline"
             >
               Delete

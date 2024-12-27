@@ -144,7 +144,7 @@ async function signIn(req, res, next) {
 
     // console.log(phoneNumber, password);
 
-    const user = await prisma.user.findOne ({ phoneNumber });
+    const user = await prisma.user.findFirst({ where: { phoneNumber : phoneNumber} });
     const inputPassword = req.body.password;
     const storedHashedPassword = user.password;
     // Find user with requested email
@@ -501,10 +501,7 @@ async function otpLogin(req, res) {
     }  
   
   })
-  // console.log("🚀 ~ otpLogin ~ response:", response)
 
-  // const response = await OTP.find({ email }).sort({ createdAt: -1 });
-  // console.log(response[0].phoneotp, otp, "RESPONSE123");
   if (otp.length == 0) {
 
     return res.status(400).json({

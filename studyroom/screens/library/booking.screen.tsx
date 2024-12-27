@@ -375,7 +375,7 @@ const BookingScreen: React.FC = () => {
                 borderRadius: 50,
               }}
               key={item.roomNo}
-              label={` Room ${item.roomNo}`}
+              label={` Room ${item.roomName ? item.roomName : item.roomNo}`}
               value={`${item.roomNo}`}
             />
           ))}
