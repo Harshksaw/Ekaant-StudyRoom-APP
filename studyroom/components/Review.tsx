@@ -95,12 +95,9 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
     const fetchReviews = async () => {
       setLoading(true);
       try {
-        console.log("Library ID", libraryId);
         const response = await axios.post(
           `${BACKEND}/api/v1/library/getReviews/${libraryId}`
         );
-
-        console.log("🚀 ~ fetchReviews ~ response.data:", response.data);
 
         setReviews(response.data.data);
         setAvgRating(response.data.avgRating);
@@ -205,7 +202,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
         }}
       >
         {/* <Text>4.5</Text> */}
-        <StarRating rating={avgRating.toFixed(0) || 0} />
+        <StarRating rating={avgRating?.toFixed(0) || 0} />
         <Text
           style={{
             padding: 0,

@@ -53,6 +53,9 @@ export default function SignUpScreen() {
     newOtp[index] = value;
     setOtp(newOtp);
 
+    if (newOtp.join("").length === 4) {
+      verifyOtp(newOtp.join(""));
+    }
     // Move to next input if value is entered
     if (value && index < otp.length - 1) {
       otpRefs.current[index + 1].focus();
@@ -91,16 +94,32 @@ export default function SignUpScreen() {
   };
 
   const sendOtp = async () => {
+    if (
+      !userInfo.email ||
+      !userInfo.name ||
+      !userInfo.password ||
+      !userInfo.phone
+    ) {
+      Toast.show("Fill all feilds to proceed", {
+        type: "danger",
+        placement: "top",
+        duration: 2000,
+      });
+      return;
+    }
     try {
-      console.log(userInfo.phone);
-      setShowOtp(true);
       setLoading(true);
       const response = await axios.post(`${BACKEND}/api/v1/auth/otp`, {
         phoneNumber: userInfo.phone,
       });
-      console.log(response.data);
+      setShowOtp(true);
       setLoading(false);
     } catch (error) {
+      Toast.show("Registration failed", {
+        type: "danger",
+        placement: "top",
+        duration: 2000,
+      });
       console.log(error);
       setLoading(false);
     }
@@ -117,10 +136,9 @@ export default function SignUpScreen() {
       verifyOtp();
     }
   }, [otp]);
-  const verifyOtp = async () => {
+  const verifyOtp = async (textOtp?: string) => {
     try {
-      const otpValue = otp.join("");
-      console.log(otpValue, "aleuu");
+      const otpValue = textOtp ?? otp.join("");
 
       try {
         let response = await axios.post(`${BACKEND}/api/v1/auth/verifyOtp`, {
@@ -570,7 +588,6 @@ export default function SignUpScreen() {
                       padding: 20,
                       borderRadius: 8,
                       marginHorizontal: 16,
-
                       marginTop: 15,
                     }}
                     onPress={() => (showOtp ? handleSignUp() : sendOtp())}
@@ -669,7 +686,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingLeft: w(55),
     fontSize: 16,
-    backgroundColor: "#e6e6e6",
+    backgroundColor: "#f8f8f8",
     color: "#434343",
     fontFamily: ff.deckMedium,
   },

@@ -15,10 +15,10 @@ import {
   View,
   Image,
   SafeAreaView,
-  ActivityIndicator,
 } from "react-native";
-
 import { Toast } from "react-native-toast-notifications";
+import * as SMS from "expo-sms";
+import * as LocalAuthentication from "expo-local-authentication";
 
 export function maskPhoneNumber(phoneNumber?: string | number) {
   if (!phoneNumber) {
@@ -42,6 +42,26 @@ const LoginScreen: React.FC = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
   const [attempts, setAttempts] = useState(0);
+
+  const isSmsAvailable = async () => {
+    const isAvailable = await SMS.isAvailableAsync();
+    return isAvailable;
+  };
+  const autoDetectOtp = async () => {
+    const isAvailable = await isSmsAvailable();
+    if (isAvailable) {
+      // Try to auto-fetch the OTP if the SMS is in the correct format
+      // Expo doesn’t directly provide SMS read functionality, but you can use a library like `react-native-sms-retriever`
+      console.log("SMS OTP auto-detect is not available in Expo yet");
+    } else {
+      console.log("SMS is not available on your device.");
+    }
+  };
+
+  useEffect(() => {
+    autoDetectOtp();
+  }, []);
+
   useEffect(() => {
     const getme = async () => {
       const res = await axios.get(`${BACKEND}/me`);
@@ -52,21 +72,26 @@ const LoginScreen: React.FC = () => {
     getme();
   }, []);
 
-  const handleOtpChange = (text, index) => {
+  const handleOtpChange = (text: string, index) => {
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
+
+    if (newOtp.join("").length === 4) {
+      loginWithOtp(newOtp.join(""));
+    }
+
     if (text && index < 3) {
       inputRefs[index + 1].current.focus();
     }
   };
 
-  const loginWithOtp = async () => {
+  const loginWithOtp = async (text?: string) => {
     setLoading(true);
     try {
       const response = await axios.post(`${BACKEND}/api/v1/auth/otp-login`, {
         phoneNumber,
-        otp: otp.join(""),
+        otp: text ?? otp.join(""),
       });
 
       setLoading(false);
@@ -93,6 +118,8 @@ const LoginScreen: React.FC = () => {
       }
     } catch (error) {
       setLoading(false);
+      console.log(error);
+
       Toast.show("Login failed", {
         type: "danger",
         placement: "top",
@@ -265,12 +292,19 @@ const LoginScreen: React.FC = () => {
         />
         <Image source={require("../../../assets/images/bubble 01.png")} />
       </View>
+      <Image
+        style={{ position: "absolute", top: "25%", right: 0 }}
+        source={require("../../../assets/images/bubblle 03.png")}
+      />
+      <Image
+        style={{ position: "absolute", bottom: "8%", right: 0 }}
+        source={require("../../../assets/images/bubble 04.png")}
+      />
 
       <View
         style={{
           flex: 1,
           justifyContent: "center",
-          // alignItems: "center",
           marginTop: h(200),
           width: "100%",
           height: "100%",
@@ -412,7 +446,7 @@ const LoginScreen: React.FC = () => {
                 flexDirection: "row",
                 justifyContent: "flex-start",
                 alignItems: "center",
-                backgroundColor: "#fff",
+                backgroundColor: "#f8f8f8",
               }}
             >
               <Text
@@ -499,6 +533,7 @@ const LoginScreen: React.FC = () => {
                 {otp.map((value, index) => (
                   <TextInput
                     key={index}
+                    autoFocus={index ? false : true}
                     ref={inputRefs[index]}
                     style={{
                       width: 50,
@@ -579,6 +614,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
+    backgroundColor: "#fff",
   },
 
   inputContainer: {
@@ -588,9 +624,9 @@ const styles = StyleSheet.create({
   input: {
     height: 55,
     borderRadius: 20,
+    backgroundColor: "#f8f8f8",
     paddingLeft: w(10),
     fontSize: 16,
-    backgroundColor: "white",
     color: "#434343",
     fontFamily: ff.deckMedium,
   },

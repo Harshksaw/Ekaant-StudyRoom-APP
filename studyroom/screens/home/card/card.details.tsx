@@ -39,7 +39,8 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const width = Dimensions.get("window").width;
   const [userReviews, setUserReviews] = useState([]);
   const params = useRoute();
-  const data = JSON.parse(params.params.item);
+  const libData = JSON.parse(params.params.item);
+  const data = { ...libData, _id: libData.id };
 
   const [city, setCity] = useState("Delhi");
 
@@ -81,7 +82,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
   useEffect(() => {
     locationData();
-    getUserReviews();
+    // getUserReviews();
   }, []);
 
   const [isModalVisible, setIsModalVisible] = useState(false);

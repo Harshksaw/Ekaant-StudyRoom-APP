@@ -109,20 +109,11 @@ export default function index() {
       const fetchedData = await fetchRoomData({ selectedLocation });
 
       setData(fetchedData || []);
-
-      Toast.show(" fetched room data", {
-        type: "Success",
-
-        successColor: "#00ff55",
-
-        duration: 3000,
-      });
     } catch (error) {
       Toast.show("Failed to fetch room data", {
         type: "error",
         duration: 3000,
       });
-      console.error("Failed to fetch room data:", error);
       setData(null);
 
       setNotAvailable(true);

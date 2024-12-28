@@ -57,12 +57,12 @@ export default function Bookings() {
           `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
         );
 
-        if (res.status === 200) {
-          Toast.show("Bookings Fetched", {
-            type: "success",
-            duration: 2000,
-          });
-        }
+        // if (res.status === 200) {
+        //   Toast.show("Bookings Fetched", {
+        //     type: "success",
+        //     duration: 2000,
+        //   });
+        // }
 
         setData(res.data.bookings);
       } catch (error) {
