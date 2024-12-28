@@ -93,16 +93,17 @@ export default function TabsLayout() {
             ),
           }}
         />
+
         <Tabs.Screen
-          name="menu/index"
+          name="profile/index"
           options={{
-            title: "Menu",
+            title: "Profile",
             tabBarIcon: ({ focused }) => (
               <>
-                <MaterialIcons
-                  name="format-list-bulleted"
+                <Ionicons
+                  name="person-circle-outline"
                   color={focused ? "#0077B6" : "#263238"}
-                  size={24}
+                  size={30}
                 />
                 {focused && (
                   <View
@@ -120,15 +121,15 @@ export default function TabsLayout() {
           }}
         />
         <Tabs.Screen
-          name="profile/index"
+          name="menu/index"
           options={{
-            title: "Profile",
+            title: "Menu",
             tabBarIcon: ({ focused }) => (
               <>
-                <Ionicons
-                  name="person-circle-outline"
+                <MaterialIcons
+                  name="format-list-bulleted"
                   color={focused ? "#0077B6" : "#263238"}
-                  size={30}
+                  size={24}
                 />
                 {focused && (
                   <View

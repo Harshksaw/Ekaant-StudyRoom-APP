@@ -20,7 +20,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import axios from "axios";
 
-import { Feather } from "@expo/vector-icons";
 import { BACKEND } from "@/utils/config";
 import Button from "@/components/Button";
 import { Toast } from "react-native-toast-notifications";
@@ -125,49 +124,43 @@ export default function SignUpScreen() {
     }
   };
 
-  // useEffect hook to trigger the API call when all OTP fields are filled
-  useEffect(() => {
-    // Check if all OTP fields are filled
-    const allFieldsFilled = otp.every((value) => value.trim() !== "");
-    if (allFieldsFilled) {
-      // Make your API call here
-      console.log("Making API call with OTP:", otp.join(""));
-
-      verifyOtp();
-    }
-  }, [otp]);
   const verifyOtp = async (textOtp?: string) => {
+    const otpValue = textOtp ?? otp.join("");
+
     try {
-      const otpValue = textOtp ?? otp.join("");
+      let response = await axios.post(`${BACKEND}/api/v1/auth/verifyOtp`, {
+        phoneNumber: userInfo.phone,
+        otp: otpValue,
+      });
 
-      try {
-        let response = await axios.post(`${BACKEND}/api/v1/auth/verifyOtp`, {
-          phoneNumber: userInfo.phone,
-          otp: otpValue,
+      if (response.status == 200) {
+        setVerified(true);
+        setotpVerified(true);
+        Toast.show("Verified OTP", {
+          type: "danger",
+          duration: 2000,
+          placement: "top",
+          style: {
+            backgroundColor: "green",
+            borderRadius: 10,
+            padding: 10,
+            marginTop: 50,
+          },
         });
-
-        if (response.status == 200) {
-          setVerified(true);
-          setotpVerified(true);
-          Toast.show("Verified OTP", {
-            type: "danger",
-            duration: 2000,
-            placement: "top",
-            style: {
-              backgroundColor: "green",
-              borderRadius: 10,
-              padding: 10,
-              marginTop: 50,
-            },
-          });
-        }
-
-        // console.log("🚀 ~ verifyOtp ~ response:", response)
-      } catch (error) {
-        console.log(error);
+        handleSignUp();
       }
     } catch (error) {
-      console.log(error);
+      Toast.show(error?.message ?? "something went wrong", {
+        type: "danger",
+        duration: 2000,
+        placement: "top",
+        style: {
+          backgroundColor: "green",
+          borderRadius: 10,
+          padding: 10,
+          marginTop: 50,
+        },
+      });
     }
   };
 
@@ -217,7 +210,6 @@ export default function SignUpScreen() {
           },
         }
       );
-      // console.log("🚀 ~ handleSignUp ~ response:", response);
       if (response.status == 200 || 201) {
         await AsyncStorage.setItem(
           "token",
@@ -273,7 +265,6 @@ export default function SignUpScreen() {
           flex: 1,
           flexDirection: "column",
           gap: 60,
-          backgroundColor: "#fff",
         }}
       >
         <View style={styles.signInImage}>
@@ -590,7 +581,7 @@ export default function SignUpScreen() {
                       marginHorizontal: 16,
                       marginTop: 15,
                     }}
-                    onPress={() => (showOtp ? handleSignUp() : sendOtp())}
+                    onPress={() => (showOtp ? verifyOtp() : sendOtp())}
                   >
                     <Button
                       text={showOtp ? "Submit" : "Register"}
@@ -598,41 +589,42 @@ export default function SignUpScreen() {
                     />
                   </TouchableOpacity>
                 )}
-<View style={{
-  flexDirection: "row",
-  justifyContent: "center",
-  alignItems: "center",
-  marginTop: 20,
-}}>
-
-<Text
-  style={{
-    color: "#000",
-    fontSize: 20,
-    lineHeight: 20,
-    textAlign: "center",
-    fontFamily: ff.textMedium,
-    letterSpacing: 0.9,
-  }}
->
-  Already registered?
-</Text>
-<Link href={{ pathname: "login" }}>
-  <Text
-    style={{
-      color: "#0077B6",
-      fontSize: 25,
-      lineHeight: 25,
-      textAlign: "center",
-      fontFamily: ff.textMedium,
-      letterSpacing: 0.9,
-    }}
-  >
-    Login
-  </Text>
-</Link>
-</View>
-
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: 20,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#000",
+                      fontSize: 20,
+                      lineHeight: 20,
+                      textAlign: "center",
+                      fontFamily: ff.textMedium,
+                      letterSpacing: 0.9,
+                    }}
+                  >
+                    Already registered?
+                  </Text>
+                  <Link href={{ pathname: "login" }}>
+                    <Text
+                      style={{
+                        color: "#0077B6",
+                        fontSize: 18,
+                        lineHeight: 25,
+                        textAlign: "center",
+                        fontFamily: ff.deckBold,
+                        letterSpacing: 0.9,
+                      }}
+                    >
+                      {" "}
+                      Login
+                    </Text>
+                  </Link>
+                </View>
 
                 <TouchableOpacity
                   style={{

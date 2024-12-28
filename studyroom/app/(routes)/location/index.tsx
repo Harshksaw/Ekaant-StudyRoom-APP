@@ -118,21 +118,36 @@ const LocationsScreen = () => {
       </View>
       <FlatList
         data={filteredLocations}
+        numColumns={3}
+        style={{
+          marginHorizontal: w(15),
+        }}
+        contentContainerStyle={{ width: "100%" }}
         keyExtractor={(_, index) => index.toString()} // Ensure each item has a unique key
         renderItem={({ item }: { item: any }) => (
           <TouchableOpacity
             style={styles.gridItem}
             onPress={() => handleLocationSelect(item)}
           >
-            <Image
-              source={{
-                uri:
-                  item?.locationImage ||
-                  "https://th.bing.com/th/id/OIP.m78y_Nupeq-RtHFEeNk5PwHaH5?rs=1&pid=ImgDetMain",
+            <View
+              style={{
+                backgroundColor: "#000",
+                ...styles.image,
+                opacity: 1,
+                elevation: 5,
+                shadowColor: "#acacac",
               }}
-              style={styles.image}
-              resizeMode="cover"
-            />
+            >
+              <Image
+                source={{
+                  uri:
+                    item?.locationImage ||
+                    "https://th.bing.com/th/id/OIP.m78y_Nupeq-RtHFEeNk5PwHaH5?rs=1&pid=ImgDetMain",
+                }}
+                style={styles.image}
+                resizeMode="cover"
+              />
+            </View>
             <Text style={styles.locationItem}>{item?.location}</Text>
           </TouchableOpacity>
         )}
@@ -145,6 +160,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 26,
@@ -152,16 +168,13 @@ const styles = StyleSheet.create({
     fontFamily: ff.textSemiBold,
   },
   gridItem: {
-    flex: 1,
-    marginVertical: h(4),
-    marginHorizontal: w(20),
-    padding: 10,
+    margin: h(6),
+    padding: 8,
     alignItems: "center",
-    backgroundColor: "#fff",
-    elevation: 3,
-    flexDirection: "row",
-    gap: w(20),
-    borderRadius: 7,
+    gap: w(7),
+    borderRadius: 3,
+    width: "29.5%",
+    // flex: 0,
   },
   searchBar: {
     height: 45,
@@ -186,14 +199,16 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   image: {
-    width: w(40),
-    height: w(40),
+    width: w(60),
+    height: w(60),
     borderRadius: 40,
     marginBottom: 5,
+    opacity: 0.94,
   },
   locationItem: {
-    fontSize: 16,
+    fontSize: 18,
     textAlign: "center",
+    fontFamily: ff.deckRegular,
   },
 });
 

@@ -102,7 +102,7 @@ export default function index() {
           type: "error",
           duration: 3000,
         });
-        router.push("/(routes)/location");
+        // router.push("/(routes)/location");
         return;
       }
 
@@ -473,6 +473,7 @@ export default function index() {
                 letterSpacing: 1.2,
                 fontFamily: ff.deckBold,
                 color: "black",
+                marginTop: 3,
               }}
             >
               Welcome,{" "}
@@ -484,8 +485,9 @@ export default function index() {
                   color: "#0077B6",
                 }}
               >
-                {userData ? userData?.split(" ")[0] : "Board"}👋
+                {userData ? userData?.split(" ")[0] : "Board"}
               </Text>
+              😊
             </Text>
           </View>
 

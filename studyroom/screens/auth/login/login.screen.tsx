@@ -17,8 +17,6 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Toast } from "react-native-toast-notifications";
-import * as SMS from "expo-sms";
-import * as LocalAuthentication from "expo-local-authentication";
 
 export function maskPhoneNumber(phoneNumber?: string | number) {
   if (!phoneNumber) {
@@ -42,25 +40,6 @@ const LoginScreen: React.FC = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
   const [attempts, setAttempts] = useState(0);
-
-  const isSmsAvailable = async () => {
-    const isAvailable = await SMS.isAvailableAsync();
-    return isAvailable;
-  };
-  const autoDetectOtp = async () => {
-    const isAvailable = await isSmsAvailable();
-    if (isAvailable) {
-      // Try to auto-fetch the OTP if the SMS is in the correct format
-      // Expo doesn’t directly provide SMS read functionality, but you can use a library like `react-native-sms-retriever`
-      console.log("SMS OTP auto-detect is not available in Expo yet");
-    } else {
-      console.log("SMS is not available on your device.");
-    }
-  };
-
-  useEffect(() => {
-    autoDetectOtp();
-  }, []);
 
   useEffect(() => {
     const getme = async () => {
@@ -532,6 +511,7 @@ const LoginScreen: React.FC = () => {
               >
                 {otp.map((value, index) => (
                   <TextInput
+                    autoComplete="sms-otp"
                     key={index}
                     autoFocus={index ? false : true}
                     ref={inputRefs[index]}
