@@ -22,7 +22,6 @@ import {
 import { setBookingDetails } from "@/redux/bookingSlice";
 import { useRoute } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
-import { Month } from "@/assets";
 
 import ToggleBookingButton from "@/components/ToggleBooking";
 import { Toast } from "react-native-toast-notifications";
@@ -47,7 +46,7 @@ const BookingScreen: React.FC = () => {
 
   const [data, setData] = useState(null);
   const [selectedSeat, setSelectedSeat] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(1);
   const [selectedSlots, setSelectedSlots] = useState([]);
@@ -59,10 +58,12 @@ const BookingScreen: React.FC = () => {
   const [Loading, setLoading] = useState(true);
 
   const [libraryDetails, setLibraryDetails] = useState<any>(null);
-  const price = bookingData.details.price || 6000;
-  const registrationFees = 1000;
-  const subtotal = Number((price + registrationFees).toFixed(2));
-  const totalAmount = subtotal;
+
+  const price = bookingData.details.price || 0;
+  const [totalAmount, setTotalAmount] = useState(0);
+
+  // const subtotal = Number((price + registrationFees).toFixed(2));
+  // const totalAmount = subtotal;
 
   const BookedData = {
     seat: selectedSeat,
@@ -71,6 +72,7 @@ const BookingScreen: React.FC = () => {
     room: currentRoomNo,
     slot: selectedSlots,
   };
+  console.log("🚀 ~ BookedData.selectedDate:", selectedDate);
 
   useEffect(() => {
     const totalPrice = selectedSlots.reduce(
@@ -79,6 +81,9 @@ const BookingScreen: React.FC = () => {
     );
 
     setFinalPrice(totalPrice * selectedMonth);
+    const registrationFees = libraryDetails?.registrationFees || 0;
+
+    setTotalAmount(registrationFees + totalPrice * selectedMonth);
   }, [selectedSlots, selectedMonth]);
 
   const handleSeatSelect = (seatDataFromChild) => {
@@ -86,13 +91,14 @@ const BookingScreen: React.FC = () => {
   };
 
   const handleSelectSlot = (selectedSlot) => {
-    if (selectedSlots.find((slot) => slot._id === selectedSlot._id)) {
+    if (selectedSlots.find((slot) => slot.id === selectedSlot.id)) {
       setSelectedSlots(
-        selectedSlots.filter((slot) => slot._id !== selectedSlot._id)
+        selectedSlots.filter((slot) => slot.id !== selectedSlot.id)
       );
     } else {
       setSelectedSlots([...selectedSlots, selectedSlot]);
     }
+    // console.log(selectedSlots, "----------")
   };
 
   const toggleModal = () => {
@@ -102,7 +108,7 @@ const BookingScreen: React.FC = () => {
 
   const updateRoomDetails = async () => {
     const details = {
-      id: libraryDetails?._id,
+      id: libraryDetails?.id,
       amenities: libraryDetails.amenities,
       images: libraryDetails.images,
       location: city,
@@ -122,14 +128,18 @@ const BookingScreen: React.FC = () => {
     });
   };
 
-  const available = handleData(selectedSeat?.timeSlots);
+  const available = handleData(
+    selectedSeat?.timeSlots.filter((slot) => slot.booked === false)
+  );
+
+  // console.log("🚀 ~ selectedSeat:", selectedSeat)
 
   const PreBook = async () => {
     const userData = await AsyncStorage.getItem("userData");
-
+    // console.log("----",libraryDetails)
     const userid = JSON.parse(userData);
 
-    const userId = userid.data?.user_id?._id;
+    const userId = userid.data?.user_id?.id;
 
     if (!userId) {
       Toast.show("user data not confirgured properly, Relogin", {
@@ -148,13 +158,15 @@ const BookingScreen: React.FC = () => {
       BookedData.months
     ) {
       try {
+        console.log("🚀 ~ PreBook ~ BookedData:", BookedData.slot);
         const response = await axios.post(
           `${BACKEND}/api/v1/booking/createBooking`,
           {
             userId,
-            libraryId: libraryDetails?._id,
+            libraryId: libraryDetails?.id,
             initialPrice: price,
-            finalPrice,
+            finalPrice: totalAmount,
+
             timeSlot: BookedData.slot,
             roomNo: BookedData.room,
             bookedSeat: BookedData.seat,
@@ -164,7 +176,8 @@ const BookingScreen: React.FC = () => {
           }
         );
 
-        const bookingId = response.data.Booking._id;
+        const bookingId = response.data.Booking.id;
+        // console.log("🚀 ~ PreBook ~ bookingId11:", bookingId)
         setBookingId(bookingId);
 
         if (response.status === 200 || response.status === 201) {
@@ -173,7 +186,6 @@ const BookingScreen: React.FC = () => {
           });
         }
 
-        resetBookingState();
         return bookingId;
       } catch (error) {
         console.error("Error:", error);
@@ -183,41 +195,9 @@ const BookingScreen: React.FC = () => {
     }
   };
 
-  // const confirmBooking = async () => {
-  //   setBookingLoader(true);
-  //   await updateRoomDetails();
-
-  //   const res = await PreBook();
-  //   setBookingLoader(false);
-  //   if (res) {
-  //     setBookingLoader(false);
-  //     setIsModalVisible(false);
-
-  //     const newBookingData = {
-  //       bookedSeat: selectedSeat,
-  //       bookingDate: selectedDate,
-  //       bookingPeriod: selectedMonth,
-  //       roomNo: currentRoomNo,
-  //       timeSlot: selectedSlots,
-  //       price: finalPrice,
-  //     };
-
-  //     const Bookdata = { ...newBookingData, libraryId: libraryDetails };
-  //     router.push({
-  //       pathname: "/library/checkout.screen",
-  //       params: {
-  //         item: JSON.stringify(Bookdata),
-  //       },
-  //     });
-  //   } else {
-  //     setBookingLoader(false);
-  //     setIsModalVisible(false);
-  //   }
-  // };
-
   const resetBookingState = () => {
     setSelectedSeat(null);
-    setSelectedDate(null);
+    // setSelectedDate(null);
     setSelectedMonth(1);
     setCurrentRoomNo(1);
     setSelectedSlots([]);
@@ -235,7 +215,7 @@ const BookingScreen: React.FC = () => {
       const response = await axios.post(
         `${BACKEND}/api/v1/library/getLibraryRooms`,
         {
-          id: Library._id,
+          id: Library.id,
         }
       );
       setLibraryDetails(response.data.data);
@@ -254,16 +234,38 @@ const BookingScreen: React.FC = () => {
     fetchRooms().then((data) => {
       setData(data.rooms);
       setLoading(false);
+      console.log("🚀 ~ fetchRooms ~ data.rooms:", data.rooms);
     });
   }, []);
 
   if (Loading || data === null) {
-    return <ActivityIndicator size="large" color="#000" />;
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+        }}
+      >
+        <ActivityIndicator
+          size="large"
+          color="#000"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: w(10),
+            borderRadius: 20,
+          }}
+        />
+      </View>
+    );
   }
 
-  const formatTime = (time) => {
-    return moment(time, ["h:mm A"]).format("HH:mm");
-  };
+  // const formatTime = (time) => {
+  //   return moment(time, ["h:mm A"]).format("HH:mm");
+  // };
 
   const displayTimeRange = (from, to) => {
     if (from === "12:00 AM" && to === "11:59 PM") {
@@ -275,7 +277,7 @@ const BookingScreen: React.FC = () => {
     setBookingLoader(true);
     await updateRoomDetails();
     const res = await PreBook();
-
+    console.log("🚀 ~ confirmBooking ~ res:", res);
     setBookingLoader(false);
 
     if (res) {
@@ -283,31 +285,37 @@ const BookingScreen: React.FC = () => {
 
       const newBookingData = {
         bookedSeat: selectedSeat,
+        registrationFees: libraryDetails?.registrationFees,
         bookingDate: selectedDate,
         bookingPeriod: selectedMonth,
         roomNo: currentRoomNo,
         timeSlot: selectedSlots,
         price: finalPrice,
+        totalAmount,
       };
 
       const Bookdata = {
         ...newBookingData,
         libraryId: libraryDetails,
-        bookingId: bookingId,
+        bookingId: res,
       };
+      // console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
       router.push({
         pathname: "/library/checkout.screen",
         params: {
           item: JSON.stringify(Bookdata),
         },
       });
+
+      resetBookingState();
     } else {
-      setBookingLoader(false);
+      // console.log("🚀 ~ confirmBooking ~ res", res)
       Toast.show("Booking failed. Please try again.", {
         type: "error",
       });
     }
   };
+
   return (
     <SafeAreaView
       style={{
@@ -337,7 +345,7 @@ const BookingScreen: React.FC = () => {
           marginTop: h(10),
         }}
       >
-        <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
+        {/* <Calendar onSelectDate={setSelectedDate} selected={selectedDate} /> */}
       </View>
 
       <View
@@ -409,10 +417,10 @@ const BookingScreen: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        {/* //seating arrangement */}
         {data && data[currentRoomNo - 1].seats.length !== 0 && (
           <Seats
             onSeatSelect={handleSeatSelect}
+            door={data[currentRoomNo - 1].doorPosition}
             SeatLayout={data[currentRoomNo - 1].seats}
             currentRoom={currentRoomNo}
           />
@@ -462,6 +470,7 @@ const BookingScreen: React.FC = () => {
           <Button text="Book" width={200} />
         </TouchableOpacity>
       </View>
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -563,12 +572,12 @@ const BookingScreen: React.FC = () => {
               >
                 {available?.map((slot, index) => {
                   const selected = selectedSlots.some(
-                    (selectedSlot) => selectedSlot._id === slot._id
+                    (selectedSlot) => selectedSlot.id === slot.id
                   );
                   if (slot?.availability && slot?.from !== null) {
                     return (
                       <View
-                        key={slot._id}
+                        key={slot.id}
                         style={{
                           maxWidth: 70,
                           marginHorizontal: 50,
@@ -606,7 +615,7 @@ const BookingScreen: React.FC = () => {
                     // Render regular time slots
 
                     return (
-                      <View key={slot._id}>
+                      <View key={slot.id}>
                         <TouchableOpacity
                           style={{
                             flexDirection: "row",
@@ -688,7 +697,24 @@ const BookingScreen: React.FC = () => {
                     onPress={confirmBooking}
                   >
                     {bookingloader ? (
-                      <ActivityIndicator size="large" color="#fff" />
+                      <View
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          padding: w(10),
+                          borderRadius: 20,
+                        }}
+                      >
+                        <ActivityIndicator
+                          size="large"
+                          color="#fff"
+                          style={{
+                            padding: w(10),
+                            borderRadius: 20,
+                          }}
+                        />
+                      </View>
                     ) : (
                       <Text
                         style={{

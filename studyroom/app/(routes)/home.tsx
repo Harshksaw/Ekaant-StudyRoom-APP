@@ -9,17 +9,6 @@ import { useAssets } from "expo-asset";
 import { useSelector } from "react-redux";
 export default function Home() {
   const navigation = useNavigation();
-
-
-
-  // const userDetails = useSelector((state: any) => state.user);
-
-
-  // const userData = JSON.parse(userDetails?.details)?.user;
-  // console.log("🚀 ~ Home ~ userData:", userData)
-
-
-
   const [assets] = useAssets([
     require("../../assets/images/EKAANT.png"),
     require("../../assets/images/EkaantWelcom.png"),

@@ -119,7 +119,6 @@ const LocationsScreen = () => {
       <FlatList
         data={filteredLocations}
         keyExtractor={(_, index) => index.toString()} // Ensure each item has a unique key
-        // numColumns={3}
         renderItem={({ item }: { item: any }) => (
           <TouchableOpacity
             style={styles.gridItem}

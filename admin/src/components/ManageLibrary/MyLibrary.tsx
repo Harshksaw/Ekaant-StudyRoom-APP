@@ -77,7 +77,7 @@ export default function MyLibrary() {
             <div
               key={index}
               className="border-1 border-gray-400 p-4 rounded-lg shadow-md bg-gray-50 flex flex-row justify-between gap-5 items-center"
-              onClick={()=> navigate(`/manage-library/edit-library/${item?._id}`)}
+              onClick={()=> navigate(`/manage-library/edit-library/${item?.id}`)}
             >
               <img
                 src={item.images[0]}

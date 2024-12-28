@@ -123,22 +123,9 @@ export default function Home() {
             <Button width={300} text="Get Started" height={60} fontSizeR={22} />
           </TouchableOpacity>
         </View>
-        <Text style={styles.orText}>Or</Text>
 
-        <Link href={{ pathname: "login" }}>
-          <Text
-            style={{
-              color: "#0077B6",
-              fontSize: 25,
-              lineHeight: 30,
-              textAlign: "center",
-              fontFamily: ff.textMedium,
-              letterSpacing: 0.9,
-            }}
-          >
-            Login
-          </Text>
-        </Link>
+
+      
       </View>
     </SafeAreaView>
   );

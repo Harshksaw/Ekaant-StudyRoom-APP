@@ -1,11 +1,8 @@
-import { NoBookingsSVG } from "@/assets";
-import Header from "@/components/Header";
-import StarRating from "@/components/Ratinstar";
 import ff from "@/constants/fonts";
 import { w } from "@/constants/size";
-import { fetchRoomData } from "@/hooks/api/library";
+
 import { BACKEND } from "@/utils/config";
-import { calculatePeriod } from "@/utils/date";
+
 import { getUserId } from "@/utils/keys";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -26,7 +23,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Toast } from "react-native-toast-notifications";
 
 interface ApprovalStatusProps {
-  isApproved: boolean;
+  isApproved: String;
 }
 const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
   return (
@@ -57,16 +54,10 @@ export default function Bookings() {
           `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
         );
 
-        // if (res.status === 200) {
-        //   Toast.show("Bookings Fetched", {
-        //     type: "success",
-        //     duration: 2000,
-        //   });
-        // }
-
         setData(res.data.bookings);
       } catch (error) {
         console.error(error, "this is error");
+        2;
       }
     } else {
     }
@@ -88,6 +79,8 @@ export default function Bookings() {
       setRefreshing(false);
     }, 2000);
   }, []);
+
+  console.log(data, "this is data");
   return (
     <SafeAreaView
       style={{
@@ -95,14 +88,6 @@ export default function Bookings() {
         padding: 0,
       }}
     >
-      {/* <View
-        style={{
-          marginTop: 0,
-        }}
-      >
-        <Header color="black" />
-      </View> */}
-
       <View
         style={{
           flexDirection: "column",
@@ -173,6 +158,7 @@ export default function Bookings() {
           {data &&
             data.map((item, index) => (
               <TouchableOpacity
+                key={index}
                 style={{
                   borderRadius: 15,
                   borderWidth: 1.5,
@@ -180,11 +166,11 @@ export default function Bookings() {
                   marginBottom: 13,
                   padding: 8,
                 }}
-                key={item._id}
+                // key={item.id}
                 onPress={() =>
                   router.push({
-                    pathname: "/(routes)/library/checkout.screen",
-                    params: { item: JSON.stringify(item) },
+                    pathname: "/(routes)/invoice",
+                    params: { item: JSON.stringify(item), id: item.id },
                   })
                 }
               >
@@ -241,7 +227,7 @@ export default function Bookings() {
                             .join(" ")}
                         </Text>
 
-                        <ApprovalStatus isApproved={item.approved} />
+                        <ApprovalStatus isApproved={item.bookingStatus} />
                       </View>
                       <View
                         style={{
@@ -262,30 +248,44 @@ export default function Bookings() {
                             textAlign: "left",
                           }}
                         >
-                          A-4
+                          {/* {
+                        item.bookedSeat.seatLabel} */}
                         </Text>
                       </View>
                       <View
                         style={{
                           flexDirection: "row",
+
                           gap: 3,
                         }}
                       >
                         <Ionicons name="time-outline" size={16} color="black" />
-                        <Text
+                        <View
                           style={{
-                            fontSize: 12.14,
-                            fontFamily: ff.deckRegular,
-                            lineHeight: 18.21,
-                            textAlign: "left",
+                            flexDirection: "column",
                           }}
                         >
-                          Period:{" "}
-                          {calculatePeriod(
-                            item?.bookingDate,
-                            item?.bookingPeriod
-                          ) || "2 Months"}
-                        </Text>
+                          <Text
+                            style={{
+                              fontSize: 12.14,
+                              fontFamily: ff.deckRegular,
+                              lineHeight: 18.21,
+                              textAlign: "left",
+                            }}
+                          >
+                            Period: {item.bookingDate.slice(0, 10)} {"-"}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 12.14,
+                              fontFamily: ff.deckRegular,
+                              lineHeight: 18.21,
+                              textAlign: "left",
+                            }}
+                          >
+                            {item.bookingFinalDate.slice(0, 10)}
+                          </Text>
+                        </View>
                       </View>
                     </View>
 
@@ -315,7 +315,7 @@ export default function Bookings() {
                         <Text style={{ fontFamily: ff.deckMedium }}>AC</Text>
                       </View>
 
-                      <View
+                      {/* <View
                         style={{
                           flexDirection: "row",
                           gap: 3,
@@ -326,37 +326,11 @@ export default function Bookings() {
                         <Text style={{ fontFamily: ff.deckMedium }}>
                           {item.distance || "N/A KMs"}
                         </Text>
-                      </View>
+                      </View> */}
                     </View>
                   </View>
                 </View>
               </TouchableOpacity>
-
-              // <View
-              //   key={index}
-              //   style={{
-              //     // width: "100%",
-              //     borderRadius: 40,
-
-              //     backgroundColor: "lightblue",
-              //     padding: 15,
-              //     marginBottom: 15,
-              //     flexDirection: "row",
-              //     justifyContent: "space-between",
-              //     alignItems: "center",
-              //   }}
-              // >
-              //   <View
-              //     style={{
-              //       flexDirection: "column",
-              //       justifyContent: "space-between",
-              //     }}
-              //   >
-              //     <Text>Booking {index + 1}</Text>
-              //     <Text>Room: {item.name}</Text>
-              //   </View>
-              //   <ApprovalStatus isApproved={item.approved} />
-              // </View>
             ))}
         </ScrollView>
       </View>

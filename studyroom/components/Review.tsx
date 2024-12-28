@@ -115,13 +115,16 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
 
   const createReview = async () => {
     const user = await AsyncStorage.getItem("userData");
+    console.log("🚀 ~ createReview ~ user:", user)
     const u = JSON.parse(user);
-    console.log(libraryId, reviewMessage, rating, u.data.user_id._id);
+    console.log("🚀 ~ createReview ~ u:", u)
+    console.log( "_---",libraryId, reviewMessage, rating, u.data);
+
     try {
       const response = await axios.post(
         `${BACKEND}/api/v1/library/createReview/${libraryId}`,
         {
-          user: u.data.user_id._id,
+          user: u.data?.user_id?.id || u.data?.id,
           review: reviewMessage,
           stars: Number(rating),
         }
@@ -136,6 +139,10 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
     } catch (err) {
       console.log("Error", err.message);
       setError(err.message);
+
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
     } finally {
       setLoading(false);
     }
@@ -147,6 +154,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
 
   if (error) {
     return (
+
       <Text
         style={{
           color: "red",
@@ -155,7 +163,9 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
           margin: 20,
         }}
       >
-        Error: {error}
+        Retry
+        <ActivityIndicator size="small" color="red" />
+        {/* Error: {error} */}
       </Text>
     );
   }

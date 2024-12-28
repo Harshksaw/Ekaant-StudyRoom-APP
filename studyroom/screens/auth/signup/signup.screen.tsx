@@ -15,7 +15,7 @@ import { AntDesign, Entypo, Fontisto, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useRef, useState } from "react";
 
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import axios from "axios";
@@ -598,6 +598,41 @@ export default function SignUpScreen() {
                     />
                   </TouchableOpacity>
                 )}
+<View style={{
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  marginTop: 20,
+}}>
+
+<Text
+  style={{
+    color: "#000",
+    fontSize: 20,
+    lineHeight: 20,
+    textAlign: "center",
+    fontFamily: ff.textMedium,
+    letterSpacing: 0.9,
+  }}
+>
+  Already registered?
+</Text>
+<Link href={{ pathname: "login" }}>
+  <Text
+    style={{
+      color: "#0077B6",
+      fontSize: 25,
+      lineHeight: 25,
+      textAlign: "center",
+      fontFamily: ff.textMedium,
+      letterSpacing: 0.9,
+    }}
+  >
+    Login
+  </Text>
+</Link>
+</View>
+
 
                 <TouchableOpacity
                   style={{

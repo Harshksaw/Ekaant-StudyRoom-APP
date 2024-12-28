@@ -201,7 +201,7 @@ const LocationForm1 = () => {
               )}
             </div>
             <div className="flex space-x-2">
-              <button onClick={() => handleDelete(location._id)} className="text-red-500 hover:text-red-700">
+              <button onClick={() => handleDelete(location.id)} className="text-red-500 hover:text-red-700">
                 <FaTrash />
               </button>
             </div>

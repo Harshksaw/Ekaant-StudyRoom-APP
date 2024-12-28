@@ -21,6 +21,8 @@ const bookingSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  
+
   paid: {
     type: Boolean,
     default: false,
@@ -58,6 +60,11 @@ const bookingSchema = new mongoose.Schema({
   bookingDate: {
     type: Date,
     required: true, // Assuming this is the date the booking is for
+  },
+  bookingFinalDate: {
+    type: Date,
+    required: false, // Assuming this is the final date of
+
   },
   forFriend: { // Structured as a sub-schema for clarity
     name: { type: String, required: false },

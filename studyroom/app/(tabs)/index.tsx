@@ -107,6 +107,7 @@ export default function index() {
       }
 
       const fetchedData = await fetchRoomData({ selectedLocation });
+      console.log("🚀 ~ fetchLibraryDate ~ fetchedData:", fetchedData);
 
       setData(fetchedData || []);
     } catch (error) {
@@ -168,7 +169,7 @@ export default function index() {
         marginBottom: 13,
         padding: 8,
       }}
-      key={item.library?._id}
+      key={item.library?.id}
       onPress={
         item?.library.approved
           ? () =>

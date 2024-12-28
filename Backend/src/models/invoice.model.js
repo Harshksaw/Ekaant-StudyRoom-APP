@@ -11,6 +11,15 @@ const invoiceSchema = new mongoose.Schema({
     required: false,
     default: 'INV-0'
   },
+  libraryaddress:{
+    type: String,
+    required: true
+  },
+  libraryName: {
+
+    type: String,
+    required: true
+  },
   invoiceDate: {
     type: Date,
     default: Date.now
@@ -61,9 +70,25 @@ const invoiceSchema = new mongoose.Schema({
     required: true
   },
   timeStamp: {
+   
+  },
+  bookingFinalDate:{
     type: Date,
     required: true
-  }
+  },
+  seatLabel: {
+    type: String,
+    required: true
+  },
+  timeSlotDetails: [{
+    from: String,
+    to: String,
+    price: String,
+    booked: Boolean,
+    bookingSource: String,
+    slotId: String
+  }]
+
 })
 invoiceSchema.pre('save', async function(next) {
   if (this.isNew) {

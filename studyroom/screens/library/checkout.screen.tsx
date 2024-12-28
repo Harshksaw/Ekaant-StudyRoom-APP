@@ -40,6 +40,7 @@ const CheckoutScreen: React.FC = () => {
   const params = useRoute();
 
   const BookedData = JSON.parse(params.params.item);
+  console.log("🚀 ~ BookedData:", BookedData)
 
   if (!BookedData) {
     return (
@@ -54,10 +55,12 @@ const CheckoutScreen: React.FC = () => {
   // const BookingDate = BookedData?.bookingDate
   const BookingMonths = BookedData?.bookingPeriod;
   const BookingSeat = BookedData?.bookedSeat;
+  console.log("🚀 ~ BookingSeat:", BookingSeat)
   const BookingSlot = BookedData?.timeSlot;
+  console.log("🚀 ~ BookingSlot:", BookedData)
   const RoomNo = BookedData?.roomNo;
   const BookedDate = BookedData?.bookingDate.slice(0, 10);
-  const [modalVisible, setModalVisible] = useState(false);
+
   const [initialPrice, setInitialPrice] = useState(0);
   const [RegistrationFees, setRegistrationFees] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
@@ -68,8 +71,16 @@ const CheckoutScreen: React.FC = () => {
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    setBookingId(bookingid);
+
+
+    setBookingId( BookedData.bookingId);
+    // console.log("🚀 ~ useEffect ~ BookedData.bookedSeat.bookingId:", BookedData.bookingId)
+    setRegistrationFees(BookedData?.libraryId?.registrationFees);
+    setInitialPrice(BookedData?.price);
+        // console.log("🚀 ~ useEffect ~ BookedData?.libraryId.price:", BookedData?.libraryId.price)
+    setFinalAmount(BookedData?.totalAmount);
     const getLibraryData = async () => {
       const loc = await getLocationName(
         BookedData?.libraryId?.location[0],
@@ -84,7 +95,7 @@ const CheckoutScreen: React.FC = () => {
         const res = await axios.post(
           `${BACKEND}/api/v1/library/getLibraryById`,
           {
-            id: BookedData?.libraryId?._id,
+            id: BookedData?.libraryId?.id,
           }
         );
         setLibraryData(res.data);
@@ -102,27 +113,18 @@ const CheckoutScreen: React.FC = () => {
     getLibraryData();
   }, []);
 
+
+
+
+
+
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
 
-  // const location = getLocationName(BookedData?.libraryId?.location[0], BookedData?.libraryId?.location[1]);
-  const getFinalPrice = async () => {
-    const price = BookedData?.price || BookedData?.initialPrice;
-    setInitialPrice(price);
-
-    //registion fee from libary only
-    const RegistrationFees =
-      (await AsyncStorage.getItem("RegistrationFee")) || 1000;
-    setRegistrationFees(RegistrationFees);
-    const finalAmount = price + parseInt(RegistrationFees);
-    setFinalAmount(finalAmount);
-  };
-  useEffect(() => {
-    getFinalPrice();
-  }, []);
+ 
   const PaymentPrice = finalAmount;
 
   useEffect(() => {
-    // InvoiceScreen();
+
     if (isinvoiceComplete) {
       router.push({
         pathname: "/library/invoice.screen",
@@ -166,10 +168,11 @@ const CheckoutScreen: React.FC = () => {
       });
 
       const res = await confirmPayment();
+      // console.log("🚀 ~ handlePayment ~ res:", res)
 
       router.push("/(tabs)/bookings");
     } catch (error) {
-      console.log(error, "this");
+      // console.log(error, "this");
 
       Toast.show("Payment Failed", {
         dangerColor: "red",
@@ -186,6 +189,9 @@ const CheckoutScreen: React.FC = () => {
       Toast.show("Booking ID is missing");
     }
     try {
+
+
+      // console.log(bookingId, "-1-1-11-", BookedData)
       const res = await axios.post(
         `${BACKEND}/api/v1/booking/confirm/${bookingId}`,
         {
@@ -193,28 +199,22 @@ const CheckoutScreen: React.FC = () => {
           paymentId: paymentId,
           paymentData: paymentData,
           paymentStatus: paymentStatus,
+          bookingData: BookedData,
         }
       );
+
+      console.log(bookingId, "-1-1-11-", paymentData, paymentId, paymentStatus, BookedData)
+
+      if(res.data.status === "success") {
+        Toast.show("Payment Success", {});
+      }
+
       return true;
     } catch (error) {
       return false;
     }
   };
 
-  // const PaymentScreen = async () => {
-  //   await handlePayment();
-
-  //   // if (isPaymentComplete) {
-
-  //   //   const res = await confirmPayment();
-
-  //   //   router.push('/(tabs)/bookings')
-  //   //   if (res) {
-  //   //     setinvoiceComplete(true);
-  //   //   } else {
-  //   //   }
-  //   // }
-  // };
   function formatSeatLabel(seatLabel) {
     const [row, column] = seatLabel.split("-");
     return `Row ${row}, Col ${column}`;
@@ -607,7 +607,7 @@ const CheckoutScreen: React.FC = () => {
                 }}
               >
                 {formatTimeSlots(
-                  BookedData?.timeSlots ?? BookedData.bookedSeat.timeSlots
+                  BookedData?.timeSlot ?? BookedData.bookedSeat.timeSlot
                 )}
               </Text>
             </View>

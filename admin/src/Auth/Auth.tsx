@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import studyMain from "../assets/images/studyMain.png";
 import reading from "../assets/images/reading 1.png";
@@ -10,9 +9,9 @@ import { BASEURL } from "@/lib/utils";
 // import { set } from "react-hook-form";
 import Loader from "@/components/Loader";
 import { toast } from "react-toastify";
+// import { ForgotPassword } from '@/screens/auth/forgotpassword';
 
 const Auth = ({ type }: { type: "signin" }) => {
-
   const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState({
     name: "",
@@ -23,31 +22,29 @@ const Auth = ({ type }: { type: "signin" }) => {
 
   const navigate = useNavigate();
 
-
-
   async function sendRequest() {
     if (type === "signin") {
       try {
         setLoading(true);
-        const response = await axios.post(`${BASEURL}/api/v1/admin/loginAdmin`, {
-          email: userInfo.email,
-          password: userInfo.password,
-        });
+        const response = await axios.post(
+          `${BASEURL}/api/v1/admin/loginAdmin`,
+          {
+            email: userInfo.email,
+            password: userInfo.password,
+          }
+        );
 
         if (response.data.success) {
-          console.log("🚀 ~ sendRequest ~ response:", response)
+          console.log("🚀 ~ sendRequest ~ response:", response);
 
           const token = response.data.token;
 
           const accountType = response.data.data.accountType;
-          const accountId = response.data.data._id;
-
+          const accountId = response.data.data.id;
 
           localStorage.setItem("token", token);
 
           localStorage.setItem("userId", accountId);
-
-
 
           localStorage.setItem("role", accountType);
 
@@ -55,21 +52,21 @@ const Auth = ({ type }: { type: "signin" }) => {
           // console.log("----65");
           setLoading(false);
 
-          if(role === "Owner"){
+          if (role === "Owner") {
             navigate("/admin");
             window.location.reload();
             return;
           }
 
-            //@ts-ignore
+          //@ts-ignore
           if (!response?.hasRooms) {
-            toast.info("You don't have any rooms yet. Please create a room to continue.");
+            toast.info(
+              "You don't have any rooms yet. Please create a room to continue."
+            );
 
             navigate("/manage-library/create-room");
             window.location.reload();
           } else {
-
-
             role && role === "Admin"
               ? navigate("/dashboard")
               : navigate("/admin", { replace: true });
@@ -82,7 +79,9 @@ const Auth = ({ type }: { type: "signin" }) => {
       } catch (e) {
         setLoading(false);
         console.error("Error during login:", e);
-        alert("Error while signing up. Please check the console for more details.");
+        alert(
+          "Error while signing up. Please check the console for more details."
+        );
       }
     }
   }
@@ -136,7 +135,6 @@ const Auth = ({ type }: { type: "signin" }) => {
             Hello! Let's get started
           </h6>
           <div className="px-20">
-
             {/* {showOtp && userInfo.phone >= 1000000 && (
               <div className="flex justify-between items-center gap-2 mb-4">
                 <input
@@ -171,30 +169,31 @@ const Auth = ({ type }: { type: "signin" }) => {
               }
             />
             <div>
-            {
-  loading ? (
-    <div className="flex justify-center items-center gap-2">
-      <Loader />
-    </div>
-  ) : (
-    <button
-      className="w-full bg-gradient-to-r from-sky-500 to-blue-300 text-white py-2 px-4 rounded-full mt-1 hover:bg-blue-600"
-      type="button"
-      onClick={sendRequest}
-    >
-      {type === "signin" ? "Sign In" : "Sign Up"}
-    </button>
-  )
-}
-              
-
+              {loading ? (
+                <div className="flex justify-center items-center gap-2">
+                  <Loader />
                 </div>
-          
-          </div>
+              ) : (
+                <button
+                  className="w-full bg-gradient-to-r from-sky-500 to-blue-300 text-white py-2 px-4 rounded-full mt-1 hover:bg-blue-600"
+                  type="button"
+                  onClick={sendRequest}
+                >
+                  {type === "signin" ? "Sign In" : "Sign Up"}
+                </button>
+              )}
+            </div>
+
+            <div>
+              <Link to="/forgot-password">
+                <p className="ml-40 text-blue-500">ForgotPassword</p>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
-      );
+    </div>
+  );
 };
 
-      export default Auth;
+export default Auth;
