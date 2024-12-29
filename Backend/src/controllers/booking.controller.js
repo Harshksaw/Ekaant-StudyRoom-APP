@@ -67,7 +67,7 @@ async function createBooking(req, res) {
       id: parseInt(userId),
 
       libraryId,
-      initialPrice,
+      initialPrice : parseInt(initialPrice),
       finalPrice,
       roomNo,
       forFriend: !forFriend ? null : forFriend,
