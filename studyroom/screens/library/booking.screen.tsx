@@ -158,7 +158,7 @@ const BookingScreen: React.FC = () => {
       BookedData.months
     ) {
       try {
-        console.log("🚀 ~ PreBook ~ BookedData:", BookedData.slot);
+        console.log("🚀 ~ PreBook ~ BookedData:", price);
         const response = await axios.post(
           `${BACKEND}/api/v1/booking/createBooking`,
           {
