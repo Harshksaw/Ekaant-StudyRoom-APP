@@ -66,6 +66,11 @@ async function createBooking(req, res) {
         .status(StatusCodes.NOT_FOUND)
         .json({ message: "User not found" });
     }
+    if(!libraryId || !initialPrice || !finalPrice || !timeSlot || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod){
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "Please provide all the required fields" });
+    }
     const bookingData = {
       id: parseInt(userId),
 
