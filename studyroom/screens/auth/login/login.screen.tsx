@@ -15,9 +15,7 @@ import {
   View,
   Image,
   SafeAreaView,
-  ActivityIndicator,
 } from "react-native";
-
 import { Toast } from "react-native-toast-notifications";
 
 export function maskPhoneNumber(phoneNumber?: string | number) {
@@ -42,6 +40,7 @@ const LoginScreen: React.FC = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
   const [attempts, setAttempts] = useState(0);
+
   useEffect(() => {
     const getme = async () => {
       const res = await axios.get(`${BACKEND}/me`);
@@ -52,22 +51,28 @@ const LoginScreen: React.FC = () => {
     getme();
   }, []);
 
-  const handleOtpChange = (text, index) => {
+  const handleOtpChange = (text: string, index) => {
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
+
+    if (newOtp.join("").length === 4) {
+      loginWithOtp(newOtp.join(""));
+    }
+
     if (text && index < 3) {
       inputRefs[index + 1].current.focus();
     }
   };
 
-  const loginWithOtp = async () => {
+  const loginWithOtp = async (text?: string) => {
     setLoading(true);
     try {
       const response = await axios.post(`${BACKEND}/api/v1/auth/otp-login`, {
         phoneNumber,
-        otp: otp.join(""),
+        otp: text ?? otp.join(""),
       });
+      console.log("🚀 ~ loginWithOtp ~ response:", response)
 
       setLoading(false);
       if (response.status === 200) {
@@ -93,10 +98,10 @@ const LoginScreen: React.FC = () => {
       }
     } catch (error) {
       setLoading(false);
-      Toast.show("Login failed", {
+      Toast.show("User Does Not exist", {
         type: "danger",
         placement: "top",
-        duration: 2000,
+        duration: 4000,
       });
     }
   };
@@ -265,12 +270,19 @@ const LoginScreen: React.FC = () => {
         />
         <Image source={require("../../../assets/images/bubble 01.png")} />
       </View>
+      <Image
+        style={{ position: "absolute", top: "25%", right: 0 }}
+        source={require("../../../assets/images/bubblle 03.png")}
+      />
+      <Image
+        style={{ position: "absolute", bottom: "8%", right: 0 }}
+        source={require("../../../assets/images/bubble 04.png")}
+      />
 
       <View
         style={{
           flex: 1,
           justifyContent: "center",
-          // alignItems: "center",
           marginTop: h(200),
           width: "100%",
           height: "100%",
@@ -412,7 +424,7 @@ const LoginScreen: React.FC = () => {
                 flexDirection: "row",
                 justifyContent: "flex-start",
                 alignItems: "center",
-                backgroundColor: "#fff",
+                backgroundColor: "#f8f8f8",
               }}
             >
               <Text
@@ -498,7 +510,9 @@ const LoginScreen: React.FC = () => {
               >
                 {otp.map((value, index) => (
                   <TextInput
+                    autoComplete="sms-otp"
                     key={index}
+                    autoFocus={index ? false : true}
                     ref={inputRefs[index]}
                     style={{
                       width: 50,
@@ -579,6 +593,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
+    backgroundColor: "#fff",
   },
 
   inputContainer: {
@@ -588,9 +603,9 @@ const styles = StyleSheet.create({
   input: {
     height: 55,
     borderRadius: 20,
+    backgroundColor: "#f8f8f8",
     paddingLeft: w(10),
     fontSize: 16,
-    backgroundColor: "white",
     color: "#434343",
     fontFamily: ff.deckMedium,
   },

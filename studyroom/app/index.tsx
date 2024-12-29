@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loader from "@/components/loader/loader";
 
-
 export default function TabsIndex() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(false);
@@ -23,8 +22,6 @@ export default function TabsIndex() {
   // };
 
   // printAllAsyncStorageData();
-
-
 
   useEffect(() => {
     const checkToken = async () => {
@@ -46,8 +43,5 @@ export default function TabsIndex() {
     return <Loader />;
   }
 
-  return (
-    <Redirect href={user ? "/(tabs)" : "/(routes)/onboarding"} />
-
-  );
+  return <Redirect href={user ? "/(tabs)" : "/(routes)/onboarding"} />;
 }

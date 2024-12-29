@@ -55,12 +55,7 @@ async function createBooking(req, res) {
 
     const user = await prisma.user.findFirst({ where: { id: userId } });
 
-    const bookingFinalDate = prisma.booking.create({
-      data: {
-        bookingFinalDate: bookingFinalDate,
-      },
-    });
-
+    const bookingFinalDate = new Date(bookingDate);
     bookingFinalDate.setMonth(bookingFinalDate.getMonth() + bookingPeriod);
 
     if (!user) {

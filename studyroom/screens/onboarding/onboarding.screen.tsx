@@ -23,12 +23,18 @@ import useUser from "@/hooks/auth/useUser";
 import { ImageBackground } from "expo-image";
 import { Image } from "react-native";
 import ff from "@/constants/fonts";
-import { h } from "@/constants/size";
+import { h, vh, vw } from "@/constants/size";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
+import { useEffect, useState } from "react";
 
 const { width, height } = Dimensions.get("screen");
 
 export default function OnBoardingScreen() {
-  const { user, error, loading } = useUser();
   // useEffect(() => {
   //   console.log(user, error, loading);
   // }, []);
@@ -39,6 +45,30 @@ export default function OnBoardingScreen() {
   //   require("../../assets/icons/Slide3.svg"),
   //   require("../../assets/icons/Slide4.svg"),
   // ]);
+
+  const scale = useSharedValue(0);
+  const offset: any = useSharedValue({ x: 0, y: 0 });
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    scale.value = withTiming(0, { duration: 0 });
+    offset.value = withTiming({ x: 100, y: 100 }, { duration: 0 });
+    setTimeout(() => {
+      scale.value = withTiming(1, { duration: 700 });
+      offset.value = withTiming({ x: 0, y: 0 }, { duration: 700 });
+    }, 200);
+  }, [active]);
+
+  // Create an animated style using the shared values
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { scale: scale.value },
+        { translateX: offset.value.x },
+        { translateY: offset.value.y },
+      ],
+    };
+  });
 
   const arr = [
     "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722596840/assets/z98t3eznkwvgenvmpoxy.png",
@@ -108,10 +138,14 @@ export default function OnBoardingScreen() {
           activeDotStyle: {
             width: 23,
             height: 8.86,
-            left: -10,
+            left: -7,
           },
+
           dotSpacing: 20,
+          animated: true,
+          dotIncreaseSize: 1.2,
         }}
+        setChanged={() => setActive(!active)}
         data={data}
         buttonsConfig={{
           disabled: true,
@@ -120,8 +154,9 @@ export default function OnBoardingScreen() {
           return (
             <ImageBackground
               style={{
-                flex: 1,
-                width: "100%",
+                width: vw,
+                height: vh,
+                backgroundColor: "red",
               }}
               source={item?.image}
             >
@@ -131,13 +166,16 @@ export default function OnBoardingScreen() {
                   paddingVertical: height * 0.15,
                 }}
               >
-                <Image
+                <Animated.Image
                   source={{ uri: item?.mainImg }}
-                  style={{
-                    width: width * 0.8,
-                    height: width * 0.8,
-                    alignSelf: "center",
-                  }}
+                  style={[
+                    {
+                      width: width * 0.8,
+                      height: width * 0.8,
+                      alignSelf: "center",
+                    },
+                    animatedStyle,
+                  ]}
                 />
 
                 <View

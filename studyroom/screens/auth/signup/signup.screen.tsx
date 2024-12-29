@@ -20,7 +20,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import axios from "axios";
 
-import { Feather } from "@expo/vector-icons";
 import { BACKEND } from "@/utils/config";
 import Button from "@/components/Button";
 import { Toast } from "react-native-toast-notifications";
@@ -53,6 +52,9 @@ export default function SignUpScreen() {
     newOtp[index] = value;
     setOtp(newOtp);
 
+    if (newOtp.join("").length === 4) {
+      verifyOtp(newOtp.join(""));
+    }
     // Move to next input if value is entered
     if (value && index < otp.length - 1) {
       otpRefs.current[index + 1].focus();
@@ -91,65 +93,74 @@ export default function SignUpScreen() {
   };
 
   const sendOtp = async () => {
+    if (
+      !userInfo.email ||
+      !userInfo.name ||
+      !userInfo.password ||
+      !userInfo.phone
+    ) {
+      Toast.show("Fill all feilds to proceed", {
+        type: "danger",
+        placement: "top",
+        duration: 2000,
+      });
+      return;
+    }
     try {
-      console.log(userInfo.phone);
-      setShowOtp(true);
       setLoading(true);
       const response = await axios.post(`${BACKEND}/api/v1/auth/otp`, {
         phoneNumber: userInfo.phone,
       });
-      console.log(response.data);
+      setShowOtp(true);
       setLoading(false);
     } catch (error) {
+      Toast.show("Registration failed", {
+        type: "danger",
+        placement: "top",
+        duration: 2000,
+      });
       console.log(error);
       setLoading(false);
     }
   };
 
-  // useEffect hook to trigger the API call when all OTP fields are filled
-  useEffect(() => {
-    // Check if all OTP fields are filled
-    const allFieldsFilled = otp.every((value) => value.trim() !== "");
-    if (allFieldsFilled) {
-      // Make your API call here
-      console.log("Making API call with OTP:", otp.join(""));
+  const verifyOtp = async (textOtp?: string) => {
+    const otpValue = textOtp ?? otp.join("");
 
-      verifyOtp();
-    }
-  }, [otp]);
-  const verifyOtp = async () => {
     try {
-      const otpValue = otp.join("");
-      console.log(otpValue, "aleuu");
+      let response = await axios.post(`${BACKEND}/api/v1/auth/verifyOtp`, {
+        phoneNumber: userInfo.phone,
+        otp: otpValue,
+      });
 
-      try {
-        let response = await axios.post(`${BACKEND}/api/v1/auth/verifyOtp`, {
-          phoneNumber: userInfo.phone,
-          otp: otpValue,
+      if (response.status == 200) {
+        setVerified(true);
+        setotpVerified(true);
+        Toast.show("Verified OTP", {
+          type: "danger",
+          duration: 2000,
+          placement: "top",
+          style: {
+            backgroundColor: "green",
+            borderRadius: 10,
+            padding: 10,
+            marginTop: 50,
+          },
         });
-
-        if (response.status == 200) {
-          setVerified(true);
-          setotpVerified(true);
-          Toast.show("Verified OTP", {
-            type: "danger",
-            duration: 2000,
-            placement: "top",
-            style: {
-              backgroundColor: "green",
-              borderRadius: 10,
-              padding: 10,
-              marginTop: 50,
-            },
-          });
-        }
-
-        // console.log("🚀 ~ verifyOtp ~ response:", response)
-      } catch (error) {
-        console.log(error);
+        handleSignUp();
       }
     } catch (error) {
-      console.log(error);
+      Toast.show(error?.message ?? "something went wrong", {
+        type: "danger",
+        duration: 2000,
+        placement: "top",
+        style: {
+          backgroundColor: "green",
+          borderRadius: 10,
+          padding: 10,
+          marginTop: 50,
+        },
+      });
     }
   };
 
@@ -199,7 +210,6 @@ export default function SignUpScreen() {
           },
         }
       );
-      // console.log("🚀 ~ handleSignUp ~ response:", response);
       if (response.status == 200 || 201) {
         await AsyncStorage.setItem(
           "token",
@@ -255,7 +265,6 @@ export default function SignUpScreen() {
           flex: 1,
           flexDirection: "column",
           gap: 60,
-          backgroundColor: "#fff",
         }}
       >
         <View style={styles.signInImage}>
@@ -570,10 +579,9 @@ export default function SignUpScreen() {
                       padding: 20,
                       borderRadius: 8,
                       marginHorizontal: 16,
-
                       marginTop: 15,
                     }}
-                    onPress={() => (showOtp ? handleSignUp() : sendOtp())}
+                    onPress={() => (showOtp ? verifyOtp() : sendOtp())}
                   >
                     <Button
                       text={showOtp ? "Submit" : "Register"}
@@ -581,41 +589,42 @@ export default function SignUpScreen() {
                     />
                   </TouchableOpacity>
                 )}
-<View style={{
-  flexDirection: "row",
-  justifyContent: "center",
-  alignItems: "center",
-  marginTop: 20,
-}}>
-
-<Text
-  style={{
-    color: "#000",
-    fontSize: 20,
-    lineHeight: 20,
-    textAlign: "center",
-    fontFamily: ff.textMedium,
-    letterSpacing: 0.9,
-  }}
->
-  Already registered?
-</Text>
-<Link href={{ pathname: "login" }}>
-  <Text
-    style={{
-      color: "#0077B6",
-      fontSize: 25,
-      lineHeight: 25,
-      textAlign: "center",
-      fontFamily: ff.textMedium,
-      letterSpacing: 0.9,
-    }}
-  >
-    Login
-  </Text>
-</Link>
-</View>
-
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: 20,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#000",
+                      fontSize: 20,
+                      lineHeight: 20,
+                      textAlign: "center",
+                      fontFamily: ff.textMedium,
+                      letterSpacing: 0.9,
+                    }}
+                  >
+                    Already registered?
+                  </Text>
+                  <Link href={{ pathname: "login" }}>
+                    <Text
+                      style={{
+                        color: "#0077B6",
+                        fontSize: 18,
+                        lineHeight: 25,
+                        textAlign: "center",
+                        fontFamily: ff.deckBold,
+                        letterSpacing: 0.9,
+                      }}
+                    >
+                      {" "}
+                      Login
+                    </Text>
+                  </Link>
+                </View>
 
                 <TouchableOpacity
                   style={{
@@ -704,7 +713,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingLeft: w(55),
     fontSize: 16,
-    backgroundColor: "#e6e6e6",
+    backgroundColor: "#f8f8f8",
     color: "#434343",
     fontFamily: ff.deckMedium,
   },

@@ -1,4 +1,3 @@
-
 import ff from "@/constants/fonts";
 import { w } from "@/constants/size";
 
@@ -54,19 +53,11 @@ export default function Bookings() {
         const res = await axios.get(
           `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
         );
-          // console.log("🚀 ~ getBookings ~ userId:", userId)
-
-        if (res.status === 200) {
-          Toast.show("Bookings Fetched", {
-            type: "success",
-            duration: 2000,
-          });
-        } 
-        console.log(res.data.bookings, "this is response");
 
         setData(res.data.bookings);
       } catch (error) {
-        console.error(error, "this is error");2
+        console.error(error, "this is error");
+        2;
       }
     } else {
     }
@@ -97,8 +88,6 @@ export default function Bookings() {
         padding: 0,
       }}
     >
-   
-
       <View
         style={{
           flexDirection: "column",
@@ -168,10 +157,8 @@ export default function Bookings() {
           )}
           {data &&
             data.map((item, index) => (
-
-           
               <TouchableOpacity
-              key={index}
+                key={index}
                 style={{
                   borderRadius: 15,
                   borderWidth: 1.5,
@@ -182,12 +169,11 @@ export default function Bookings() {
                 // key={item.id}
                 onPress={() =>
                   router.push({
-                    pathname: "/(routes)/invoice",  
+                    pathname: "/(routes)/invoice",
                     params: { item: JSON.stringify(item), id: item.id },
                   })
                 }
               >
-                
                 <View style={styles.card}>
                   <Image
                     source={{
@@ -262,59 +248,44 @@ export default function Bookings() {
                             textAlign: "left",
                           }}
                         >
-                         {/* {
+                          {/* {
                         item.bookedSeat.seatLabel} */}
                         </Text>
                       </View>
                       <View
                         style={{
                           flexDirection: "row",
-                          
+
                           gap: 3,
                         }}
                       >
                         <Ionicons name="time-outline" size={16} color="black" />
-                        <View style={{
-                          flexDirection: "column",
-                        }}>
-                        <Text
+                        <View
                           style={{
-                            fontSize: 12.14,
-                            fontFamily: ff.deckRegular,
-                            lineHeight: 18.21,
-                            textAlign: "left",
-
-                            
-
-                            
+                            flexDirection: "column",
                           }}
                         >
-                          Period:{" "}
-                          {(item.bookingDate).slice(0,10)}  {"-"}
-                     
-                    
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 12.14,
-                            fontFamily: ff.deckRegular,
-                            lineHeight: 18.21,
-                            textAlign: "left",
-
-                            
-
-                            
-                          }}
-                        >
-
-                          {(item.bookingFinalDate).slice(0,10)}
-                     
-                    
-                        </Text>
-
+                          <Text
+                            style={{
+                              fontSize: 12.14,
+                              fontFamily: ff.deckRegular,
+                              lineHeight: 18.21,
+                              textAlign: "left",
+                            }}
+                          >
+                            Period: {item.bookingDate.slice(0, 10)} {"-"}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 12.14,
+                              fontFamily: ff.deckRegular,
+                              lineHeight: 18.21,
+                              textAlign: "left",
+                            }}
+                          >
+                            {item.bookingFinalDate.slice(0, 10)}
+                          </Text>
                         </View>
-                     
-                  
                       </View>
                     </View>
 
@@ -360,8 +331,6 @@ export default function Bookings() {
                   </View>
                 </View>
               </TouchableOpacity>
-
-
             ))}
         </ScrollView>
       </View>

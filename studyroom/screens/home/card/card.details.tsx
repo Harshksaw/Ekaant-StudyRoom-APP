@@ -30,6 +30,7 @@ import axios from "axios";
 import { BACKEND } from "@/utils/config";
 import ReviewList from "@/components/Review";
 import ff from "@/constants/fonts";
+import TimeSlot from '../../../components/TimeSlot';
 
 interface CardDetailScreenProps {
   // Define your params here
@@ -39,7 +40,8 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const width = Dimensions.get("window").width;
   const [userReviews, setUserReviews] = useState([]);
   const params = useRoute();
-  const data = JSON.parse(params.params.item);
+  const libData = JSON.parse(params.params.item);
+  const data = { ...libData, _id: libData.id };
 
   const [city, setCity] = useState("Delhi");
 
@@ -83,7 +85,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
   useEffect(() => {
     locationData();
-    getUserReviews();
+    // getUserReviews();
   }, []);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -100,7 +102,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   };
   const amenities = data.amenities || {};
   const trueAmenities = Object.keys(amenities).filter((key) => amenities[key]);
-
+  // console.log(data.roo, "data");
   const price = data.Price || 0;
 
   const [scrollIndex, setScrollIndex] = useState<number>(0);
@@ -251,6 +253,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 {trueAmenities.length > 0 ? (
                   trueAmenities.map((amenity, index) => (
                     <View
+                    key={index}
                       style={{
                         borderWidth: 1,
                         borderColor: "#d0cdcd",

@@ -1,6 +1,8 @@
 import React from "react";
 import { Text, StyleSheet, ActivityIndicator } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import ff from "@/constants/fonts";
+import { w } from "@/constants/size";
 
 interface ButtonProps {
   text: string;
@@ -15,8 +17,8 @@ const Button: React.FC<ButtonProps> = ({
   text,
   width,
   radius = 15,
-  height = 50,
-  fontSizeR = 18,
+  height = null,
+  fontSizeR = w(17),
   loading,
 }: ButtonProps) => {
   return (
@@ -53,7 +55,7 @@ const Button: React.FC<ButtonProps> = ({
 const styles = StyleSheet.create({
   buttonWrapper: {
     borderRadius: 15,
-    paddingVertical: 15,
+    paddingVertical: 18,
     paddingHorizontal: 20,
     alignItems: "center",
     justifyContent: "center",
@@ -65,9 +67,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-
-    letterSpacing: 3,
-    fontWeight: "600",
+    letterSpacing: 1.3,
+    fontFamily: ff.textBold,
   },
 });
 

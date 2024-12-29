@@ -54,7 +54,7 @@ const BookingScreen: React.FC = () => {
   const [bookingId, setBookingId] = useState(null);
   const [finalPrice, setFinalPrice] = useState(0);
   const [currentRoomNo, setCurrentRoomNo] = useState(1);
-  const [forFriend, setForFriend] = useState(false);
+  const [showRooms, setShowRooms] = useState(false);
   const [Loading, setLoading] = useState(true);
 
   const [libraryDetails, setLibraryDetails] = useState<any>(null);
@@ -72,7 +72,7 @@ const BookingScreen: React.FC = () => {
     room: currentRoomNo,
     slot: selectedSlots,
   };
-  console.log("🚀 ~ BookedData.selectedDate:",selectedDate)
+  console.log("🚀 ~ BookedData.selectedDate:", selectedDate);
 
   useEffect(() => {
     const totalPrice = selectedSlots.reduce(
@@ -195,7 +195,6 @@ const BookingScreen: React.FC = () => {
     }
   };
 
-
   const resetBookingState = () => {
     setSelectedSeat(null);
     // setSelectedDate(null);
@@ -235,7 +234,7 @@ const BookingScreen: React.FC = () => {
     fetchRooms().then((data) => {
       setData(data.rooms);
       setLoading(false);
-      console.log("🚀 ~ fetchRooms ~ data.rooms:", data.rooms)
+      console.log("🚀 ~ fetchRooms ~ data.rooms:", data.rooms);
     });
   }, []);
 
@@ -354,35 +353,59 @@ const BookingScreen: React.FC = () => {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
+          position: "relative",
+          marginHorizontal: w(20),
+          marginBottom: h(10),
         }}
       >
-        <Picker
-          selectedValue={currentRoomNo}
-          onValueChange={(itemValue, itemIndex) => {
-            setCurrentRoomNo(itemValue);
-          }}
+        <TouchableOpacity
+          onPress={() => setShowRooms(!showRooms)}
           style={{
-            width: "40%",
-            fontFamily: ff.deckMedium,
+            borderWidth: 1,
+            borderColor: "gray",
+            paddingVertical: w(7),
+            paddingHorizontal: w(10),
+            borderRadius: 5,
           }}
-          mode="dropdown"
         >
-          {data?.map((item, index) => (
-            <Picker.Item
-              key={index}
-              style={{
-                fontSize: 20,
-                borderRadius: 50,
-              }}
-              key={item.roomNo}
-              label={` Room ${item.roomName ? item.roomName : item.roomNo}`}
-              value={`${item.roomNo}`}
-            />
-          ))}
-        </Picker>
-        <View style={{ marginRight: w(28) }}>
-          <ToggleBookingButton />
-        </View>
+          <Text style={{ fontSize: w(12), fontFamily: ff.deckMedium }}>
+            Room {currentRoomNo}
+          </Text>
+        </TouchableOpacity>
+        {showRooms && (
+          <View
+            style={{
+              position: "absolute",
+              backgroundColor: "#fff",
+              padding: w(10),
+              zIndex: 999,
+              top: "100%",
+            }}
+          >
+            {data?.map((item: any, index: number) => (
+              <TouchableOpacity
+                key={index}
+                style={{
+                  borderRadius: 5,
+                  paddingHorizontal: w(25),
+                  paddingVertical: w(8),
+                  borderWidth: 1,
+                  marginBottom: 5,
+                }}
+                onPress={() => {
+                  setCurrentRoomNo(item.roomNo);
+                  setShowRooms(false);
+                }}
+              >
+                <Text style={{ fontSize: w(12), fontFamily: ff.deckMedium }}>
+                  {` Room ${item.roomNo}`}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        <ToggleBookingButton />
       </View>
 
       <ScrollView
@@ -394,11 +417,10 @@ const BookingScreen: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        
         {data && data[currentRoomNo - 1].seats.length !== 0 && (
           <Seats
             onSeatSelect={handleSeatSelect}
-            door={data[currentRoomNo -1].doorPosition}
+            door={data[currentRoomNo - 1].doorPosition}
             SeatLayout={data[currentRoomNo - 1].seats}
             currentRoom={currentRoomNo}
           />

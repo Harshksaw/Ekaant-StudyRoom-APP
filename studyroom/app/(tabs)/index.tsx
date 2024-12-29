@@ -66,10 +66,7 @@ export default function index() {
 
       setLocationData(response.data.data.locations);
 
-      AsyncStorage.setItem(
-        "RegistrationFee",
-        JSON.stringify(response.data.data.RegistrationFee)
-      );
+     
     } catch (error) {
       setBannerImage([]);
       console.error("Failed to fetch banner image data:", error);
@@ -102,29 +99,19 @@ export default function index() {
           type: "error",
           duration: 3000,
         });
-        router.push("/(routes)/location");
+        // router.push("/(routes)/location");
         return;
       }
 
       const fetchedData = await fetchRoomData({ selectedLocation });
-      console.log("🚀 ~ fetchLibraryDate ~ fetchedData:", fetchedData)
+      console.log("🚀 ~ fetchLibraryDate ~ fetchedData:", fetchedData);
 
       setData(fetchedData || []);
-      
-
-      Toast.show(" fetched room data", {
-        type: "Success",
-
-        successColor: "#00ff55",
-
-        duration: 3000,
-      });
     } catch (error) {
       Toast.show("Failed to fetch room data", {
         type: "error",
         duration: 3000,
       });
-      console.error("Failed to fetch room data:", error);
       setData(null);
 
       setNotAvailable(true);
@@ -483,6 +470,7 @@ export default function index() {
                 letterSpacing: 1.2,
                 fontFamily: ff.deckBold,
                 color: "black",
+                marginTop: 3,
               }}
             >
               Welcome,{" "}
@@ -494,8 +482,9 @@ export default function index() {
                   color: "#0077B6",
                 }}
               >
-                {userData ? userData?.split(" ")[0] : "Board"}👋
+                {userData ? userData?.split(" ")[0] : "Board"}
               </Text>
+              😊
             </Text>
           </View>
 

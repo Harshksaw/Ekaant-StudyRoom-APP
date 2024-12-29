@@ -10,7 +10,7 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-
+import { LinearGradient } from 'expo-linear-gradient'; 
 const windowWidth = Dimensions.get('window').width;
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
@@ -173,8 +173,33 @@ const SeatsComponent = ({
           },
         ]}>
           <View style={[styles.box, { width: boxWidth, height: boxHeight }]}>
-            <View style={[styles.line, styles.lineLeft]} />
-            <View style={[styles.line, styles.lineRight]} />
+          <LinearGradient
+          start={{ x: 0, y: 1 }}
+              colors={['#90E0EF', '#90E0EF', '#0077B6']} // Gradient colors
+              style={[styles.line, styles.lineLeft, {
+                position: 'absolute',
+                borderRadius: 20,
+                height: '80%',
+                backgroundColor:'transparent',  
+                width: 8,
+              }]}
+            >
+              {/* <View style={[styles.line, styles.lineLeft]} /> */}
+            </LinearGradient>
+            <LinearGradient
+              start={{ x: 0, y: 1 }}
+              colors={['#192fae', '#0077B6', '#90E0EF']} // Gradient colors
+              style={[styles.line, styles.lineRight,{
+                position: 'absolute',
+                borderRadius: 20,
+                height: '80%',
+                backgroundColor:'transparent',  
+                
+                width: 8,
+              }]}
+            >
+              {/* <View style={[styles.line, styles.lineRight]} /> */}
+            </LinearGradient>
           </View>
         </View>
 
@@ -217,8 +242,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 20,
-    borderBlockColor: 'black',
+    borderBlockColor: 'gray',
     borderWidth: 2,
+    borderRadius: 10,
     padding: 5,
     marginHorizontal: 5,
   },
@@ -275,16 +301,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: '80%',
     width: 2, // Adjust line thickness
-    backgroundColor: '#0078d7', // Adjust line color
+    // backgroundColor: '#0078d7', // Adjust line color
   },
   lineLeft: {
     top: '10%',
-    left: '10%',
+    left: '-5%',
     transform: [{ rotate: '30deg' }], // Adjust angle
   },
   lineRight: {
     top: '10%',
-    right: '10%',
+    right: '-5%',
     transform: [{ rotate: '-30deg' }], // Adjust angle
   },
 });
