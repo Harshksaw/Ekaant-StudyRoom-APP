@@ -66,10 +66,7 @@ export default function index() {
 
       setLocationData(response.data.data.locations);
 
-      AsyncStorage.setItem(
-        "RegistrationFee",
-        JSON.stringify(response.data.data.RegistrationFee)
-      );
+     
     } catch (error) {
       setBannerImage([]);
       console.error("Failed to fetch banner image data:", error);

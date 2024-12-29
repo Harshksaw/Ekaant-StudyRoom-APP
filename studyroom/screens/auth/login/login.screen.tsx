@@ -72,6 +72,7 @@ const LoginScreen: React.FC = () => {
         phoneNumber,
         otp: text ?? otp.join(""),
       });
+      console.log("🚀 ~ loginWithOtp ~ response:", response)
 
       setLoading(false);
       if (response.status === 200) {
@@ -97,12 +98,10 @@ const LoginScreen: React.FC = () => {
       }
     } catch (error) {
       setLoading(false);
-      console.log(error);
-
-      Toast.show("Login failed", {
+      Toast.show("User Does Not exist", {
         type: "danger",
         placement: "top",
-        duration: 2000,
+        duration: 4000,
       });
     }
   };
