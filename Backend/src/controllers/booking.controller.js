@@ -53,10 +53,13 @@ async function createBooking(req, res) {
       bookingPeriod,
     } = req.body;
 
+    console.log("🚀 ~ createBooking ~ req.body", req.body);
+
     const user = await prisma.user.findFirst({ where: { id: userId } });
 
     const bookingFinalDate = new Date(bookingDate);
     bookingFinalDate.setMonth(bookingFinalDate.getMonth() + bookingPeriod);
+    console.log("🚀 ~ createBooking ~ bookingFinalDate:", bookingFinalDate)
 
     if (!user) {
       return res
