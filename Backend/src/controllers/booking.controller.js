@@ -7,6 +7,7 @@ const { Booking } = require("../models/booking.model");
 const { Library } = require("../models/library.model");
 const { sendInvoiceEmail } = require("../utils/mails/invoice.mail");
 const { PrismaClient, Prisma } = require("@prisma/client");
+const { connect } = require("mongoose");
 
 const prisma = new PrismaClient();
 const JWT_SECRET = "MY_SECRET_KEY";
@@ -75,8 +76,10 @@ async function createBooking(req, res) {
 
     const newBooking = await prisma.booking.create({
       data: {
-        userId: parseInt(userId),
-        libraryId,
+        userId: connect({
+          id: userId,
+        }),
+        library: { connect: { id: libraryId } },
         initialPrice: parseFloat(initialPrice),
         finalPrice: parseFloat(finalPrice),
         roomNo,
