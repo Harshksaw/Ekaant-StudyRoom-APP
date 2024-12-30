@@ -175,8 +175,8 @@ model Booking {
   bookedSeat        Json      // Details of the booked seat
   bookingDate       DateTime
   bookingFinalDate  DateTime?
-  friendId  Int?     @unique @default(autoincrement())
-  friend    Friend?  @relation(fields: [friendId], references: [id], name: "BookingFriend")
+  friendId          Int?      @unique
+  friend            Friend?   @relation(fields: [friendId], references: [id], name: "BookingFriend")
   bookingPeriod     Int       @default(1)
   transactionDetails Json?    // Details of the transaction
   bookingStatus     BookingStatus @default(PENDING)
@@ -195,10 +195,10 @@ model Friend {
   id          Int     @id @default(autoincrement())
   name        String  
   email       String?
-  phoneNumber  String? // Consider using BigInt if you need to store it as a number and perform numeric operations
+  phoneNumber  String? 
   relationship String?
   userId      Int?    
-  user         User?    @relation(fields: [userId], references: [id])
+ user        User?   @relation(fields: [userId], references: [id])
   booking     Booking? @relation(name: "BookingFriend")
 }
 
