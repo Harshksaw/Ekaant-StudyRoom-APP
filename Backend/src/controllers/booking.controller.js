@@ -59,34 +59,37 @@ async function createBooking(req, res) {
 
     const bookingFinalDate = new Date(bookingDate);
     bookingFinalDate.setMonth(bookingFinalDate.getMonth() + bookingPeriod);
-    console.log("🚀 ~ createBooking ~ bookingFinalDate:", bookingFinalDate)
+    console.log("🚀 ~ createBooking ~ bookingFinalDate:", bookingFinalDate);
 
     if (!user) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ message: "User not found" });
     }
-    if(!libraryId || !initialPrice || !finalPrice || !timeSlot || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod){
+
+    if (!libraryId || !initialPrice || !finalPrice || !timeSlot || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "Please provide all the required fields" });
     }
-    const bookingData = {
-      id: parseInt(userId),
 
-      libraryId,
-      initialPrice : parseInt(initialPrice),
-      finalPrice,
-      roomNo,
-      forFriend: !forFriend ? null : forFriend,
-      timeSlotDetails: timeSlot,
-      bookedSeat,
-      bookingDate,
-      bookingPeriod,
-      bookingFinalDate: bookingFinalDate,
-    };
+    const newBooking = await prisma.booking.create({
+      data: {
+        userId: parseInt(userId),
+        libraryId,
+        initialPrice: parseFloat(initialPrice),
+        finalPrice: parseFloat(finalPrice),
+        roomNo,
+        forFriend: !forFriend ? null : forFriend,
+        timeSlotDetails: timeSlot,
+        bookedSeat,
+        bookingDate,
+        bookingPeriod,
+        bookingFinalDate: bookingFinalDate,
+      },
+    });
 
-    const newBooking = await prisma.booking.create({ data: { bookingData } });
+
 
     // Now retrieve the booking with populate
     // const populatedBooking = await
