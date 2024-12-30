@@ -148,11 +148,11 @@ app.get('/createBackup', async(req, res) => {
   //   message: "Locations deleted successfully",
   //   data: updatedLocations,
   // });
-  const res = await createBackup();
+  const response = await createBackup();
   console.log("Backup created successfully");
   return res.json({
     success: true,
-    data: res,
+    data: response,
     message: "Backup created successfully",
   });
 
