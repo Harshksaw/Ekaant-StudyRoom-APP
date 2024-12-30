@@ -76,7 +76,7 @@ async function createBooking(req, res) {
 
     const newBooking = await prisma.booking.create({
       data: {
-        userId: connect({
+        user: connect({
           id: userId,
         }),
         library: { connect: { id: libraryId } },
