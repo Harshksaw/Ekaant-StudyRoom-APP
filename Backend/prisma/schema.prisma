@@ -176,6 +176,7 @@ model Booking {
   bookingFinalDate  DateTime?
   // Remove friendId and friend relation
   bookingPeriod     Int       @default(1)
+
   transactionDetails Json?    // Details of the transaction
   bookingStatus     BookingStatus @default(PENDING)
   approved          Boolean   @default(false)
