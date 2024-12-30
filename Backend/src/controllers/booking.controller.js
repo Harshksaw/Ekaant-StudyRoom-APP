@@ -74,6 +74,17 @@ async function createBooking(req, res) {
         .json({ message: "Please provide all the required fields" });
     }
 
+    let friendConnect = undefined;
+    if (forFriend) {
+      const friend = await prisma.friend.findFirst({ where: { id: forFriend } });
+      if (!friend) {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "Friend not found" });
+      }
+      friendConnect = { connect: { id: forFriend } };
+    }
+
     const newBooking = await prisma.booking.create({
       data: {
         user: { connect: { id: userId } },
@@ -81,7 +92,7 @@ async function createBooking(req, res) {
         initialPrice: parseFloat(initialPrice),
         finalPrice: parseFloat(finalPrice),
         roomNo,
-        friend: forFriend ? { connect: { id: forFriend } } : undefined,
+      friend: friendConnect,
         timeSlotDetails: timeSlot,
         bookedSeat,
         bookingDate,
