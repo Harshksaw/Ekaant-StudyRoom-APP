@@ -222,6 +222,46 @@ async function deleteLocations(req, res) {
   }
 }
 
+
+async function createBackup(req, res) {
+  try {
+    const containerId = 'ekaant-studyroom-app-db-1'; // Use your container name
+    const backupFile = `/tmp/backup_${Date.now()}.dump`;
+    const command = `docker exec -t ${containerId} pg_dump -U my_user -d my_database -F c -b -v -f ${backupFile}`;
+
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error creating backup: ${error.message}`);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error creating backup', error: error.message });
+      }
+      if (stderr) {
+        console.error(`Backup stderr: ${stderr}`);
+      }
+      console.log(`Backup stdout: ${stdout}`);
+
+      // Optionally, copy the backup file to the host
+      const hostBackupPath = `/path/to/host/backup/backup_${Date.now()}.dump`;
+      const copyCommand = `docker cp ${containerId}:${backupFile} ${hostBackupPath}`;
+
+      exec(copyCommand, (copyError, copyStdout, copyStderr) => {
+        if (copyError) {
+          console.error(`Error copying backup to host: ${copyError.message}`);
+          return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error copying backup to host', error: copyError.message });
+        }
+        if (copyStderr) {
+          console.error(`Copy stderr: ${copyStderr}`);
+        }
+        console.log(`Copy stdout: ${copyStdout}`);
+
+        return res.status(StatusCodes.OK).json({ message: 'Backup created successfully', backupPath: hostBackupPath });
+      });
+    });
+  } catch (error) {
+    console.error(`Error in createBackup: ${error.message}`);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error creating backup', error: error.message });
+  }
+}
+
 module.exports = {
   ping,
   createApp,
@@ -231,4 +271,5 @@ module.exports = {
   getCityCoord,
   getLocations,
   deleteLocations,
+  createBackup,
 };

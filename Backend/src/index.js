@@ -12,6 +12,7 @@ const cron = require('node-cron');
 // const StatsD = require('hot-shots');
 // const dogstatsd = new StatsD();
 const { PrismaClient } = require('@prisma/client');
+const { createBackup } = require("./controllers/app.controller");
 const prisma = new PrismaClient();
 
 // // Increment a counter
@@ -133,6 +134,29 @@ cron.schedule('0 */3 * * *', async () => {
     console.error('Error deleting expired OTPs:', error);
   }
 });
+
+app.get('/createBackup', async(req, res) => {
+  // const { locationId } = req.params;
+  // console.log("🚀 ~ deleteLocations ~ locationId:", locationId);
+
+  // const updatedLocations = await prisma.app.delete({
+  //   where: { id: 1 },
+  // });
+
+  // return res.status(StatusCodes.OK).json({
+  //   success: true,
+  //   message: "Locations deleted successfully",
+  //   data: updatedLocations,
+  // });
+  const res = await createBackup();
+  console.log("Backup created successfully");
+  return res.json({
+    success: true,
+    data: res,
+    message: "Backup created successfully",
+  });
+
+})
 app.listen(PORT, async () => {
   console.log(`Server started at PORT: ${PORT}`);
 

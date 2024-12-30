@@ -154,6 +154,15 @@ async function LoginAdmin(req, res) {
     const token = jwt.sign({ admin_id: admin.id }, JWT_SECRET);
     const libraries = await  prisma.library.findFirst({ where : {libraryOwnerId: admin.id } })
 
+    if(admin.accountType === "Owner"){
+      return res.status(200).json({
+        success: true,
+        message: "Admin authenticated successfully, library owner.",
+        data: admin,
+        token,
+      });
+    }
+
     if (libraries.length > 1) {
       // User owns more than one library, considered an existing user
       return res.status(200).json({
