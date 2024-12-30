@@ -76,9 +76,7 @@ async function createBooking(req, res) {
 
     const newBooking = await prisma.booking.create({
       data: {
-        user: connect({
-          id: userId,
-        }),
+        user: { connect: { id: userId } },
         library: { connect: { id: libraryId } },
         initialPrice: parseFloat(initialPrice),
         finalPrice: parseFloat(finalPrice),
@@ -93,11 +91,6 @@ async function createBooking(req, res) {
     });
 
 
-
-    // Now retrieve the booking with populate
-    // const populatedBooking = await
-    //   .populate("userId")
-    //   .populate("libraryId");
 
     return res.status(StatusCodes.CREATED).json({
       message: "Booking created successfully",
