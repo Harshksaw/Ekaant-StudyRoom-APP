@@ -83,7 +83,7 @@ async function createBooking(req, res) {
         initialPrice: parseFloat(initialPrice),
         finalPrice: parseFloat(finalPrice),
         roomNo,
-        forFriend: !forFriend ? null : forFriend,
+        friend: forFriend ? { connect: { id: forFriend } } : undefined,
         timeSlotDetails: timeSlot,
         bookedSeat,
         bookingDate,
