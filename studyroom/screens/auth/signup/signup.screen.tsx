@@ -30,11 +30,8 @@ import { maskPhoneNumber } from "../login/login.screen";
 export default function SignUpScreen() {
   const [buttonSpinner, setButtonSpinner] = useState(false);
 
-  const [otpVerified, setotpVerified] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
 
-  const [verified, setVerified] = useState(false);
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
@@ -107,20 +104,20 @@ export default function SignUpScreen() {
       return;
     }
     try {
-      setLoading(true);
+      setButtonSpinner(true);
       const response = await axios.post(`${BACKEND}/api/v1/auth/otp`, {
         phoneNumber: userInfo.phone,
       });
       setShowOtp(true);
-      setLoading(false);
+      setButtonSpinner(false);
     } catch (error) {
       Toast.show("Registration failed", {
         type: "danger",
         placement: "top",
         duration: 2000,
       });
-      console.log(error);
-      setLoading(false);
+      console.log(error?.response?.data);
+      setButtonSpinner(false);
     }
   };
 
@@ -134,20 +131,7 @@ export default function SignUpScreen() {
       });
 
       if (response.status == 200) {
-        setVerified(true);
-        setotpVerified(true);
-        Toast.show("Verified OTP", {
-          type: "danger",
-          duration: 2000,
-          placement: "top",
-          style: {
-            backgroundColor: "green",
-            borderRadius: 10,
-            padding: 10,
-            marginTop: 50,
-          },
-        });
-        handleSignUp();
+        handleSignUp(true);
       }
     } catch (error) {
       Toast.show(error?.message ?? "something went wrong", {
@@ -165,8 +149,8 @@ export default function SignUpScreen() {
   };
 
   //signup api
-  const handleSignUp = async () => {
-    if (!otpVerified) {
+  const handleSignUp = async (verified = true) => {
+    if (!verified) {
       Toast.show("Please verify OTP", {
         type: "danger",
         duration: 3000,

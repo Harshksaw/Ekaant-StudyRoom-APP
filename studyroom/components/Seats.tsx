@@ -1,6 +1,6 @@
 import { DeskGreen } from "@/assets";
 import ff from "@/constants/fonts";
-import { height, w, width } from "@/constants/size";
+import { h, height, w, width } from "@/constants/size";
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from "react-native";
 
-const windowWidth = Dimensions.get('window').width;
+const windowWidth = Dimensions.get("window").width;
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
   console.log("🚀 ~ Seat ~ roation:", rotation);
@@ -41,14 +41,7 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
   );
 };
 
-const SeatsComponent = ({
-  layout,
-  bookedSeats,
-  onSeatSelect,
-  currentRoom,
-  door,
-}) => {
-
+const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
   const [selectedSeat, setSelectedSeat] = useState(null);
 
   // console.log(door);
@@ -63,8 +56,6 @@ const SeatsComponent = ({
     ];
 
     const doorIndex = door.findIndex((value) => value === 1);
-    console.log("🚀 ~ getDoorPosition ~ door:", door)
-    console.log("🚀 ~ getDoorPosition ~ doorIndex:", doorIndex);
 
     switch (doorIndex) {
       case 0:
@@ -82,12 +73,8 @@ const SeatsComponent = ({
     }
   };
 
-
-  useEffect(() => {
-
-  }, [door]);
+  useEffect(() => {}, [door]);
   const doorPosition = getDoorPosition();
-
 
   const handleSelect = (seatData) => {
     if (selectedSeat && seatData.seatId === selectedSeat.seatId) {
@@ -151,41 +138,55 @@ const SeatsComponent = ({
   };
   const boxWidth = windowWidth > 480 ? 100 : 50;
   const boxHeight = windowWidth > 480 ? 100 : 50;
+
   return (
-    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
-    // contentContainerStyle={{ alignItems: "center" }} // Center content horizontally
-    >
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
       <View style={styles.container}>
         {createSeatGrid()}
 
-        <View style={[
-          doorPosition,
-          {
-            position: 'relative',
-            top: 20,
-            marginHorizontal: 30,
-            paddingHorizontal:20,
-
-            bottom: 0,
-
-
-
-          },
-        ]}>
+        <View
+          style={[
+            doorPosition,
+            {
+              position: "relative",
+              top: h(15),
+              marginHorizontal: 30,
+              paddingHorizontal: 20,
+              bottom: 0,
+            },
+          ]}
+        >
+          <Text
+            style={{
+              position: "absolute",
+              top: 0,
+              zIndex: 1,
+              fontFamily: ff.deckBold,
+              textAlign: "center",
+              transform: [{ translateX: 20 }],
+              marginTop: h(-4),
+            }}
+          >
+            Entrance
+          </Text>
           <View style={[styles.box, { width: boxWidth, height: boxHeight }]}>
             <View style={[styles.line, styles.lineLeft]} />
             <View style={[styles.line, styles.lineRight]} />
           </View>
         </View>
-
       </View>
     </ScrollView>
   );
 };
 
-export default function Seats({ onSeatSelect, SeatLayout, currentRoom, door }) {
+export default function Seats({
+  onSeatSelect,
+  SeatLayout,
+  currentRoom,
+  door,
+}: any) {
   console.log("🚀 ~ Seats ~ SeatLayout:", SeatLayout);
-  const handleSeatSelect = (selectedSeat) => {
+  const handleSeatSelect = (selectedSeat: any) => {
     onSeatSelect(selectedSeat);
   };
 
@@ -211,13 +212,12 @@ export default function Seats({ onSeatSelect, SeatLayout, currentRoom, door }) {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 20,
-    borderBlockColor: 'black',
+    borderBlockColor: "black",
     borderWidth: 2,
     padding: 5,
     marginHorizontal: 5,
@@ -240,8 +240,8 @@ const styles = StyleSheet.create({
     backgroundColor: isBooked
       ? "#ffcc7f64"
       : isSelected
-        ? "#8cf39c7d"
-        : "transparent",
+      ? "#8cf39c7d"
+      : "transparent",
     borderWidth: 1.3,
     aspectRatio: 1.1 / 0.9,
 
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   container1: {
-    position: 'relative',
+    position: "relative",
     top: 20,
     // flex: 1,
     // marginTop:40,
@@ -265,35 +265,26 @@ const styles = StyleSheet.create({
     // backgroundColor: '#f0f0f0', // Optional background for visibility
   },
   box: {
-    position: 'relative',
-    backgroundColor: 'white',
+    position: "relative",
+    backgroundColor: "white",
     borderWidth: 5, // Optional border
-    borderColor: '#fff', // Optional border
-
+    borderColor: "#fff", // Optional border
   },
   line: {
-    position: 'absolute',
-    height: '80%',
+    position: "absolute",
+    height: "80%",
     width: 2, // Adjust line thickness
-    backgroundColor: '#0078d7', // Adjust line color
+
+    backgroundColor: "#0078d7", // Adjust line color
   },
   lineLeft: {
-    top: '10%',
-    left: '10%',
-    transform: [{ rotate: '30deg' }], // Adjust angle
+    top: "10%",
+    left: "10%",
+    transform: [{ rotate: "30deg" }], // Adjust angle
   },
   lineRight: {
-    top: '10%',
-    right: '10%',
-    transform: [{ rotate: '-30deg' }], // Adjust angle
+    top: "10%",
+    right: "10%",
+    transform: [{ rotate: "-30deg" }], // Adjust angle
   },
 });
-
-
-
-
-
-
-
-
-

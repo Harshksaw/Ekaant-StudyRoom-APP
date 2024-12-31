@@ -10,8 +10,7 @@ import {
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
-import Carousel from "react-native-reanimated-carousel";
-import AnimatedDotsCarousel from "react-native-animated-dots-carousel";
+// import Carousel from "react-native-reanimated-carousel";
 import Header from "@/components/Header";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -35,6 +34,8 @@ import { setAppDetails } from "@/redux/appSlice";
 import CustomLoader from "@/components/CustomLoader";
 import { Toast } from "react-native-toast-notifications";
 import ff from "@/constants/fonts";
+import Slider from "@/components/Slider";
+import { h } from "@/constants/size";
 
 export default function index() {
   const width = Dimensions.get("window").width;
@@ -356,81 +357,42 @@ export default function index() {
 
   const Carasoul = useMemo(() => {
     return (
-      <>
-        <Carousel
-          loop
-          width={width}
-          height={height / 3}
-          autoPlay
-          pagingEnabled
-          data={bannerImage}
-          defaultIndex={scrollIndex}
-          scrollAnimationDuration={2000}
-          onProgressChange={(_, absoluteProgress) => {
-            if (absoluteProgress.toString()?.length < 3) {
-              setScrollIndex(Math.trunc(absoluteProgress));
-            }
-          }}
-          panGestureHandlerProps={{
-            activeOffsetX: [-10, 10],
-          }}
-          renderItem={({ item, index }) => (
-            <View
+      <Slider
+        paginationConfig={{
+          dotSize: 8.86,
+          activeColor: "rgba(0, 119, 182, 1)",
+          color: "#6FC8E2",
+          bottomOffset: 0,
+          activeDotStyle: {
+            width: 23,
+            height: 8.86,
+            left: -7,
+          },
+
+          dotSpacing: 20,
+          animated: true,
+          dotIncreaseSize: 1.2,
+        }}
+        data={bannerImage}
+        buttonsConfig={{
+          disabled: true,
+        }}
+        renderItem={({ item, index }) => {
+          return (
+            <Image
+              key={index}
+              source={item}
               style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 30,
-              }}
-            >
-              {bannerImage.length === 0 ? (
-                assets &&
-                assets[4] && (
-                  <Image
-                    source={assets[4]}
-                    style={{
-                      marginTop: -50,
-                      width: width * 0.95,
-                      height: height * 0.25,
-                      borderRadius: 20,
-                      // borderTopLeftRadius: 40,
-                      // borderTopRightRadius: 40,
-                    }}
-                  />
-                )
-              ) : (
-                <Image
-                  source={item}
-                  style={{
-                    marginTop: -50,
-                    width: width * 0.95,
-                    height: height * 0.25,
-                    borderRadius: 20,
-                    objectFit: "cover",
-                    // overflow: 'hidden'
-                    // borderTopLeftRadius: 40,
-                    // borderTopRightRadius: 40,
-                  }}
-                />
-              )}
-            </View>
-          )}
-        />
-        <View style={{ alignSelf: "center", gap: 10, flexDirection: "row" }}>
-          {bannerImage.map((_, ind) => (
-            <View
-              key={ind}
-              style={{
-                width: scrollIndex === ind ? 23 : 8.86,
-                backgroundColor:
-                  scrollIndex === ind ? "rgba(0, 119, 182, 1)" : "#6FC8E2",
-                height: 8.86,
+                marginTop: -50,
+                width: width * 0.95,
+                height: height * 0.25,
                 borderRadius: 20,
+                objectFit: "cover",
               }}
             />
-          ))}
-        </View>
-      </>
+          );
+        }}
+      />
     );
   }, [width, bannerImage, scrollIndex]);
 
@@ -473,7 +435,6 @@ export default function index() {
                 letterSpacing: 1.2,
                 fontFamily: ff.deckBold,
                 color: "black",
-                marginTop: 3,
               }}
             >
               Welcome,{" "}
@@ -487,7 +448,17 @@ export default function index() {
               >
                 {userData ? userData?.split(" ")[0] : "Board"}
               </Text>
-              😊
+              <Text
+                style={{
+                  fontSize: 25,
+                  letterSpacing: 1.2,
+                  fontFamily: ff.deckBold,
+                  color: "#0077B6",
+                }}
+              >
+                {" "}
+                😊
+              </Text>
             </Text>
           </View>
 
@@ -570,13 +541,11 @@ const styles = StyleSheet.create({
     height: 80,
   },
   welcome: {
-    height: 35,
     marginLeft: 20,
     justifyContent: "flex-start",
     alignItems: "flex-start",
   },
   carousel: {
-    marginTop: -5,
     height: height * 0.32,
     marginBottom: 10,
   },
