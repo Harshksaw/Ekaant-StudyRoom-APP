@@ -1,9 +1,9 @@
-// import ProfileScreen from "@/screens/profile/profile.screen";
+
 
 import { Feather, Fontisto, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import {
   View,
@@ -29,12 +29,13 @@ export default function profile() {
   const dispatch = useDispatch();
 
   const logout = async () => {
+
     await AsyncStorage.removeItem("token");
     await AsyncStorage.removeItem("userData");
     dispatch(resetUserState());
     dispatch(resetAppState());
     dispatch(resetBookingState());
-
+ 
     router.push("(routes)/welcome" as any);
   };
 
@@ -310,7 +311,9 @@ export default function profile() {
             marginTop: h(35),
           }}
         >
-          <TouchableOpacity onPress={() => logout()}>
+          <TouchableOpacity onPress={() => logout()}
+            
+            >
             <View
               style={{
                 marginTop: 10,
