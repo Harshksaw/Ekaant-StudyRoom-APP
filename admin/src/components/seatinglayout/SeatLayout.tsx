@@ -221,14 +221,14 @@ const Seats = ({ onSeatSelect ,seatLayout }: SeatsProps) => {
 
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="bg-blue-500 hover:bg-blue-70570 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         >
           Save
         </button>
       </form>
 
       <div>
-        <p>
+        <p className="text-lg font-bold text-center text-red-500">
           Above 5 columns , is not recommended as wont fit on Mobile screen
           properly
         </p>
