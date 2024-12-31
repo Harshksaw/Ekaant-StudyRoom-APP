@@ -54,11 +54,11 @@ export default function Bookings() {
         const res = await axios.get(
           `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
         );
-        console.log("🚀 ~ getBookings ~ res:", res.data)
+        // console.log("🚀 ~ getBookings ~ res:", res.data)
 
         setData(res.data);
       } catch (error) {
-        console.error(error, "this is error");
+        // console.error(error, "this is error");
 
       }
     } else {

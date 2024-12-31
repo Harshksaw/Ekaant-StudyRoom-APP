@@ -331,8 +331,14 @@ export default function index() {
   };
 
   const userDetails = useSelector((state: any) => state.user);
+  // console.log("🚀 ~ index ~ userDetails:", userDetails)
+  const u = JSON.parse(userDetails?.details)
+  console.log("🚀 ~ index ~ userDetails:", u.user.username)
 
+  const username = u.user.username
+  console.log("🚀 ~ index ~ username:", username)
   const userData = JSON.parse(userDetails.details)?.data?.username;
+  // console.log("🚀 ~ index ~ userData:", userData)
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -482,7 +488,7 @@ export default function index() {
                   color: "#0077B6",
                 }}
               >
-                {userData ? userData?.split(" ")[0] : "Board"}
+                {username}
               </Text>
               😊
             </Text>

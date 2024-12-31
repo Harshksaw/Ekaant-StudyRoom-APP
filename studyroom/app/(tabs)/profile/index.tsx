@@ -148,7 +148,7 @@ export default function profile() {
               alignSelf: "center",
             }}
           >
-            {userData?.username || "Harsh"}
+            {userData?.username || "---"}
           </Text>
           <Text
             style={{
@@ -157,7 +157,7 @@ export default function profile() {
               alignSelf: "center",
             }}
           >
-            <Text> {userData?.email || "Harsh@gmail.com"}</Text>
+            <Text> {userData?.email || "----"}</Text>
           </Text>
 
           <View
