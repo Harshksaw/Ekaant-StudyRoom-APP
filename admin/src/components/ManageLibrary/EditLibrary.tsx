@@ -5,6 +5,8 @@ import { BASEURL } from "@/lib/utils";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useParams } from "react-router-dom";
 
+
+
 interface Room {
   _id: string;
   roomNo: number;
@@ -241,12 +243,15 @@ const EditLibrary = () => {
     }
   };
   const handleRoomNameChange = async (room) => {
+    
     console.log("🚀 ~ handleRoomNameChange ~ roomId:", room)
+    toast.loading("Updating Room Name")
     try {
       const res = await axios.post(`${BASEURL}/api/v1/library/editRoomName/${room.id}`, {
         newName: roomName
       })
       if (res.status === 200) {
+        toast.dismiss()
         toast.success("Room Name Updated Successfully")
       }
 

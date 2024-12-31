@@ -163,10 +163,9 @@ model TimeSlot {
 model Booking {
   id                Int       @id @default(autoincrement())
   userId            Int
-   user       User?    @relation(fields: [userId], references: [id], name: "UserBookings")
-
+  user              User      @relation(fields: [userId], references: [id], name: "UserBookings")
   libraryId         Int
-  library   Library? @relation(fields: [libraryId], references: [id], name: "LibraryBookings")
+  library           Library   @relation(fields: [libraryId], references: [id], name: "LibraryBookings")
   initialPrice      Float
   finalPrice        Float
   paid              Boolean   @default(false)
@@ -175,15 +174,17 @@ model Booking {
   bookedSeat        Json      // Details of the booked seat
   bookingDate       DateTime
   bookingFinalDate  DateTime?
-  friendId  Int?     @unique @default(autoincrement())
-  friend    Friend?  @relation(fields: [friendId], references: [id], name: "BookingFriend")
+  // Remove friendId and friend relation
   bookingPeriod     Int       @default(1)
+
   transactionDetails Json?    // Details of the transaction
   bookingStatus     BookingStatus @default(PENDING)
   approved          Boolean   @default(false)
   timeStamp         DateTime  @default(now())
-  invoice   Invoice?
+  invoice           Invoice?
+  friends           BookingFriend[] @relation("BookingFriends")
 }
+
 
 enum BookingStatus {
   PENDING
@@ -195,12 +196,21 @@ model Friend {
   id          Int     @id @default(autoincrement())
   name        String  
   email       String?
-  phoneNumber  String? // Consider using BigInt if you need to store it as a number and perform numeric operations
+  phoneNumber  String? 
   relationship String?
   userId      Int?    
-  user         User?    @relation(fields: [userId], references: [id])
-  booking     Booking? @relation(name: "BookingFriend")
+  user        User?   @relation(fields: [userId], references: [id])
+  bookingFriends BookingFriend[] @relation("BookingFriends")
 }
+
+model BookingFriend {
+  id        Int     @id @default(autoincrement())
+  bookingId Int
+  booking   Booking @relation(fields: [bookingId], references: [id], name: "BookingFriends")
+  friendId  Int
+  friend    Friend  @relation(fields: [friendId], references: [id], name: "BookingFriends")
+}
+
 
 
 

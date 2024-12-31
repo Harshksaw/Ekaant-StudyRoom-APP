@@ -54,26 +54,21 @@ const Header = ({ color }: any) => {
             Location
           </Text>
 
-          <Ionicons name="chevron-down-outline" size={20} color={"#0077B6"} />
+          <Ionicons name="chevron-down-outline" size={20} color={"#258de9"}  />
         </View>
 
         <View style={styles.selectedCity}>
           {color === "white" ? (
-            <Ionicons name="location-outline" size={20} color={color} />
+            <Ionicons name="location-outline" size={20} color={"#258de9"}
+
+
+            />
           ) : (
-            assets &&
-            assets[3] && (
-              <Image
-                source={assets[3]}
-                style={{
-                  width: 20,
-                  height: 20,
-                }}
-              />
-            )
+            <Ionicons name="location-outline" size={20} color={color} />
+            
           )}
           <Text style={styles.selectedCityText}>
-            {selectedLocation ? `${selectedLocation}, IN` : "No location"}
+            {selectedLocation ? `${selectedLocation},IN` : "No location"}
           </Text>
         </View>
       </View>
@@ -155,8 +150,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   selectedCityText: {
+    lineHeight: 24,
+
+    
     fontSize: 18,
     fontFamily: ff.deckMedium,
+    flexWrap: "nowrap",
     marginLeft: 5,
   },
 });

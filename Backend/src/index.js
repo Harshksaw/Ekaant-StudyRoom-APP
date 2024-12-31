@@ -4,7 +4,7 @@ const cors = require("cors");
 const { PORT } = require("./config/server.config");
 const apiRouter = require("./routes");
 const errorHandler = require("./utils/errorHandler");
-const connectToDB = require("./config/db.config");
+
 const path = require('path'); 
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 require("dotenv").config();
@@ -12,6 +12,7 @@ const cron = require('node-cron');
 // const StatsD = require('hot-shots');
 // const dogstatsd = new StatsD();
 const { PrismaClient } = require('@prisma/client');
+const { createBackup } = require("./controllers/app.controller");
 const prisma = new PrismaClient();
 
 // // Increment a counter
@@ -133,8 +134,31 @@ cron.schedule('0 */3 * * *', async () => {
     console.error('Error deleting expired OTPs:', error);
   }
 });
+
+app.get('/createBackup', async(req, res) => {
+  // const { locationId } = req.params;
+  // console.log("🚀 ~ deleteLocations ~ locationId:", locationId);
+
+  // const updatedLocations = await prisma.app.delete({
+  //   where: { id: 1 },
+  // });
+
+  // return res.status(StatusCodes.OK).json({
+  //   success: true,
+  //   message: "Locations deleted successfully",
+  //   data: updatedLocations,
+  // });
+  const response = await createBackup();
+  console.log("Backup created successfully");
+  return res.json({
+    success: true,
+    data: response,
+    message: "Backup created successfully",
+  });
+
+})
 app.listen(PORT, async () => {
   console.log(`Server started at PORT: ${PORT}`);
-  // await connectToDB();
+
   console.log("Successfully connected to db");
 });

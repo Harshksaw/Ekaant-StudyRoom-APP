@@ -364,8 +364,8 @@ const Success = () => (
 const DeskGreen = ({ fill = "#ffd230", ...props }: any) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={40}
-    height={40}
+    width={32}
+    height={32}
     rotation={props.rotation}
     viewBox="0 0 48 48"
     {...props}

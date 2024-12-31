@@ -115,10 +115,10 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
 
   const createReview = async () => {
     const user = await AsyncStorage.getItem("userData");
-    console.log("🚀 ~ createReview ~ user:", user)
+    // console.log("🚀 ~ createReview ~ user:", user)
     const u = JSON.parse(user);
-    console.log("🚀 ~ createReview ~ u:", u)
-    console.log( "_---",libraryId, reviewMessage, rating, u.data);
+    // console.log("🚀 ~ createReview ~ u:", u)
+    // console.log( "_---",libraryId, reviewMessage, rating, u.data);
 
     try {
       const response = await axios.post(
@@ -130,19 +130,32 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
         }
       );
 
-      console.log("🚀 ~ createReview ~ response.data", response.data);
+      // console.log("🚀 ~ createReview ~ response.data", response.data);
       if (response.status === 200) {
         Toast.show("Review added successfully", {
           type: "success",
         });
       }
+      if(response.status === 400){
+        Toast.show("Review already exists", {
+          type: "error",
+          duration: 3000,
+
+        });
+      }
+
     } catch (err) {
       console.log("Error", err.message);
       setError(err.message);
+      Toast.show("Review already exists", {
+        type: "error",
+        duration: 3000,
+
+      });
 
       setTimeout(() => {
         setError(null);
-      }, 3000);
+      }, 2000);
     } finally {
       setLoading(false);
     }
@@ -270,8 +283,40 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
               margin: 10,
             }}
             onChangeText={(text) => setReviewMessage(text)}
-            onEndEditing={createReview}
+            // onEndEditing={createReview}
           />
+          {
+            reviewMessage.length > 0 && rating > 0 ? (
+              <TouchableOpacity onPress={createReview}
+              style={{
+                backgroundColor: "#F0F0F0",
+                padding: 10,
+                borderRadius: 20,
+                margin: 10,
+                textAlign: "center",
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "center",
+                paddingHorizontal: 20,
+                paddingVertical: 10,
+                borderWidth: 0.3,
+                borderColor: "#dad9d9",
+                elevation: 1,
+              }}
+
+              >
+                <Text>
+
+                Submit Review
+                </Text>
+                </TouchableOpacity>
+            )
+            : (
+              <Text style={styles.errorText}>
+                Fill the review and rating
+              </Text>
+            )
+          }
         </KeyboardAvoidingView>
       </View>
     </View>
@@ -335,7 +380,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
-    fontSize: 20,
+    fontSize: 14,
     textAlign: "center",
     margin: 20,
   },

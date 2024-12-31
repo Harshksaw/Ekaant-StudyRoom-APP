@@ -46,6 +46,7 @@ export default function Bookings() {
 
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
+    console.log("🚀 ~ getBookings ~ userId:", userId)
 
     if (userId) {
       // Check if userId is not null
@@ -57,7 +58,7 @@ export default function Bookings() {
         setData(res.data.bookings);
       } catch (error) {
         console.error(error, "this is error");
-        2;
+
       }
     } else {
     }

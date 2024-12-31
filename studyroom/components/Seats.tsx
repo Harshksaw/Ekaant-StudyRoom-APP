@@ -10,8 +10,13 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
+<<<<<<< HEAD
 
 const windowWidth = Dimensions.get("window").width;
+=======
+import { LinearGradient } from 'expo-linear-gradient'; 
+const windowWidth = Dimensions.get('window').width;
+>>>>>>> bcf9395fdaf807432eabe0b8e61702bc08993c82
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
   console.log("🚀 ~ Seat ~ roation:", rotation);
@@ -170,8 +175,33 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
             Entrance
           </Text>
           <View style={[styles.box, { width: boxWidth, height: boxHeight }]}>
-            <View style={[styles.line, styles.lineLeft]} />
-            <View style={[styles.line, styles.lineRight]} />
+          <LinearGradient
+          start={{ x: 0, y: 1 }}
+              colors={['#90E0EF', '#90E0EF', '#0077B6']} // Gradient colors
+              style={[styles.line, styles.lineLeft, {
+                position: 'absolute',
+                borderRadius: 20,
+                height: '80%',
+                backgroundColor:'transparent',  
+                width: 8,
+              }]}
+            >
+              {/* <View style={[styles.line, styles.lineLeft]} /> */}
+            </LinearGradient>
+            <LinearGradient
+              start={{ x: 0, y: 1 }}
+              colors={['#192fae', '#0077B6', '#90E0EF']} // Gradient colors
+              style={[styles.line, styles.lineRight,{
+                position: 'absolute',
+                borderRadius: 20,
+                height: '80%',
+                backgroundColor:'transparent',  
+                
+                width: 8,
+              }]}
+            >
+              {/* <View style={[styles.line, styles.lineRight]} /> */}
+            </LinearGradient>
           </View>
         </View>
       </View>
@@ -217,8 +247,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 20,
+<<<<<<< HEAD
     borderBlockColor: "black",
+=======
+    borderBlockColor: 'gray',
+>>>>>>> bcf9395fdaf807432eabe0b8e61702bc08993c82
     borderWidth: 2,
+    borderRadius: 10,
     padding: 5,
     marginHorizontal: 5,
   },
@@ -238,7 +273,7 @@ const styles = StyleSheet.create({
     height: 70,
 
     backgroundColor: isBooked
-      ? "#ffcc7f64"
+      ? "#e8e9de"
       : isSelected
       ? "#8cf39c7d"
       : "transparent",
@@ -274,6 +309,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: "80%",
     width: 2, // Adjust line thickness
+<<<<<<< HEAD
 
     backgroundColor: "#0078d7", // Adjust line color
   },
@@ -286,5 +322,18 @@ const styles = StyleSheet.create({
     top: "10%",
     right: "10%",
     transform: [{ rotate: "-30deg" }], // Adjust angle
+=======
+    // backgroundColor: '#0078d7', // Adjust line color
+  },
+  lineLeft: {
+    top: '10%',
+    left: '-5%',
+    transform: [{ rotate: '30deg' }], // Adjust angle
+  },
+  lineRight: {
+    top: '10%',
+    right: '-5%',
+    transform: [{ rotate: '-30deg' }], // Adjust angle
+>>>>>>> bcf9395fdaf807432eabe0b8e61702bc08993c82
   },
 });

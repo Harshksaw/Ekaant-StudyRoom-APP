@@ -77,7 +77,7 @@ export default function NearBy() {
           <Text style={styles.cardAddress}>
             {item.shortDescription.slice(0, 100)}
           </Text>
-          <Text style={styles.cardPrice}>Price: ₹{item.RegistrationFees}</Text>
+          <Text style={styles.cardPrice}>Price: ₹{item.Price}</Text>
         </View>
       </View>
     </View>

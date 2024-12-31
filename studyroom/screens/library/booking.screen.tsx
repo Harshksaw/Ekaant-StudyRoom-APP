@@ -59,7 +59,8 @@ const BookingScreen: React.FC = () => {
 
   const [libraryDetails, setLibraryDetails] = useState<any>(null);
 
-  const price = bookingData.details.price || 0;
+  const price = bookingData.details.price;
+  console.log("🚀 ~ bookingData.details:", bookingData.details.price)
   const [totalAmount, setTotalAmount] = useState(0);
 
   // const subtotal = Number((price + registrationFees).toFixed(2));
@@ -98,7 +99,7 @@ const BookingScreen: React.FC = () => {
     } else {
       setSelectedSlots([...selectedSlots, selectedSlot]);
     }
-    // console.log(selectedSlots, "----------")
+
   };
 
   const toggleModal = () => {
@@ -136,7 +137,7 @@ const BookingScreen: React.FC = () => {
 
   const PreBook = async () => {
     const userData = await AsyncStorage.getItem("userData");
-    // console.log("----",libraryDetails)
+
     const userid = JSON.parse(userData);
 
     const userId = userid.data?.user_id?.id;
@@ -158,13 +159,13 @@ const BookingScreen: React.FC = () => {
       BookedData.months
     ) {
       try {
-        console.log("🚀 ~ PreBook ~ BookedData:", BookedData.slot);
+        console.log("🚀 ~ PreBook ~ BookedData:", price);
         const response = await axios.post(
           `${BACKEND}/api/v1/booking/createBooking`,
           {
             userId,
             libraryId: libraryDetails?.id,
-            initialPrice: price,
+            initialPrice: price ,
             finalPrice: totalAmount,
 
             timeSlot: BookedData.slot,
