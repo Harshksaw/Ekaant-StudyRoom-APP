@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     height: 70,
 
     backgroundColor: isBooked
-      ? "#ffcc7f64"
+      ? "#e8e9de"
       : isSelected
         ? "#8cf39c7d"
         : "transparent",

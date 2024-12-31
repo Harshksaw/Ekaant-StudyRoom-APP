@@ -120,7 +120,7 @@ async function getUserBookings(req, res) {
 
     const bookings = await prisma.booking.findMany({
       where: {
-        userId: id,
+        userId: parseInt(id),
         bookingStatus: "CONFIRMED",
       },
       include: {
