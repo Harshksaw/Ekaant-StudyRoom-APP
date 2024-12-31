@@ -68,7 +68,7 @@ const Header = ({ color }: any) => {
             
           )}
           <Text style={styles.selectedCityText}>
-            {selectedLocation ? `${selectedLocation}, IN` : "No location"}
+            {selectedLocation ? `${selectedLocation},IN` : "No location"}
           </Text>
         </View>
       </View>
@@ -150,8 +150,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   selectedCityText: {
+    lineHeight: 24,
+
+    
     fontSize: 18,
     fontFamily: ff.deckMedium,
+    flexWrap: "nowrap",
     marginLeft: 5,
   },
 });

@@ -57,6 +57,7 @@ async function createBooking(req, res) {
     console.log("🚀 ~ createBooking ~ req.body", req.body);
 
     const user = await prisma.user.findFirst({ where: { id: userId } });
+    console.log("🚀 ~ createBooking ~ user:", user)
 
     const bookingFinalDate = new Date(bookingDate);
     bookingFinalDate.setMonth(bookingFinalDate.getMonth() + bookingPeriod);
@@ -68,10 +69,11 @@ async function createBooking(req, res) {
         .json({ message: "User not found" });
     }
 
-    if (!libraryId || !initialPrice || !finalPrice || !timeSlot || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod) {
+    if (!libraryId || !initialPrice || !finalPrice || timeSlot.length === 0 || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod) {
+      console.log("-______-", libraryId, initialPrice, finalPrice, timeSlot.length, roomNo, bookedSeat, bookingDate, bookingPeriod);
       return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: "Please provide all the required fields" });
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Please provide all the required fields" });
     }
 
     // let friendConnect = undefined;
@@ -200,7 +202,7 @@ async function ConfrimBooking(req, res) {
     const updatedBooking = await prisma.booking.update(
       {
         where: {
-          id: id,
+          id: parseInt(id),
         },
         data: {
           transactionDetails: transactionDetailsData,

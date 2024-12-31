@@ -33,14 +33,15 @@ const CheckoutScreen: React.FC = () => {
   const [bookingId, setBookingId] = useState(null);
   const [userData, setUserData] = useState<any>(null);
   const [libraryData, setLibraryData] = useState(null);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState<String | null>(null);
+  console.log("🚀 ~ location:", location)
 
   //getting data  from booking screen
   const [libraryId, setLibraryId] = useState(null);
   const params = useRoute();
 
   const BookedData = JSON.parse(params.params.item);
-  console.log("🚀 ~ BookedData:", BookedData)
+  // console.log("🚀 ~ BookedData:", BookedData)
 
   if (!BookedData) {
     return (
@@ -55,9 +56,9 @@ const CheckoutScreen: React.FC = () => {
   // const BookingDate = BookedData?.bookingDate
   const BookingMonths = BookedData?.bookingPeriod;
   const BookingSeat = BookedData?.bookedSeat;
-  console.log("🚀 ~ BookingSeat:", BookingSeat)
+  // console.log("🚀 ~ BookingSeat:", BookingSeat)
   const BookingSlot = BookedData?.timeSlot;
-  console.log("🚀 ~ BookingSlot:", BookedData)
+  // console.log("🚀 ~ BookingSlot:", BookedData)
   const RoomNo = BookedData?.roomNo;
   const BookedDate = BookedData?.bookingDate.slice(0, 10);
 
@@ -82,11 +83,9 @@ const CheckoutScreen: React.FC = () => {
         // console.log("🚀 ~ useEffect ~ BookedData?.libraryId.price:", BookedData?.libraryId.price)
     setFinalAmount(BookedData?.totalAmount);
     const getLibraryData = async () => {
-      const loc = await getLocationName(
-        BookedData?.libraryId?.location[0],
-        BookedData?.libraryId?.location[1]
-      );
-      setLocation(loc);
+      setLocation(BookedData?.libraryId?.address);
+      console.log("🚀 ~ getLibraryData ~ BookedData?.address:", BookedData);
+
       try {
         const userDataId = await AsyncStorage.getItem("userData");
         const userid = JSON.parse(userDataId);
@@ -110,8 +109,10 @@ const CheckoutScreen: React.FC = () => {
         // router.back();
       }
     };
+
     getLibraryData();
   }, []);
+   
 
 
 
@@ -242,6 +243,8 @@ const CheckoutScreen: React.FC = () => {
       </View>
     );
   }
+
+  // console.log("🚀 ~ location:", location)
   return (
     <SafeAreaView
       style={{
@@ -432,7 +435,7 @@ const CheckoutScreen: React.FC = () => {
                 fontFamily: ff.deckRegular,
               }}
             >
-              {formatSeatLabel(BookedData?.bookedSeat?.seatLabel)}{" "}
+              {formatSeatLabel(BookedData?.bookedSeat?.seatId)}{" "}
             </Text>
           </View>
         </View>
@@ -551,7 +554,8 @@ const CheckoutScreen: React.FC = () => {
                     fontFamily: ff.deckRegular,
                   }}
                 >
-                  {location?.split(" ").slice(0, 2).join(" ")}{" "}
+                  {/* {location?.split(" ").slice(0, 2).join(" ")}{" "} */}
+                 { location?.line1}, {location?.city}
                 </Text>
               </View>
               <View
@@ -569,7 +573,7 @@ const CheckoutScreen: React.FC = () => {
                     fontFamily: ff.deckRegular,
                   }}
                 >
-                  {location?.split(" ").slice(3, 5).join(" ")}{" "}
+          {location?.state}, {location?.pincode}
                 </Text>
               </View>
             </View>
