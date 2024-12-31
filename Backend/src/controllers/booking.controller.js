@@ -200,7 +200,7 @@ async function ConfrimBooking(req, res) {
     const updatedBooking = await prisma.booking.update(
       {
         where: {
-          id: id,
+          id: parseInt(id),
         },
         data: {
           transactionDetails: transactionDetailsData,
