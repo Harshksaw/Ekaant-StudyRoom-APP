@@ -35,7 +35,8 @@ const FriendDetails = () => {
   const toggleSelection = () => setIsSelected(!isSelected);
   const AddFriend = async () => {
     // Implement seat booking logic using friend's details
-    const userId = await getUserId();
+    const userI = await getUserId();
+    const userId = userI.user.id || userI.data.user_id.id;
     console.log(userId, "userId");
     console.log(name, email, phoneNumber, "name, email, phoneNumber");
 
@@ -47,7 +48,7 @@ const FriendDetails = () => {
     console.log(res.status);
 
     if (res.status === 201 || res.status === 200) {
-      console.log(res.data, "----????");
+      // console.log(res.data, "----????");
       setFriends(res.data);
 
       console.log("Friend added successfully");

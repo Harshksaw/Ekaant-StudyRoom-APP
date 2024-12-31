@@ -462,7 +462,7 @@ const BookingScreen: React.FC = () => {
               return;
             }
             if (!selectedSeat) {
-              Toast.show("Please Select Select");
+              Toast.show("Please Select Another Seat");
               return;
             }
             setIsModalVisible(true);

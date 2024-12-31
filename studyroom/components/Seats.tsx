@@ -20,7 +20,7 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
 
   const getIcon = () => {
     if (isFullyBooked) {
-      return <DeskGreen fill={"#ffcc7f64"} rotation={rotation} />;
+      return <DeskGreen fill={"#ed0d0d"} rotation={rotation} />;
     } else if (isPartiallyBooked) {
       return <DeskGreen rotation={rotation} />;
     } else {
@@ -63,8 +63,8 @@ const SeatsComponent = ({
     ];
 
     const doorIndex = door.findIndex((value) => value === 1);
-    console.log("🚀 ~ getDoorPosition ~ door:", door)
-    console.log("🚀 ~ getDoorPosition ~ doorIndex:", doorIndex);
+    // console.log("🚀 ~ getDoorPosition ~ door:", door)
+    // console.log("🚀 ~ getDoorPosition ~ doorIndex:", doorIndex);
 
     switch (doorIndex) {
       case 0:
@@ -83,9 +83,9 @@ const SeatsComponent = ({
   };
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-  }, [door]);
+  // }, [door]);
   const doorPosition = getDoorPosition();
 
 
@@ -129,7 +129,7 @@ const SeatsComponent = ({
             const isBooked = bookedSeats.some(
               (bookedSeat) => bookedSeat.seatId === seat.seatId
             );
-            // console.log("🚀 ~ SeatsComponent ~ Seat:", seat)
+
             return (
               <Seat
                 key={`${rowIndex}-${colIndex}`}
@@ -141,7 +141,7 @@ const SeatsComponent = ({
               />
             );
           }
-          // Render an invisible placeholder for empty seats
+
           return (
             <View key={`${rowIndex}-${colIndex}`} style={styles.emptySeat} />
           );
