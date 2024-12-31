@@ -59,7 +59,8 @@ const BookingScreen: React.FC = () => {
 
   const [libraryDetails, setLibraryDetails] = useState<any>(null);
 
-  const price = bookingData.details.price || 0;
+  const price = bookingData.details.price;
+  console.log("🚀 ~ bookingData.details:", bookingData.details.price)
   const [totalAmount, setTotalAmount] = useState(0);
 
   // const subtotal = Number((price + registrationFees).toFixed(2));
@@ -98,7 +99,7 @@ const BookingScreen: React.FC = () => {
     } else {
       setSelectedSlots([...selectedSlots, selectedSlot]);
     }
-    // console.log(selectedSlots, "----------")
+
   };
 
   const toggleModal = () => {
@@ -164,7 +165,7 @@ const BookingScreen: React.FC = () => {
           {
             userId,
             libraryId: libraryDetails?.id,
-            initialPrice: price,
+            initialPrice: price ,
             finalPrice: totalAmount,
 
             timeSlot: BookedData.slot,
