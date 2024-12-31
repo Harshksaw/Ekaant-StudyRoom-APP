@@ -70,7 +70,7 @@ async function createBooking(req, res) {
     }
 
     if (!libraryId || !initialPrice || !finalPrice || timeSlot.length === 0 || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod) {
-      console.log("-______-")
+      console.log("-______-", libraryId, initialPrice, finalPrice, timeSlot.length, roomNo, bookedSeat, bookingDate, bookingPeriod);
       return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: "Please provide all the required fields" });
