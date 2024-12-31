@@ -69,10 +69,11 @@ async function createBooking(req, res) {
         .json({ message: "User not found" });
     }
 
-    if (!libraryId || !initialPrice || !finalPrice || timeSlot.length == 0  || !roomNo || bookedSeat == '' || bookingDate  == '' || !bookingPeriod) {
+    if (!libraryId || !initialPrice || !finalPrice || timeSlot.length === 0 || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod) {
+      console.log("-______-")
       return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: "Please provide all the required fields" });
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Please provide all the required fields" });
     }
 
     // let friendConnect = undefined;
