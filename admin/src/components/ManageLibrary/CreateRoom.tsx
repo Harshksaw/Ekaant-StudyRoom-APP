@@ -336,7 +336,8 @@ const CreateRoom: React.FC = () => {
                 onChange={(newValue) => handleTimeChange(index, "to", newValue)}
               />
             </div>
-            <div className="max-w-[30%] flex  flex-col  justify-center items-cente">
+            <div className="max-w-[30%] mx-auto   justify-center items-center flex flex-row">
+              <label className="text-2xl ">Price</label>
               <input
                 type="number"
                 className="form-input rounded-md ml-60"
@@ -353,10 +354,11 @@ const CreateRoom: React.FC = () => {
         <LocationSelector onLocationSelect={handleLocationSelect} />
       </div> */}
       <div className="flex-col  h-96 mt-20 mb-20 flex justify-center items-center rounded-lg">
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center mt-12 p-12">
           <button
             onClick={handleSubmit}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded focus:outline-none focus:shadow-outline"
             disabled={loading} // Disable button when loading
           >
             {loading ? "Submitting..." : "Submit"}{" "}
