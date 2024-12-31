@@ -54,8 +54,9 @@ export default function Bookings() {
         const res = await axios.get(
           `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
         );
+        console.log("🚀 ~ getBookings ~ res:", res.data)
 
-        setData(res.data.bookings);
+        setData(res.data);
       } catch (error) {
         console.error(error, "this is error");
 
@@ -179,7 +180,7 @@ export default function Bookings() {
                   <Image
                     source={{
                       uri:
-                        item.libraryId?.images[0] ||
+                        item.libraryId?.cardImage ||
                         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr_IULLOXJT80cLu-eRqkRGrHY23yLEx4p0w&s=10",
                     }}
                     style={{
@@ -222,8 +223,8 @@ export default function Bookings() {
                             letterSpacing: 1,
                           }}
                         >
-                          {item?.libraryId.name
-                            .split(" ")
+                          {item?.library.name
+                            ?.split(" ")
                             .slice(0, 2)
                             .join(" ")}
                         </Text>
@@ -249,8 +250,8 @@ export default function Bookings() {
                             textAlign: "left",
                           }}
                         >
-                          {/* {
-                        item.bookedSeat.seatLabel} */}
+                          {
+                        item.bookedSeat.seatLabel}
                         </Text>
                       </View>
                       <View
