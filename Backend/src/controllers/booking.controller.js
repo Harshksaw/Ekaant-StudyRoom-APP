@@ -214,7 +214,7 @@ async function findRoomAndSeat(libraryId, roomNo, seatId) {
   }
 }
 
-async function ConfirmBooking(req, res) {
+async function confirmBooking(req, res) {
   try {
     const { libraryId, roomNo, bookedSeat } = req.body;
 
@@ -300,6 +300,6 @@ module.exports = {
   getUserBookings,
   getBookingById,
   getBookingByLibId,
-  ConfirmBooking,
+  confirmBooking,
   generateInvoice,
 };

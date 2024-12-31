@@ -10,7 +10,7 @@ BookingRouter.post('/createBooking', BookingController.createBooking);
 BookingRouter.get('/getUserBookings/:id', BookingController.getUserBookings);
 BookingRouter.post('/getBookingById', BookingController.getBookingById);
 BookingRouter.post('/getBookingByLibId', BookingController.getBookingByLibId);
-BookingRouter.post('/confirm/:id', BookingController.ConfrimBooking);
+BookingRouter.post('/confirm/:id', BookingController.confirmBooking);
 
 BookingRouter.post('/invoices/:bookingId', BookingController.generateInvoice);
 
