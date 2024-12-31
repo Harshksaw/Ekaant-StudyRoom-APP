@@ -136,7 +136,7 @@ const BookingScreen: React.FC = () => {
 
   const PreBook = async () => {
     const userData = await AsyncStorage.getItem("userData");
-    // console.log("----",libraryDetails)
+
     const userid = JSON.parse(userData);
 
     const userId = userid.data?.user_id?.id;
