@@ -97,7 +97,16 @@ const LoginScreen: React.FC = () => {
         });
       }
     } catch (error) {
+      // console.log("🚀 ~ loginWithOtp ~ error:", error.response.status)
       setLoading(false);
+      if(error.response.status === 400){
+        Toast.show("Wrong Otp", {
+          type: "danger",
+          placement: "top",
+          duration: 4000})
+          return;
+          
+      }
       Toast.show("User Does Not exist", {
         type: "danger",
         placement: "top",

@@ -26,8 +26,9 @@ export default function TabsIndex() {
   useEffect(() => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem("token");
+      const userData = await AsyncStorage.getItem("userData");
       console.log("🚀 ~ checkToken ~ token:", token)
-      if (token) {
+      if (token && userData) {
         // Token exists, set user as logged in
         setUser(true);
       } else {

@@ -46,13 +46,13 @@ export default function Bookings() {
 
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
-    console.log("🚀 ~ getBookings ~ userId:", userId)
+    console.log("🚀 ~ getBookings ~ userId:", userId.data.user_id.id)
 
     if (userId) {
       // Check if userId is not null
       try {
         const res = await axios.get(
-          `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
+          `${BACKEND}/api/v1/booking/getUserBookings/${ userId.data.user_id.id}`
         );
         // console.log("🚀 ~ getBookings ~ res:", res.data)
 
