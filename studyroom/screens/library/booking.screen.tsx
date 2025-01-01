@@ -92,14 +92,19 @@ const BookingScreen: React.FC = () => {
   };
 
   const handleSelectSlot = (selectedSlot) => {
-    if (selectedSlots.find((slot) => slot.id === selectedSlot.id)) {
-      setSelectedSlots(
-        selectedSlots.filter((slot) => slot.id !== selectedSlot.id)
-      );
+    if (selectedSlot.from === "12:00 AM" && selectedSlot.to === "11:59 PM") {
+      setSelectedSlots([selectedSlot]);
     } else {
-      setSelectedSlots([...selectedSlots, selectedSlot]);
+      setSelectedSlots((prev) => {
+        if (prev.find((slot) => slot.id === selectedSlot.id)) {
+          return prev.filter((slot) => slot.id !== selectedSlot.id);
+        } else {
+          return prev.some((slot) => slot.from === "12:00 AM" && slot.to === "11:59 PM")
+            ? [selectedSlot]
+            : [...prev, selectedSlot];
+        }
+      });
     }
-
   };
 
   const toggleModal = () => {

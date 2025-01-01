@@ -7,25 +7,26 @@ export default function TabsIndex() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(false);
 
-  // const printAllAsyncStorageData = async () => {
-  //   try {
-  //     const keys = await AsyncStorage.getAllKeys();
-  //     const result = await AsyncStorage.multiGet(keys);
+  const printAllAsyncStorageData = async () => {
+    try {
+      const keys = await AsyncStorage.getAllKeys();
+      const result = await AsyncStorage.multiGet(keys);
 
-  //     console.log("All AsyncStorage data:");
-  //     result.forEach(([key, value]) => {
-  //       console.log(`${key}: ${value}`);
-  //     });
-  //   } catch (error) {
-  //     console.error("Error fetching AsyncStorage data", error);
-  //   }
-  // };
+      console.log("All AsyncStorage data:");
+      result.forEach(([key, value]) => {
+        console.log(`${key}: ${value}`);
+      });
+    } catch (error) {
+      console.error("Error fetching AsyncStorage data", error);
+    }
+  };
 
-  // printAllAsyncStorageData();
+  printAllAsyncStorageData();
 
   useEffect(() => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem("token");
+      console.log("🚀 ~ checkToken ~ token:", token)
       if (token) {
         // Token exists, set user as logged in
         setUser(true);
@@ -36,8 +37,11 @@ export default function TabsIndex() {
       setLoading(false); // Loading is complete
     };
 
+
     checkToken();
   }, []);
+
+  console.log("User is logged in:", user);
 
   if (loading) {
     return <Loader />;

@@ -72,7 +72,7 @@ const LoginScreen: React.FC = () => {
         phoneNumber,
         otp: text ?? otp.join(""),
       });
-      console.log("🚀 ~ loginWithOtp ~ response:", response)
+      // console.log("🚀 ~ loginWithOtp ~ response:", response)
 
       setLoading(false);
       if (response.status === 200) {
