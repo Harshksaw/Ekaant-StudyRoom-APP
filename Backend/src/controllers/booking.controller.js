@@ -188,6 +188,7 @@ async function getBookingByLibId(req, res) {
 
 async function findRoomAndSeat(libraryId, roomNo, seatId) {
   try {
+    console.log(`Finding library with ID: ${libraryId}`);
     const library = await prisma.library.findUnique({
       where: { id: libraryId },
       include: { rooms: { include: { seats: { include: { timeSlots: true } } } } },
@@ -197,11 +198,13 @@ async function findRoomAndSeat(libraryId, roomNo, seatId) {
       throw new Error('Library not found');
     }
 
+    console.log(`Finding room with number: ${roomNo}`);
     const room = library.rooms.find(room => room.roomNo === roomNo);
     if (!room) {
       throw new Error('Room not found');
     }
 
+    console.log(`Finding seat with ID: ${seatId}`);
     const seat = room.seats.find(seat => seat.id === seatId);
     if (!seat) {
       throw new Error('Seat not found');
@@ -216,11 +219,14 @@ async function findRoomAndSeat(libraryId, roomNo, seatId) {
 
 async function confirmBooking(req, res) {
   try {
-    const { libraryId, roomNo, bookedSeat , bookingId , BookedData} = req.body;
+    const { libraryId, roomNo, bookedSeat, bookingId, BookedData } = req.body;
+    console.log(`Confirming booking for libraryId: ${libraryId}, roomNo: ${roomNo}, bookedSeat: ${bookedSeat.id}, bookingId: ${bookingId}`);
 
     const { room, seat } = await findRoomAndSeat(libraryId, roomNo, bookedSeat.id);
+    console.log(`Found room: ${room.id}, seat: ${seat.id}`);
 
     const timeSlotId = req.body.timeSlot[0].id.toString();
+    console.log(`Finding time slot with ID: ${timeSlotId}`);
     const timeSlot = seat.timeSlots.find(slot => slot.id.toString() === timeSlotId);
 
     if (!timeSlot) {
@@ -231,24 +237,10 @@ async function confirmBooking(req, res) {
       return res.status(400).json({ error: "Time slot already booked" });
     }
 
-    // Mark the time slot as booked
+    console.log(`Marking time slot as booked`);
     timeSlot.booked = true;
 
-
-    // const booking = await prisma.booking.findFirst({
-    //   where: {
-    //     libraryId: libraryId,
-    //     roomNo: roomNo,
-    //     bookedSeat: bookedSeat.id,
-    //     bookingDate: req.body.bookingDate,
-    //   },
-    //   data: {
-    //     bookingStatus: "CONFIRMED",
-    //     approved: true,
-    //   },
-    // });
-    // console.log("🚀 ~ confirmBooking ~ booking:", booking)
-    // Save the updated library document
+    console.log(`Updating library with booked time slot`);
     await prisma.library.update({
       where: { id: libraryId },
       data: {
@@ -274,12 +266,14 @@ async function confirmBooking(req, res) {
         },
       },
     });
+
+    console.log(`Updating booking status to confirmed`);
     const booking = await prisma.booking.update({
       where: { id: bookingId },
       data: { approved: true },
     });
 
-
+    console.log(`Creating invoice for booking`);
     const invoice = await prisma.invoice.create({
       data: {
         bookingId: BookedData.bookingId,
@@ -292,20 +286,19 @@ async function confirmBooking(req, res) {
         libraryId: BookedData.libraryId.id,
         initialPrice: BookedData.price,
         finalPrice: BookedData.totalAmount,
-        paid: true, // Assuming payment status is not included in BookedData
+        paid: true,
         bookingDate: BookedData.bookingDate,
         bookingPeriod: BookedData.bookingPeriod,
-        bookingStatus: 'Pending', // Assuming booking status is not included in BookedData
+        bookingStatus: 'Pending',
         approved: BookedData.libraryId.approved,
         bookingFinalDate: new Date(new Date(BookedData.bookingDate).setMonth(new Date(BookedData.bookingDate).getMonth() + BookedData.bookingPeriod)),
         seatLabel: BookedData.bookedSeat.seatLabel,
-        timeSlotDetails: JSON.stringify(BookedData.timeSlot), // Assuming timeSlotDetails needs to be a string
+        timeSlotDetails: JSON.stringify(BookedData.timeSlot),
       },
     });
 
     console.log("🚀 ~ confirmBooking ~ invoice:", invoice);
     return res.status(StatusCodes.OK).json({ message: 'Booking confirmed successfully' });
-
 
   } catch (error) {
     console.error(`Error confirming booking: ${error.message}`);
