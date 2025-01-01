@@ -19,15 +19,12 @@ import {
 import Button from "@/components/Button";
 
 import Carousel from "react-native-intro-carousel";
-import useUser from "@/hooks/auth/useUser";
 import { ImageBackground } from "expo-image";
-import { Image } from "react-native";
 import ff from "@/constants/fonts";
 import { h, vh, vw } from "@/constants/size";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import { useEffect, useState } from "react";

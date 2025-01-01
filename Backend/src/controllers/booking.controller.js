@@ -216,7 +216,7 @@ async function findRoomAndSeat(libraryId, roomNo, seatId) {
 
 async function confirmBooking(req, res) {
   try {
-    const { libraryId, roomNo, bookedSeat } = req.body;
+    const { libraryId, roomNo, bookedSeat , bookingId , BookedData} = req.body;
 
     const { room, seat } = await findRoomAndSeat(libraryId, roomNo, bookedSeat.id);
 
@@ -234,6 +234,20 @@ async function confirmBooking(req, res) {
     // Mark the time slot as booked
     timeSlot.booked = true;
 
+
+    // const booking = await prisma.booking.findFirst({
+    //   where: {
+    //     libraryId: libraryId,
+    //     roomNo: roomNo,
+    //     bookedSeat: bookedSeat.id,
+    //     bookingDate: req.body.bookingDate,
+    //   },
+    //   data: {
+    //     bookingStatus: "CONFIRMED",
+    //     approved: true,
+    //   },
+    // });
+    // console.log("🚀 ~ confirmBooking ~ booking:", booking)
     // Save the updated library document
     await prisma.library.update({
       where: { id: libraryId },
@@ -260,8 +274,39 @@ async function confirmBooking(req, res) {
         },
       },
     });
+    const booking = await prisma.booking.update({
+      where: { id: bookingId },
+      data: { approved: true },
+    });
 
+
+    const invoice = await prisma.invoice.create({
+      data: {
+        bookingId: BookedData.bookingId,
+        invoiceNumber: `INV-${BookedData.bookingId}`,
+        libraryAddress: BookedData.libraryId.address,
+        libraryName: BookedData.libraryId.name,
+        customerName: BookedData.libraryId.libraryOwner.fullName,
+        customerEmail: BookedData.libraryId.libraryOwner.email,
+        customerPhoneNumber: BookedData.libraryId.libraryOwner.phoneNumber,
+        libraryId: BookedData.libraryId.id,
+        initialPrice: BookedData.price,
+        finalPrice: BookedData.totalAmount,
+        paid: true, // Assuming payment status is not included in BookedData
+        bookingDate: BookedData.bookingDate,
+        bookingPeriod: BookedData.bookingPeriod,
+        bookingStatus: 'Pending', // Assuming booking status is not included in BookedData
+        approved: BookedData.libraryId.approved,
+        bookingFinalDate: new Date(new Date(BookedData.bookingDate).setMonth(new Date(BookedData.bookingDate).getMonth() + BookedData.bookingPeriod)),
+        seatLabel: BookedData.bookedSeat.seatLabel,
+        timeSlotDetails: JSON.stringify(BookedData.timeSlot), // Assuming timeSlotDetails needs to be a string
+      },
+    });
+
+    console.log("🚀 ~ confirmBooking ~ invoice:", invoice);
     return res.status(StatusCodes.OK).json({ message: 'Booking confirmed successfully' });
+
+
   } catch (error) {
     console.error(`Error confirming booking: ${error.message}`);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error confirming booking', error: error.message });

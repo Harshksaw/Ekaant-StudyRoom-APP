@@ -72,7 +72,7 @@ const LoginScreen: React.FC = () => {
         phoneNumber,
         otp: text ?? otp.join(""),
       });
-      console.log("🚀 ~ loginWithOtp ~ response:", response)
+      // console.log("🚀 ~ loginWithOtp ~ response:", response)
 
       setLoading(false);
       if (response.status === 200) {
@@ -97,7 +97,16 @@ const LoginScreen: React.FC = () => {
         });
       }
     } catch (error) {
+      // console.log("🚀 ~ loginWithOtp ~ error:", error.response.status)
       setLoading(false);
+      if(error.response.status === 400){
+        Toast.show("Wrong Otp", {
+          type: "danger",
+          placement: "top",
+          duration: 4000})
+          return;
+          
+      }
       Toast.show("User Does Not exist", {
         type: "danger",
         placement: "top",
@@ -147,7 +156,8 @@ const LoginScreen: React.FC = () => {
       }
     } catch (error) {
       setLoading(false);
-      Toast.show("Login failed", {
+
+      Toast.show(error?.message, {
         type: "danger",
         placement: "top",
         duration: 2000,

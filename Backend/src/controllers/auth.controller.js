@@ -501,7 +501,7 @@ async function otpLogin(req, res) {
     }  
   
   })
-  console.log("🚀 ~ otpLogin ~ response:", response, otp.length)
+  // console.log("🚀 ~ otpLogin ~ response:", response, otp.length)
 
   if (otp.length == 0) {
 
@@ -535,7 +535,7 @@ async function otpLogin(req, res) {
     success: true,
     message: "User authenticated successfully",
 
-    data: {  user_id: user },
+    data: { user ,  user_id: user },
     token: token,
   });
 }
