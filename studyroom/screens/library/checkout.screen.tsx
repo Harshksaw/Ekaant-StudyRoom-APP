@@ -73,8 +73,8 @@ const CheckoutScreen: React.FC = () => {
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
   const [loading, setLoading] = useState(false);
   console.log("🚀 ~ BookedData:", BookedData)
-  console.log("🚀 ~ BookedData:", BookedData.roomNo)
-  console.log("🚀 ~ BookedData----:",BookedData.libraryId.id
+  // console.log("🚀 ~ BookedData:", BookedData.roomNo)
+  console.log("🚀 ~ BookedData----:",BookedData.timeSlot
 
 
 
