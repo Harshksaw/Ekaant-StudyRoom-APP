@@ -74,7 +74,7 @@ const CheckoutScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   console.log("🚀 ~ BookedData:", BookedData)
   console.log("🚀 ~ BookedData:", BookedData.roomNo)
-  console.log("🚀 ~ BookedData----:",BookedData.bookingId
+  console.log("🚀 ~ BookedData----:",BookedData.libraryId.id
 
 
 
@@ -211,7 +211,7 @@ const CheckoutScreen: React.FC = () => {
         `${BACKEND}/api/v1/booking/confirm/${bookingId}`,
         {
 
-          libraryId  : BookedData.libraryId.libraryId,
+          libraryId  : BookedData.libraryId.id,
            roomNo : BookedData.roomNo,
            bookedSeat : BookedData.timeSlot,
            bookingId : BookedData.bookingId,
