@@ -156,7 +156,8 @@ const LoginScreen: React.FC = () => {
       }
     } catch (error) {
       setLoading(false);
-      Toast.show("Login failed", {
+
+      Toast.show(error?.message, {
         type: "danger",
         placement: "top",
         duration: 2000,

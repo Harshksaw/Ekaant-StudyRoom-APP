@@ -385,7 +385,9 @@ const BookingScreen: React.FC = () => {
               backgroundColor: "#fff",
               padding: w(10),
               zIndex: 999,
-              top: "100%",
+              top: "120%",
+              elevation: 10,
+              borderRadius: 10,
             }}
           >
             {data?.map((item: any, index: number) => (
