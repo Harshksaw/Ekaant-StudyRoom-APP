@@ -234,6 +234,20 @@ async function confirmBooking(req, res) {
     // Mark the time slot as booked
     timeSlot.booked = true;
 
+
+    const booking = await prisma.booking.findFirst({
+      where: {
+        libraryId: libraryId,
+        roomNo: roomNo,
+        bookedSeat: bookedSeat.id,
+        bookingDate: req.body.bookingDate,
+      },
+      data: {
+        bookingStatus: "CONFIRMED",
+        approved: true,
+      },
+    });
+    console.log("🚀 ~ confirmBooking ~ booking:", booking)
     // Save the updated library document
     await prisma.library.update({
       where: { id: libraryId },
