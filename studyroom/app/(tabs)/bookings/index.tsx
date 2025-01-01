@@ -18,9 +18,10 @@ import {
   TouchableOpacity,
   Platform,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Toast } from "react-native-toast-notifications";
+
 
 interface ApprovalStatusProps {
   isApproved: String;
@@ -43,7 +44,7 @@ const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
 export default function Bookings() {
   const [data, setData] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
     console.log("🚀 ~ getBookings ~ userId:", userId.data.user_id.id)
@@ -54,16 +55,16 @@ export default function Bookings() {
         const res = await axios.get(
           `${BACKEND}/api/v1/booking/getUserBookings/${ userId.data.user_id.id}`
         );
-        // console.log("🚀 ~ getBookings ~ res:", res.data)
+        console.log("🚀 ~ getBookings ~ res:", res.data)
 
         setData(res.data);
       } catch (error) {
-        // console.error(error, "this is error");
-
+        console.error(error, "this is error");
+      } finally {
+        setLoading(false);
       }
-    } else {
     }
-  };
+  }
 
   useEffect(() => {
     const getBookingData = async () => {
@@ -82,7 +83,15 @@ export default function Bookings() {
     }, 2000);
   }, []);
 
-  console.log(data, "this is data");
+
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView
       style={{
