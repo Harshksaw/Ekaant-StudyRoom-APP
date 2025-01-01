@@ -10,7 +10,8 @@ import {
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
-// import Carousel from "react-native-reanimated-carousel";
+import Carousel from "react-native-reanimated-carousel";
+
 import Header from "@/components/Header";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -52,7 +53,8 @@ export default function index() {
   const [locationData, setLocationData] = useState(null);
 
   const [selectedLocation, setSelectedLocation] = useState("");
-
+  const [stickyHeight, setStickyHeight] = useState(0);
+  const scrollViewRef = useRef(null);
   const handleLocationChange = (location) => {
     setSelectedLocation(location);
   };
@@ -324,16 +326,21 @@ export default function index() {
       )}
     </TouchableOpacity>
   );
-  const [stickyHeight, setStickyHeight] = useState(0);
-  const scrollViewRef = useRef(null);
+
 
   const handleLayout = (event: any) => {
     setStickyHeight(event.nativeEvent.layout.height);
   };
 
   const userDetails = useSelector((state: any) => state.user);
+  // console.log("🚀 ~ index ~ userDetails:", userDetails)
+  const u = JSON.parse(userDetails?.details)
+  // console.log("🚀 ~ index ~ userDetails:", u.user.username)
 
+  const username = u?.user?.username
+  // console.log("🚀 ~ index ~ username:", username)
   const userData = JSON.parse(userDetails.details)?.data?.username;
+  // console.log("🚀 ~ index ~ userData:", userData)
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -443,7 +450,7 @@ export default function index() {
                   color: "#0077B6",
                 }}
               >
-                {userData ? userData?.split(" ")[0] : "Board"}
+                {username}
               </Text>
               <Text
                 style={{

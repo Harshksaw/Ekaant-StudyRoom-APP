@@ -1,6 +1,6 @@
 import { DeskGreen } from "@/assets";
 import ff from "@/constants/fonts";
-import { h, height, w, width } from "@/constants/size";
+import { h, w} from "@/constants/size";
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
@@ -10,13 +10,13 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-<<<<<<< HEAD
 
-const windowWidth = Dimensions.get("window").width;
-=======
+
+
+
 import { LinearGradient } from 'expo-linear-gradient'; 
 const windowWidth = Dimensions.get('window').width;
->>>>>>> bcf9395fdaf807432eabe0b8e61702bc08993c82
+
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
   console.log("🚀 ~ Seat ~ roation:", rotation);
@@ -25,7 +25,7 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
 
   const getIcon = () => {
     if (isFullyBooked) {
-      return <DeskGreen fill={"#ffcc7f64"} rotation={rotation} />;
+      return <DeskGreen fill={"#ed0d0d"} rotation={rotation} />;
     } else if (isPartiallyBooked) {
       return <DeskGreen rotation={rotation} />;
     } else {
@@ -121,7 +121,7 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
             const isBooked = bookedSeats.some(
               (bookedSeat) => bookedSeat.seatId === seat.seatId
             );
-            // console.log("🚀 ~ SeatsComponent ~ Seat:", seat)
+
             return (
               <Seat
                 key={`${rowIndex}-${colIndex}`}
@@ -133,7 +133,7 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
               />
             );
           }
-          // Render an invisible placeholder for empty seats
+
           return (
             <View key={`${rowIndex}-${colIndex}`} style={styles.emptySeat} />
           );
@@ -247,11 +247,11 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 20,
-<<<<<<< HEAD
+
     borderBlockColor: "black",
-=======
+
     borderBlockColor: 'gray',
->>>>>>> bcf9395fdaf807432eabe0b8e61702bc08993c82
+
     borderWidth: 2,
     borderRadius: 10,
     padding: 5,
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: "80%",
     width: 2, // Adjust line thickness
-<<<<<<< HEAD
+
 
     backgroundColor: "#0078d7", // Adjust line color
   },
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
     top: "10%",
     right: "10%",
     transform: [{ rotate: "-30deg" }], // Adjust angle
-=======
+
     // backgroundColor: '#0078d7', // Adjust line color
   },
   lineLeft: {
@@ -330,10 +330,5 @@ const styles = StyleSheet.create({
     left: '-5%',
     transform: [{ rotate: '30deg' }], // Adjust angle
   },
-  lineRight: {
-    top: '10%',
-    right: '-5%',
-    transform: [{ rotate: '-30deg' }], // Adjust angle
->>>>>>> bcf9395fdaf807432eabe0b8e61702bc08993c82
-  },
+
 });

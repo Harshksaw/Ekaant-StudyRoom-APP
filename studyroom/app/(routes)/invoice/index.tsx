@@ -8,12 +8,14 @@ export default function Invoice() {
   const [invoiceDetails, setInvoiceDetails] = useState(null);
   const route = useRoute();
   const { id } = route.params;
+  console.log("🚀 ~ Invoice ~ id:", id)
 
   const getInvoice = async () => {
     try {
+
       const res = await axios.post(`${BACKEND}/api/v1/booking/invoices/${id}`);
+      console.log("🚀 ~ getInvoice ~ res:", res.data);
       setInvoiceDetails(res.data.data);
-      console.log("🚀 ~ getInvoice ~ res:", res.data.data);
     } catch (error) {
       console.error('Error fetching invoice:', error);
     }
@@ -23,7 +25,7 @@ export default function Invoice() {
     getInvoice();
   }, []);
 
-  if (!invoiceDetails) {
+  if (invoiceDetails === null) {
     return (
       <SafeAreaView style={styles.container}>
        <ActivityIndicator 
