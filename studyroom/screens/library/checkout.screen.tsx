@@ -72,7 +72,21 @@ const CheckoutScreen: React.FC = () => {
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
   const [loading, setLoading] = useState(false);
+  console.log("🚀 ~ BookedData:", BookedData)
+  console.log("🚀 ~ BookedData:", BookedData.roomNo)
+  console.log("🚀 ~ BookedData----:",BookedData.bookingId
 
+
+
+
+
+
+
+
+
+
+
+  )
   useEffect(() => {
 
 
@@ -84,7 +98,7 @@ const CheckoutScreen: React.FC = () => {
     setFinalAmount(BookedData?.totalAmount);
     const getLibraryData = async () => {
       setLocation(BookedData?.libraryId?.address);
-      console.log("🚀 ~ getLibraryData ~ BookedData?.address:", BookedData);
+      // console.log("🚀 ~ getLibraryData ~ BookedData?.address:", BookedData);
 
       try {
         const userDataId = await AsyncStorage.getItem("userData");
@@ -196,15 +210,18 @@ const CheckoutScreen: React.FC = () => {
       const res = await axios.post(
         `${BACKEND}/api/v1/booking/confirm/${bookingId}`,
         {
-          bookingId: bookingId,
-          paymentId: paymentId,
-          paymentData: paymentData,
-          paymentStatus: paymentStatus,
-          bookingData: BookedData,
+
+          libraryId  : BookedData.libraryId.libraryId,
+           roomNo : BookedData.roomNo,
+           bookedSeat : BookedData.timeSlot,
+           bookingId : BookedData.bookingId,
+          BookedData : BookedData,
+        
+
         }
       );
 
-      console.log(bookingId, "-1-1-11-", paymentData, paymentId, paymentStatus, BookedData)
+      // console.log(bookingId, "-1-1-11-", paymentData, paymentId, paymentStatus, BookedData)
 
       if(res.data.status === "success") {
         Toast.show("Payment Success", {});

@@ -14,8 +14,8 @@ export default function Invoice() {
     try {
 
       const res = await axios.post(`${BACKEND}/api/v1/booking/invoices/${id}`);
+      console.log("🚀 ~ getInvoice ~ res:", res.data);
       setInvoiceDetails(res.data.data);
-      console.log("🚀 ~ getInvoice ~ res:", res.data.data);
     } catch (error) {
       console.error('Error fetching invoice:', error);
     }
