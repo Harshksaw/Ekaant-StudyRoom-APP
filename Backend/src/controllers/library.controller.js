@@ -57,14 +57,27 @@ const calculateDistances = async (req, res) => {
         for (const location of city.locations) {
           const distance = calculateDistance(library.coords, location.coords);
           console.log("🚀 ~ calculateDistances ~ distance:", distance);
-          const resp = await prisma.distance.create({
-            data: {
+
+          // Check if the distance entry already exists
+          const existingDistance = await prisma.distance.findFirst({
+            where: {
               libraryId: library.id,
               city: location.location,
-              distance: distance ? distance : 0,
             },
           });
-          logs.push(resp);
+
+          if (!existingDistance) {
+            const resp = await prisma.distance.create({
+              data: {
+                libraryId: library.id,
+                city: location.location,
+                distance: distance ? distance : 0,
+              },
+            });
+            logs.push(resp);
+          } else {
+            console.log(`Distance entry already exists for libraryId: ${library.id}, city: ${location.location}`);
+          }
         }
       }
     }

@@ -449,7 +449,8 @@ const CheckoutScreen: React.FC = () => {
                 fontFamily: ff.deckRegular,
               }}
             >
-              {formatSeatLabel(BookedData?.bookedSeat?.seatId)}{" "}
+              {/* {formatSeatLabel(BookedData?.bookedSeat?.seatId)}{" "} */}
+              {BookedData?.bookedSeat.seatLabel}
             </Text>
           </View>
         </View>
