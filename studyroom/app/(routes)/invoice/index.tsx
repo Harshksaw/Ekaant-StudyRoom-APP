@@ -3,6 +3,8 @@ import { View, Text, SafeAreaView, StyleSheet, ScrollView, ActivityIndicator } f
 import { useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { BACKEND } from '@/utils/config';
+import { TouchableOpacity } from 'react-native';
+import { router } from 'expo-router';
 
 export default function Invoice() {
   const [invoiceDetails, setInvoiceDetails] = useState(null);
@@ -51,15 +53,15 @@ export default function Invoice() {
           <Text style={styles.value}>{new Date(invoiceDetails.invoiceDate).toLocaleDateString()}</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Customer Name:</Text>
+          <Text style={styles.label}>User Name:</Text>
           <Text style={styles.value}>{invoiceDetails.customerName}</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Customer Email:</Text>
+          <Text style={styles.label}>User Email:</Text>
           <Text style={styles.value}>{invoiceDetails.customerEmail}</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Customer Phone:</Text>
+          <Text style={styles.label}>User Phone:</Text>
           <Text style={styles.value}>{invoiceDetails.customerPhoneNumber}</Text>
         </View>
         <View 
@@ -125,13 +127,38 @@ export default function Invoice() {
        
         <View style={styles.row}>
           <Text style={styles.label}>Final Price:</Text>
-          <Text style={styles.value}>${invoiceDetails.finalPrice}</Text>
+          <Text style={styles.value}>Rs {invoiceDetails.finalPrice}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Booking Status:</Text>
           <Text style={styles.value}>{invoiceDetails.bookingStatus}</Text>
         </View>
       </View>
+
+
+    <TouchableOpacity
+    onPress={() => {
+      router.back();
+    }}
+    style={{
+      backgroundColor: 'white',
+      padding: 10,
+      borderRadius: 10,
+      margin: 10,
+      borderWidth: 4,
+      borderColor: 'red',
+      width: '20%',
+      alignSelf:'center'
+    }}
+    >
+      <Text style={{
+        color: 'black',
+        textAlign: 'center',
+
+        fontSize: 20,
+        fontWeight: '600',
+      }}>Close</Text>
+    </TouchableOpacity>
     {/* </ScrollView> */}
   </SafeAreaView>
 );

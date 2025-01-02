@@ -129,6 +129,9 @@ async function getUserBookings(req, res) {
         invoice: true,
         friends: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return res.status(StatusCodes.OK).json(bookings);

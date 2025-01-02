@@ -53,9 +53,9 @@ export default function Bookings() {
       // Check if userId is not null
       try {
         const res = await axios.get(
-          `${BACKEND}/api/v1/booking/getUserBookings/${ userId.data.user_id.id}`
+          `${BACKEND}/api/v1/booking/getUserBookings/${userId.data.user_id.id}`
         );
-        console.log("🚀 ~ getBookings ~ res:", res.data)
+        // console.log("🚀 ~ getBookings ~ res:", res.data)
 
         setData(res.data);
       } catch (error) {
