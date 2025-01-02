@@ -36,6 +36,7 @@ export default function Invoice() {
     );
   }
 
+  console.log("🚀 ~ Invoice ~ invoiceDetails:", invoiceDetails)
   return (
     <SafeAreaView style={styles.container}>
     {/* <ScrollView contentContainerStyle={styles.scrollContainer}> */}
@@ -81,10 +82,33 @@ export default function Invoice() {
           }}
           >
 
-          <Text style={styles.value}>{invoiceDetails.libraryaddress}</Text>
+          <Text style={{
+            fontSize: 16,
+            color: '#666',
+            textAlign:'center',
+            marginHorizontal:10,
+            flexWrap:'wrap',
+
+
+
+          }}>{invoiceDetails.libraryAddress}</Text>
 
           </View>
         </View>
+        <View style={{ flexDirection: 'column' }}>
+    {JSON.parse(invoiceDetails.timeSlotDetails).map((slot, index) => (
+      <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={{
+          fontSize: 16,
+          fontWeight: '600',
+          color: '#333',
+          marginBottom: 10,
+        }}>Time {index+ 1}</Text>
+        <Text style={styles.value}>From: {slot.from}</Text>
+        <Text style={styles.value}>To: {slot.to}</Text>
+      </View>
+    ))}
+  </View>
         <View style={styles.row}>
           <Text style={styles.label}>Booking Date:</Text>
           <Text style={styles.value}>{new Date(invoiceDetails.bookingDate).toLocaleDateString()}</Text>
@@ -156,6 +180,6 @@ label: {
 },
 value: {
   fontSize: 16,
-  color: '#666',
+  color: '#222020',
 },
 });
