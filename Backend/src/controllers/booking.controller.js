@@ -271,7 +271,7 @@ async function confirmBooking(req, res) {
     console.log(`Updating booking with id: ${bookingId}`);
     const booking = await prisma.booking.update({
       where: { id: bookingId },
-      data: { approved: true },
+      data: { approved: true, bookingStatus: 'CONFIRMED' },
     });
     console.log("🚀 ~ confirmBooking ~ booking:", booking)
 
