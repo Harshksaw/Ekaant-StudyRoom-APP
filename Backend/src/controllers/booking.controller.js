@@ -225,7 +225,7 @@ async function confirmBooking(req, res) {
     const { room, seat } = await findRoomAndSeat(libraryId, roomNo, bookedSeat.seatId);
     console.log(`Found room: ${room.id}, seat: ${seat}`);
 
-    const timeSlotId = BookedData.timeSlot.slotId;
+    const timeSlotId = BookedData.timeSlot[0].slotId;
     console.log(`Finding time slot with id: ${timeSlotId}`);
     const timeSlot = seat.timeSlots.find(slot => slot.id.toString() === timeSlotId);
 
