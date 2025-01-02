@@ -284,7 +284,7 @@ model Invoice {
   bookingPeriod       Int
   bookingStatus       String
   approved            Boolean
-  timeStamp           DateTime? @db.Timestamp(6)
+  timeStamp           DateTime? @db.Timestamp()
   bookingFinalDate    DateTime
   seatLabel           String
   timeSlotDetails     Json?

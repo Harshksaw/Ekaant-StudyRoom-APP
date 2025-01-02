@@ -313,7 +313,7 @@ async function generateInvoice(req, res) {
     const { bookingId } = req.params;
 
     const invoice = await prisma.invoice.findFirst({
-      data: { bookingId: bookingId },
+      data: { bookingId: parseInt(bookingId) },
     });
 
     if (!invoice) {
