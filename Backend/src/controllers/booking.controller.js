@@ -227,16 +227,16 @@ async function confirmBooking(req, res) {
 
     const timeSlotId = BookedData.timeSlot[0].slotId;
     console.log(`Finding time slot with id: ${timeSlotId}`);
-    const timeSlot = seat.timeSlots.find(slot => slot.id.toString() === timeSlotId);
-    console.log("🚀 ~ confirmBooking ~ timeSlot:", timeSlot)
-
+    const timeSlot = BookedData.timeSlot[0];
+    console.log("🚀 ~ confirmBooking ~ timeSlot:", timeSlot);
+    
     if (!timeSlot) {
       return res.status(404).json({ error: "Time slot not found" });
     }
-
-    // if (timeSlot.booked) {
-    //   return res.status(400).json({ error: "Time slot already booked" });
-    // }
+    
+    if (timeSlot.booked) {
+      return res.status(400).json({ error: "Time slot already booked" });
+    }
 
     console.log(`Marking time slot as booked`);
     timeSlot.booked = true;
@@ -273,6 +273,7 @@ async function confirmBooking(req, res) {
       where: { id: bookingId },
       data: { approved: true },
     });
+    console.log("🚀 ~ confirmBooking ~ booking:", booking)
 
     console.log(`Creating invoice for bookingId: ${BookedData.bookingId}`);
     const invoice = await prisma.invoice.create({
