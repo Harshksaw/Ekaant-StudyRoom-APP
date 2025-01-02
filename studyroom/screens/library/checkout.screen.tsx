@@ -204,22 +204,20 @@ const CheckoutScreen: React.FC = () => {
       Toast.show("Booking ID is missing");
     }
     try {
-
-
+      console.log("🚀 ~ confirmPayment ~ BookedData.timeSlot[0]:", BookedData.timeSlot[0])
+      const data = {
+        libraryId  : BookedData.libraryId.id,
+        roomNo : BookedData.roomNo,
+        bookedSeat : BookedData.timeSlot[0],
+        bookingId : BookedData.bookingId,
+       BookedData : BookedData
+      }
+      console.log("🚀 ~ confirmPayment ~ data:", data)
       // console.log(bookingId, "-1-1-11-", BookedData)
       const res = await axios.post(
-        `${BACKEND}/api/v1/booking/confirm/${bookingId}`,
-        {
-
-          libraryId  : BookedData.libraryId.id,
-           roomNo : BookedData.roomNo,
-           bookedSeat : BookedData.timeSlot,
-           bookingId : BookedData.bookingId,
-          BookedData : BookedData,
-        
-
-        }
+        `${BACKEND}/api/v1/booking/confirm/${bookingId}`,data
       );
+
 
       // console.log(bookingId, "-1-1-11-", paymentData, paymentId, paymentStatus, BookedData)
 
