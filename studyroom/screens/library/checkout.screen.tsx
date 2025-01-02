@@ -152,14 +152,13 @@ const CheckoutScreen: React.FC = () => {
       });
     }
   }, [isPaymentComplete]);
-
   const handlePayment = async () => {
     var options = {
       description: "Room Booking",
       image:
         "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png", //logo
       currency: "INR",
-      key: "rzp_test_hi1B6uwenBy9Ir",
+      key: "rzp_live_1BtXgGebBeYRTh",
       amount: `${PaymentPrice * 100}`,
       name: "Ekaant",
       order_id: "",
@@ -169,26 +168,26 @@ const CheckoutScreen: React.FC = () => {
         name: `${userData?.data?.user_id?.username}`,
       },
     };
-
+  
     try {
       const data = await RazorpayCheckout.open(options);
+      console.log("Payment data:", data);
       setPaymentStatus(true);
       setPaymentData(data);
       setPaymentId(data.razorpay_payment_id);
       setIsPaymentComplete(true);
-
+  
       Toast.show("Payment Success", {
         successColor: "green",
         duration: 4000,
       });
-
+  
       const res = await confirmPayment();
-      // console.log("🚀 ~ handlePayment ~ res:", res)
-
+      console.log("Payment confirmation response:", res);
+  
       router.push("/(tabs)/bookings");
     } catch (error) {
-      // console.log(error, "this");
-
+      console.error("Payment error:", error);
       Toast.show("Payment Failed", {
         dangerColor: "red",
         duration: 4000,

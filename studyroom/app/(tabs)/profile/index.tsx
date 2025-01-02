@@ -3,7 +3,7 @@
 import { Feather, Fontisto, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
   View,
@@ -38,30 +38,22 @@ export default function profile() {
  
     router.push("(routes)/welcome" as any);
   };
-
+  const [userData, setUserData] = React.useState<any>();
   const userDetails = useSelector((state: any) => state.user);
+  useEffect(() => {
+    const getUserData = async () => {
+      const userData = await AsyncStorage.getItem("userData");
+      const u = JSON.parse(userData || "{}");
+      console.log("🚀 ~ getUserData ~ userData:", u.data.user)
+      setUserData(u.data.user);
+  
+    }
 
-  // console.log("-------------->",JSON.parse(userDetails));
-  // console.log("-------------->+++++++", JSON.parse(userDetails.details));
-  const userData = JSON.parse(userDetails?.details)?.user;
-  // const getInitials = (name: string) => {
-  //   let initials = name.match(/\b\w/g) || [];
-  //   initials = (
-  //     (initials.shift() || "") + (initials.pop() || "")
-  //   ).toUpperCase();
-  //   return initials;
-  // };
+    getUserData();
+  }, [userDetails]);
+
   const { width } = Dimensions.get("window");
-  // const [colors, setColors] = useState(generateShadesOfBlue());
 
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     // Generate new shades of blue dynamically
-  //     setColors(generateShadesOfBlue());
-  // //   }, 3000); // Change colors every 3 seconds
-
-  //   return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  // }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
