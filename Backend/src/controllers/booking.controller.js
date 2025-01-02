@@ -276,11 +276,12 @@ async function confirmBooking(req, res) {
     console.log("🚀 ~ confirmBooking ~ booking:", booking)
 
     console.log(`Creating invoice for bookingId: ${BookedData.bookingId}`);
+    const libraryAddress = `${BookedData.libraryId.address.line1}, ${BookedData.libraryId.address.line2}, ${BookedData.libraryId.address.city}, ${BookedData.libraryId.address.state}, ${BookedData.libraryId.address.pincode}`;
     const invoice = await prisma.invoice.create({
       data: {
         bookingId: BookedData.bookingId,
         invoiceNumber: `INV-${BookedData.bookingId}`,
-        libraryAddress: BookedData.libraryId.address,
+        libraryAddress:libraryAddress,
         libraryName: BookedData.libraryId.name,
         customerName: BookedData.libraryId.libraryOwner.fullName,
         customerEmail: BookedData.libraryId.libraryOwner.email,
@@ -291,7 +292,7 @@ async function confirmBooking(req, res) {
         paid: true,
         bookingDate: BookedData.bookingDate,
         bookingPeriod: BookedData.bookingPeriod,
-        bookingStatus: 'Pending',
+        bookingStatus: 'Paid',
         approved: BookedData.libraryId.approved,
         bookingFinalDate: new Date(new Date(BookedData.bookingDate).setMonth(new Date(BookedData.bookingDate).getMonth() + BookedData.bookingPeriod)),
         seatLabel: BookedData.bookedSeat.seatLabel,
