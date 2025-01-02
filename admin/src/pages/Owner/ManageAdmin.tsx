@@ -35,7 +35,7 @@ const ManageAdmin = () => {
     };
     func();
   }, []);
-  console.log(library, "------------------");
+  // console.log(library, "------------------");
   return (
     <div className="p-3 bg-slate-300 h-full ">
       <div className="overflow-auto max-h-[calc(100vh-100px)]">
