@@ -42,6 +42,7 @@ export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
+  console.log("🚀 ~ index ~ data:", data)
   const [notavailable, setNotAvailable] = useState(false);
   const [notListed, setNotListed] = useState(false);
   const [reload, setReload] = useState(false);
