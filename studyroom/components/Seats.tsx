@@ -40,7 +40,7 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
     >
       {getIcon()}
       <Text style={{ fontFamily: ff.deckRegular, fontSize: w(12) }}>
-        {seatData.seatLabel}
+        {seatData.seatName}
       </Text>
     </TouchableOpacity>
   );
