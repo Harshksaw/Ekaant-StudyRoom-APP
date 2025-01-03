@@ -36,6 +36,8 @@ import {
 } from "@expo-google-fonts/poppins";
 import ff from "@/constants/fonts";
 import { vw } from "@/constants/size";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -58,8 +60,23 @@ export default function Home() {
     Poppins_800ExtraBold_Italic,
     Poppins_900Black,
     Poppins_900Black_Italic,
-  });
+  });  
+  
+  const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
+  console.log("🚀 ~ Home ~ isAuthenticated:", isAuthenticated)
 
+
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      // Prevent default behavior of going back, maybe with a condition
+      if (!isAuthenticated) { 
+        e.preventDefault(); 
+      }
+    });
+
+    return unsubscribe; // Clean up the listener on unmount
+  }, [navigation]);
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
