@@ -512,8 +512,7 @@ const getLibraryById = async (req, res) => {
 
       },
     });
-    // .populate("rooms")
-    // .populate("libraryOwner");
+
     res.status(200).json({
       success: true,
       message: "Library data",
