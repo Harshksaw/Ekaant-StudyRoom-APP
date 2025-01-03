@@ -507,8 +507,11 @@ const getLibraryById = async (req, res) => {
             },
           },
         },
+        include: {
+          amenities: true,
+        },
         libraryOwner: true,
-        amenities: true,
+
       },
     });
     // .populate("rooms")
