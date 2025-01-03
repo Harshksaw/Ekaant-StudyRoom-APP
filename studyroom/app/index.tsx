@@ -2,51 +2,40 @@ import { Redirect } from "expo-router";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loader from "@/components/loader/loader";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { login } from "@/redux/userSlice";
 
 export default function TabsIndex() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(false);
 
-  const printAllAsyncStorageData = async () => {
-    try {
-      const keys = await AsyncStorage.getAllKeys();
-      const result = await AsyncStorage.multiGet(keys);
-
-      console.log("All AsyncStorage data:");
-      result.forEach(([key, value]) => {
-        console.log(`${key}: ${value}`);
-      });
-    } catch (error) {
-      console.error("Error fetching AsyncStorage data", error);
-    }
-  };
-
-  printAllAsyncStorageData();
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
 
   useEffect(() => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem("token");
       const userData = await AsyncStorage.getItem("userData");
-      console.log("🚀 ~ checkToken ~ token:", token)
+      console.log("🚀 ~ checkToken ~ token:", token);
       if (token && userData) {
         // Token exists, set user as logged in
-        setUser(true);
-      } else {
-        // No token, user is not logged in
-        setUser(false);
+        const parsedUserData = JSON.parse(userData);
+        dispatch(login({ user: parsedUserData, token: JSON.parse(token) }));
       }
       setLoading(false); // Loading is complete
     };
 
-
     checkToken();
-  }, []);
+  }, [dispatch]);
 
-  console.log("User is logged in:", user);
+  console.log("User is logged in:", isAuthenticated);
 
   if (loading) {
     return <Loader />;
   }
 
-  return <Redirect href={user ? "/(tabs)" : "/(routes)/onboarding"} />;
-}
+  return (
+    <Redirect href={isAuthenticated ? "/(tabs)" : "/(routes)/onboarding"} />
+  );
+};

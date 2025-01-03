@@ -20,7 +20,7 @@ import { LinearGradient as LinearBackground } from "expo-linear-gradient";
 
 
 import { useDispatch, useSelector } from "react-redux";
-import { resetUserState } from "@/redux/userSlice";
+import { logout, resetUserState } from "@/redux/userSlice";
 import { resetAppState } from "@/redux/appSlice";
 import { resetBookingState } from "@/redux/bookingSlice";
 import { h, w } from "@/constants/size";
@@ -28,10 +28,11 @@ import ff from "@/constants/fonts";
 export default function profile() {
   const dispatch = useDispatch();
 
-  const logout = async () => {
+  const logoutHandler = async () => {
 
     await AsyncStorage.removeItem("token");
     await AsyncStorage.removeItem("userData");
+    dispatch(logout());
     dispatch(resetUserState());
     dispatch(resetAppState());
     dispatch(resetBookingState());
@@ -40,12 +41,18 @@ export default function profile() {
   };
   const [userData, setUserData] = React.useState<any>();
   const userDetails = useSelector((state: any) => state.user);
+
+
+  console.log("🚀 ~ index ~ userDetails:", userDetails.user);
+
+ 
   useEffect(() => {
     const getUserData = async () => {
-      const userData = await AsyncStorage.getItem("userData");
-      const u = JSON.parse(userData || "{}");
-      console.log("🚀 ~ getUserData ~ userData:", u.data.user)
-      setUserData(u.data.user);
+      // const userData = await AsyncStorage.getItem("userData");
+      const u = JSON.parse(userDetails.user || "{}");
+
+      // console.log("🚀 ~ getUserData ~ userData:", u.user.username)
+      setUserData(u.user);
   
     }
 
@@ -54,7 +61,7 @@ export default function profile() {
 
   const { width } = Dimensions.get("window");
 
-
+  console.log("🚀 ~ index ~ userData:", userData);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <LinearBackground
@@ -303,7 +310,7 @@ export default function profile() {
             marginTop: h(35),
           }}
         >
-          <TouchableOpacity onPress={() => logout()}
+          <TouchableOpacity onPress={() => logoutHandler()}
             
             >
             <View
