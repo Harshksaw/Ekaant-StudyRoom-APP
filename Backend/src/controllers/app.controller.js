@@ -253,7 +253,7 @@ async function deleteLocations(req, res) {
           }
           console.log(`Copy stdout: ${copyStdout}`);
 
-          return res.status(StatusCodes.OK).json({ message: 'Backup created successfully', backupPath: hostBackupPath });
+          return res.status(200).json({ message: 'Backup created successfully', backupPath: hostBackupPath });
         });
       });
     } catch (error) {
