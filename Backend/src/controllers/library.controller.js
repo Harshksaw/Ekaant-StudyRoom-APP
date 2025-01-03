@@ -300,7 +300,7 @@ const createRoom = async (req, res) => {
 
     // Save the updated library document
 
-    // await calculateLowestPrice(libraryId);
+    await calculateLowestPrice(libraryId);
 
     res.status(201).json({
       message: "Library created successfully",
