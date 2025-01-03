@@ -445,10 +445,11 @@ const CheckoutScreen: React.FC = () => {
                 flexDirection: "column",
                 flexWrap: "wrap",
                 color: "#000",
-                fontSize: w(14),
+                fontSize: w(18),
                 fontFamily: ff.deckRegular,
               }}
             >
+              Seat No.{" "}
               {/* {formatSeatLabel(BookedData?.bookedSeat?.seatId)}{" "} */}
               {BookedData?.bookedSeat.seatLabel}
             </Text>
