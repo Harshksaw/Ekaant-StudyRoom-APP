@@ -267,7 +267,7 @@ const createRoom = async (req, res) => {
           create: seatLayout.selectedSeats.map((seat) => ({
             seatId: seat.id,
             seatLabel: seat.label,
-            seatName : seat.seatNames,
+            seatName : seatLayout.seatNames[seat.id] || seat.seatName,
             rotation: seatLayout.rotationAngles[seat.id] || 0,
             timeSlots: {
               create: timeSlot
