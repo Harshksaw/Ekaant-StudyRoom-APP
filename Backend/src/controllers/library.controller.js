@@ -685,15 +685,31 @@ const EditAdminLibrary = async (req, res) => {
       registrationFees,
     } = req.body;
 
-    const library = await prisma.library.updateMany({
+    const library = await prisma.library.update({
       where: { id: parseInt(libraryId) },
       data: {
         name,
         shortDescription,
         longDescription,
-        amenities,
+        
         address,
         registrationFees,
+        amenities: {
+          update: {
+            coldWater: amenities.coldWater,
+            wifi: amenities.wifi,
+            ac: amenities.ac,
+            locker: amenities.locker,
+            separateWashroom: amenities.separateWashroom,
+            news: amenities.news,
+            discussionArea: amenities.discussionArea,
+            lunchArea: amenities.lunchArea,
+            movingChair: amenities.movingChair,
+            floorMat: amenities.floorMat,
+            separateParking: amenities.separateParking,
+            commonParking: amenities.commonParking,
+          },
+        },
       },
     });
 
