@@ -442,7 +442,7 @@ const BookingScreen: React.FC = () => {
           paddingLeft: w(24),
         }}
       >
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => {
             router.push("(routes)/friend");
           }}
@@ -457,7 +457,7 @@ const BookingScreen: React.FC = () => {
           }}
         >
           <Ionicons name="person-add-outline" size={24} color="#706f6f" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={{
             paddingRight: 20,

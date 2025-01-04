@@ -1,18 +1,18 @@
-import { getLibraryDataById } from "@/hooks/libraryData";
+
 import { BASEURL } from "@/lib/utils";
 import axios from "axios";
 import React from "react";
 
-import { Link } from "react-router-dom";
+
 
 const ViewBookings = () => {
-  const [bookings, setBookings] = React.useState([]);
-  const [librarybookings, setLibraryBookings] = React.useState([]);
+  const [bookings, setBookings] = React.useState([null]);
+
   const [isLoading, setIsLoading] = React.useState(true);
   React.useEffect(() => {
     setIsLoading(true);
     const fetchBookings = async () => {
-      console.log(librarybookings);
+
       try {
         // const response = await getLibraryDataById();
         // console.log("🚀 ~ fetchBookings ~ response:", response)
@@ -31,9 +31,9 @@ const ViewBookings = () => {
           }
         );
 
-        // console.log("🚀 ~ fetchBookings ~ resp", resp.data);
+        console.log("🚀 ~ fetchBookings ~ resp",  resp.data.data);
 
-        setLibraryBookings(resp.data.data);
+        setBookings(resp.data.data);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching bookings:", error);
@@ -45,37 +45,60 @@ const ViewBookings = () => {
   }, []);
 
   return (
+    
     <div className="flex-1 h-full">
       {isLoading ? (
         <div className="">Loading...</div>
       ) : (
-        <div className="flex-col">
-          {bookings.map((booking: any) => (
-            <Link
-              to={`/manage-library/view-library/${booking?.id}`}
-              key={booking?.id}
-              className="flex flex-1 border border-gray-200 p-5 m-5"
-            >
-              <div className="w-1/5 h-1/5">
-                <img src={booking?.images[0]} alt={booking?.name} />
-              </div>
+        <div className="flex-col h-full">
 
-              <div className="mx-10">
-                <h2>{booking?.name}</h2>
-                {/* <p>{booking?.longDescription}</p> */}
-                <p>
-                  <strong>Address:</strong> {booking?.address?.line1},{" "}
-                  {booking?.address?.city}, {booking?.address?.pincode}
-                </p>
-                <p>
-                  {/* <strong>Amenities:</strong> {booking?.amenities?.join(", ")} */}
-                </p>
-                <p>
-                  <strong>Price:</strong> Rs {booking?.Price}
-                </p>
-              </div>
-            </Link>
-          ))}
+           <div className="flex-1 min-h-96 justify-center flex-col p-4">
+           <div className="text-xl mb-4">Bookings</div>
+           <div className="overflow-y-auto max-h-96">
+             <table className="min-w-full bg-white border border-gray-300">
+               <thead>
+                 <tr>
+                   <th className="py-2 px-4 border-b">Name</th>
+                   <th className="py-2 px-4 border-b">Booked Seat</th>
+                   <th className="py-2 px-4 border-b">Booking Date</th>
+                   <th className="py-2 px-4 border-b">Period/Months</th>
+                   <th className="py-2 px-4 border-b">Time</th>
+                   <th className="py-2 px-4 border-b">Room No</th>
+                   <th className="py-2 px-4 border-b">Price</th>
+                   <th className="py-2 px-4 border-b">Booked For</th>
+                 </tr>
+               </thead>
+               <tbody>
+               {Object.entries(bookings).map(([key, item]: [string, any]) => (
+                   <tr key={item?.id} className="hover:bg-gray-100">
+                     <td className="py-2 px-4 border-b">{item?.userId.username}</td>
+                     <td className="py-2 px-4 border-b">{item?.bookedSeat?.seatLabel}</td>
+                     <td className="py-2 px-4 border-b">{item?.bookingDate.slice(0, 10)}</td>
+                     <td className="py-2 px-4 border-b">{item?.bookingPeriod}</td>
+                     <td className="py-2 px-4 border-b">
+                       {item?.timeSlotDetails.map((slot: any, index: number) => (
+                         <div key={index}>
+                           {slot.from} - {slot.to}
+                         </div>
+                       ))}
+                     </td>
+                     <td className="py-2 px-4 border-b">{item?.roomNo}</td>
+                     <td className="py-2 px-4 border-b">Rs{item?.finalPrice}</td>
+                     <td className="py-2 px-4 border-b">
+                       {item?.forFriend
+                         ? `${item?.forFriend?.name}  (Friend)`
+                         : `${item?.userId.username}(SELF)`}
+                       {item?.forFriend
+                         ? `Booked By (${item?.userId.username})`
+                         : ""}
+                     </td>
+                   </tr>
+                 ))}
+               </tbody>
+             </table>
+           </div>
+         </div>
+
         </div>
       )}
     </div>
