@@ -133,7 +133,7 @@ const Slider = ({
       duration: 100,
       useNativeDriver: true,
     }).start();
-  }, [isNextToDot, scaleAnimation]);
+  }, [isNextToDot]);
 
   const onViewableItemsChanged = useCallback(
     ({
@@ -296,7 +296,7 @@ const Slider = ({
         showsHorizontalScrollIndicator={false}
         bounces={false}
         initialNumToRender={data.length}
-        decelerationRate="normal"
+        decelerationRate="fast"
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
         snapToAlignment="center"
         pagingEnabled
@@ -513,7 +513,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
   },
-
   skipButton: {
     position: "absolute",
     top: 40,

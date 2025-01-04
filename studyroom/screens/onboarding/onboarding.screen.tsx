@@ -18,7 +18,7 @@ import {
 } from "react-native-responsive-dimensions";
 import Button from "@/components/Button";
 
-import Carousel from "react-native-intro-carousel";
+// import Carousel from "react-native-intro-carousel";
 import { ImageBackground } from "expo-image";
 import ff from "@/constants/fonts";
 import { h, vh, vw } from "@/constants/size";
@@ -28,6 +28,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useEffect, useState } from "react";
+import Slider from "@/components/Slider";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -126,7 +127,7 @@ export default function OnBoardingScreen() {
         flex: 1,
       }}
     >
-      <Carousel
+      <Slider
         paginationConfig={{
           dotSize: 8.86,
           activeColor: "rgba(0, 119, 182, 1)",

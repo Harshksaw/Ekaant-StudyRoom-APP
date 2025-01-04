@@ -1,6 +1,7 @@
 import { DeskGreen } from "@/assets";
 import ff from "@/constants/fonts";
 import { h, height, w, width } from "@/constants/size";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
@@ -10,13 +11,8 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-<<<<<<< HEAD
 
 const windowWidth = Dimensions.get("window").width;
-=======
-import { LinearGradient } from 'expo-linear-gradient'; 
-const windowWidth = Dimensions.get('window').width;
->>>>>>> bcf9395fdaf807432eabe0b8e61702bc08993c82
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
   console.log("🚀 ~ Seat ~ roation:", rotation);
@@ -175,30 +171,38 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
             Entrance
           </Text>
           <View style={[styles.box, { width: boxWidth, height: boxHeight }]}>
-          <LinearGradient
-          start={{ x: 0, y: 1 }}
-              colors={['#90E0EF', '#90E0EF', '#0077B6']} // Gradient colors
-              style={[styles.line, styles.lineLeft, {
-                position: 'absolute',
-                borderRadius: 20,
-                height: '80%',
-                backgroundColor:'transparent',  
-                width: 8,
-              }]}
+            <LinearGradient
+              start={{ x: 0, y: 1 }}
+              colors={["#90E0EF", "#90E0EF", "#0077B6"]} // Gradient colors
+              style={[
+                styles.line,
+                styles.lineLeft,
+                {
+                  position: "absolute",
+                  borderRadius: 20,
+                  height: "80%",
+                  backgroundColor: "transparent",
+                  width: 8,
+                },
+              ]}
             >
               {/* <View style={[styles.line, styles.lineLeft]} /> */}
             </LinearGradient>
             <LinearGradient
               start={{ x: 0, y: 1 }}
-              colors={['#192fae', '#0077B6', '#90E0EF']} // Gradient colors
-              style={[styles.line, styles.lineRight,{
-                position: 'absolute',
-                borderRadius: 20,
-                height: '80%',
-                backgroundColor:'transparent',  
-                
-                width: 8,
-              }]}
+              colors={["#192fae", "#0077B6", "#90E0EF"]} // Gradient colors
+              style={[
+                styles.line,
+                styles.lineRight,
+                {
+                  position: "absolute",
+                  borderRadius: 20,
+                  height: "80%",
+                  backgroundColor: "transparent",
+
+                  width: 8,
+                },
+              ]}
             >
               {/* <View style={[styles.line, styles.lineRight]} /> */}
             </LinearGradient>
@@ -247,11 +251,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 20,
-<<<<<<< HEAD
     borderBlockColor: "black",
-=======
-    borderBlockColor: 'gray',
->>>>>>> bcf9395fdaf807432eabe0b8e61702bc08993c82
     borderWidth: 2,
     borderRadius: 10,
     padding: 5,
@@ -309,7 +309,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: "80%",
     width: 2, // Adjust line thickness
-<<<<<<< HEAD
 
     backgroundColor: "#0078d7", // Adjust line color
   },
@@ -322,18 +321,5 @@ const styles = StyleSheet.create({
     top: "10%",
     right: "10%",
     transform: [{ rotate: "-30deg" }], // Adjust angle
-=======
-    // backgroundColor: '#0078d7', // Adjust line color
-  },
-  lineLeft: {
-    top: '10%',
-    left: '-5%',
-    transform: [{ rotate: '30deg' }], // Adjust angle
-  },
-  lineRight: {
-    top: '10%',
-    right: '-5%',
-    transform: [{ rotate: '-30deg' }], // Adjust angle
->>>>>>> bcf9395fdaf807432eabe0b8e61702bc08993c82
   },
 });
