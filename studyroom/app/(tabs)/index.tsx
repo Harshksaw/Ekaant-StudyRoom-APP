@@ -340,7 +340,7 @@ export default function index() {
   const parsedUser = typeof userDetails.user === 'string' ? JSON.parse(userDetails.user) : userDetails.user;
   console.log("🚀 ~ index ~ parsedUser:", parsedUser);
 
-  const username = parsedUser?.user?.username.split(" ")[0];
+  const username = parsedUser?.user?.username.split(" ")[0] || parsedUser?.data.user?.username.split(" ")[0];
   console.log("🚀 ~ index ~ username:", username);
   const onRefresh = useCallback(() => {
     setRefreshing(true);

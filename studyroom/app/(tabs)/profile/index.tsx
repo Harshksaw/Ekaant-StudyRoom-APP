@@ -51,8 +51,8 @@ export default function profile() {
       // const userData = await AsyncStorage.getItem("userData");
       const u = JSON.parse(userDetails.user || "{}");
 
-      // console.log("🚀 ~ getUserData ~ userData:", u.user.username)
-      setUserData(u.user);
+      // console.log("🚀 ~ getUserData ~ userData:", u?.data)
+      setUserData(u.data.user || u.user);
   
     }
 
