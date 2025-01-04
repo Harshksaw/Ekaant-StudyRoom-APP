@@ -357,7 +357,7 @@ const LoginScreen: React.FC = () => {
             fontFamily: ff.deckRegular,
           }}
         >
-          Good to See You back! 🖤
+          Good to See You back!
         </Text>
 
         {!isOtp && (
