@@ -1,7 +1,12 @@
 import Header from "@/components/Header";
 import ff from "@/constants/fonts";
+import { h, w } from "@/constants/size";
 import { LinearGradient } from "expo-linear-gradient";
+import { router, useFocusEffect } from "expo-router";
+import React from "react";
 import {
+  BackHandler,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -102,19 +107,52 @@ export default function Search() {
       style={{
         flex: 1,
         flexDirection: "column",
-
         backgroundColor: "white",
-        // backgroundColor: "lightgreen",
       }}
     >
-      {/* <View
+      <View
         style={{
-          marginTop: 0,
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          position: "absolute",
+          height: "100%",
+          width: "100%",
+          zIndex: 999,
         }}
       >
-
-        <Header color="black" />
-      </View> */}
+        <View
+          style={{
+            width: w(300),
+            padding: 20,
+            backgroundColor: "white",
+            borderRadius: 10,
+            alignItems: "center",
+            elevation: 5,
+          }}
+        >
+          <Text
+            style={{
+              color: "#0077B6",
+              fontSize: w(30),
+              fontFamily: ff.deckSemiBold,
+            }}
+          >
+            Coming Soon
+          </Text>
+          <Text
+            style={{
+              color: "#000",
+              fontSize: w(15),
+              fontFamily: ff.deckSemiBold,
+              marginTop: h(5),
+            }}
+          >
+            Stay tuned for exciting updates!
+          </Text>
+        </View>
+      </View>
       <View
         style={{
           marginTop: 10,

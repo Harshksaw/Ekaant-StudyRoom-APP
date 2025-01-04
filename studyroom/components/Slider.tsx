@@ -278,7 +278,7 @@ const Slider = ({
           onChangeSlider(nextIndex);
           return nextIndex;
         });
-      }, 2000);
+      }, 4000);
 
       return () => clearInterval(autoplayInterval);
     }
@@ -312,7 +312,7 @@ const Slider = ({
         showsHorizontalScrollIndicator={false}
         bounces={false}
         initialNumToRender={data.length}
-        decelerationRate="fast"
+        decelerationRate="normal"
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
         snapToAlignment="center"
         pagingEnabled

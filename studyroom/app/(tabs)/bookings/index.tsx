@@ -31,7 +31,7 @@ const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
       <Text
         style={[
           isApproved ? styles.approved : styles.notApproved,
-          { fontFamily: ff.deckSemiBold, fontSize: w(12) },
+          { fontFamily: ff.deckSemiBold, fontSize: w(11) },
         ]}
       >
         {isApproved ? "Paid" : "Not Paid"}
@@ -46,7 +46,6 @@ export default function Bookings() {
   const [loading, setLoading] = useState(true);
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
-    console.log("🚀 ~ getBookings ~ userId:", userId.data.user_id.id);
 
     if (userId) {
       try {
@@ -184,12 +183,12 @@ export default function Bookings() {
                   <Image
                     source={{
                       uri:
-                        item.libraryId?.cardImage ||
+                        item.library?.cardImage ||
                         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr_IULLOXJT80cLu-eRqkRGrHY23yLEx4p0w&s=10",
                     }}
                     style={{
-                      width: 140,
-                      height: 120,
+                      width: w(90),
+                      // height: 120,
                       borderRadius: 10,
                       aspectRatio: 16 / 15,
                     }}
@@ -264,7 +263,7 @@ export default function Bookings() {
                         <Ionicons name="time-outline" size={16} color="black" />
                         <View
                           style={{
-                            flexDirection: "column",
+                            flexDirection: "row",
                           }}
                         >
                           <Text
@@ -275,7 +274,7 @@ export default function Bookings() {
                               textAlign: "left",
                             }}
                           >
-                            Period: {item.bookingDate.slice(0, 10)} {"-"}
+                            Period: {item.bookingDate.slice(0, 10)} {" : "}
                           </Text>
                           <Text
                             style={{

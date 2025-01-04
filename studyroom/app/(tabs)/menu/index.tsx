@@ -1,11 +1,56 @@
 import SvgComponent from "@/assets/svg";
-import { View, StyleSheet } from "react-native";
+import ff from "@/constants/fonts";
+import { View, StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const ComingSoon = () => {
   return (
-    <View style={styles.container}>
-      <SvgComponent />
-    </View>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        padding: 0,
+      }}
+    >
+      <View
+        style={{
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          borderBottomWidth: 1.5,
+          paddingBottom: 5,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 30,
+            fontFamily: ff.displayBlack,
+            color: "black",
+            textDecorationStyle: "solid",
+            marginTop: 20,
+            marginLeft: 30,
+          }}
+        >
+          Menu
+        </Text>
+      </View>
+      <View style={styles.container}>
+        <SvgComponent />
+        <Text
+          style={{
+            fontSize: 25,
+            fontFamily: ff.displayMedium,
+            color: "black",
+            textDecorationStyle: "solid",
+            marginTop: 20,
+            marginLeft: 30,
+            position: "absolute",
+            top: "65%",
+          }}
+        >
+          Stay tuned for exciting updates!
+        </Text>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -14,7 +59,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F0F4F8",
+    backgroundColor: "#fff",
     padding: 20,
   },
   image: {

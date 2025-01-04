@@ -10,6 +10,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  Linking,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -148,7 +149,7 @@ export default function profile() {
             <Text> {userData?.email || "----"}</Text>
           </Text>
 
-          <View
+          {/* <View
             style={{
               flexDirection: "row",
               justifyContent: "center",
@@ -172,7 +173,7 @@ export default function profile() {
             >
               Edit Profile
             </Text>
-          </View>
+          </View> */}
 
           <View
             style={{
@@ -263,7 +264,11 @@ export default function profile() {
               </View>
             </TouchableOpacity>
           </View>
-          <View
+          <TouchableOpacity
+            onPress={() => {
+              const url = `https://www.studyekaant.com/terms-and-conditions/`;
+              Linking.openURL(url);
+            }}
             style={{
               marginTop: 10,
               flexDirection: "row",
@@ -287,7 +292,7 @@ export default function profile() {
               Terms & Conditions
             </Text>
             <Ionicons name="arrow-forward" size={20} color="black" />
-          </View>
+          </TouchableOpacity>
         </View>
         <View
           style={{
