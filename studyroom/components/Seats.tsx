@@ -1,6 +1,6 @@
 import { DeskGreen } from "@/assets";
 import ff from "@/constants/fonts";
-import { h, w} from "@/constants/size";
+import { h, w } from "@/constants/size";
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
@@ -11,12 +11,8 @@ import {
   Dimensions,
 } from "react-native";
 
-
-
-
-import { LinearGradient } from 'expo-linear-gradient'; 
-const windowWidth = Dimensions.get('window').width;
-
+import { LinearGradient } from "expo-linear-gradient";
+const windowWidth = Dimensions.get("window").width;
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
   console.log("🚀 ~ Seat ~ roation:", rotation);
@@ -141,7 +137,7 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
       </View>
     ));
   };
-  const boxWidth = windowWidth > 480 ? 100 : 50;
+  const boxWidth = windowWidth > 480 ? 100 : 70;
   const boxHeight = windowWidth > 480 ? 100 : 50;
 
   return (
@@ -168,37 +164,45 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
               zIndex: 1,
               fontFamily: ff.deckBold,
               textAlign: "center",
-              transform: [{ translateX: 20 }],
+              transform: [{ translateX: 30 }],
               marginTop: h(-4),
             }}
           >
             Entrance
           </Text>
           <View style={[styles.box, { width: boxWidth, height: boxHeight }]}>
-          <LinearGradient
-          start={{ x: 0, y: 1 }}
-              colors={['#90E0EF', '#90E0EF', '#0077B6']} // Gradient colors
-              style={[styles.line, styles.lineLeft, {
-                position: 'absolute',
-                borderRadius: 20,
-                height: '80%',
-                backgroundColor:'transparent',  
-                width: 8,
-              }]}
+            <LinearGradient
+              start={{ x: 0, y: 1 }}
+              colors={["#90E0EF", "#90E0EF", "#0077B6"]} // Gradient colors
+              style={[
+                styles.line,
+                styles.lineLeft,
+                {
+                  position: "absolute",
+                  borderRadius: 20,
+                  height: "80%",
+                  backgroundColor: "transparent",
+                  width: 8,
+                },
+              ]}
             >
               {/* <View style={[styles.line, styles.lineLeft]} /> */}
             </LinearGradient>
             <LinearGradient
               start={{ x: 0, y: 1 }}
-              colors={['#192fae', '#0077B6', '#90E0EF']} // Gradient colors
-              style={[styles.line, styles.lineRight,{
-                position: 'absolute',
-                borderRadius: 20,
-                height: '80%',
-                backgroundColor:'transparent',  
-                
-                width: 8,
-              }]}
+              colors={["#192fae", "#0077B6", "#90E0EF"]} // Gradient colors
+              style={[
+                styles.line,
+                styles.lineRight,
+                {
+                  position: "absolute",
+                  borderRadius: 20,
+                  height: "80%",
+                  backgroundColor: "transparent",
+                  width: 8,
+                  elevation: 3,
+                },
+              ]}
             >
               {/* <View style={[styles.line, styles.lineRight]} /> */}
             </LinearGradient>
@@ -215,22 +219,12 @@ export default function Seats({
   currentRoom,
   door,
 }: any) {
-  console.log("🚀 ~ Seats ~ SeatLayout:", SeatLayout);
   const handleSeatSelect = (selectedSeat: any) => {
     onSeatSelect(selectedSeat);
   };
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={
-        {
-          // borderColor:'black',
-          // position:'relative',
-          // borderWidth:2,
-        }
-      }
-    >
+    <ScrollView showsVerticalScrollIndicator={false}>
       <SeatsComponent
         layout={SeatLayout}
         bookedSeats={[]}
@@ -247,15 +241,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 20,
-
     borderBlockColor: "black",
-
-    borderBlockColor: 'gray',
-
     borderWidth: 2,
     borderRadius: 10,
     padding: 5,
     marginHorizontal: 5,
+    marginBottom: 50,
   },
   seatRow: {
     flexDirection: "row",
@@ -264,7 +255,6 @@ const styles = StyleSheet.create({
   },
   seat: (isBooked, isSelected) => ({
     // transform: [{ rotate: `${rotation}deg` }], // Apply rotation
-
     justifyContent: "center",
     alignItems: "center",
     margin: 5,
@@ -279,7 +269,6 @@ const styles = StyleSheet.create({
       : "transparent",
     borderWidth: 1.3,
     aspectRatio: 1.1 / 0.9,
-
     borderColor: "#0077B6",
     padding: w(2),
     paddingHorizontal: w(4),
@@ -310,25 +299,16 @@ const styles = StyleSheet.create({
     height: "80%",
     width: 2, // Adjust line thickness
 
-
     backgroundColor: "#0078d7", // Adjust line color
   },
   lineLeft: {
     top: "10%",
-    left: "10%",
+    left: "0%",
     transform: [{ rotate: "30deg" }], // Adjust angle
   },
   lineRight: {
     top: "10%",
-    right: "10%",
+    right: "0%",
     transform: [{ rotate: "-30deg" }], // Adjust angle
-
-    // backgroundColor: '#0078d7', // Adjust line color
   },
-  lineLeft: {
-    top: '10%',
-    left: '-5%',
-    transform: [{ rotate: '30deg' }], // Adjust angle
-  },
-
 });

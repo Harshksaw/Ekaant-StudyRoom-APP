@@ -216,7 +216,9 @@ export default function SignUpScreen() {
         if (buttonSpinner) {
           setButtonSpinner(false);
         }
-        router.push("/(tabs)");
+        router.dismissAll();
+        router.replace("/(tabs)");
+        // router.push("/(tabs)");
       }
     } catch (error) {
       setButtonSpinner(false);

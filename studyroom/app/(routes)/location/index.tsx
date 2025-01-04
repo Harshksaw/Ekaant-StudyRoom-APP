@@ -7,11 +7,12 @@ import {
   StyleSheet,
   Image,
   TextInput,
+  BackHandler,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
@@ -29,6 +30,23 @@ const LocationsScreen = () => {
   useEffect(() => {
     setLocations(citiesData.locations || []);
   }, [citiesData.locations]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        () => {
+          if (router.canGoBack()) {
+            router.back();
+          } else {
+            router.replace("/(tabs)");
+          }
+          return true;
+        }
+      );
+      return () => backHandler.remove();
+    }, [])
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,7 +99,11 @@ const LocationsScreen = () => {
           marginBottom: h(15),
         }}
       >
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          disabled={!router.canGoBack()}
+          style={{ opacity: router.canGoBack() ? 1 : 0 }}
+        >
           <Entypo name="chevron-with-circle-left" size={30} />
         </TouchableOpacity>
         <Text style={styles.title}>Select a location</Text>

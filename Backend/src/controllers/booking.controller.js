@@ -1,4 +1,4 @@
-const { StatusCodes } = require("http-status-codes");
+ const { StatusCodes } = require("http-status-codes");
 
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
@@ -130,7 +130,7 @@ async function getUserBookings(req, res) {
         friends: true,
       },
       orderBy: {
-        createdAt: 'desc',
+        id: 'desc',
       },
     });
 

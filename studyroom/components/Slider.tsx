@@ -82,6 +82,7 @@ export type CarouselProps = {
   onFinish?: () => void;
   onPressSkip?: () => void;
   setChanged?: (index: number) => void;
+  autoplay?: boolean;
 };
 
 const viewabilityConfig = { viewAreaCoveragePercentThreshold: 40 };
@@ -97,6 +98,7 @@ const Slider = ({
   onFinish,
   onPressSkip,
   setChanged,
+  autoplay = false,
 }: CarouselProps) => {
   const {
     dotSize = defaultDotSize,
@@ -133,7 +135,7 @@ const Slider = ({
       duration: 100,
       useNativeDriver: true,
     }).start();
-  }, [isNextToDot, scaleAnimation]);
+  }, [isNextToDot]);
 
   const onViewableItemsChanged = useCallback(
     ({
@@ -268,6 +270,20 @@ const Slider = ({
     }
   };
 
+  useEffect(() => {
+    if (autoplay) {
+      const autoplayInterval = setInterval(() => {
+        setCurrentItem((prevIndex) => {
+          const nextIndex = (prevIndex + 1) % data.length;
+          onChangeSlider(nextIndex);
+          return nextIndex;
+        });
+      }, 2000);
+
+      return () => clearInterval(autoplayInterval);
+    }
+  }, [data.length]);
+
   return (
     <View
       style={[styles.container, { position: "relative" }]}
@@ -296,7 +312,7 @@ const Slider = ({
         showsHorizontalScrollIndicator={false}
         bounces={false}
         initialNumToRender={data.length}
-        decelerationRate="normal"
+        decelerationRate="fast"
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
         snapToAlignment="center"
         pagingEnabled
@@ -513,7 +529,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
   },
-
   skipButton: {
     position: "absolute",
     top: 40,

@@ -42,7 +42,7 @@ export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
-  console.log("🚀 ~ index ~ data:", data)
+  console.log("🚀 ~ index ~ data:", data);
   const [notavailable, setNotAvailable] = useState(false);
   const [notListed, setNotListed] = useState(false);
   const [reload, setReload] = useState(false);
@@ -69,8 +69,6 @@ export default function index() {
       setBannerImage(response.data.data.Banner);
 
       setLocationData(response.data.data.locations);
-
-     
     } catch (error) {
       setBannerImage([]);
       console.error("Failed to fetch banner image data:", error);
@@ -99,10 +97,10 @@ export default function index() {
 
     try {
       if (selectedLocation === "") {
-        Toast.show("Please select a location", {
-          type: "error",
-          duration: 3000,
-        });
+        // Toast.show("Please select a location", {
+        //   type: "error",
+        //   duration: 3000,
+        // });
         // router.push("/(routes)/location");
         return;
       }
@@ -328,19 +326,22 @@ export default function index() {
     </TouchableOpacity>
   );
 
-
   const handleLayout = (event: any) => {
     setStickyHeight(event.nativeEvent.layout.height);
   };
 
-
   const userDetails = useSelector((state: any) => state.user);
   console.log("🚀 ~ index ~ userDetails:", userDetails);
 
-  const parsedUser = typeof userDetails.user === 'string' ? JSON.parse(userDetails.user) : userDetails.user;
+  const parsedUser =
+    typeof userDetails.user === "string"
+      ? JSON.parse(userDetails.user)
+      : userDetails.user;
   console.log("🚀 ~ index ~ parsedUser:", parsedUser);
 
-  const username = parsedUser?.user?.username.split(" ")[0];
+  const username =
+    parsedUser?.user?.username.split(" ")[0] ||
+    parsedUser?.data.user?.username.split(" ")[0];
   console.log("🚀 ~ index ~ username:", username);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -362,6 +363,7 @@ export default function index() {
   const Carasoul = useMemo(() => {
     return (
       <Slider
+        autoplay
         paginationConfig={{
           dotSize: 8.86,
           activeColor: "rgba(0, 119, 182, 1)",
@@ -419,8 +421,6 @@ export default function index() {
       </TouchableOpacity>
 
       <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
-
-      {/* ///carousel -> Listings -> Filters */}
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -511,29 +511,25 @@ export default function index() {
         {isLoading ? (
           <CustomLoader visible={true} />
         ) : (
-          <>
-            <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
-              {data &&
-                data?.data?.map((item, index) => renderItem({ item, index }))}
+          <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
+            {data &&
+              data?.data?.map((item, index) => renderItem({ item, index }))}
 
-              {data?.data?.length == 0 && (
-                <TouchableOpacity onPress={() => setReload(true)}>
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      paddingTop: 50,
-                      fontSize: 25,
-                      color: "red",
-                    }}
-                  >
-                    No listings available at the moment.
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-
-            {/* <View style={{ height: 900, width: 45 }}></View> */}
-          </>
+            {data?.data?.length == 0 && (
+              <TouchableOpacity onPress={() => setReload(true)}>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    paddingTop: 50,
+                    fontSize: 25,
+                    color: "red",
+                  }}
+                >
+                  No listings available at the moment.
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -548,6 +544,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     justifyContent: "flex-start",
     alignItems: "flex-start",
+    marginBottom: 5,
   },
   carousel: {
     height: height * 0.32,
@@ -555,23 +552,15 @@ const styles = StyleSheet.create({
   },
   filters: {
     flexDirection: "row",
-    // backgroundColor: "red",
     marginBottom: 8,
     zIndex: -1,
-
-    // height: 13,
-    // backgroundColor:'red'
   },
 
   card: {
     margin: 5,
-    // backgroundColor: "red",
-    // padding:10,
     gap: 18,
     borderRadius: 5,
     flexDirection: "row",
-    // justifyContent: "space-between",
-
     ...(Platform.OS === "ios" && {
       marginBottom: 10,
       marginHorizontal: 5,

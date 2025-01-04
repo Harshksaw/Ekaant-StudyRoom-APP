@@ -1,5 +1,3 @@
-
-
 import { Feather, Fontisto, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
@@ -17,51 +15,41 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { LinearGradient as LinearBackground } from "expo-linear-gradient";
 
-
-
 import { useDispatch, useSelector } from "react-redux";
 import { logout, resetUserState } from "@/redux/userSlice";
 import { resetAppState } from "@/redux/appSlice";
 import { resetBookingState } from "@/redux/bookingSlice";
 import { h, w } from "@/constants/size";
 import ff from "@/constants/fonts";
+
 export default function profile() {
   const dispatch = useDispatch();
 
   const logoutHandler = async () => {
-
     await AsyncStorage.removeItem("token");
     await AsyncStorage.removeItem("userData");
     dispatch(logout());
     dispatch(resetUserState());
     dispatch(resetAppState());
     dispatch(resetBookingState());
- 
-    router.push("(routes)/welcome" as any);
+
+    router.dismissAll();
+    router.replace("(routes)/welcome" as any);
   };
   const [userData, setUserData] = React.useState<any>();
   const userDetails = useSelector((state: any) => state.user);
 
-
-  console.log("🚀 ~ index ~ userDetails:", userDetails.user);
-
- 
   useEffect(() => {
     const getUserData = async () => {
-      // const userData = await AsyncStorage.getItem("userData");
       const u = JSON.parse(userDetails.user || "{}");
-
-      // console.log("🚀 ~ getUserData ~ userData:", u.user.username)
-      setUserData(u.user);
-  
-    }
+      setUserData(u.data.user || u.user);
+    };
 
     getUserData();
   }, [userDetails]);
 
   const { width } = Dimensions.get("window");
 
-  console.log("🚀 ~ index ~ userData:", userData);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <LinearBackground
@@ -310,9 +298,7 @@ export default function profile() {
             marginTop: h(35),
           }}
         >
-          <TouchableOpacity onPress={() => logoutHandler()}
-            
-            >
+          <TouchableOpacity onPress={() => logoutHandler()}>
             <View
               style={{
                 marginTop: 10,
