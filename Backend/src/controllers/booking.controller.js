@@ -173,7 +173,7 @@ async function getBookingByLibId(req, res) {
       where: { user_Id: user_id },
     
       orderBy: {
-        createdAt: 'desc',
+        bookingDate : 'desc',
       }
     });
 
