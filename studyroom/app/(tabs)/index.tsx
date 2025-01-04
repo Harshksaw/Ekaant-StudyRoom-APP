@@ -333,16 +333,15 @@ export default function index() {
     setStickyHeight(event.nativeEvent.layout.height);
   };
 
+
   const userDetails = useSelector((state: any) => state.user);
-  // console.log("🚀 ~ index ~ userDetails:", userDetails)
-  const u = JSON.parse(userDetails?.details)
-  console.log("🚀 ~ index ~ userDetails:", u?.data?.user?.username)
+  console.log("🚀 ~ index ~ userDetails:", userDetails);
 
-  const username = u?.data?.user?.username.split(" ")[0];
-  // console.log("🚀 ~ index ~ username:", username)
-  const userData = JSON.parse(userDetails.details)?.data?.username;
-  // console.log("🚀 ~ index ~ userData:", userData)
+  const parsedUser = typeof userDetails.user === 'string' ? JSON.parse(userDetails.user) : userDetails.user;
+  console.log("🚀 ~ index ~ parsedUser:", parsedUser);
 
+  const username = parsedUser?.user?.username.split(" ")[0];
+  console.log("🚀 ~ index ~ username:", username);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     getAppData();

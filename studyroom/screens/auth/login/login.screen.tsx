@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router } from "expo-router";
 import React, { createRef, useEffect, useState } from "react";
+import { login } from '../../../redux/userSlice';
 import {
   Text,
   TextInput,
@@ -17,6 +18,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Toast } from "react-native-toast-notifications";
+import { useDispatch } from "react-redux";
 
 export function maskPhoneNumber(phoneNumber?: string | number) {
   if (!phoneNumber) {
@@ -40,7 +42,7 @@ const LoginScreen: React.FC = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
   const [attempts, setAttempts] = useState(0);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     const getme = async () => {
       const res = await axios.get(`${BACKEND}/me`);
@@ -76,13 +78,15 @@ const LoginScreen: React.FC = () => {
 
       setLoading(false);
       if (response.status === 200) {
-        console.log(response, "res");
+        console.log(response.data, "res---");
 
         await AsyncStorage.setItem(
           "token",
           JSON.stringify(response.data.token)
         );
         await AsyncStorage.setItem("userData", JSON.stringify(response.data));
+         dispatch(login ({ user: response.data, token: response.data.token }));
+
         Toast.show("Login Successful", {
           type: "success",
           placement: "top",
@@ -115,7 +119,7 @@ const LoginScreen: React.FC = () => {
     }
   };
 
-  const login = async () => {
+  const loginHandler = async () => {
     setLoading(true);
     if (!phoneNumber || !password) {
       return Toast.show("Please fill all fields", {
@@ -141,6 +145,8 @@ const LoginScreen: React.FC = () => {
           "userData",
           JSON.stringify(response.data.data)
         );
+
+        dispatch(login ({ user: response.data, token: response.data.token }));
         Toast.show("Login Successful", {
           type: "success",
           placement: "top",
@@ -249,7 +255,7 @@ const LoginScreen: React.FC = () => {
       if (loginOption === "otp") {
         sendOtp();
       } else {
-        await login();
+        await loginHandler();
       }
     } else {
       Toast.show("Please enter a valid 10-digit phone number", {
@@ -509,7 +515,7 @@ const LoginScreen: React.FC = () => {
               >
                 {isOtp
                   ? "Enter 4-digit otp to verify"
-                  : "Enter 10-digit Phone Number to login"}
+                  : "Enter 10-digit Phone Number to loginHandler"}
               </Text>
               <View
                 style={{

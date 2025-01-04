@@ -165,16 +165,16 @@ async function getBookingByLibId(req, res) {
   try {
     // console.log(req.body, "getBookingByLibId");
 
-    const { lib_id } = req.body;
-    if (!lib_id) {
-      res.status(StatusCodes.BAD_REQUEST).json({ message: "lib_id not found" });
-    }
-    const bookings = await prisma.booking.findFirst({
-      where: { libraryId: lib_id },
-      include: {
-        userId: true,
-      },
-      orderBy: Desc,
+    const { user_id } = req.body;
+    // if (!lib_id) {
+    //   res.status(StatusCodes.BAD_REQUEST).json({ message: "lib_id not found" });
+    // }
+    const bookings = await prisma.booking.findMany({
+      where: { user_Id: user_id },
+    
+      orderBy: {
+        createdAt: 'desc',
+      }
     });
 
     console.log("🚀 ~ getBookingByLibId ~ bookings:", bookings);

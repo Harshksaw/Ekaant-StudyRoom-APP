@@ -14,17 +14,20 @@ const ViewBookings = () => {
     const fetchBookings = async () => {
       console.log(librarybookings);
       try {
-        const response = await getLibraryDataById();
+        // const response = await getLibraryDataById();
+        // console.log("🚀 ~ fetchBookings ~ response:", response)
         // const response = await getBookings();
 
         // getBookingByLibId
-        setBookings(response.data.data);
-        console.log("🚀 ~ fetchBookings ~ response", response.data.data[0]);
+        // setBookings(response.data.data);
+
+        const userId = localStorage.getItem("userId");
+        // console.log("🚀 ~ fetchBookings ~ response", response.data.data[0]);
 
         const resp = await axios.post(
           `${BASEURL}/api/v1/booking/getBookingByLibId`,
           {
-            lib_id: response.data.data[0].id,
+            userId : userId,
           }
         );
 
