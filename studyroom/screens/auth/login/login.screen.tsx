@@ -7,7 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router } from "expo-router";
 import React, { createRef, useEffect, useState } from "react";
-import { login } from '../../../redux/userSlice';
+import { login } from "../../../redux/userSlice";
 import {
   Text,
   TextInput,
@@ -16,9 +16,14 @@ import {
   View,
   Image,
   SafeAreaView,
+  ScrollView,
+  KeyboardAvoidingView,
+  Keyboard,
+  Platform,
 } from "react-native";
 import { Toast } from "react-native-toast-notifications";
 import { useDispatch } from "react-redux";
+import { CommonActions } from "@react-navigation/native";
 
 export function maskPhoneNumber(phoneNumber?: string | number) {
   if (!phoneNumber) {
@@ -42,6 +47,11 @@ const LoginScreen: React.FC = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
   const [attempts, setAttempts] = useState(0);
+
+  const [isFocused, setFocused] = useState(0);
+
+  const [isKeyboard, setIsKeyboard] = useState<boolean>(false);
+
   const dispatch = useDispatch();
   useEffect(() => {
     const getme = async () => {
@@ -64,6 +74,7 @@ const LoginScreen: React.FC = () => {
 
     if (text && index < 3) {
       inputRefs[index + 1].current.focus();
+      setFocused(index + 1);
     }
   };
 
@@ -85,14 +96,16 @@ const LoginScreen: React.FC = () => {
           JSON.stringify(response.data.token)
         );
         await AsyncStorage.setItem("userData", JSON.stringify(response.data));
-         dispatch(login ({ user: response.data, token: response.data.token }));
+        dispatch(login({ user: response.data, token: response.data.token }));
 
         Toast.show("Login Successful", {
           type: "success",
           placement: "top",
           duration: 2000,
         });
-        router.push("/(routes)/location");
+
+        router.dismissAll();
+        router.replace("/(routes)/location");
       } else {
         Toast.show(response.data.message, {
           type: "danger",
@@ -103,13 +116,13 @@ const LoginScreen: React.FC = () => {
     } catch (error) {
       // console.log("🚀 ~ loginWithOtp ~ error:", error.response.status)
       setLoading(false);
-      if(error.response.status === 400){
+      if (error.response.status === 400) {
         Toast.show("Wrong Otp", {
           type: "danger",
           placement: "top",
-          duration: 4000})
-          return;
-          
+          duration: 4000,
+        });
+        return;
       }
       Toast.show("User Does Not exist", {
         type: "danger",
@@ -146,13 +159,15 @@ const LoginScreen: React.FC = () => {
           JSON.stringify(response.data.data)
         );
 
-        dispatch(login ({ user: response.data, token: response.data.token }));
+        dispatch(login({ user: response.data, token: response.data.token }));
         Toast.show("Login Successful", {
           type: "success",
           placement: "top",
           duration: 2000,
         });
-        router.push("/(tabs)");
+        router.dismissAll();
+        router.replace("/(tabs)");
+        // router.push("/(tabs)");
       } else {
         Toast.show(response.data.message, {
           type: "danger",
@@ -174,6 +189,7 @@ const LoginScreen: React.FC = () => {
   const handleKeyPress = (e, index) => {
     if (e.nativeEvent.key === "Backspace" && otp[index] === "" && index > 0) {
       inputRefs[index - 1].current.focus();
+      setFocused(index - 1);
     }
   };
   const handlePhoneNumberChange = (text) => {
@@ -266,6 +282,27 @@ const LoginScreen: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsKeyboard(true);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsKeyboard(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -289,10 +326,6 @@ const LoginScreen: React.FC = () => {
       <Image
         style={{ position: "absolute", top: "25%", right: 0 }}
         source={require("../../../assets/images/bubblle 03.png")}
-      />
-      <Image
-        style={{ position: "absolute", bottom: "8%", right: 0 }}
-        source={require("../../../assets/images/bubble 04.png")}
       />
 
       <View
@@ -534,7 +567,8 @@ const LoginScreen: React.FC = () => {
                       width: 50,
                       height: 50,
                       borderWidth: 1,
-                      borderColor: "lightgray",
+                      borderColor:
+                        isFocused === index ? "#2467EC" : "lightgray",
                       borderRadius: 10,
                       backgroundColor: "white",
                       textAlign: "center",
@@ -599,6 +633,15 @@ const LoginScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
       </View>
+
+      <Image
+        style={{
+          position: "absolute",
+          bottom: isKeyboard ? "-25%" : "8%",
+          right: 0,
+        }}
+        source={require("../../../assets/images/bubble 04.png")}
+      />
     </SafeAreaView>
   );
 };

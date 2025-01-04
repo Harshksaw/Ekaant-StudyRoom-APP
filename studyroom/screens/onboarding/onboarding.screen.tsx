@@ -154,7 +154,6 @@ export default function OnBoardingScreen() {
               style={{
                 width: vw,
                 height: vh,
-                backgroundColor: "red",
               }}
               source={item?.image}
             >

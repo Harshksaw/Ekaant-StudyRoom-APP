@@ -1,11 +1,18 @@
 import React from "react";
-import { Link, Stack, router, useNavigation } from "expo-router";
+import {
+  Link,
+  Stack,
+  router,
+  useFocusEffect,
+  useNavigation,
+} from "expo-router";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  BackHandler,
 } from "react-native";
 import { useEffect } from "react";
 
@@ -60,23 +67,8 @@ export default function Home() {
     Poppins_800ExtraBold_Italic,
     Poppins_900Black,
     Poppins_900Black_Italic,
-  });  
-  
-  const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
-  // console.log("🚀 ~ Home ~ isAuthenticated:", isAuthenticated)
+  });
 
-
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      // Prevent default behavior of going back, maybe with a condition
-      if (!isAuthenticated) { 
-        e.preventDefault(); 
-      }
-    });
-
-    return unsubscribe; // Clean up the listener on unmount
-  }, [navigation]);
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
@@ -84,6 +76,22 @@ export default function Home() {
     require("../../assets/images/EKAANT.png"),
     require("../../assets/images/EkaantWelcom.png"),
   ]);
+
+  const backAction = () => {
+    BackHandler.exitApp();
+
+    return true;
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+      return () => backHandler.remove();
+    }, [backAction])
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -136,13 +144,10 @@ export default function Home() {
 
       <View style={styles.view2}>
         <View style={styles.buttonBox}>
-          <TouchableOpacity onPress={() => router.push("/(routes)/signup")}>
+          <TouchableOpacity onPress={() => router.push("/(routes)/login")}>
             <Button width={300} text="Get Started" height={60} fontSizeR={22} />
           </TouchableOpacity>
         </View>
-
-
-      
       </View>
     </SafeAreaView>
   );

@@ -22,7 +22,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-
 interface ApprovalStatusProps {
   isApproved: String;
 }
@@ -47,15 +46,13 @@ export default function Bookings() {
   const [loading, setLoading] = useState(true);
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
-    console.log("🚀 ~ getBookings ~ userId:", userId.data.user_id.id)
+    console.log("🚀 ~ getBookings ~ userId:", userId.data.user_id.id);
 
     if (userId) {
-      // Check if userId is not null
       try {
         const res = await axios.get(
           `${BACKEND}/api/v1/booking/getUserBookings/${userId.data.user_id.id}`
         );
-        // console.log("🚀 ~ getBookings ~ res:", res.data)
 
         setData(res.data);
       } catch (error) {
@@ -64,7 +61,7 @@ export default function Bookings() {
         setLoading(false);
       }
     }
-  }
+  };
 
   useEffect(() => {
     const getBookingData = async () => {
@@ -82,8 +79,6 @@ export default function Bookings() {
       setRefreshing(false);
     }, 2000);
   }, []);
-
-
 
   if (loading) {
     return (
@@ -232,10 +227,7 @@ export default function Bookings() {
                             letterSpacing: 1,
                           }}
                         >
-                          {item?.library.name
-                            ?.split(" ")
-                            .slice(0, 2)
-                            .join(" ")}
+                          {item?.library.name?.split(" ").slice(0, 2).join(" ")}
                         </Text>
 
                         <ApprovalStatus isApproved={item.bookingStatus} />
@@ -259,8 +251,7 @@ export default function Bookings() {
                             textAlign: "left",
                           }}
                         >
-                          {
-                        item.bookedSeat.seatLabel}
+                          {item.bookedSeat.seatLabel}
                         </Text>
                       </View>
                       <View

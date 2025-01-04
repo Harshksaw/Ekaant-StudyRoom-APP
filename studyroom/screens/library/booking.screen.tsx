@@ -60,7 +60,7 @@ const BookingScreen: React.FC = () => {
   const [libraryDetails, setLibraryDetails] = useState<any>(null);
 
   const price = bookingData.details.price;
-  console.log("🚀 ~ bookingData.details:", bookingData.details.price)
+  console.log("🚀 ~ bookingData.details:", bookingData.details.price);
   const [totalAmount, setTotalAmount] = useState(0);
 
   // const subtotal = Number((price + registrationFees).toFixed(2));
@@ -99,7 +99,9 @@ const BookingScreen: React.FC = () => {
         if (prev.find((slot) => slot.id === selectedSlot.id)) {
           return prev.filter((slot) => slot.id !== selectedSlot.id);
         } else {
-          return prev.some((slot) => slot.from === "12:00 AM" && slot.to === "11:59 PM")
+          return prev.some(
+            (slot) => slot.from === "12:00 AM" && slot.to === "11:59 PM"
+          )
             ? [selectedSlot]
             : [...prev, selectedSlot];
         }
@@ -164,13 +166,12 @@ const BookingScreen: React.FC = () => {
       BookedData.months
     ) {
       try {
-        console.log("🚀 ~ PreBook ~ BookedData:", price);
         const response = await axios.post(
           `${BACKEND}/api/v1/booking/createBooking`,
           {
             userId,
             libraryId: libraryDetails?.id,
-            initialPrice: price ,
+            initialPrice: price,
             finalPrice: totalAmount,
 
             timeSlot: BookedData.slot,
@@ -413,7 +414,7 @@ const BookingScreen: React.FC = () => {
           </View>
         )}
 
-        <ToggleBookingButton />
+        {/* <ToggleBookingButton /> */}
       </View>
 
       <ScrollView
@@ -438,7 +439,7 @@ const BookingScreen: React.FC = () => {
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "center",
           paddingLeft: w(24),
         }}
       >

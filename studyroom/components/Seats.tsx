@@ -137,7 +137,7 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
       </View>
     ));
   };
-  const boxWidth = windowWidth > 480 ? 100 : 50;
+  const boxWidth = windowWidth > 480 ? 100 : 70;
   const boxHeight = windowWidth > 480 ? 100 : 50;
 
   return (
@@ -164,7 +164,7 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
               zIndex: 1,
               fontFamily: ff.deckBold,
               textAlign: "center",
-              transform: [{ translateX: 20 }],
+              transform: [{ translateX: 30 }],
               marginTop: h(-4),
             }}
           >
@@ -199,8 +199,8 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
                   borderRadius: 20,
                   height: "80%",
                   backgroundColor: "transparent",
-
                   width: 8,
+                  elevation: 3,
                 },
               ]}
             >
@@ -219,22 +219,12 @@ export default function Seats({
   currentRoom,
   door,
 }: any) {
-  console.log("🚀 ~ Seats ~ SeatLayout:", SeatLayout);
   const handleSeatSelect = (selectedSeat: any) => {
     onSeatSelect(selectedSeat);
   };
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={
-        {
-          // borderColor:'black',
-          // position:'relative',
-          // borderWidth:2,
-        }
-      }
-    >
+    <ScrollView showsVerticalScrollIndicator={false}>
       <SeatsComponent
         layout={SeatLayout}
         bookedSeats={[]}
@@ -256,6 +246,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 5,
     marginHorizontal: 5,
+    marginBottom: 50,
   },
   seatRow: {
     flexDirection: "row",
@@ -264,7 +255,6 @@ const styles = StyleSheet.create({
   },
   seat: (isBooked, isSelected) => ({
     // transform: [{ rotate: `${rotation}deg` }], // Apply rotation
-
     justifyContent: "center",
     alignItems: "center",
     margin: 5,
@@ -279,7 +269,6 @@ const styles = StyleSheet.create({
       : "transparent",
     borderWidth: 1.3,
     aspectRatio: 1.1 / 0.9,
-
     borderColor: "#0077B6",
     padding: w(2),
     paddingHorizontal: w(4),
@@ -314,12 +303,12 @@ const styles = StyleSheet.create({
   },
   lineLeft: {
     top: "10%",
-    left: "10%",
+    left: "0%",
     transform: [{ rotate: "30deg" }], // Adjust angle
   },
   lineRight: {
     top: "10%",
-    right: "10%",
+    right: "0%",
     transform: [{ rotate: "-30deg" }], // Adjust angle
   },
 });

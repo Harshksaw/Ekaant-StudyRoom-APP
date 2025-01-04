@@ -19,7 +19,7 @@ import {
   Platform,
 } from "react-native";
 
-import Carousel from "react-native-reanimated-carousel";
+import Carousel from "@/components/Slider";
 
 import { router } from "expo-router";
 import Button from "@/components/Button";
@@ -30,7 +30,7 @@ import axios from "axios";
 import { BACKEND } from "@/utils/config";
 import ReviewList from "@/components/Review";
 import ff from "@/constants/fonts";
-import TimeSlot from '../../../components/TimeSlot';
+import TimeSlot from "../../../components/TimeSlot";
 
 interface CardDetailScreenProps {
   // Define your params here
@@ -71,7 +71,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const getUserReviews = async () => {
     // Fetch user reviews here
     try {
-      console.log("🚀 ~ getUserReviews ~ data:", data.id)
+      console.log("🚀 ~ getUserReviews ~ data:", data.id);
       const res = await axios.post(
         `${BACKEND}/api/v1/library/getReviews/${data.id}`
       );
@@ -100,34 +100,34 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
       params: { item: JSON.stringify(data), location: JSON.stringify(city) },
     });
   };
-  
+
   const amenities = data.amenities || {};
 
   const trueAmenities = Object.keys(amenities).filter((key) => amenities[key]);
-  // console.log(data.roo, "data");
   const price = data.Price || 0;
-
-  const [scrollIndex, setScrollIndex] = useState<number>(0);
 
   const Carasoul = useMemo(() => {
     return (
       <>
         <Carousel
-          loop
-          width={width}
-          height={height / 3.3}
-          autoPlay
-          pagingEnabled
-          data={data.images}
-          defaultIndex={scrollIndex}
-          scrollAnimationDuration={2000}
-          onProgressChange={(_, absoluteProgress) => {
-            if (absoluteProgress.toString()?.length < 3) {
-              setScrollIndex(Math.trunc(absoluteProgress));
-            }
+          autoplay
+          paginationConfig={{
+            dotSize: 8.86,
+            activeColor: "rgba(0, 119, 182, 1)",
+            color: "#6FC8E2",
+            bottomOffset: 0,
+            activeDotStyle: {
+              width: 23,
+              height: 8.86,
+              left: -7,
+            },
+            dotSpacing: 20,
+            animated: true,
+            dotIncreaseSize: 1.2,
           }}
-          panGestureHandlerProps={{
-            activeOffsetX: [-10, 10],
+          data={data.images}
+          buttonsConfig={{
+            disabled: true,
           }}
           renderItem={({ item, index }) => (
             <View style={styles.imageContainer}>
@@ -135,30 +135,9 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             </View>
           )}
         />
-        <View
-          style={{
-            alignSelf: "center",
-            gap: 10,
-            flexDirection: "row",
-            marginBottom: 20,
-          }}
-        >
-          {data?.images?.map((_, ind) => (
-            <View
-              key={ind}
-              style={{
-                width: scrollIndex === ind ? 23 : 8.86,
-                backgroundColor:
-                  scrollIndex === ind ? "rgba(0, 119, 182, 1)" : "#6FC8E2",
-                height: 8.86,
-                borderRadius: 20,
-              }}
-            />
-          ))}
-        </View>
       </>
     );
-  }, [width, data.images, scrollIndex]);
+  }, [width, data.images]);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -255,7 +234,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 {trueAmenities.length > 0 ? (
                   trueAmenities.map((amenity, index) => (
                     <View
-                    key={index}
+                      key={index}
                       style={{
                         borderWidth: 1,
                         borderColor: "#d0cdcd",
@@ -325,7 +304,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 fontFamily: ff.deckMedium,
               }}
             >
-              Copyright © 2024 EKAANT . All rights reserved.
+              Copyright © 2025 EKAANT . All rights reserved.
             </Text>
           </View>
         </ScrollView>
@@ -356,40 +335,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 12,
-
     alignItems: "center",
-
-    flexDirection: "column", // Arrange children in columns
-
-    // justifyContent: "space-between", // Arrange children in columns
-    // alignItems: "center", // Arrange children in columns
+    flexDirection: "column",
   },
   imageContainer: {
     flex: 1,
     alignItems: "center",
     padding: 10,
     borderRadius: 20,
-    marginRight: 30,
     justifyContent: "center",
+    marginBottom: 25,
   },
   image: {
-    // width: "100%",
-    // height: 250,
-    // marginTop: -10,
-    // borderRadius: 20,
-
     marginTop: -0,
     width: width * 0.9,
     height: height * 0.25,
     borderRadius: 20,
-    // borderTopLeftRadius: 40,
-    // borderTopRightRadius: 40,
   },
   cardDetails: {
     flexDirection: "column", // Arrange children in columns
     gap: 0, // Add gap between children
-    // height: 400, // Adjust height for better spacing
-    // marginBottom: 120, // Add margin for better spacing
     padding: 10, // Add padding for better spacing
   },
   heading: {
