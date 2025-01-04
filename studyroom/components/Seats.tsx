@@ -224,7 +224,7 @@ export default function Seats({
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
       <SeatsComponent
         layout={SeatLayout}
         bookedSeats={[]}
@@ -241,8 +241,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 20,
-    borderBlockColor: "black",
-    borderWidth: 2,
+    borderColor: "rgba(0, 118, 182, 0.2)",
+    borderWidth: 1.5,
     borderRadius: 10,
     padding: 5,
     marginHorizontal: 5,

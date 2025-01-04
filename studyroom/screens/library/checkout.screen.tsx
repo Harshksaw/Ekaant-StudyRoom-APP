@@ -72,21 +72,8 @@ const CheckoutScreen: React.FC = () => {
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
   const [loading, setLoading] = useState(false);
-  console.log("🚀 ~ BookedData:", BookedData)
-  // console.log("🚀 ~ BookedData:", BookedData.roomNo)
-  console.log("🚀 ~ BookedData----:",BookedData.timeSlot
+  const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 
-
-
-
-
-
-
-
-
-
-
-  )
   useEffect(() => {
 
 
@@ -153,6 +140,9 @@ const CheckoutScreen: React.FC = () => {
     }
   }, [isPaymentComplete]);
   const handlePayment = async () => {
+
+
+    setIsPaymentProcessing(true);
     var options = {
       description: "Room Booking",
       image:
@@ -194,6 +184,7 @@ const CheckoutScreen: React.FC = () => {
       });
       setPaymentStatus(false);
     } finally {
+      setIsPaymentProcessing(false);
       setLoading(false);
     }
   };
@@ -258,7 +249,15 @@ const CheckoutScreen: React.FC = () => {
     );
   }
 
-  // console.log("🚀 ~ location:", location)
+
+  if(isPaymentProcessing) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView
       style={{
@@ -269,6 +268,9 @@ const CheckoutScreen: React.FC = () => {
         paddingTop: 50,
       }}
     >
+
+
+
       <View>
         <Text
           style={{
