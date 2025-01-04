@@ -171,6 +171,10 @@ async function getBookingByLibId(req, res) {
     // }
     const bookings = await prisma.booking.findMany({
       where: { user_Id: user_id },
+      include: {
+        user: true, // Include the related User model
+      },
+
     
       orderBy: {
         bookingDate : 'desc',
