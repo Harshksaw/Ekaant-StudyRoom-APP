@@ -63,7 +63,7 @@ export default function Home() {
   });  
   
   const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
-  console.log("🚀 ~ Home ~ isAuthenticated:", isAuthenticated)
+  // console.log("🚀 ~ Home ~ isAuthenticated:", isAuthenticated)
 
 
 

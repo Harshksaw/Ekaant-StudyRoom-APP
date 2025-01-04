@@ -70,7 +70,7 @@ const LoginScreen: React.FC = () => {
   const loginWithOtp = async (text?: string) => {
     setLoading(true);
     try {
-      const response = await axios.post(`${BACKEND}/api/v1/auth/otp-loginHandler`, {
+      const response = await axios.post(`${BACKEND}/api/v1/auth/otp-login`, {
         phoneNumber,
         otp: text ?? otp.join(""),
       });
