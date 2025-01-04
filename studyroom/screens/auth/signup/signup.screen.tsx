@@ -194,7 +194,7 @@ export default function SignUpScreen() {
           },
         }
       );
-      if (response.status == 200 || 201) {
+      if (response.status ===  200 || response.status ===  201) {
         await AsyncStorage.setItem(
           "token",
           JSON.stringify(response.data.token)
@@ -217,7 +217,7 @@ export default function SignUpScreen() {
           setButtonSpinner(false);
         }
         router.dismissAll();
-        router.replace("/(tabs)");
+        router.replace("/(routes)/login");
         // router.push("/(tabs)");
       }
     } catch (error) {

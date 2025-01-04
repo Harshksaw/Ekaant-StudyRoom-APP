@@ -89,7 +89,7 @@ const LoginScreen: React.FC = () => {
 
       setLoading(false);
       if (response.status === 200) {
-        console.log(response.data, "res---");
+        // console.log(response.data, "res---");
 
         await AsyncStorage.setItem(
           "token",
@@ -114,7 +114,7 @@ const LoginScreen: React.FC = () => {
         });
       }
     } catch (error) {
-      // console.log("🚀 ~ loginWithOtp ~ error:", error.response.status)
+      console.log("🚀 ~ loginWithOtp ~ error:", error)
       setLoading(false);
       if (error.response.status === 400) {
         Toast.show("Wrong Otp", {
@@ -150,15 +150,12 @@ const LoginScreen: React.FC = () => {
       setLoading(false);
 
       if (response.data.success) {
+     
         await AsyncStorage.setItem(
           "token",
           JSON.stringify(response.data.token)
         );
-        await AsyncStorage.setItem(
-          "userData",
-          JSON.stringify(response.data.data)
-        );
-
+        await AsyncStorage.setItem("userData", JSON.stringify(response.data));
         dispatch(login({ user: response.data, token: response.data.token }));
         Toast.show("Login Successful", {
           type: "success",
@@ -357,7 +354,7 @@ const LoginScreen: React.FC = () => {
             fontFamily: ff.deckRegular,
           }}
         >
-          Good to See You back! 🖤
+          Good to See You back!
         </Text>
 
         {!isOtp && (

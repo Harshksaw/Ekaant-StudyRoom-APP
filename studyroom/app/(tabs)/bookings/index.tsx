@@ -50,7 +50,7 @@ export default function Bookings() {
     if (userId) {
       try {
         const res = await axios.get(
-          `${BACKEND}/api/v1/booking/getUserBookings/${userId.data.user_id.id}`
+          `${BACKEND}/api/v1/booking/getUserBookings/${userId.data.user_id}`
         );
 
         setData(res.data);

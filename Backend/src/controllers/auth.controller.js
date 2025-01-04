@@ -163,7 +163,7 @@ async function signIn(req, res, next) {
             success: true,
             message: "User authenticated successfully",
             error: {},
-            data: { user, user_id: user.id },
+            data: { user, user_id: user },
             token: token,
           });
         } else {

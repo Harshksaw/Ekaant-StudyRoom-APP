@@ -1,4 +1,4 @@
-const { StatusCodes } = require("http-status-codes");
+ const { StatusCodes } = require("http-status-codes");
 
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
@@ -120,7 +120,7 @@ async function getUserBookings(req, res) {
 
     const bookings = await prisma.booking.findMany({
       where: {
-        userId: parseInt(id),
+        userId: parseInt(id, 10), // Ensure id is an integer
         bookingStatus: "CONFIRMED",
       },
       include: {
@@ -130,7 +130,7 @@ async function getUserBookings(req, res) {
         friends: true,
       },
       orderBy: {
-        createdAt: 'desc',
+        id: 'desc',
       },
     });
 
