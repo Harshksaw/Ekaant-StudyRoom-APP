@@ -35,7 +35,7 @@ const ManageAdmin = () => {
     };
     func();
   }, []);
-  console.log(library);
+  // console.log(library, "------------------");
   return (
     <div className="p-3 bg-slate-300 h-full ">
       <div className="overflow-auto max-h-[calc(100vh-100px)]">
@@ -53,9 +53,9 @@ const ManageAdmin = () => {
           <tbody className=" bg-gray-100">
             {library?.map((lib: Lib) => (
               <tr
-                key={lib?._id}
+                key={lib?.id}
                 className="cursor-pointer hover:bg-gray-100 transition duration-300 justify-center text-center"
-                onClick={() => navigate(`/admin/manage-rooms/${lib._id}`)}
+                onClick={() => navigate(`/admin/manage-rooms/${lib.id}`)}
               >
                 <td className="py-2 px-4 border-b align-center ">
                   <img
@@ -64,11 +64,11 @@ const ManageAdmin = () => {
                     className="h-36 w-52 object-cover rounded-md"
                   />
                 </td>
-                <td className="py-2 px-4 border-b">{lib?.name.slice(0, 10)}</td>
+                <td className="py-2 px-4 border-b">{lib?.name.split(" ")[0]}</td>
                 <td className="py-2 px-4 border-b">
-                  {lib?.libraryOwner?.username.slice(0, 10)}
+                  {lib?.libraryOwner?.username.split(" ")[0]}
                 </td>
-                <td className="py-2 px-4 border-b">{`${lib?.address?.city}, ${lib.address?.state}`}</td>
+                <td className="py-2 px-4 border-b text-wrap">{`${lib?.address?.city}, ${lib.address?.state}`}</td>
                 <td className="py-2 px-4 border-b">
                   {lib?.approved ? "Approved" : "Pending"}
                 </td>

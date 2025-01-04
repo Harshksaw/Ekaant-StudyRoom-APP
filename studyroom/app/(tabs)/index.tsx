@@ -10,7 +10,8 @@ import {
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
-// import Carousel from "react-native-reanimated-carousel";
+import Carousel from "react-native-reanimated-carousel";
+
 import Header from "@/components/Header";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -41,6 +42,7 @@ export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
+  console.log("🚀 ~ index ~ data:", data)
   const [notavailable, setNotAvailable] = useState(false);
   const [notListed, setNotListed] = useState(false);
   const [reload, setReload] = useState(false);
@@ -52,7 +54,8 @@ export default function index() {
   const [locationData, setLocationData] = useState(null);
 
   const [selectedLocation, setSelectedLocation] = useState("");
-
+  const [stickyHeight, setStickyHeight] = useState(0);
+  const scrollViewRef = useRef(null);
   const handleLocationChange = (location) => {
     setSelectedLocation(location);
   };
@@ -324,17 +327,21 @@ export default function index() {
       )}
     </TouchableOpacity>
   );
-  const [stickyHeight, setStickyHeight] = useState(0);
-  const scrollViewRef = useRef(null);
+
 
   const handleLayout = (event: any) => {
     setStickyHeight(event.nativeEvent.layout.height);
   };
 
+
   const userDetails = useSelector((state: any) => state.user);
+  console.log("🚀 ~ index ~ userDetails:", userDetails);
 
-  const userData = JSON.parse(userDetails.details)?.data?.username;
+  const parsedUser = typeof userDetails.user === 'string' ? JSON.parse(userDetails.user) : userDetails.user;
+  console.log("🚀 ~ index ~ parsedUser:", parsedUser);
 
+  const username = parsedUser?.user?.username.split(" ")[0] || parsedUser?.data.user?.username.split(" ")[0];
+  console.log("🚀 ~ index ~ username:", username);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     getAppData();
@@ -443,7 +450,7 @@ export default function index() {
                   color: "#0077B6",
                 }}
               >
-                {userData ? userData?.split(" ")[0] : "Board"}
+                {username}
               </Text>
               <Text
                 style={{

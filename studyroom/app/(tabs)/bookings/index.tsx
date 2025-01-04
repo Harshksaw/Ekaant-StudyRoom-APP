@@ -18,9 +18,10 @@ import {
   TouchableOpacity,
   Platform,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Toast } from "react-native-toast-notifications";
+
 
 interface ApprovalStatusProps {
   isApproved: String;
@@ -43,26 +44,27 @@ const ApprovalStatus: React.FC<ApprovalStatusProps> = ({ isApproved }) => {
 export default function Bookings() {
   const [data, setData] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
-    console.log("🚀 ~ getBookings ~ userId:", userId)
+    console.log("🚀 ~ getBookings ~ userId:", userId.data.user_id.id)
 
     if (userId) {
       // Check if userId is not null
       try {
         const res = await axios.get(
-          `${BACKEND}/api/v1/booking/getUserBookings/${userId}`
+          `${BACKEND}/api/v1/booking/getUserBookings/${userId.data.user_id.id}`
         );
+        // console.log("🚀 ~ getBookings ~ res:", res.data)
 
-        setData(res.data.bookings);
+        setData(res.data);
       } catch (error) {
         console.error(error, "this is error");
-
+      } finally {
+        setLoading(false);
       }
-    } else {
     }
-  };
+  }
 
   useEffect(() => {
     const getBookingData = async () => {
@@ -81,7 +83,15 @@ export default function Bookings() {
     }, 2000);
   }, []);
 
-  console.log(data, "this is data");
+
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView
       style={{
@@ -179,7 +189,7 @@ export default function Bookings() {
                   <Image
                     source={{
                       uri:
-                        item.libraryId?.images[0] ||
+                        item.libraryId?.cardImage ||
                         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr_IULLOXJT80cLu-eRqkRGrHY23yLEx4p0w&s=10",
                     }}
                     style={{
@@ -222,8 +232,8 @@ export default function Bookings() {
                             letterSpacing: 1,
                           }}
                         >
-                          {item?.libraryId.name
-                            .split(" ")
+                          {item?.library.name
+                            ?.split(" ")
                             .slice(0, 2)
                             .join(" ")}
                         </Text>
@@ -249,8 +259,8 @@ export default function Bookings() {
                             textAlign: "left",
                           }}
                         >
-                          {/* {
-                        item.bookedSeat.seatLabel} */}
+                          {
+                        item.bookedSeat.seatLabel}
                         </Text>
                       </View>
                       <View

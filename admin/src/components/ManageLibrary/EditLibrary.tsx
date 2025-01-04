@@ -94,7 +94,7 @@ const EditLibrary = () => {
         setName(response.data.data.name);
         setDescription(response.data.data?.shortDescription);
         setLongDescription(response.data.data?.longDescription);
-        setAmenities(response.data.data.amenities);
+        // setAmenities(response.data.data.amenities);
         setAddress(response.data.data.address);
 
         // setImages(response.data.images);

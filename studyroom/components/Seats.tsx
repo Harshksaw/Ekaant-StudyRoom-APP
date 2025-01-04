@@ -1,7 +1,6 @@
 import { DeskGreen } from "@/assets";
 import ff from "@/constants/fonts";
-import { h, height, w, width } from "@/constants/size";
-import { LinearGradient } from "expo-linear-gradient";
+import { h, w } from "@/constants/size";
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
@@ -12,6 +11,7 @@ import {
   Dimensions,
 } from "react-native";
 
+import { LinearGradient } from "expo-linear-gradient";
 const windowWidth = Dimensions.get("window").width;
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
@@ -21,7 +21,7 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
 
   const getIcon = () => {
     if (isFullyBooked) {
-      return <DeskGreen fill={"#ffcc7f64"} rotation={rotation} />;
+      return <DeskGreen fill={"#ed0d0d"} rotation={rotation} />;
     } else if (isPartiallyBooked) {
       return <DeskGreen rotation={rotation} />;
     } else {
@@ -36,7 +36,7 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
     >
       {getIcon()}
       <Text style={{ fontFamily: ff.deckRegular, fontSize: w(12) }}>
-        {seatData.seatLabel}
+        {seatData.seatName}
       </Text>
     </TouchableOpacity>
   );
@@ -117,7 +117,7 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
             const isBooked = bookedSeats.some(
               (bookedSeat) => bookedSeat.seatId === seat.seatId
             );
-            // console.log("🚀 ~ SeatsComponent ~ Seat:", seat)
+
             return (
               <Seat
                 key={`${rowIndex}-${colIndex}`}
@@ -129,7 +129,7 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
               />
             );
           }
-          // Render an invisible placeholder for empty seats
+
           return (
             <View key={`${rowIndex}-${colIndex}`} style={styles.emptySeat} />
           );

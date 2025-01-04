@@ -129,6 +129,9 @@ async function getUserBookings(req, res) {
         invoice: true,
         friends: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return res.status(StatusCodes.OK).json(bookings);
@@ -162,16 +165,20 @@ async function getBookingByLibId(req, res) {
   try {
     // console.log(req.body, "getBookingByLibId");
 
-    const { lib_id } = req.body;
-    if (!lib_id) {
-      res.status(StatusCodes.BAD_REQUEST).json({ message: "lib_id not found" });
-    }
-    const bookings = await prisma.booking.findFirst({
-      where: { libraryId: lib_id },
+    const { user_id } = req.body;
+    // if (!lib_id) {
+    //   res.status(StatusCodes.BAD_REQUEST).json({ message: "lib_id not found" });
+    // }
+    const bookings = await prisma.booking.findMany({
+      where: { user_Id: user_id },
       include: {
-        userId: true,
+        user: true, // Include the related User model
       },
-      orderBy: Desc,
+
+    
+      orderBy: {
+        bookingDate : 'desc',
+      }
     });
 
     console.log("🚀 ~ getBookingByLibId ~ bookings:", bookings);
@@ -188,6 +195,7 @@ async function getBookingByLibId(req, res) {
 
 async function findRoomAndSeat(libraryId, roomNo, seatId) {
   try {
+    console.log(`Finding library with id: ${libraryId}`);
     const library = await prisma.library.findUnique({
       where: { id: libraryId },
       include: { rooms: { include: { seats: { include: { timeSlots: true } } } } },
@@ -197,11 +205,13 @@ async function findRoomAndSeat(libraryId, roomNo, seatId) {
       throw new Error('Library not found');
     }
 
+    console.log(`Finding room with roomNo: ${roomNo}`);
     const room = library.rooms.find(room => room.roomNo === roomNo);
     if (!room) {
       throw new Error('Room not found');
     }
 
+    console.log(`Finding seat with id: ${seatId}`);
     const seat = room.seats.find(seat => seat.id === seatId);
     if (!seat) {
       throw new Error('Seat not found');
@@ -216,25 +226,29 @@ async function findRoomAndSeat(libraryId, roomNo, seatId) {
 
 async function confirmBooking(req, res) {
   try {
-    const { libraryId, roomNo, bookedSeat } = req.body;
+    const { libraryId, roomNo, bookedSeat, bookingId, BookedData } = req.body;
+    console.log(`Confirming booking for libraryId: ${libraryId}, roomNo: ${roomNo}, bookedSeat: ${bookedSeat}, bookingId: ${bookingId}`);
 
-    const { room, seat } = await findRoomAndSeat(libraryId, roomNo, bookedSeat.id);
+    const { room, seat } = await findRoomAndSeat(libraryId, roomNo, bookedSeat.seatId);
+    console.log(`Found room: ${room.id}, seat: ${seat}`);
 
-    const timeSlotId = req.body.timeSlot[0].id.toString();
-    const timeSlot = seat.timeSlots.find(slot => slot.id.toString() === timeSlotId);
-
+    const timeSlotId = BookedData.timeSlot[0].slotId;
+    console.log(`Finding time slot with id: ${timeSlotId}`);
+    const timeSlot = BookedData.timeSlot[0];
+    console.log("🚀 ~ confirmBooking ~ timeSlot:", timeSlot);
+    
     if (!timeSlot) {
       return res.status(404).json({ error: "Time slot not found" });
     }
-
+    
     if (timeSlot.booked) {
       return res.status(400).json({ error: "Time slot already booked" });
     }
 
-    // Mark the time slot as booked
+    console.log(`Marking time slot as booked`);
     timeSlot.booked = true;
 
-    // Save the updated library document
+    console.log(`Updating library with id: ${libraryId}`);
     await prisma.library.update({
       where: { id: libraryId },
       data: {
@@ -261,7 +275,41 @@ async function confirmBooking(req, res) {
       },
     });
 
+    console.log(`Updating booking with id: ${bookingId}`);
+    const booking = await prisma.booking.update({
+      where: { id: bookingId },
+      data: { approved: true, bookingStatus: 'CONFIRMED' },
+    });
+    console.log("🚀 ~ confirmBooking ~ booking:", booking)
+
+    console.log(`Creating invoice for bookingId: ${BookedData.bookingId}`);
+    const libraryAddress = `${BookedData.libraryId.address.line1}, ${BookedData.libraryId.address.line2}, ${BookedData.libraryId.address.city}, ${BookedData.libraryId.address.state}, ${BookedData.libraryId.address.pincode}`;
+    const invoice = await prisma.invoice.create({
+      data: {
+        bookingId: BookedData.bookingId,
+        invoiceNumber: `INV-${BookedData.bookingId}`,
+        libraryAddress:libraryAddress,
+        libraryName: BookedData.libraryId.name,
+        customerName: BookedData.libraryId.libraryOwner.fullName,
+        customerEmail: BookedData.libraryId.libraryOwner.email,
+        customerPhoneNumber: BookedData.libraryId.libraryOwner.phoneNumber,
+        libraryId: BookedData.libraryId.id,
+        initialPrice: BookedData.price,
+        finalPrice: BookedData.totalAmount,
+        paid: true,
+        bookingDate: BookedData.bookingDate,
+        bookingPeriod: BookedData.bookingPeriod,
+        bookingStatus: 'Paid',
+        approved: BookedData.libraryId.approved,
+        bookingFinalDate: new Date(new Date(BookedData.bookingDate).setMonth(new Date(BookedData.bookingDate).getMonth() + BookedData.bookingPeriod)),
+        seatLabel: BookedData.bookedSeat.seatLabel,
+        timeSlotDetails: JSON.stringify(BookedData.timeSlot),
+      },
+    });
+
+    console.log("Invoice created successfully:", invoice);
     return res.status(StatusCodes.OK).json({ message: 'Booking confirmed successfully' });
+
   } catch (error) {
     console.error(`Error confirming booking: ${error.message}`);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error confirming booking', error: error.message });
@@ -272,7 +320,7 @@ async function generateInvoice(req, res) {
     const { bookingId } = req.params;
 
     const invoice = await prisma.invoice.findFirst({
-      data: { bookingId: bookingId },
+     where : { bookingId: parseInt(bookingId) },
     });
 
     if (!invoice) {

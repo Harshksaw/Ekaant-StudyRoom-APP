@@ -1,9 +1,9 @@
-// import ProfileScreen from "@/screens/profile/profile.screen";
+
 
 import { Feather, Fontisto, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import {
   View,
@@ -20,7 +20,7 @@ import { LinearGradient as LinearBackground } from "expo-linear-gradient";
 
 
 import { useDispatch, useSelector } from "react-redux";
-import { resetUserState } from "@/redux/userSlice";
+import { logout, resetUserState } from "@/redux/userSlice";
 import { resetAppState } from "@/redux/appSlice";
 import { resetBookingState } from "@/redux/bookingSlice";
 import { h, w } from "@/constants/size";
@@ -28,40 +28,40 @@ import ff from "@/constants/fonts";
 export default function profile() {
   const dispatch = useDispatch();
 
-  const logout = async () => {
+  const logoutHandler = async () => {
+
     await AsyncStorage.removeItem("token");
     await AsyncStorage.removeItem("userData");
+    dispatch(logout());
     dispatch(resetUserState());
     dispatch(resetAppState());
     dispatch(resetBookingState());
-
+ 
     router.push("(routes)/welcome" as any);
   };
-
+  const [userData, setUserData] = React.useState<any>();
   const userDetails = useSelector((state: any) => state.user);
 
-  // console.log("-------------->",JSON.parse(userDetails));
-  // console.log("-------------->+++++++", JSON.parse(userDetails.details));
-  const userData = JSON.parse(userDetails?.details)?.user;
-  // const getInitials = (name: string) => {
-  //   let initials = name.match(/\b\w/g) || [];
-  //   initials = (
-  //     (initials.shift() || "") + (initials.pop() || "")
-  //   ).toUpperCase();
-  //   return initials;
-  // };
+
+  console.log("🚀 ~ index ~ userDetails:", userDetails.user);
+
+ 
+  useEffect(() => {
+    const getUserData = async () => {
+      // const userData = await AsyncStorage.getItem("userData");
+      const u = JSON.parse(userDetails.user || "{}");
+
+      // console.log("🚀 ~ getUserData ~ userData:", u?.data)
+      setUserData(u.data.user || u.user);
+  
+    }
+
+    getUserData();
+  }, [userDetails]);
+
   const { width } = Dimensions.get("window");
-  // const [colors, setColors] = useState(generateShadesOfBlue());
 
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     // Generate new shades of blue dynamically
-  //     setColors(generateShadesOfBlue());
-  // //   }, 3000); // Change colors every 3 seconds
-
-  //   return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  // }, []);
-
+  console.log("🚀 ~ index ~ userData:", userData);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <LinearBackground
@@ -148,7 +148,7 @@ export default function profile() {
               alignSelf: "center",
             }}
           >
-            {userData?.username || "Harsh"}
+            {userData?.username || "---"}
           </Text>
           <Text
             style={{
@@ -157,7 +157,7 @@ export default function profile() {
               alignSelf: "center",
             }}
           >
-            <Text> {userData?.email || "Harsh@gmail.com"}</Text>
+            <Text> {userData?.email || "----"}</Text>
           </Text>
 
           <View
@@ -310,7 +310,9 @@ export default function profile() {
             marginTop: h(35),
           }}
         >
-          <TouchableOpacity onPress={() => logout()}>
+          <TouchableOpacity onPress={() => logoutHandler()}
+            
+            >
             <View
               style={{
                 marginTop: 10,

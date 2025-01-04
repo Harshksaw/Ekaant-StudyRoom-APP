@@ -3,17 +3,21 @@ import { View, Text, SafeAreaView, StyleSheet, ScrollView, ActivityIndicator } f
 import { useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { BACKEND } from '@/utils/config';
+import { TouchableOpacity } from 'react-native';
+import { router } from 'expo-router';
 
 export default function Invoice() {
   const [invoiceDetails, setInvoiceDetails] = useState(null);
   const route = useRoute();
   const { id } = route.params;
+  console.log("🚀 ~ Invoice ~ id:", id)
 
   const getInvoice = async () => {
     try {
+
       const res = await axios.post(`${BACKEND}/api/v1/booking/invoices/${id}`);
+      console.log("🚀 ~ getInvoice ~ res:", res.data);
       setInvoiceDetails(res.data.data);
-      console.log("🚀 ~ getInvoice ~ res:", res.data.data);
     } catch (error) {
       console.error('Error fetching invoice:', error);
     }
@@ -23,7 +27,7 @@ export default function Invoice() {
     getInvoice();
   }, []);
 
-  if (!invoiceDetails) {
+  if (invoiceDetails === null) {
     return (
       <SafeAreaView style={styles.container}>
        <ActivityIndicator 
@@ -34,6 +38,7 @@ export default function Invoice() {
     );
   }
 
+  console.log("🚀 ~ Invoice ~ invoiceDetails:", invoiceDetails)
   return (
     <SafeAreaView style={styles.container}>
     {/* <ScrollView contentContainerStyle={styles.scrollContainer}> */}
@@ -48,15 +53,15 @@ export default function Invoice() {
           <Text style={styles.value}>{new Date(invoiceDetails.invoiceDate).toLocaleDateString()}</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Customer Name:</Text>
+          <Text style={styles.label}>User Name:</Text>
           <Text style={styles.value}>{invoiceDetails.customerName}</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Customer Email:</Text>
+          <Text style={styles.label}>User Email:</Text>
           <Text style={styles.value}>{invoiceDetails.customerEmail}</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Customer Phone:</Text>
+          <Text style={styles.label}>User Phone:</Text>
           <Text style={styles.value}>{invoiceDetails.customerPhoneNumber}</Text>
         </View>
         <View 
@@ -79,10 +84,33 @@ export default function Invoice() {
           }}
           >
 
-          <Text style={styles.value}>{invoiceDetails.libraryaddress}</Text>
+          <Text style={{
+            fontSize: 16,
+            color: '#666',
+            textAlign:'center',
+            marginHorizontal:10,
+            flexWrap:'wrap',
+
+
+
+          }}>{invoiceDetails.libraryAddress}</Text>
 
           </View>
         </View>
+        <View style={{ flexDirection: 'column' }}>
+    {JSON.parse(invoiceDetails.timeSlotDetails).map((slot, index) => (
+      <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={{
+          fontSize: 16,
+          fontWeight: '600',
+          color: '#333',
+          marginBottom: 10,
+        }}>Time {index+ 1}</Text>
+        <Text style={styles.value}>From: {slot.from}</Text>
+        <Text style={styles.value}>To: {slot.to}</Text>
+      </View>
+    ))}
+  </View>
         <View style={styles.row}>
           <Text style={styles.label}>Booking Date:</Text>
           <Text style={styles.value}>{new Date(invoiceDetails.bookingDate).toLocaleDateString()}</Text>
@@ -99,13 +127,38 @@ export default function Invoice() {
        
         <View style={styles.row}>
           <Text style={styles.label}>Final Price:</Text>
-          <Text style={styles.value}>${invoiceDetails.finalPrice}</Text>
+          <Text style={styles.value}>Rs {invoiceDetails.finalPrice}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Booking Status:</Text>
           <Text style={styles.value}>{invoiceDetails.bookingStatus}</Text>
         </View>
       </View>
+
+
+    <TouchableOpacity
+    onPress={() => {
+      router.back();
+    }}
+    style={{
+      backgroundColor: 'white',
+      padding: 10,
+      borderRadius: 10,
+      margin: 10,
+      borderWidth: 4,
+      borderColor: 'red',
+      width: '20%',
+      alignSelf:'center'
+    }}
+    >
+      <Text style={{
+        color: 'black',
+        textAlign: 'center',
+
+        fontSize: 20,
+        fontWeight: '600',
+      }}>Close</Text>
+    </TouchableOpacity>
     {/* </ScrollView> */}
   </SafeAreaView>
 );
@@ -154,6 +207,6 @@ label: {
 },
 value: {
   fontSize: 16,
-  color: '#666',
+  color: '#222020',
 },
 });

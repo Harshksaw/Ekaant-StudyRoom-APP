@@ -15,27 +15,46 @@ interface FriendDetails {
   name: string;
   phoneNumber: number;
 }
+
+interface UserDetails {
+  id: string;
+  email: string;
+  name: string;
+  phoneNumber: string;
+}
 const initialState: any = {
- data: null,
- bookingsForFriend: false,
-
-friendDetails: null,
-details: null,
-selectedLocation: null,
-
-  
+  isAuthenticated: false,
+  user: null,
+  token: null,
+  bookingsForFriend: false,
+  friendDetails: null,
+  details: null,
+  selectedLocation: null,
 };
 
 const UserSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUserDetails(state, action: PayloadAction<any>) {
-      state.details = action.payload;
-    },    
-    setFriendDetails(state, action: PayloadAction<{ friendDetails: FriendDetails, bookingForSelf: boolean }>) {
+    setUserDetails(state, action: PayloadAction<UserDetails>) {
+      state.user = action.payload;
+    },
+    setAuthToken(state, action: PayloadAction<string>) {
+      state.token = action.payload;
+    },
+    login(state, action: PayloadAction<{ user: UserDetails; token: string }>) {
+      state.isAuthenticated = true;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+    },
+    logout(state) {
+      state.isAuthenticated = false;
+      state.user = null;
+      state.token = null;
+    },
+    setFriendDetails(state, action: PayloadAction<{ friendDetails: FriendDetails; bookingForSelf: boolean }>) {
       if (action.payload.bookingForSelf) {
-        state.friendDetails = null; // Use null for consistency
+        state.friendDetails = null;
         state.bookingsForFriend = false;
       } else {
         state.friendDetails = action.payload.friendDetails;
@@ -43,19 +62,22 @@ const UserSlice = createSlice({
       }
     },
     toggleBookingForFriend(state) {
-      // If there are no friend details and trying to book for a friend, log a message
       if (!state.friendDetails) {
-        console.log("Friend details are required to book for a friend.");
+        console.log('Friend details are required to book for a friend.');
       } else {
-        // Toggle the bookingsForFriend state
         state.bookingsForFriend = !state.bookingsForFriend;
       }
     },
+
     resetUserState(state) {
       state.data = null;
       state.bookingsForFriend = false;
       state.friendDetails = null;
       state.details = null;
+      state.selectedLocation = null;
+      state.isAuthenticated = false;
+      state.user = null;
+      state.token = null;
     },
     setSelectedLocation(state, action: PayloadAction<string>) {
       state.selectedLocation = action.payload;
@@ -66,6 +88,6 @@ const UserSlice = createSlice({
   },
 });
 
-export const { setUserDetails, setFriendDetails,resetUserState } = UserSlice.actions;
+export const { setUserDetails, setFriendDetails,resetUserState , login, logout} = UserSlice.actions;
 
 export default UserSlice.reducer;

@@ -72,7 +72,21 @@ const CheckoutScreen: React.FC = () => {
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
   const [loading, setLoading] = useState(false);
+  console.log("🚀 ~ BookedData:", BookedData)
+  // console.log("🚀 ~ BookedData:", BookedData.roomNo)
+  console.log("🚀 ~ BookedData----:",BookedData.timeSlot
 
+
+
+
+
+
+
+
+
+
+
+  )
   useEffect(() => {
 
 
@@ -84,7 +98,7 @@ const CheckoutScreen: React.FC = () => {
     setFinalAmount(BookedData?.totalAmount);
     const getLibraryData = async () => {
       setLocation(BookedData?.libraryId?.address);
-      console.log("🚀 ~ getLibraryData ~ BookedData?.address:", BookedData);
+      // console.log("🚀 ~ getLibraryData ~ BookedData?.address:", BookedData);
 
       try {
         const userDataId = await AsyncStorage.getItem("userData");
@@ -138,14 +152,13 @@ const CheckoutScreen: React.FC = () => {
       });
     }
   }, [isPaymentComplete]);
-
   const handlePayment = async () => {
     var options = {
       description: "Room Booking",
       image:
         "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png", //logo
       currency: "INR",
-      key: "rzp_test_hi1B6uwenBy9Ir",
+      key: "rzp_live_1BtXgGebBeYRTh",
       amount: `${PaymentPrice * 100}`,
       name: "Ekaant",
       order_id: "",
@@ -155,26 +168,26 @@ const CheckoutScreen: React.FC = () => {
         name: `${userData?.data?.user_id?.username}`,
       },
     };
-
+  
     try {
       const data = await RazorpayCheckout.open(options);
+      console.log("Payment data:", data);
       setPaymentStatus(true);
       setPaymentData(data);
       setPaymentId(data.razorpay_payment_id);
       setIsPaymentComplete(true);
-
+  
       Toast.show("Payment Success", {
         successColor: "green",
         duration: 4000,
       });
-
+  
       const res = await confirmPayment();
-      // console.log("🚀 ~ handlePayment ~ res:", res)
-
+      console.log("Payment confirmation response:", res);
+  
       router.push("/(tabs)/bookings");
     } catch (error) {
-      // console.log(error, "this");
-
+      console.error("Payment error:", error);
       Toast.show("Payment Failed", {
         dangerColor: "red",
         duration: 4000,
@@ -190,21 +203,22 @@ const CheckoutScreen: React.FC = () => {
       Toast.show("Booking ID is missing");
     }
     try {
-
-
+      console.log("🚀 ~ confirmPayment ~ BookedData.timeSlot[0]:", BookedData.timeSlot[0])
+      const data = {
+        libraryId  : BookedData.libraryId.id,
+        roomNo : BookedData.roomNo,
+        bookedSeat : BookedData.timeSlot[0],
+        bookingId : BookedData.bookingId,
+       BookedData : BookedData
+      }
+      console.log("🚀 ~ confirmPayment ~ data:", data)
       // console.log(bookingId, "-1-1-11-", BookedData)
       const res = await axios.post(
-        `${BACKEND}/api/v1/booking/confirm/${bookingId}`,
-        {
-          bookingId: bookingId,
-          paymentId: paymentId,
-          paymentData: paymentData,
-          paymentStatus: paymentStatus,
-          bookingData: BookedData,
-        }
+        `${BACKEND}/api/v1/booking/confirm/${bookingId}`,data
       );
 
-      console.log(bookingId, "-1-1-11-", paymentData, paymentId, paymentStatus, BookedData)
+
+      // console.log(bookingId, "-1-1-11-", paymentData, paymentId, paymentStatus, BookedData)
 
       if(res.data.status === "success") {
         Toast.show("Payment Success", {});
@@ -431,11 +445,13 @@ const CheckoutScreen: React.FC = () => {
                 flexDirection: "column",
                 flexWrap: "wrap",
                 color: "#000",
-                fontSize: w(14),
+                fontSize: w(18),
                 fontFamily: ff.deckRegular,
               }}
             >
-              {formatSeatLabel(BookedData?.bookedSeat?.seatId)}{" "}
+              Seat No.{" "}
+              {/* {formatSeatLabel(BookedData?.bookedSeat?.seatId)}{" "} */}
+              {BookedData?.bookedSeat.seatLabel}
             </Text>
           </View>
         </View>

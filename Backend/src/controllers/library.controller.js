@@ -57,14 +57,27 @@ const calculateDistances = async (req, res) => {
         for (const location of city.locations) {
           const distance = calculateDistance(library.coords, location.coords);
           console.log("🚀 ~ calculateDistances ~ distance:", distance);
-          const resp = await prisma.distance.create({
-            data: {
+
+          // Check if the distance entry already exists
+          const existingDistance = await prisma.distance.findFirst({
+            where: {
               libraryId: library.id,
               city: location.location,
-              distance: distance ? distance : 0,
             },
           });
-          logs.push(resp);
+
+          if (!existingDistance) {
+            const resp = await prisma.distance.create({
+              data: {
+                libraryId: library.id,
+                city: location.location,
+                distance: distance ? distance : 0,
+              },
+            });
+            logs.push(resp);
+          } else {
+            console.log(`Distance entry already exists for libraryId: ${library.id}, city: ${location.location}`);
+          }
         }
       }
     }
@@ -172,18 +185,18 @@ const createLibrary = async (req, res) => {
       coords,
       amenities: {
         create: {
-          coldWater: amenities.includes("coldWater"),
-          wifi: amenities.includes("wifi"),
-          ac: amenities.includes("ac"),
-          locker: amenities.includes("locker"),
-          separateWashroom: amenities.includes("separateWashroom"),
-          news: amenities.includes("News"),
-          discussionArea: amenities.includes("discussionArea"),
-          lunchArea: amenities.includes("LunchArea"),
-          movingChair: amenities.includes("MovingChair"),
-          floorMat: amenities.includes("FloorMat"),
-          separateParking: amenities.includes("SeparateParking"),
-          commonParking: amenities.includes("CommonParking"),
+          coldWater: amenities.coldWater,
+          wifi: amenities.wifi,
+          ac: amenities.ac,
+          locker: amenities.locker,
+          separateWashroom: amenities.separateWashroom,
+          news: amenities.news,
+          discussionArea: amenities.discussionArea,
+          lunchArea: amenities.lunchArea,
+          movingChair: amenities.movingChair,
+          floorMat: amenities.floorMat,
+          separateParking: amenities.separateParking,
+          commonParking: amenities.commonParking,
         },
       },
       cardImage: cardImage,
@@ -254,7 +267,7 @@ const createRoom = async (req, res) => {
           create: seatLayout.selectedSeats.map((seat) => ({
             seatId: seat.id,
             seatLabel: seat.label,
-            seatName : seat.seatName,
+            seatName : seatLayout.seatNames[seat.id] || seat.seatName,
             rotation: seatLayout.rotationAngles[seat.id] || 0,
             timeSlots: {
               create: timeSlot
@@ -287,7 +300,7 @@ const createRoom = async (req, res) => {
 
     // Save the updated library document
 
-    // await calculateLowestPrice(libraryId);
+    await calculateLowestPrice(libraryId);
 
     res.status(201).json({
       message: "Library created successfully",
@@ -478,7 +491,7 @@ const getAllLibrary = async (req, res) => {
 // get room by id
 const getLibraryById = async (req, res) => {
   const { id } = req.body;
-  console.log(id);
+  // console.log(id);
   try {
     const room = await prisma.library.findFirst({
       where: {
@@ -494,12 +507,12 @@ const getLibraryById = async (req, res) => {
             },
           },
         },
-        libraryOwner: true,
         amenities: true,
+        libraryOwner: true,
+
       },
     });
-    // .populate("rooms")
-    // .populate("libraryOwner");
+
     res.status(200).json({
       success: true,
       message: "Library data",
@@ -672,15 +685,31 @@ const EditAdminLibrary = async (req, res) => {
       registrationFees,
     } = req.body;
 
-    const library = await prisma.library.updateMany({
+    const library = await prisma.library.update({
       where: { id: parseInt(libraryId) },
       data: {
         name,
         shortDescription,
         longDescription,
-        amenities,
+        
         address,
         registrationFees,
+        amenities: {
+          update: {
+            coldWater: amenities.coldWater,
+            wifi: amenities.wifi,
+            ac: amenities.ac,
+            locker: amenities.locker,
+            separateWashroom: amenities.separateWashroom,
+            news: amenities.news,
+            discussionArea: amenities.discussionArea,
+            lunchArea: amenities.lunchArea,
+            movingChair: amenities.movingChair,
+            floorMat: amenities.floorMat,
+            separateParking: amenities.separateParking,
+            commonParking: amenities.commonParking,
+          },
+        },
       },
     });
 

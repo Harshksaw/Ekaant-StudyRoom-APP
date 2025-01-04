@@ -231,10 +231,10 @@ const ManageRooms = () => {
                     .map(([key]) => (
                       <li key={key}>{key.replace(/([A-Z])/g, " $1")}</li>
                     )) || (
-                    <li className="text-2xl text-black">
-                      No amenities listed.
-                    </li>
-                  )}
+                      <li className="text-2xl text-black">
+                        No amenities listed.
+                      </li>
+                    )}
                 </ul>
               </div>
 
@@ -253,9 +253,8 @@ const ManageRooms = () => {
               <div>
                 <h2 className="text-xl font-bold text-gray-800">Status</h2>
                 <p
-                  className={`font-bold ${
-                    room?.approved ? "text-green-600" : "text-red-600"
-                  }`}
+                  className={`font-bold ${room?.approved ? "text-green-600" : "text-red-600"
+                    }`}
                 >
                   {room?.approved ? "Approved" : "Pending"}
                 </p>
@@ -281,17 +280,17 @@ const ManageRooms = () => {
             roomDetail: {
               _id: string;
               roomNo:
-                | string
-                | number
-                | boolean
-                | React.ReactElement<
-                    any,
-                    string | React.JSXElementConstructor<any>
-                  >
-                | Iterable<React.ReactNode>
-                | React.ReactPortal
-                | null
-                | undefined;
+              | string
+              | number
+              | boolean
+              | React.ReactElement<
+                any,
+                string | React.JSXElementConstructor<any>
+              >
+              | Iterable<React.ReactNode>
+              | React.ReactPortal
+              | null
+              | undefined;
               seats: any[];
             },
             index: React.Key | null | undefined
@@ -315,17 +314,17 @@ const ManageRooms = () => {
                       (
                         seat: {
                           seatLabel:
-                            | string
-                            | number
-                            | boolean
-                            | React.ReactElement<
-                                any,
-                                string | React.JSXElementConstructor<any>
-                              >
-                            | Iterable<React.ReactNode>
-                            | React.ReactPortal
-                            | null
-                            | undefined;
+                          | string
+                          | number
+                          | boolean
+                          | React.ReactElement<
+                            any,
+                            string | React.JSXElementConstructor<any>
+                          >
+                          | Iterable<React.ReactNode>
+                          | React.ReactPortal
+                          | null
+                          | undefined;
                           timeSlots: any[];
                         },
                         seatIndex: React.Key | null | undefined
@@ -372,31 +371,28 @@ const ManageRooms = () => {
       {/* Tabs */}
       <div className="flex justify-center mb-4 rounded-lg">
         <button
-          className={`px-4 py-2 mx-2 rounded-t-lg ${
-            activeTab === "userDetails"
+          className={`px-4 py-2 mx-2 rounded-t-lg ${activeTab === "userDetails"
               ? "bg-blue-600 text-white border-b-4 border-blue-800"
               : "bg-gray-200 text-gray-800"
-          }`}
+            }`}
           onClick={() => setActiveTab("userDetails")}
         >
           User Details
         </button>
         <button
-          className={`px-4 py-2 mx-2 rounded-t-lg ${
-            activeTab === "libraryDetails"
+          className={`px-4 py-2 mx-2 rounded-t-lg ${activeTab === "libraryDetails"
               ? "bg-blue-600 text-white border-b-4 border-blue-800"
               : "bg-gray-200 text-gray-800"
-          }`}
+            }`}
           onClick={() => setActiveTab("libraryDetails")}
         >
           Library Details
         </button>
         <button
-          className={`px-4 py-2 mx-2 rounded-t-lg ${
-            activeTab === "roomDetails"
+          className={`px-4 py-2 mx-2 rounded-t-lg ${activeTab === "roomDetails"
               ? "bg-blue-600 text-white border-b-4 border-blue-800"
               : "bg-gray-200 text-gray-800"
-          }`}
+            }`}
           onClick={() => setActiveTab("roomDetails")}
         >
           Room Details
@@ -407,11 +403,10 @@ const ManageRooms = () => {
         <div className="col-span-2 flex justify-end gap-4">
           <button
             onClick={() => handleApprove(room.id, room?.approved)}
-            className={`px-4 py-2 rounded-lg ${
-              room.approved
+            className={`px-4 py-2 rounded-lg ${room.approved
                 ? "bg-green-600 text-white"
                 : "bg-red-600 text-white"
-            }`}
+              }`}
           >
             {room.approved ? "Disapprove" : "Approve"}
           </button>

@@ -75,7 +75,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
       const res = await axios.post(
         `${BACKEND}/api/v1/library/getReviews/${data.id}`
       );
-      console.log("🚀 ~ getUserReviews ~ res:", res.data)
+      // console.log("🚀 ~ getUserReviews ~ res:", res.data)
 
       setUserReviews(res.data);
     } catch (error) {
@@ -100,7 +100,9 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
       params: { item: JSON.stringify(data), location: JSON.stringify(city) },
     });
   };
+  
   const amenities = data.amenities || {};
+
   const trueAmenities = Object.keys(amenities).filter((key) => amenities[key]);
   // console.log(data.roo, "data");
   const price = data.Price || 0;
