@@ -46,12 +46,12 @@ export default function Bookings() {
   const [loading, setLoading] = useState(true);
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
-    console.log("🚀 ~ getBookings ~ userId:", userId.data.user_id.id);
+    console.log("🚀 ~ getBookings ~ userId:", userId.data.user_id);
 
     if (userId) {
       try {
         const res = await axios.get(
-          `${BACKEND}/api/v1/booking/getUserBookings/${userId.data.user_id.id}`
+          `${BACKEND}/api/v1/booking/getUserBookings/${userId.data.user_id}`
         );
 
         setData(res.data);
