@@ -331,7 +331,7 @@ export default function index() {
   };
 
   const userDetails = useSelector((state: any) => state.user);
-  console.log("🚀 ~ index ~ userDetails:", userDetails);
+  // console.log("🚀 ~ index ~ userDetails:", userDetails);
 
   const parsedUser =
     typeof userDetails.user === "string"
