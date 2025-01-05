@@ -89,7 +89,7 @@ async function createBooking(req, res) {
 
     const newBooking = await prisma.booking.create({
       data: {
-        user: { connect: { id: userId } },r
+        user: { connect: { id: userId } },
         library: { connect: { id: libraryId } },
         initialPrice: parseFloat(initialPrice),
         finalPrice: parseFloat(finalPrice),

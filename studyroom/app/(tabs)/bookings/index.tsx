@@ -341,6 +341,9 @@ export default function Bookings() {
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection:'row',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#fffff",
     borderRadius: 10,
     padding: 5,
