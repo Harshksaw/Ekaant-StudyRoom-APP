@@ -156,7 +156,7 @@ const BookingScreen: React.FC = () => {
     const userId = JSON.parse(userSelect)?.data.user.id;
 
     if (!userId) {
-      Toast.show("user data not confirgured properly, Relogin", {
+      Toast.show("user data not config properly, Relogin", {
         type: "error",
       });
     }
