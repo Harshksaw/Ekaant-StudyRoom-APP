@@ -54,11 +54,13 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
       }
 
       const res = await getLocationName(data.location[0], data.location[1]);
+      console.log("🚀 ~ locationData ~ res:", res)
 
       // Check if res is not null before setting it
       if (res !== null) {
         setCity(res);
       } else {
+        setCity(data.address.city)
         // Handle null case, maybe set a default value or handle it as needed
       }
     } catch (error) {
@@ -84,7 +86,9 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   };
 
   useEffect(() => {
-    locationData();
+    console.log("🚀 ~ useEffect ~ data", data)  ;
+    // locationData();
+    setCity(data.address.city)
     // getUserReviews();
   }, []);
 
