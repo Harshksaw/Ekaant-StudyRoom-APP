@@ -46,11 +46,12 @@ export default function Bookings() {
   const [loading, setLoading] = useState(true);
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
+    console.log("🚀 ~ getBookings ~ userId:", userId)
 
     if (userId) {
       try {
         const res = await axios.get(
-          `${BACKEND}/api/v1/booking/getUserBookings/${userId.data.user_id}`
+          `${BACKEND}/api/v1/booking/getUserBookings/${userId.data.user.id || userId.data.user_id.id}`
         );
 
         setData(res.data);
@@ -341,6 +342,9 @@ export default function Bookings() {
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection:'row',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#fffff",
     borderRadius: 10,
     padding: 5,

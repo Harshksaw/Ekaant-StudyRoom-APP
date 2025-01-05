@@ -220,11 +220,19 @@ export default function SignUpScreen() {
         router.replace("/(routes)/login");
         // router.push("/(tabs)");
       }
+
+      if(response.status === 400){
+        setButtonSpinner(false);
+        Toast.show("User Already exist", {
+          type: "danger",});
+      }
     } catch (error) {
       setButtonSpinner(false);
       console.log(error);
 
-      Toast.show("An error occured", {
+
+
+      Toast.show("Use different Number", {
         type: "danger",
       });
     }

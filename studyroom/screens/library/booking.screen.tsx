@@ -49,6 +49,7 @@ const BookingScreen: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(1);
+
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [bookingloader, setBookingLoader] = useState(false);
   const [bookingId, setBookingId] = useState(null);
@@ -58,13 +59,13 @@ const BookingScreen: React.FC = () => {
   const [Loading, setLoading] = useState(true);
 
   const [libraryDetails, setLibraryDetails] = useState<any>(null);
-
   const price = bookingData.details.price;
   console.log("🚀 ~ bookingData.details:", bookingData.details.price);
   const [totalAmount, setTotalAmount] = useState(0);
+  const userSelect = useSelector((state: any) => state.user.user);
+  console.log("🚀 ~ userSelect:", JSON.parse(userSelect).data.user.id)
 
-  // const subtotal = Number((price + registrationFees).toFixed(2));
-  // const totalAmount = subtotal;
+
 
   const BookedData = {
     seat: selectedSeat,
@@ -143,14 +144,19 @@ const BookingScreen: React.FC = () => {
   // console.log("🚀 ~ selectedSeat:", selectedSeat)
 
   const PreBook = async () => {
-    const userData = await AsyncStorage.getItem("userData");
+    console.log("🚀 ~ selectedMonth:", selectedMonth)
+    // const userData = await AsyncStorage.getItem("userData");
 
-    const userid = JSON.parse(userData);
+   
+    // console.log("🚀 ~ PreBook ~ userSelect:", userSelect)
 
-    const userId = userid.data?.user_id?.id;
+    // const userid = JSON.parse(userData);
+    // console.log("🚀 ~ PreBook ~ userid:", userid)
+
+    const userId = JSON.parse(userSelect)?.data.user.id;
 
     if (!userId) {
-      Toast.show("user data not confirgured properly, Relogin", {
+      Toast.show("user data not config properly, Relogin", {
         type: "error",
       });
     }

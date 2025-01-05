@@ -54,11 +54,13 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
       }
 
       const res = await getLocationName(data.location[0], data.location[1]);
+      console.log("🚀 ~ locationData ~ res:", res)
 
       // Check if res is not null before setting it
       if (res !== null) {
         setCity(res);
       } else {
+        setCity(data.address.city)
         // Handle null case, maybe set a default value or handle it as needed
       }
     } catch (error) {
@@ -84,7 +86,9 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   };
 
   useEffect(() => {
-    locationData();
+    console.log("🚀 ~ useEffect ~ data", data)  ;
+    // locationData();
+    setCity(data.address.city)
     // getUserReviews();
   }, []);
 
@@ -101,9 +105,10 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     });
   };
 
-  const amenities = data.amenities || {};
-
-  const trueAmenities = Object.keys(amenities).filter((key) => amenities[key]);
+  const { id, libraryId, ...filteredAmenities } = data.amenities || {};
+  console.log("🚀 ~ filteredAmenities:", filteredAmenities);
+  
+  const trueAmenities = Object.keys(filteredAmenities).filter((key) => filteredAmenities[key]);
   const price = data.Price || 0;
 
   const Carasoul = useMemo(() => {
@@ -236,16 +241,16 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                     <View
                       key={index}
                       style={{
-                        borderWidth: 1,
-                        borderColor: "#d0cdcd",
-                        borderRadius: 10,
-                        paddingVertical: 4,
-                        paddingHorizontal: 16,
-                        margin: 5,
+                      borderWidth: 1,
+                      borderColor: "#d0cdcd",
+                      borderRadius: 10,
+                      paddingVertical: 4,
+                      paddingHorizontal: 16,
+                      margin: 5,
                       }}
                     >
                       <Text key={index} style={styles.amenityItem}>
-                        {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
+                      {amenity.replace(/([a-z])([A-Z])/g, '$1 $2').charAt(0).toUpperCase() + amenity.replace(/([a-z])([A-Z])/g, '$1 $2').slice(1)}
                       </Text>
                     </View>
                   ))

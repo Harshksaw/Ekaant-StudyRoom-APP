@@ -39,7 +39,7 @@ const calculateDistances = async (req, res) => {
     const libraries = await prisma.library.findMany({
       where: { approved: true },
     });
-    console.log("🚀 ~ calculateDistances ~ libraries:", libraries);
+    // console.log("🚀 ~ calculateDistances ~ libraries:", libraries);
     const cities = await prisma.app.findMany({
       select: {
         locations: {
@@ -50,7 +50,7 @@ const calculateDistances = async (req, res) => {
         },
       },
     });
-    console.log("🚀 ~ calculateDistances ~ cities:", cities);
+    // console.log("🚀 ~ calculateDistances ~ cities:", cities);
     var logs = [];
     for (const library of libraries) {
       for (const city of cities) {
@@ -213,6 +213,8 @@ const createLibrary = async (req, res) => {
     };
 
     const LibraryData = await prisma.library.create({ data: libraryData });
+
+    await calculateDistances(LibraryData.id);
 
     // calculateLowestPrice(LibraryData.id);
     res.status(201).json({

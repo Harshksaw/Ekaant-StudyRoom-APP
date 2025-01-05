@@ -198,29 +198,34 @@ async function getLocations(req, res) {
   }
 }
 
-async function deleteLocations(req, res) {
+const deleteLocations = async (req, res) => {
+  const { locationId } = req.params;
+  console.log("🚀 ~ deleteLocations ~ locationId:", locationId);
+
   try {
-    const { locationId } = req.params;
-    console.log("🚀 ~ deleteLocations ~ locationId:", locationId);
-
-    const updatedLocations = await prisma.app.delete({
-      where: { id: 1 },
+    // First, delete or update all related records that reference this location
+    await prisma.app.updateMany({
+      where: {
+        locationId: parseInt(locationId, 10),
+      },
+      data: {
+        locationId: null, // or set to another valid locationId
+      },
     });
 
-    return res.status(StatusCodes.OK).json({
-      success: true,
-      message: "Locations deleted successfully",
-      data: updatedLocations,
+    // Now, delete the location
+    const deletedLocation = await prisma.location.delete({
+      where: {
+        id: parseInt(locationId, 10),
+      },
     });
+
+    res.status(200).json({ message: "Location deleted successfully", deletedLocation });
   } catch (error) {
     console.error("Error deleting locations: ", error);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      success: false,
-      message: "Error deleting locations",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Error deleting locations", error });
   }
-}
+};
 
 
   async function createBackup(req, res) {
