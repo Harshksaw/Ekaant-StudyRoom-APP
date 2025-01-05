@@ -156,7 +156,7 @@ const createLibrary = async (req, res) => {
     // console.log(cardImage, images, gst, cin, tan, msme, ">>>>>uploadedFiles");
 
     const jsonData = JSON.parse(req.body.jsonData);
-    console.log("🚀 ~ createLibrary ~ jsonData:", jsonData);
+    // console.log("🚀 ~ createLibrary ~ jsonData:", jsonData);
 
     const {
       libraryOwner,
@@ -182,7 +182,7 @@ const createLibrary = async (req, res) => {
       longDescription,
       shortDescription,
       address,
-      coords,
+      coords: JSON.stringify(coords),
       amenities: {
         create: {
           coldWater: amenities.coldWater,
