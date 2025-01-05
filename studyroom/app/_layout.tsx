@@ -50,6 +50,12 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="(routes)/splash/index"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
             name="(routes)/welcome/index"
             options={{
               headerShown: false,
