@@ -42,7 +42,6 @@ export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
-  console.log("🚀 ~ index ~ data:", data);
   const [notavailable, setNotAvailable] = useState(false);
   const [notListed, setNotListed] = useState(false);
   const [reload, setReload] = useState(false);
@@ -106,7 +105,6 @@ export default function index() {
       }
 
       const fetchedData = await fetchRoomData({ selectedLocation });
-      console.log("🚀 ~ fetchLibraryDate ~ fetchedData:", fetchedData);
 
       setData(fetchedData || []);
     } catch (error) {
@@ -165,8 +163,8 @@ export default function index() {
         borderRadius: 15,
         borderWidth: 1.5,
         borderColor: "#dcd8da",
-        marginBottom: 13,
-        padding: 8,
+        marginBottom: h(10),
+        padding: w(2.5),
       }}
       key={item.library?.id}
       onPress={
@@ -189,7 +187,6 @@ export default function index() {
             }}
             style={{
               width: w(90),
-              // height: 120,
               borderRadius: 10,
               aspectRatio: 16 / 15,
             }}
@@ -247,38 +244,25 @@ export default function index() {
             >
               {item?.library?.approved && (
                 <View>
-                  {item?.ratings ? (
-                    <View
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    <StarRating rating={item?.library?.avgRating ?? 0} />
+                    <Text
                       style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 5,
+                        fontSize: 14,
+                        fontFamily: ff.textMedium,
+                        lineHeight: 20.21,
+                        color: "#626262",
                       }}
                     >
-                      <StarRating rating={item?.ratings} />
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontFamily: ff.textMedium,
-                          lineHeight: 20.21,
-                          color: "#626262",
-                        }}
-                      >
-                        {item?.ratings}
-                      </Text>
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 5,
-                      }}
-                    >
-                      <StarRating rating={3} />
-                      <Text>3.0</Text>
-                    </View>
-                  )}
+                      {(item?.library?.avgRating ?? 0).toFixed(1)}
+                    </Text>
+                  </View>
                 </View>
               )}
 
@@ -287,7 +271,6 @@ export default function index() {
                   style={{
                     flexDirection: "row",
                     gap: 3,
-                    padding: 4,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -296,8 +279,8 @@ export default function index() {
                     <Image
                       source={assets[6]}
                       style={{
-                        width: 15,
-                        height: 20,
+                        width: w(13),
+                        height: w(13),
                       }}
                     />
                   )}
@@ -306,8 +289,6 @@ export default function index() {
                     style={{
                       fontSize: 12,
                       fontFamily: ff.deckRegular,
-                      lineHeight: 17.21,
-                      textAlign: "auto",
                       color: "#1E1E1E",
                     }}
                   >
@@ -327,18 +308,15 @@ export default function index() {
   };
 
   const userDetails = useSelector((state: any) => state.user);
-  // console.log("🚀 ~ index ~ userDetails:", userDetails);
 
   const parsedUser =
     typeof userDetails.user === "string"
       ? JSON.parse(userDetails.user)
       : userDetails.user;
-  console.log("🚀 ~ index ~ parsedUser:", parsedUser);
 
   const username =
     parsedUser?.user?.username.split(" ")[0] ||
     parsedUser?.data.user?.username.split(" ")[0];
-  console.log("🚀 ~ index ~ username:", username);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     getAppData();
@@ -364,7 +342,7 @@ export default function index() {
           dotSize: 8.86,
           activeColor: "rgba(0, 119, 182, 1)",
           color: "#6FC8E2",
-          bottomOffset: 10,
+          bottomOffset: h(10),
           activeDotStyle: {
             width: 23,
             height: 8.86,
@@ -420,51 +398,46 @@ export default function index() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{ flex: 1, gap: 40 }}
         stickyHeaderIndices={[1]}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {/* Carousel */}
-        <View style={styles.carousel}>
-          <View style={styles.welcome}>
+        <View style={{ height: h(270) }}>
+          <Text
+            style={{
+              fontSize: 30,
+              letterSpacing: 1.2,
+              fontFamily: ff.deckBold,
+              color: "black",
+              marginLeft: w(20),
+            }}
+          >
+            Welcome,{" "}
             <Text
               style={{
                 fontSize: 30,
                 letterSpacing: 1.2,
                 fontFamily: ff.deckBold,
-                color: "black",
+                color: "#0077B6",
               }}
             >
-              Welcome,{" "}
-              <Text
-                style={{
-                  fontSize: 30,
-                  letterSpacing: 1.2,
-                  fontFamily: ff.deckBold,
-                  color: "#0077B6",
-                }}
-              >
-                {username}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 25,
-                  letterSpacing: 1.2,
-                  fontFamily: ff.deckBold,
-                  color: "#0077B6",
-                }}
-              >
-                {" "}
-                😊
-              </Text>
+              {username}
             </Text>
-          </View>
+            <Text
+              style={{
+                fontSize: 25,
+                letterSpacing: 1.2,
+                fontFamily: ff.deckBold,
+                color: "#0077B6",
+              }}
+            >
+              {" "}
+              😊
+            </Text>
+          </Text>
 
           {Carasoul}
-
-          {/* <AnimatedDotsCarousel   /> */}
         </View>
 
         <TouchableOpacity
@@ -540,11 +513,8 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    marginBottom: 5,
   },
-  carousel: {
-    height: height * 0.34,
-  },
+
   filters: {
     flexDirection: "row",
     marginBottom: 8,
