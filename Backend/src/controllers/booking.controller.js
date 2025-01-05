@@ -98,7 +98,7 @@ async function createBooking(req, res) {
         timeSlotDetails: timeSlot,
         bookedSeat,
         bookingDate,
-        bookingPeriod,
+        bookingPeriod : parseInt(bookingPeriod),
         bookingFinalDate: bookingFinalDate,
       },
     });

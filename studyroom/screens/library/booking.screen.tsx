@@ -49,6 +49,7 @@ const BookingScreen: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(1);
+
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [bookingloader, setBookingLoader] = useState(false);
   const [bookingId, setBookingId] = useState(null);
@@ -143,6 +144,7 @@ const BookingScreen: React.FC = () => {
   // console.log("🚀 ~ selectedSeat:", selectedSeat)
 
   const PreBook = async () => {
+    console.log("🚀 ~ selectedMonth:", selectedMonth)
     // const userData = await AsyncStorage.getItem("userData");
 
    
