@@ -182,7 +182,7 @@ const createLibrary = async (req, res) => {
       longDescription,
       shortDescription,
       address,
-      coords,
+      coords: coords.map(coord => parseFloat(coord)),
       amenities: {
         create: {
           coldWater: amenities.coldWater,
