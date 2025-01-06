@@ -204,23 +204,24 @@ const deleteLocations = async (req, res) => {
 
   try {
     // First, delete or update all related records that reference this location
-    await prisma.app.updateMany({
+    await prisma.location.updateMany({
       where: {
-        locationId: parseInt(locationId, 10),
+        id: parseInt(locationId), // Ensure locationId is correctly parsed
       },
       data: {
-        locationId: null, // or set to another valid locationId
+        appId: null, // Set appId to null
       },
     });
 
-    // Now, delete the location
-    const deletedLocation = await prisma.location.delete({
+    // Now delete the location itself
+    await prisma.location.delete({
       where: {
-        id: parseInt(locationId, 10),
+        id: parseInt(locationId), // Ensure locationId is correctly parsed
+        id: parseInt(locationId), // Ensure locationId is correctly parsed
       },
     });
+      res.status(200).json({ message: "Location deleted successfully" })
 
-    res.status(200).json({ message: "Location deleted successfully", deletedLocation });
   } catch (error) {
     console.error("Error deleting locations: ", error);
     res.status(500).json({ message: "Error deleting locations", error });
