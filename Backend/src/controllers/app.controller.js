@@ -217,7 +217,7 @@ const deleteLocations = async (req, res) => {
     await prisma.location.delete({
       where: {
         id: parseInt(locationId), // Ensure locationId is correctly parsed
-        id: parseInt(locationId), // Ensure locationId is correctly parsed
+
       },
     });
       res.status(200).json({ message: "Location deleted successfully" })
