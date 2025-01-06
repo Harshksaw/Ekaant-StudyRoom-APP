@@ -25,11 +25,11 @@ export default function RootLayout() {
     textSemiBold: require("../assets/fonts/TASAOrbiterText-SemiBold.otf"),
   });
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+  // useEffect(() => {
+  //   if (loaded) {
+  //     SplashScreen.hideAsync();
+  //   }
+  // }, [loaded]);
 
   if (!loaded) {
     return null;

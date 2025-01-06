@@ -114,7 +114,7 @@ const LoginScreen: React.FC = () => {
         });
       }
     } catch (error) {
-      console.log("🚀 ~ loginWithOtp ~ error:", error)
+      console.log("🚀 ~ loginWithOtp ~ error:", error);
       setLoading(false);
       if (error.response.status === 400) {
         Toast.show("Wrong Otp", {
@@ -150,7 +150,6 @@ const LoginScreen: React.FC = () => {
       setLoading(false);
 
       if (response.data.success) {
-     
         await AsyncStorage.setItem(
           "token",
           JSON.stringify(response.data.token)
