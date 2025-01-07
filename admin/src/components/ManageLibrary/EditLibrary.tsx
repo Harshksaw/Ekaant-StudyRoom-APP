@@ -63,20 +63,7 @@ const EditLibrary = () => {
 
   const [roomName, setRoomName] = useState<number>(0);
 
-  const [amenities, setAmenities] = useState<Amenities>({
-    CommonParking: false,
-    FloorMat: false,
-    LunchArea: false,
-    MovingChair: false,
-    News: false,
-    SeparateParking: false,
-    ac: false,
-    coldWater: false,
-    discussionArea: false,
-    locker: false,
-    separateWashroom: false,
-    wifi: false,
-  });
+  const [amenities, setAmenities] = useState([]);
   const LibraryId = useParams();
 
   useEffect(() => {
@@ -107,7 +94,7 @@ const EditLibrary = () => {
     };
 
     fetchLibrary();
-  }, []);
+  }, [LibraryId.id]);
 
   const handleUpdateLibrary = async () => {
     setLoading(true);
@@ -262,6 +249,21 @@ const EditLibrary = () => {
     }
   }
 
+  const predefinedAmenities = [
+    "coldWater",
+    "wifi",
+    "ac",
+    "locker",
+    "separateWashroom",
+    "news",
+    "discussionArea",
+    "lunchArea",
+    "movingChair",
+    "floorMat",
+    "separateParking",
+    "commonParking",
+  ];
+
   return (
     <div className="w-full h-full flex-1 p-6">
       <h2 className="text-2xl font-bold mb-4">Edit Library</h2>
@@ -372,7 +374,7 @@ const EditLibrary = () => {
 
         {!amenities && <p className="text-2xl bg-red-500">No Amenities</p>}
         {amenities &&
-          Object.keys(amenities).map((amenity) => (
+          predefinedAmenities.map((amenity) => (
             <div key={amenity} className="flex items-center mb-2">
               <input
                 id={amenity}
