@@ -269,6 +269,17 @@ async function verifyOtp(req, res) {
 
   return res.status(200).json({ message: "OTP verified successfully" });
 }
+async function sendVerificationEmail(email, otp) {
+  try{
+      const mailResponse = await mailSender(email,
+           "Verification EMAIL from Ekaant Study Room",
+           emailTemplate(otp));
+      console.log("Email sent Successfully!! => ", mailResponse);
+  } catch(error) {
+      console.log("Error while sending email", error);
+      throw error;
+  }
+}
 
 async function sendEmailOtp(req, res) {
   const { email } = req.body;
@@ -304,19 +315,22 @@ async function sendEmailOtp(req, res) {
     specialChars: false,
   });
   // console.log("OTP GENERATED => ", otp);
+  // await sendEmailOtp(email, otp);
+
 
   const otpPayload = { email : email, emailOtp: otp };
 
   const otpBody = await prisma.otp.create({  data : otpPayload},
-
-
+    
+    
   );
+  await sendVerificationEmail(email, otp)
   // console.log("otpBODY -> ", otpBody);
 
   return res.status(200).json({
     success: true,
-    message: "OTP Sended SUCCESSFULLY !!",
-    data: otpBody,
+    message: "OTP Sended SUCCESSFULLY !!"
+
   });
 }
 
