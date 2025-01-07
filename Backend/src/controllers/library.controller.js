@@ -433,11 +433,10 @@ const getAllLibrary = async (req, res) => {
       where:{
        address:{
         contains:city
-       }
-      },
-      include:{
-        approved:true,
+       },
+       approved:true
       }
+     
     });
 
     // Fetch distances for the specified city, including related library data and nested relationships
