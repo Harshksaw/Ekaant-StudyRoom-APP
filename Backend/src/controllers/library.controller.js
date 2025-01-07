@@ -679,35 +679,47 @@ const EditAdminLibrary = async (req, res) => {
       registrationFees,
     } = req.body;
 
-    const library = await prisma.library.update({
-      where: { id: parseInt(libraryId) },
-      data: {
-        name,
-        shortDescription,
-        longDescription,
-        
-        address,
-        registrationFees,
-        amenities: {
-          update: {
-            amenities: amenities,
-          },
-        },
-      },
+    const existingAmenities = await prisma.amenities.findUnique({
+      where: { libraryId: parseInt(libraryId) },
     });
 
-    // findByIdAndUpdate(
-    //   libraryId,
-    //   {
-    //     name,
-    //     shortDescription,
-    //     longDescription,
-    //     amenities,
-    //     address,
-    //     registrationFees
-    //   },
-    //   { new: true } // Return the updated document
-    // );
+    let library;
+    if (existingAmenities) {
+      // Update the library and its amenities
+      library = await prisma.library.update({
+        where: { id: parseInt(libraryId) },
+        data: {
+          name,
+          shortDescription,
+          longDescription,
+          address,
+          registrationFees,
+          amenities: {
+            update: {
+              amenities: amenities,
+            },
+          },
+        },
+      });
+    } else {
+      // Update the library and create a new amenities record
+      library = await prisma.library.update({
+        where: { id: parseInt(libraryId) },
+        data: {
+          name,
+          shortDescription,
+          longDescription,
+          address,
+          registrationFees,
+          amenities: {
+            create: {
+              amenities: amenities,
+            },
+          },
+        },
+      });
+    }
+
     if (!library) {
       return res.status(404).json({ message: "Library not found" });
     }
