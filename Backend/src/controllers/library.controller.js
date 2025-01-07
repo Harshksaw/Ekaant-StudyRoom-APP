@@ -688,22 +688,7 @@ const EditAdminLibrary = async (req, res) => {
         
         address,
         registrationFees,
-        amenities: {
-          update: {
-            coldWater: amenities.coldWater,
-            wifi: amenities.wifi,
-            ac: amenities.ac,
-            locker: amenities.locker,
-            separateWashroom: amenities.separateWashroom,
-            news: amenities.news,
-            discussionArea: amenities.discussionArea,
-            lunchArea: amenities.lunchArea,
-            movingChair: amenities.movingChair,
-            floorMat: amenities.floorMat,
-            separateParking: amenities.separateParking,
-            commonParking: amenities.commonParking,
-          },
-        },
+        amenities: JSON.stringify(amenities),
       },
     });
 
