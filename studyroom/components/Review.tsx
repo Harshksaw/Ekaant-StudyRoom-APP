@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "react-native-toast-notifications";
 import { Image } from "expo-image";
 import ff from "@/constants/fonts";
+import { h, w } from "@/constants/size";
 
 interface Review {
   id: string;
@@ -136,21 +137,18 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
           type: "success",
         });
       }
-      if(response.status === 400){
+      if (response.status === 400) {
         Toast.show("Review already exists", {
           type: "error",
           duration: 3000,
-
         });
       }
-
     } catch (err) {
       console.log("Error", err.message);
       setError(err.message);
       Toast.show("Review already exists", {
         type: "error",
         duration: 3000,
-
       });
 
       setTimeout(() => {
@@ -167,7 +165,6 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
 
   if (error) {
     return (
-
       <Text
         style={{
           color: "red",
@@ -211,7 +208,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
         style={{
           marginHorizontal: "auto",
           flexWrap: "wrap",
-          backgroundColor: "#F0F0F0",
+          backgroundColor: "#fff",
           borderRadius: 12,
           flexDirection: "row",
           paddingHorizontal: 50,
@@ -240,19 +237,36 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
       <Text style={styles.header}>User Reviews</Text>
       <ScrollView
         style={styles.reviewContainer}
-        horizontal={true}
         scrollEnabled={true}
         showsHorizontalScrollIndicator={false}
       >
         {reviews.length > 0 ? (
           reviews.map((review) => (
             <View style={styles.review} key={review.id}>
-              <Image source={review.user.image} style={styles.reviewImage} />
-              <View style={styles.reviewContent}>
-                <StarRating rating={review.stars} />
-                <Text>{review.review}</Text>
-                <Text>By: {review.user.username}</Text>
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <Image source={review.user.image} style={styles.reviewImage} />
+                <View style={styles.reviewContent}>
+                  <Text
+                    style={{
+                      fontFamily: ff.deckSemiBold,
+                      fontSize: w(18),
+                      color: "#414042",
+                    }}
+                  >
+                    {review.user.username}
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: ff.textRegular,
+                      fontSize: w(13),
+                      color: "#7A7A7A",
+                    }}
+                  >
+                    {review.review}
+                  </Text>
+                </View>
               </View>
+              <StarRating rating={review.stars} />
             </View>
           ))
         ) : (
@@ -267,7 +281,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
             flexDirection: "column",
             justifyContent: "center",
             alignContent: "center",
-            paddingRight: 20,
+            // paddingRight: 20,
           }}
         >
           <StarRat onRatingChange={handleRating} />
@@ -277,23 +291,23 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
             style={{
               borderWidth: 1,
               borderColor: "#bebcbc",
-              borderRadius: 20,
+              borderRadius: 7,
               padding: 10,
               textAlign: "center",
-              margin: 10,
+              width: "80%",
+              alignSelf: "center",
             }}
             onChangeText={(text) => setReviewMessage(text)}
             // onEndEditing={createReview}
           />
-          {
-            reviewMessage.length > 0 && rating > 0 ? (
-              <TouchableOpacity onPress={createReview}
+          {reviewMessage.length > 0 && rating > 0 ? (
+            <TouchableOpacity
+              onPress={createReview}
               style={{
                 backgroundColor: "#F0F0F0",
                 padding: 10,
                 borderRadius: 20,
                 margin: 10,
-                textAlign: "center",
                 justifyContent: "center",
                 alignItems: "center",
                 alignSelf: "center",
@@ -303,20 +317,12 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
                 borderColor: "#dad9d9",
                 elevation: 1,
               }}
-
-              >
-                <Text>
-
-                Submit Review
-                </Text>
-                </TouchableOpacity>
-            )
-            : (
-              <Text style={styles.errorText}>
-                Fill the review and rating
-              </Text>
-            )
-          }
+            >
+              <Text>Submit Review</Text>
+            </TouchableOpacity>
+          ) : (
+            <Text style={styles.errorText}>Fill the review and rating</Text>
+          )}
         </KeyboardAvoidingView>
       </View>
     </View>
@@ -333,30 +339,28 @@ const styles = StyleSheet.create({
   },
   reviewContainer: {
     maxHeight: 300, // Limit the height here to make it scrollable
-    backgroundColor: "#F0F0F0",
+    backgroundColor: "#fff",
   },
   review: {
     flexDirection: "row",
-    justifyContent: "flex-start",
     alignItems: "center",
-    borderTopWidth: 2,
-    padding: 10,
-    paddingHorizontal: 40,
-    borderColor: "#eaeaea",
-    gap: 10,
+    borderTopWidth: 1,
+    paddingVertical: h(10),
+    marginLeft: 10,
+    paddingLeft: 5,
+    borderColor: "#F3F3F3",
+    justifyContent: "space-between",
   },
   reviewImage: {
-    width: 50,
-    height: 50,
+    width: w(45),
+    height: w(45),
     borderRadius: 50,
     resizeMode: "cover",
   },
   reviewContent: {
     flexDirection: "column",
     justifyContent: "space-around",
-    marginTop: 10,
     borderRadius: 20,
-    padding: 10,
   },
   noReviewsText: {
     color: "red",

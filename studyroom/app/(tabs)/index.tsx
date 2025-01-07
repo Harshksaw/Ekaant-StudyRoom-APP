@@ -441,6 +441,7 @@ export default function index() {
         </View>
 
         <TouchableOpacity
+          disabled
           onPress={() =>
             data?.data
               ? router.push({
