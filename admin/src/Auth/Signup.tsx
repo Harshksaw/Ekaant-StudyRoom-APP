@@ -11,18 +11,17 @@ import { StepFour } from "./Signup/Step4";
 import { StepOne } from "./Signup/Step1";
 import { StepFive } from "./Signup/Step5";
 
-
 import "react-datepicker/dist/react-datepicker.css";
 import { BASEURL } from "@/lib/utils";
 import axios from "axios";
 // @ts-ignore
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import Loader from "@/components/Loader";
-import tick from "@/assets/images/tick.png"
+import tick from "@/assets/images/tick.png";
 import Step6 from "./Signup/Step6";
 interface LibraryDetails {
   name: string;
-  librarySliders: string
+  librarySliders: string;
   // Add other properties as needed
 }
 const FinalStep = () => {
@@ -45,9 +44,7 @@ const FinalStep = () => {
   );
 };
 
-
 function Signup() {
-
   //parent compoenent
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -57,11 +54,11 @@ function Signup() {
   const [userOTP, setOtpInputs] = useState("");
   const [verfiedOtp, setVerifiedOtp] = useState({ one: false, two: false });
   const [userInfo, setUserInfo] = useState({
-    phone: 0,
+    phone: "",
     email: "",
     password: "",
   });
-  
+
   const [emailOtpInputs, setEmailOtpInputs] = useState("");
   const [adminId, setAdminId] = useState(null); // State to store admin ID
   const [userDetails, setUserDetails] = useState({
@@ -78,7 +75,7 @@ function Signup() {
       pincode: "",
     },
   });
-  const [location , setLocation] = useState("")
+  const [location, setLocation] = useState("");
   const [libraryDetails, setLibraryDetails] = useState<any>({
     libraryName: "",
     libraryApp: {
@@ -126,8 +123,6 @@ function Signup() {
     },
   });
 
-
-
   useEffect(() => {
     // Clear OTP state on component mount
     setOtpInputs("");
@@ -142,12 +137,11 @@ function Signup() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const admin = localStorage.getItem("userId")
+    const admin = localStorage.getItem("userId");
     if (token !== "" && admin !== "") {
       //setCurrentStep(4);
       setToken(token || "");
     }
-
 
     if (!token) {
       console.log(token, "token");
@@ -158,7 +152,7 @@ function Signup() {
   const sendOtp = async () => {
     const { phone } = userInfo;
     //@GourishMarkan - Add toast ike this and replace the older method
-    toast('Sent OTP', {
+    toast("Sent OTP", {
       position: "top-right",
       autoClose: 2000,
       hideProgressBar: false,
@@ -167,7 +161,6 @@ function Signup() {
       draggable: true,
       progress: undefined,
       theme: "light",
-
     });
 
     const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, {
@@ -186,35 +179,27 @@ function Signup() {
     }
     console.log("verfication start");
 
- 
     try {
-
       const res = await axios.post(`${BASEURL}/api/v1/auth/verifyOtp`, {
         phoneNumber: userInfo.phone,
-        otp
+        otp,
       });
-    if (res.status === 200 || res.status === 201) {
-      console.log(res.data, "res.data");
-      setVerifiedOtp(
-        (prev) => ({ ...prev, one: true })
-      )
-      toast('Verified Phone  OTP', {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-
-      });
-
-
-    }
-
+      if (res.status === 200 || res.status === 201) {
+        console.log(res.data, "res.data");
+        setVerifiedOtp((prev) => ({ ...prev, one: true }));
+        toast("Verified Phone  OTP", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
     } catch (error) {
-      toast.error('Phone Otp Not Verified ', {
+      toast.error("Phone Otp Not Verified ", {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -223,19 +208,14 @@ function Signup() {
         draggable: true,
         progress: undefined,
         theme: "light",
-
       });
     }
   };
 
-
-
   const sendEmailOtp = async () => {
-
     const { email } = userInfo;
     const res = await axios.post(`${BASEURL}/api/v1/auth/emailotp`, { email });
     if (res.status === 200) {
-
       console.log("OTP sent successfully");
     }
     if (res.status === 201) {
@@ -243,58 +223,46 @@ function Signup() {
       setVerifiedOtp({
         ...verfiedOtp,
         one: true,
-        two: true
-      })
-
-
-
-
+        two: true,
+      });
 
       localStorage.setItem("role", "ADMIN");
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.data.id);
       setAdminId(res.data.data.id);
 
-
       //setCurrentStep(4);
     }
-
   };
 
-
   const verifyEmailOTP = async () => {
-
     const otp = emailOtpInputs;
     if (Number(otp) < 1000) {
       return;
     }
-try{
-    const res = await axios.post(`${BASEURL}/api/v1/auth/verifyEmailOtp`, {
-      email: userInfo.email,
-      otp,
-    });
-
-
-    if (res.status === 200 || res.status === 201) {
-      // console.log(res.data, "res.data");
-      setVerifiedOtp(
-        (prev) => ({ ...prev, two: true })
-      )
-
-      toast('Verified  OTP', {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-
+    try {
+      const res = await axios.post(`${BASEURL}/api/v1/auth/verifyEmailOtp`, {
+        email: userInfo.email,
+        otp,
       });
-    }
+
+      if (res.status === 200 || res.status === 201) {
+        // console.log(res.data, "res.data");
+        setVerifiedOtp((prev) => ({ ...prev, two: true }));
+
+        toast("Verified  OTP", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
     } catch (error) {
-      toast('Email Otp not verified', {
+      toast("Email Otp not verified", {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -303,11 +271,9 @@ try{
         draggable: true,
         progress: undefined,
         theme: "light",
-
       });
     }
   };
-
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -322,13 +288,16 @@ try{
     }
   };
 
-
   useEffect(() => {
     if (Number(userOTP) >= 1000 && currentStep === 2 && !verfiedOtp.one) {
       verifyOTP();
     }
 
-    if (Number(emailOtpInputs) >= 1000 && currentStep === 2 && !verfiedOtp.two) {
+    if (
+      Number(emailOtpInputs) >= 1000 &&
+      currentStep === 2 &&
+      !verfiedOtp.two
+    ) {
       verifyEmailOTP();
     }
 
@@ -343,9 +312,7 @@ try{
     const createUserName = `${userDetails.fullName
       .split(" ")
       .join("")
-      .toLowerCase()}${userDetails.dob
-      }${Math.floor(Math.random() * 1000)
-      }`;
+      .toLowerCase()}${userDetails.dob}${Math.floor(Math.random() * 1000)}`;
 
     const formData = new FormData();
 
@@ -359,7 +326,6 @@ try{
     formData.append("Address", JSON.stringify(userDetails.address)); // Assuming Address is an object and needs to be stringified
     formData.append("username", createUserName);
 
-
     if (userDetails.uploadAadharCard) {
       formData.append("aadhar", userDetails.uploadAadharCard);
     }
@@ -369,7 +335,6 @@ try{
     }
 
     try {
-
       const response = await axios.post(
         `${BASEURL}/api/v1/admin/registerAdmin`,
         formData
@@ -385,10 +350,8 @@ try{
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data.data.id);
         setAdminId(response.data.data.id);
-
       }
       if (response.status !== 201) {
-
         toast(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
@@ -398,7 +361,6 @@ try{
           draggable: true,
           progress: undefined,
           theme: "light",
-
         });
         return;
       }
@@ -418,7 +380,7 @@ try{
         },
       });
       setUserInfo({
-        phone: 0,
+        phone: "",
         email: "",
         password: "",
       });
@@ -426,7 +388,6 @@ try{
       setLoading(false);
       //setCurrentStep(1);
       console.error("Error:");
-
     }
   };
 
@@ -448,8 +409,6 @@ try{
       return;
     }
 
-
-
     // console.log(libraryDetails, "libraryDetails-----------------d------");
 
     const amenitiesArray = Object.entries(libraryDetails.amentities)
@@ -457,7 +416,7 @@ try{
       .map(([key]) => key);
 
     const AdminIdE = localStorage.getItem("userId");
-    console.log(AdminIdE)
+    console.log(AdminIdE);
 
     const LibraryDataOBJ = {
       libraryOwner: AdminIdE || adminId,
@@ -480,7 +439,6 @@ try{
 
       msmeNumber: libraryDetails.libraryLegal.msme,
     };
-
 
     const formData = new FormData();
 
@@ -523,7 +481,6 @@ try{
       // console.log("Success:", response.data);
 
       if (response.status === 201) {
-
         localStorage.clear();
         toast(`${response.data.message}`, {
           position: "top-right",
@@ -534,13 +491,11 @@ try{
           draggable: true,
           progress: undefined,
           theme: "light",
-
         });
       }
 
       if (response.data) {
         setLoading(false);
-
 
         // //setCurrentStep(0);
 
@@ -548,7 +503,6 @@ try{
       }
 
       return response.status;
-
     } catch (error) {
       setLoading(false);
       console.error("Error:");
@@ -556,18 +510,22 @@ try{
   };
 
   const nextStep = async () => {
-
-
-
     if (currentStep === 3) {
-      if(userDetails.aadharCard.length !== 12 || 
-        userDetails.panCard.length !== 10 || userDetails.fullName === "" ||
-         userDetails.dob === "" || userDetails.address.line1 === "" || 
-         userDetails.address.line2 === "" || userDetails.address.city === "" ||
-          userDetails.address.pincode === "" || !userDetails.uploadAadharCard ||
-           !userDetails.uploadPanCard || userDetails.uploadAadharCard === null || 
-           userDetails.uploadPanCard === null){
-        toast.error("Please fill all the fields",{
+      if (
+        userDetails.aadharCard.length !== 12 ||
+        userDetails.panCard.length !== 10 ||
+        userDetails.fullName === "" ||
+        userDetails.dob === "" ||
+        userDetails.address.line1 === "" ||
+        userDetails.address.line2 === "" ||
+        userDetails.address.city === "" ||
+        userDetails.address.pincode === "" ||
+        !userDetails.uploadAadharCard ||
+        !userDetails.uploadPanCard ||
+        userDetails.uploadAadharCard === null ||
+        userDetails.uploadPanCard === null
+      ) {
+        toast.error("Please fill all the fields", {
           position: "top-right",
           autoClose: 2000,
           hideProgressBar: false,
@@ -576,37 +534,38 @@ try{
           draggable: true,
           progress: undefined,
           theme: "light",
-        }
-      )
-           }
+        });
+      }
       createUser();
     }
     if (currentStep === 6) {
       const AdminId = localStorage.getItem("userId");
       if (!AdminId) {
-        toast('Please login again')
-        return
-
+        toast("Please login again");
+        return;
       }
-     const res =  await createInitialLib();
-     if(res == 500){
-      toast.error("Please fill all the fields",{
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      return;
-
-     }
+      const res = await createInitialLib();
+      if (res == 500) {
+        toast.error("Please fill all the fields", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
     }
     if (currentStep === 1) {
-      if(userInfo.phone.toString().length !== 10 || userInfo.email === "" || userInfo.password === ""){
-        toast.error("Please fill all the fields",{
+      if (
+        userInfo.phone.toString().length !== 10 ||
+        userInfo.email === "" ||
+        userInfo.password === ""
+      ) {
+        toast.error("Please fill all the fields", {
           position: "top-right",
           autoClose: 2000,
           hideProgressBar: false,
@@ -620,13 +579,11 @@ try{
       }
       sendOtp();
       sendEmailOtp();
-      
     }
 
     setCurrentStep(currentStep + 1);
   };
-  const prevStep = () =>  setCurrentStep(currentStep - 1);
-
+  const prevStep = () => setCurrentStep(currentStep - 1);
 
   const handleLocationSelect = (location: any) => {
     console.log("Selected Location:", location);
@@ -641,7 +598,7 @@ try{
             nextStep={nextStep}
             userInfo={userInfo}
             setUserInfo={setUserInfo}
-          // sendOTP={sendOtp}
+            // sendOTP={sendOtp}
           />
         );
       case 2:
@@ -654,8 +611,6 @@ try{
             // handleInputChange={handleInputChange}
             // handleEmailInputChange={handleEmailOtpInputChange}
             verified={verfiedOtp}
-
-
             nextStep={nextStep}
             prevStep={prevStep}
           />
@@ -663,14 +618,12 @@ try{
 
       case 3:
         return (
-
-
           <StepThree
             nextStep={nextStep}
             userDetails={userDetails}
             setUserDetails={setUserDetails}
             prevStep={prevStep}
-          // createUser={createUser}
+            // createUser={createUser}
           />
         );
       case 4:
@@ -683,11 +636,19 @@ try{
                 onClick={() => {
                   localStorage.clear();
                   window.location.reload();
-                }}>Restart everything</button>
+                }}
+              >
+                Restart everything
+              </button>
               <p>Error: Admin ID is required to proceed to this step.</p>
-              <button className="
+              <button
+                className="
               mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full h-20 rounded-sm
-              " onClick={prevStep}>Go Back</button>
+              "
+                onClick={prevStep}
+              >
+                Go Back
+              </button>
             </div>
           );
         }
@@ -711,28 +672,34 @@ try{
         );
 
       case 6:
-        return(
-
-          <Step6 handleLocationSelect={handleLocationSelect}       nextStep={nextStep}
-          prevStep={prevStep} />
-        )
+        return (
+          <Step6
+            handleLocationSelect={handleLocationSelect}
+            nextStep={nextStep}
+            prevStep={prevStep}
+          />
+        );
       case 7:
         return (
           <FinalStep
 
           // prevStep={prevStep}
-
-
           />
         );
       default:
-        return <h2 className="text-2xl text-center m-5 p-2 text-green-500
-        ">Final Step</h2>;
+        return (
+          <h2
+            className="text-2xl text-center m-5 p-2 text-green-500
+        "
+          >
+            Final Step
+          </h2>
+        );
     }
   };
 
   return (
-    <div className="flex h-screen w-screen ">
+    <div className="flex min-h-screen w-screen ">
       {/* pic  */}
       <div className="flex flex-col   items-center justify-center bg-gradient-to-r from-sky-400 to-sky-700 w-[50%]">
         <div className="flex justify-center items-center gap-10">
@@ -764,9 +731,9 @@ try{
           </Link>
         </div>
 
-        <h1 className="text-5xl font-bold mb-2 mt-32">Register</h1>
+        <h1 className="text-5xl font-bold mb-2 mt-16">Register</h1>
 
-        <div className="w-full  bg-blue-100 flex flex-1  justify-center items-center">
+        <div className="flex flex-1  justify-center items-center">
           {loading && <Loader />}
           {!loading && renderStep()}
         </div>
