@@ -431,7 +431,9 @@ const getAllLibrary = async (req, res) => {
 
     const libraries = await prisma.library.findMany({
       where:{
-        city:city
+       address:{
+        contains:city
+       }
       },
       include:{
         approved:true,
