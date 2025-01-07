@@ -430,15 +430,17 @@ const getAllLibrary = async (req, res) => {
     }
 
     const libraries = await prisma.library.findMany({
-      where:{
-       address:{
-        contains:city
-       },
-       approved:true
-      }
-     
+      where: {
+        approved: true,
+        address: {
+          path: ['city'],
+          equals: city,
+        },
+      },
+      include: {
+        amenities: true,
+      },
     });
-
     // Fetch distances for the specified city, including related library data and nested relationships
     // const distances = await prisma.distance.findMany({
     //   where: {
