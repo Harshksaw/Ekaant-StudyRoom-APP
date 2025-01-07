@@ -60,6 +60,7 @@ export default function index() {
   };
   var count = 0;
 
+  console.log("🚀 ~ file: index.tsx ~ line 77 ~ index ~ data", data);
   const getAppData = async () => {
     // TODO, tanstackquery
     try {
@@ -168,7 +169,7 @@ export default function index() {
       }}
       key={item.library?.id}
       onPress={
-        item?.library.approved
+        item?.library?.approved
           ? () =>
               router.push({
                 pathname: "/(routes)/card-details",
@@ -177,7 +178,7 @@ export default function index() {
           : () => toggleNotListedModal()
       }
     >
-      {item?.library.approved && (
+      {item?.library?.approved && (
         <View style={styles.card}>
           <Image
             source={{
