@@ -399,15 +399,26 @@ const addOrUpdateRoomDetails = async (req, res) => {
 
 const getLibrary = async (req, res) => {
   try {
-    // const roomsData = await Library.find().populate("libraryOwner");
+    const { page = 1, limit = 10 } = req.query; // Default to page 1 and limit 10
+
+    const skip = (page - 1) * limit;
+
     const roomsData = await prisma.library.findMany({
-      include:{
-        libraryOwner:true
-      }
+      skip: parseInt(skip),
+      take: parseInt(limit),
+      include: {
+        libraryOwner: true,
+      },
     });
+
+    const totalLibraries = await prisma.library.count();
+
     res.status(200).json({
       success: true,
       count: roomsData.length,
+      totalLibraries,
+      totalPages: Math.ceil(totalLibraries / limit),
+      currentPage: parseInt(page),
       data: roomsData,
     });
   } catch (error) {

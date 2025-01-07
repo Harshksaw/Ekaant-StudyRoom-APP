@@ -1,4 +1,4 @@
-export const StepOne = ({ nextStep, userInfo, setUserInfo }:any) => (
+export const StepOne = ({ nextStep, userInfo, setUserInfo }: any) => (
   <div>
     <h2 className="">Step 1</h2>
     <div className="flex  flex-col justify-start gap-2  mb-4">
@@ -6,12 +6,12 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }:any) => (
       <div className="flex justify-start border border-black bg-white">
         <label
           className=" w-24  py-2  text-black  h-[50px] justify-center items-center
-        text-center border border-gray-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer "
+        text-center border-r border-gray-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer "
         >
-          <span className="text-3xl">🇮🇳</span>
+          <span className="text-2xl">🇮🇳</span>
         </label>
         <input
-         required={true}
+          required
           type="number"
           // className="px-4 py-2 w-[410px] border-2 border-black  text-base bg-white text-gray-400"
           className="focus:ring-0 focus:ring-offset-0 focus:outline-0 focus:outline-offset-0 "
@@ -23,7 +23,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }:any) => (
             // Update the userInfo state with the new phone number
             setUserInfo({
               ...userInfo,
-              phone: inputVal ? parseInt(inputVal, 10) : 0,
+              phone: inputVal ? parseInt(inputVal, 10) : "",
             });
             // Check if the input length is 10 and call a function
             if (inputVal.length === 10) {
@@ -40,7 +40,8 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }:any) => (
       <div className="">
         <label className="font-bold">Enter Email ID</label>
 
-        <input required
+        <input
+          required
           type="email"
           value={userInfo.email}
           id="AdminEmail"
@@ -53,8 +54,8 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }:any) => (
       {/* password */}
       <div>
         <label className="font-bold">Enter Password</label>
-        <input required
-
+        <input
+          required
           type="password"
           value={userInfo.password}
           placeholder="Password"
@@ -68,7 +69,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }:any) => (
     </div>
 
     <button
-      className="absolute bottom-10 center mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
+      className="bottom-10 center mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
       onClick={nextStep}
     >
       Next
