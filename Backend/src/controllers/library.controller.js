@@ -429,44 +429,55 @@ const getAllLibrary = async (req, res) => {
         .json({ success: false, message: "City is required" });
     }
 
-    // Fetch distances for the specified city, including related library data and nested relationships
-    const distances = await prisma.distance.findMany({
-      where: {
-        city,
+    const libraries = await prisma.library.findMany({
+      where:{
+       address:{
+        contains:city
+       }
       },
-      include: {
-        library: {
-          include: {
-           
-            amenities: true, // Include amenities if needed
-          },
-        },
-      },
-      orderBy: {
-        distance: "asc",
-      },
+      include:{
+        approved:true,
+      }
     });
-    console.log("🚀 ~ getAllLibrary ~ distances:", distances);
+
+    // Fetch distances for the specified city, including related library data and nested relationships
+    // const distances = await prisma.distance.findMany({
+    //   where: {
+    //     city,
+    //   },
+    //   include: {
+    //     library: {
+    //       include: {
+           
+    //         amenities: true, // Include amenities if needed
+    //       },
+    //     },
+    //   },
+    //   orderBy: {
+    //     distance: "asc",
+    //   },
+    // });
+    // console.log("🚀 ~ getAllLibrary ~ distances:", distances);
 
     // Filter libraries to include only those that are approved and have rooms
-    const filterLibrary = distances.filter(
-      (distance) =>
-        distance.library.approved === true && distance.library.rooms.length > 0
-    );
-    console.log("🚀 ~ getAllLibrary ~ filterLibrary:", filterLibrary);
+    // const filterLibrary = distances.filter(
+    //   (distance) =>
+    //     distance.library.approved === true && distance.library.rooms.length > 0
+    // );
+    // console.log("🚀 ~ getAllLibrary ~ filterLibrary:", filterLibrary);
 
-    if (!filterLibrary.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No libraries found for the specified city",
-      });
-    }
+    // if (!filterLibrary.length) {
+    //   return res.status(404).json({
+    //     success: false,
+    //     message: "No libraries found for the specified city",
+    //   });
+    // }
 
     // Map the filtered distances to include the library and distance
-    const libraries = filterLibrary.map((distance) => ({
-      library: distance.library,
-      distance: distance.distance,
-    }));
+    // const libraries = filterLibrary.map((distance) => ({
+    //   library: distance.library,
+    //   distance: distance.distance,
+    // }));
 
     // Return the sorted libraries in the response
     res.status(200).json({
@@ -725,7 +736,7 @@ const EditAdminLibrary = async (req, res) => {
     }
 
     await calculateLowestPrice(libraryId);
-    res.status(200).json({ message: "Room deleted successfully" });
+    res.status(200).json({ message: "Room updated successfully" });
   } catch (error) {
     console.error("Error deleting room:", error);
     res.status(500).json({ message: "Error deleting room", error });
