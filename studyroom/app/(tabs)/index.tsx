@@ -441,11 +441,14 @@ export default function index() {
         </View>
 
         <TouchableOpacity
+          disabled
           onPress={() =>
-            router.push({
-              pathname: "/(routes)/nearby",
-              params: { data: JSON.stringify(data?.data) },
-            })
+            data?.data
+              ? router.push({
+                  pathname: "/(routes)/nearby",
+                  params: { data: JSON.stringify(data?.data) },
+                })
+              : null
           }
         >
           <View

@@ -170,7 +170,9 @@ const LocationsScreen = () => {
                 resizeMode="cover"
               />
             </View>
-            <Text style={styles.locationItem}>{item?.location}</Text>
+            <Text style={styles.locationItem} numberOfLines={1}>
+              {item?.location}
+            </Text>
           </TouchableOpacity>
         )}
       />
@@ -228,9 +230,10 @@ const styles = StyleSheet.create({
     opacity: 0.94,
   },
   locationItem: {
-    fontSize: 18,
+    fontSize: w(15),
+    letterSpacing: 0.5,
     textAlign: "center",
-    fontFamily: ff.deckRegular,
+    fontFamily: ff.deckMedium,
   },
 });
 

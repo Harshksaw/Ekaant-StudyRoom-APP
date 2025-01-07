@@ -31,6 +31,7 @@ import { BACKEND } from "@/utils/config";
 import ReviewList from "@/components/Review";
 import ff from "@/constants/fonts";
 import TimeSlot from "../../../components/TimeSlot";
+import { h, w } from "@/constants/size";
 
 interface CardDetailScreenProps {
   // Define your params here
@@ -54,13 +55,13 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
       }
 
       const res = await getLocationName(data.location[0], data.location[1]);
-      console.log("🚀 ~ locationData ~ res:", res)
+      console.log("🚀 ~ locationData ~ res:", res);
 
       // Check if res is not null before setting it
       if (res !== null) {
         setCity(res);
       } else {
-        setCity(data.address.city)
+        setCity(data.address.city);
         // Handle null case, maybe set a default value or handle it as needed
       }
     } catch (error) {
@@ -86,9 +87,9 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   };
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ data", data)  ;
+    console.log("🚀 ~ useEffect ~ data", data);
     // locationData();
-    setCity(data.address.city)
+    setCity(data.address.city);
     // getUserReviews();
   }, []);
 
@@ -107,8 +108,10 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
   const { id, libraryId, ...filteredAmenities } = data.amenities || {};
   console.log("🚀 ~ filteredAmenities:", filteredAmenities);
-  
-  const trueAmenities = Object.keys(filteredAmenities).filter((key) => filteredAmenities[key]);
+
+  const trueAmenities = Object.keys(filteredAmenities).filter(
+    (key) => filteredAmenities[key]
+  );
   const price = data.Price || 0;
 
   const Carasoul = useMemo(() => {
@@ -171,12 +174,16 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                 paddingRight: 28,
               }}
             >
-              <Text style={styles.heading}>{data?.name}</Text>
+              <Text style={{ ...styles.heading, width: "72%" }}>
+                {data?.name}
+              </Text>
               <Text
                 style={{
                   fontSize: 16,
                   color: "#0077B6",
                   fontFamily: ff.deckMedium,
+                  width: "28%",
+                  textAlign: "right",
                 }}
               >
                 ₹{price}/month
@@ -207,24 +214,40 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               </Text>
             </View>
 
+            <View
+              style={{
+                backgroundColor: "#ECECEC",
+                height: 1,
+                width: "100%",
+                marginBottom: h(10),
+              }}
+            />
             <Text style={styles.amenities}>About</Text>
             <Text
               style={{
                 marginTop: 2,
-                fontSize: 14,
-                lineHeight: 19,
+                fontSize: w(14),
+                lineHeight: h(17),
                 color: "#A8A8A8",
                 borderRadius: 10,
-                textAlign: "left",
+                textAlign: "justify",
                 letterSpacing: 1.1,
-                fontFamily: ff.deckMedium,
+                fontFamily: ff.deckRegular,
               }}
               numberOfLines={7}
             >
               {data?.longDescription}
             </Text>
 
-            <View style={{ marginTop: 20 }}>
+            <View
+              style={{
+                backgroundColor: "#ECECEC",
+                height: 1,
+                width: "100%",
+                marginVertical: h(10),
+              }}
+            />
+            <View>
               <Text style={styles.amenities}>Overview</Text>
 
               <View
@@ -241,16 +264,20 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                     <View
                       key={index}
                       style={{
-                      borderWidth: 1,
-                      borderColor: "#d0cdcd",
-                      borderRadius: 10,
-                      paddingVertical: 4,
-                      paddingHorizontal: 16,
-                      margin: 5,
+                        borderWidth: 1,
+                        borderColor: "#d0cdcd",
+                        borderRadius: 10,
+                        paddingVertical: 4,
+                        paddingHorizontal: 16,
+                        margin: 5,
                       }}
                     >
                       <Text key={index} style={styles.amenityItem}>
-                      {amenity.replace(/([a-z])([A-Z])/g, '$1 $2').charAt(0).toUpperCase() + amenity.replace(/([a-z])([A-Z])/g, '$1 $2').slice(1)}
+                        {amenity
+                          .replace(/([a-z])([A-Z])/g, "$1 $2")
+                          .charAt(0)
+                          .toUpperCase() +
+                          amenity.replace(/([a-z])([A-Z])/g, "$1 $2").slice(1)}
                       </Text>
                     </View>
                   ))
@@ -260,34 +287,36 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               </View>
             </View>
 
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={isModalVisible}
-              onRequestClose={toggleModal}
-            >
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <TouchableOpacity
-                  // onPress={() => Linking.openURL('mailto:example@example.com')}
-                  >
-                    <Text style={{ color: "blue" }}>
-                      Email: example@example.com
-                    </Text>
-                  </TouchableOpacity>
+            {isModalVisible && (
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={isModalVisible}
+                onRequestClose={toggleModal}
+              >
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <TouchableOpacity
+                    // onPress={() => Linking.openURL('mailto:example@example.com')}
+                    >
+                      <Text style={{ color: "blue" }}>
+                        Email: example@example.com
+                      </Text>
+                    </TouchableOpacity>
 
-                  <TouchableOpacity
-                  // onPress={() => Linking.openURL('tel:+1234567890')}
-                  >
-                    <Text style={{ color: "blue" }}>Phone: +1234567890</Text>
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                    // onPress={() => Linking.openURL('tel:+1234567890')}
+                    >
+                      <Text style={{ color: "blue" }}>Phone: +1234567890</Text>
+                    </TouchableOpacity>
 
-                  <TouchableOpacity onPress={toggleModal}>
-                    <Ionicons name="close" size={30} color="#000" />
-                  </TouchableOpacity>
+                    <TouchableOpacity onPress={toggleModal}>
+                      <Ionicons name="close" size={30} color="#000" />
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            </Modal>
+              </Modal>
+            )}
 
             {/* //ratings */}
           </View>
@@ -297,7 +326,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             style={{
               justifyContent: "center",
               alignItems: "center",
-              backgroundColor: "#F0F0F0",
+              backgroundColor: "#fff",
               padding: 10,
               borderRadius: 20,
             }}
@@ -342,6 +371,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
     alignItems: "center",
     flexDirection: "column",
+    backgroundColor: "#fff",
   },
   imageContainer: {
     flex: 1,

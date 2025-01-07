@@ -1,5 +1,5 @@
 import ff from "@/constants/fonts";
-import { w } from "@/constants/size";
+import { h, w } from "@/constants/size";
 
 import { BACKEND } from "@/utils/config";
 
@@ -46,12 +46,14 @@ export default function Bookings() {
   const [loading, setLoading] = useState(true);
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
-    console.log("🚀 ~ getBookings ~ userId:", userId)
+    console.log("🚀 ~ getBookings ~ userId:", userId);
 
     if (userId) {
       try {
         const res = await axios.get(
-          `${BACKEND}/api/v1/booking/getUserBookings/${userId.data.user.id || userId.data.user_id.id}`
+          `${BACKEND}/api/v1/booking/getUserBookings/${
+            userId.data.user.id || userId.data.user_id.id
+          }`
         );
 
         setData(res.data);
@@ -133,7 +135,7 @@ export default function Bookings() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          {data && data?.length == 0 && (
+          {(!data || data?.length == 0) && (
             <TouchableOpacity
               onPress={() => getBookings()}
               style={{
@@ -169,8 +171,8 @@ export default function Bookings() {
                   borderRadius: 15,
                   borderWidth: 1.5,
                   borderColor: "#dcd8da",
-                  marginBottom: 13,
-                  padding: 8,
+                  marginBottom: h(10),
+                  padding: w(2.5),
                 }}
                 // key={item.id}
                 onPress={() =>
@@ -189,7 +191,6 @@ export default function Bookings() {
                     }}
                     style={{
                       width: w(90),
-                      // height: 120,
                       borderRadius: 10,
                       aspectRatio: 16 / 15,
                     }}
@@ -342,7 +343,7 @@ export default function Bookings() {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection:'row',
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fffff",
