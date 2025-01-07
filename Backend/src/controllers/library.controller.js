@@ -688,7 +688,11 @@ const EditAdminLibrary = async (req, res) => {
         
         address,
         registrationFees,
-        amenities: JSON.stringify(amenities),
+        amenities: {
+          update: {
+            amenities: amenities,
+          },
+        },
       },
     });
 
