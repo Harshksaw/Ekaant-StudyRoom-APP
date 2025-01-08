@@ -53,7 +53,7 @@ import { h, w } from "@/constants/size";
 export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any[]>([]);
   const [notAvailable, setNotAvailable] = useState(false);
   const [notListed, setNotListed] = useState(false);
   const [reload, setReload] = useState(false);
@@ -122,7 +122,7 @@ export default function index() {
       }
 
       const fetchedData = await fetchRoomData({ selectedLocation, page, limit });
-      setData((prevData) => [...prevData, ...(fetchedData || [])]);
+      setData(fetchedData || []);
       Toast.show("Library", {
         type: "success",
         duration: 3000,
