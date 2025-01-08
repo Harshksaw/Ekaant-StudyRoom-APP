@@ -13,6 +13,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -50,6 +51,7 @@ import ff from "@/constants/fonts";
 import Slider from "@/components/Slider";
 import { h, w } from "@/constants/size";
 
+
 export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
@@ -63,14 +65,15 @@ export default function index() {
   const dispatch = useDispatch();
   const [bannerImage, setBannerImage] = useState([]);
   const [locationData, setLocationData] = useState(null);
+  const [totalLibraries, setTotalLibraries] = useState(0)
 
   const [selectedLocation, setSelectedLocation] = useState("");
   const [stickyHeight, setStickyHeight] = useState(0);
-  const scrollViewRef = useRef(null);
+  const [allfetched, setAllfetched] = useState(false);
 
 
   const [page, setPage] = useState(1);
-  const [limit] = useState(2);
+  const [limit] = useState(3);
   const handleLocationChange = (location) => {
     setSelectedLocation(location);
   };
@@ -99,7 +102,7 @@ export default function index() {
     return res;
   };
 
-  const fetchSelectedLocation = async (page: number, limit: number) => {
+  const fetchSelectedLocation = async () => {
     const location = await AsyncStorage.getItem("selectedLocation");
     setSelectedLocation(location);
   };
@@ -122,11 +125,19 @@ export default function index() {
       }
 
       const fetchedData = await fetchRoomData({ selectedLocation, page, limit });
-      setData(fetchedData || []);
+      setTotalLibraries(fetchedData.totalLibraries)
+      // console.log("🚀 ~ fetchLibraryDate ~ fetchedData:", typeof  fetchedData)
+
+      setData((prevData) => [...prevData, ...(fetchedData.data) ]);
+
+  
       Toast.show("Library", {
         type: "success",
         duration: 3000,
       });
+      if(fetchedData.totalLibraries == data.length){
+        console.log("djsidjsijdsi")
+      }
     } catch (error) {
       Toast.show("Failed to fetch room data", {
         type: "error",
@@ -139,6 +150,7 @@ export default function index() {
       // For example, setError("Failed to load data. Please try again later.");
     } finally {
       setIsLoading(false);
+    
     }
   };
   const backAction = () => {
@@ -164,18 +176,7 @@ export default function index() {
   };
 
 
-  // useEffect(() => {
-  //   const initialize = async () => {
-  //     await fetchSelectedLocation();
-  //     if(selectedLocation){
-
-  //       fetchLibraryDate();
-  //    }
-  //   };
-
-  //   initialize();
-
-  // }, []);
+  console.log(data[1], "----")
 
   useFocusEffect(
     React.useCallback(() => {
@@ -189,11 +190,17 @@ export default function index() {
 
 
   useEffect(() => {
-    fetchSelectedLocation();
+    fetchSelectedLocation( );
     getAppData();
 
-    if (selectedLocation) {
-      fetchLibraryDate(page, limit);
+    if (selectedLocation && selectedLocation !== "") {
+      fetchLibraryDate();
+    }
+
+    if(totalLibraries == data.length && totalLibraries != 0 ){
+     console.log("🚀 ~ useEffect ~ data.length:", data.length)
+     console.log("🚀 ~ useEffect ~ totalLibraries:", totalLibraries)
+     setAllfetched(true)
     }
   }, [reload, selectedLocation, page]);
 
@@ -201,15 +208,17 @@ export default function index() {
     setPage((prevPage) => prevPage + 1);
   };
 
-  const [assets, error] = useAssets([
-    require("../../assets/icons/setting-5.svg"),
-    require("../../assets/icons/arrow-3.svg"),
-    require("../../assets/icons/arrow-down.svg"),
-    require("../../assets/icons/arrow-down.svg"),
-    require("../../assets/images/slider1.png"),
-    require("../../assets/icons/hello.svg"),
-    require("../../assets/icons/locationcard.svg"),
-  ]);
+  const handleScroll = ({ nativeEvent }) => {
+    if (isCloseToBottom(nativeEvent)) {
+      loadMore();
+    }
+  };
+  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+    const paddingToBottom = 20;
+    return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+  };
+
+
 
   //card listedrooms
   const renderItem = ({ item , index}:any) => (
@@ -450,6 +459,7 @@ export default function index() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[1]}
+        // onScroll={handleScroll}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -536,13 +546,18 @@ export default function index() {
         ) : (
           <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
             {data &&
-              data?.data?.map((item: any, index: number) => renderItem({ item, index }))}
-              {isLoading && <Text>Loading...</Text>}
-      {!isLoading && !notAvailable && (
-        <Button title="Load More" onPress={loadMore} />
-      )}
+              data?.map((item: any, index: number) => renderItem({ item, index }))}
 
-            {data?.data?.length == 0 && (
+  
+              {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+              {allfetched && <Text style={{
+                fontSize: 18,
+                fontFamily: ff.textMedium,
+                color: "rgb(209, 59, 59)",
+                textAlign: "center",
+                marginVertical: 16,
+              }}>No more data available</Text>}
+            {data?.length == 0 && (
               <TouchableOpacity onPress={() => setReload(true)}>
                 <Text
                   style={{
@@ -556,6 +571,40 @@ export default function index() {
                 </Text>
               </TouchableOpacity>
             )}
+
+
+{!allfetched && (
+  <TouchableOpacity 
+  onPress={()=> loadMore()}
+  style={{
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius:30,
+    backgroundColor:'rgb(58, 175, 229)',
+    width:w(100),
+    alignSelf:'center',
+    marginVertical:10,
+    paddingHorizontal:7
+
+
+
+  }}
+  >
+    <Text style={{
+      textAlign:'center',
+      fontSize:20,
+      fontWeight:'bold',
+
+      color:'white'
+
+    }}>
+      Load More
+    </Text>
+  </TouchableOpacity>
+
+)}
+            
           </View>
         )}
       </ScrollView>
