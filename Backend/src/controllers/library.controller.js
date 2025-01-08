@@ -423,7 +423,7 @@ const getAllLibrary = async (req, res) => {
       approved: true,
       address: {
         path: ['city'],
-        equals: city.toLowerCase() || city.toUpperCase() ,
+        equals: city.toLowerCase() || city.toUpperCase()  || city,
       },
       },
       include: {
