@@ -63,7 +63,7 @@ const BookingScreen: React.FC = () => {
   console.log("🚀 ~ bookingData.details:", bookingData.details.price);
   const [totalAmount, setTotalAmount] = useState(0);
   const userSelect = useSelector((state: any) => state.user.user);
-  console.log("🚀 ~ userSelect:", JSON.parse(userSelect).data.user.id)
+  console.log("🚀 ~ userSelect:", JSON.parse(userSelect))
 
 
 

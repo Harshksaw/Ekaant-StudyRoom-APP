@@ -175,7 +175,7 @@ export default function index() {
       ? () =>
         router.push({
           pathname: "/(routes)/card-details",
-          params: { item: JSON.stringify(item.library) },
+          params: { item: JSON.stringify(item) },
         })
         : () => toggleNotListedModal()
       }

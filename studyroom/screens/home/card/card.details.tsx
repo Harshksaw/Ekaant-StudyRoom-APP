@@ -41,6 +41,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const width = Dimensions.get("window").width;
   const [userReviews, setUserReviews] = useState([]);
   const params = useRoute();
+  console.log("🚀 ~ params.params.item:", params.params.item)
   const libData = JSON.parse(params.params.item);
   const data = { ...libData, _id: libData.id };
 
