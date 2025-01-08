@@ -28,12 +28,11 @@ export const StepFive = ({
   ];
   //images  - Register 5
 
-  const handleAmenityChange = (amenityKey: any, newValue: any) => {
-
+  const handleAmenityChange = (amenityKey: any, newValue: boolean) => {
     setLibraryDetails((prevDetails: any) => ({
       ...prevDetails,
-      amentities: {
-        ...prevDetails.amentities,
+      amenities: {
+        ...prevDetails.amenities,
         [amenityKey]: newValue,
       },
     }));
@@ -169,20 +168,30 @@ export const StepFive = ({
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
           {predefinedAmenities.map((amenity) => (
-            <div key={amenity} className="flex items-center mb-2">
-              <input
-                id={amenity}
-                name={amenity}
-                type="checkbox"
-                checked={libraryDetails.amenities?.[amenity] || false}
-                onChange={(e) => handleAmenityChange(amenity, e.target.checked)}
-                className="mr-2 leading-tight"
-              />
-              <label htmlFor={amenity} className="text-gray-700">
-                {amenity}
-              </label>
-            </div>
-          ))}
+              <tr key={amenity}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  {amenity}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <input
+                    type="radio"
+                    name={amenity}
+                    value="yes"
+                    checked={libraryDetails.amenities?.[amenity] === true}
+                    onChange={() => handleAmenityChange(amenity, true)}
+                  />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <input
+                    type="radio"
+                    name={amenity}
+                    value="no"
+                    checked={libraryDetails.amenities?.[amenity] === false}
+                    onChange={() => handleAmenityChange(amenity, false)}
+                  />
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

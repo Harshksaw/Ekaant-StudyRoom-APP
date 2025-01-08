@@ -203,7 +203,7 @@ const createLibrary = async (req, res) => {
 
     const LibraryData = await prisma.library.create({ data: libraryData });
 
-    await calculateDistances(LibraryData.id);
+    // await calculateDistances(LibraryData.id);
 
     // calculateLowestPrice(LibraryData.id);
     res.status(201).json({
