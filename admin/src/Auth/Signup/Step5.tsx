@@ -11,13 +11,28 @@ export const StepFive = ({
   setLibraryDetails,
   handleFileChange,
 }: any) => {
+
+  const predefinedAmenities = [
+    "coldWater",
+    "wifi",
+    "ac",
+    "locker",
+    "separateWashroom",
+    "news",
+    "discussionArea",
+    "lunchArea",
+    "movingChair",
+    "floorMat",
+    "separateParking",
+    "commonParking",
+  ];
   //images  - Register 5
 
-  const handleAmenityChange = (amenityKey: any, newValue: any) => {
+  const handleAmenityChange = (amenityKey: any, newValue: boolean) => {
     setLibraryDetails((prevDetails: any) => ({
       ...prevDetails,
-      amentities: {
-        ...prevDetails.amentities,
+      amenities: {
+        ...prevDetails.amenities,
         [amenityKey]: newValue,
       },
     }));
@@ -152,36 +167,28 @@ export const StepFive = ({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {Object.entries(libraryDetails.amentities).map(([key, value]) => (
-              <tr key={key}>
+          {predefinedAmenities.map((amenity) => (
+              <tr key={amenity}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {key}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  <input
-                    type="radio"
-                    id={`${key}-yes`}
-                    name={key}
-                    value="yes"
-                    checked={value === true}
-                    onChange={() => handleAmenityChange(key, true)}
-                  />
-                  <label htmlFor={`${key}-yes`} className="ml-2">
-                    Yes
-                  </label>
+                  {amenity}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <input
                     type="radio"
-                    id={`${key}-no`}
-                    name={key}
-                    value="no"
-                    checked={value === false}
-                    onChange={() => handleAmenityChange(key, false)}
+                    name={amenity}
+                    value="yes"
+                    checked={libraryDetails.amenities?.[amenity] === true}
+                    onChange={() => handleAmenityChange(amenity, true)}
                   />
-                  <label htmlFor={`${key}-no`} className="ml-2">
-                    No
-                  </label>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <input
+                    type="radio"
+                    name={amenity}
+                    value="no"
+                    checked={libraryDetails.amenities?.[amenity] === false}
+                    onChange={() => handleAmenityChange(amenity, false)}
+                  />
                 </td>
               </tr>
             ))}
