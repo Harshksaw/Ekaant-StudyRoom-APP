@@ -42,7 +42,7 @@ function RootLayoutNav() {
   return (
     <Provider store={store}>
       <ToastProvider>
-        <Stack screenOptions={{ headerShown: false }} initialRouteName="index">
+        <Stack   screenOptions={{ headerShown: false }} initialRouteName="index">
           <Stack.Screen
             name="index"
             options={{

@@ -476,6 +476,40 @@ async function RemoveSeatBooking(req, res) {
   }
 }
 
+async function getEarnings(req, res) {
+  const {id: adminId} = req.params;
+
+  try {
+    
+    const libraryId = await prisma.library.findFirst({ where : {libraryOwnerId : adminId}});
+
+    if (!libraryId) {
+      return res.status(404).json({ message: "Library not found" });
+    }
+
+    const earnings = await prisma.booking.findMany({
+      where: {
+        libraryId: libraryId.id,
+        paid: true,
+      },
+     
+    });
+
+    const totalEarnings = earnings.reduce((total, booking) => total + booking.finalPrice , 0);
+
+    return res.status(200).json({
+      message: "Earnings fetched successfully",
+      data:  totalEarnings ,
+    })
+
+
+  } catch (error) {
+    console.error("Error getting earnings:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Error getting earnings", error: error.message });
+    
+  }
+}
+
 module.exports = {
   pingAdminController: ping,
   RegisterAdmin,
@@ -483,7 +517,8 @@ module.exports = {
   ResetAdminPassword,
   BookSeat,
   RemoveSeatBooking,
-  resetpasswordotp
+  resetpasswordotp,
+  getEarnings
 
 };
 

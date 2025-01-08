@@ -185,18 +185,7 @@ const createLibrary = async (req, res) => {
       coords: coords,
       amenities: {
         create: {
-          coldWater: amenities.coldWater,
-          wifi: amenities.wifi,
-          ac: amenities.ac,
-          locker: amenities.locker,
-          separateWashroom: amenities.separateWashroom,
-          news: amenities.news,
-          discussionArea: amenities.discussionArea,
-          lunchArea: amenities.lunchArea,
-          movingChair: amenities.movingChair,
-          floorMat: amenities.floorMat,
-          separateParking: amenities.separateParking,
-          commonParking: amenities.commonParking,
+          amenities : amenities
         },
       },
       cardImage: cardImage,
@@ -214,7 +203,7 @@ const createLibrary = async (req, res) => {
 
     const LibraryData = await prisma.library.create({ data: libraryData });
 
-    await calculateDistances(LibraryData.id);
+    // await calculateDistances(LibraryData.id);
 
     // calculateLowestPrice(LibraryData.id);
     res.status(201).json({
