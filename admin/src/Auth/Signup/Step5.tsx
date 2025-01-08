@@ -11,9 +11,25 @@ export const StepFive = ({
   setLibraryDetails,
   handleFileChange,
 }: any) => {
+
+  const predefinedAmenities = [
+    "coldWater",
+    "wifi",
+    "ac",
+    "locker",
+    "separateWashroom",
+    "news",
+    "discussionArea",
+    "lunchArea",
+    "movingChair",
+    "floorMat",
+    "separateParking",
+    "commonParking",
+  ];
   //images  - Register 5
 
   const handleAmenityChange = (amenityKey: any, newValue: any) => {
+
     setLibraryDetails((prevDetails: any) => ({
       ...prevDetails,
       amentities: {
@@ -152,39 +168,21 @@ export const StepFive = ({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {Object.entries(libraryDetails.amentities).map(([key, value]) => (
-              <tr key={key}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {key}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  <input
-                    type="radio"
-                    id={`${key}-yes`}
-                    name={key}
-                    value="yes"
-                    checked={value === true}
-                    onChange={() => handleAmenityChange(key, true)}
-                  />
-                  <label htmlFor={`${key}-yes`} className="ml-2">
-                    Yes
-                  </label>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <input
-                    type="radio"
-                    id={`${key}-no`}
-                    name={key}
-                    value="no"
-                    checked={value === false}
-                    onChange={() => handleAmenityChange(key, false)}
-                  />
-                  <label htmlFor={`${key}-no`} className="ml-2">
-                    No
-                  </label>
-                </td>
-              </tr>
-            ))}
+          {predefinedAmenities.map((amenity) => (
+            <div key={amenity} className="flex items-center mb-2">
+              <input
+                id={amenity}
+                name={amenity}
+                type="checkbox"
+                checked={libraryDetails.amenities?.[amenity] || false}
+                onChange={(e) => handleAmenityChange(amenity, e.target.checked)}
+                className="mr-2 leading-tight"
+              />
+              <label htmlFor={amenity} className="text-gray-700">
+                {amenity}
+              </label>
+            </div>
+          ))}
           </tbody>
         </table>
       </div>

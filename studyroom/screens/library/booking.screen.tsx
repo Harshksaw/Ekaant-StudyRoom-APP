@@ -188,6 +188,7 @@ const BookingScreen: React.FC = () => {
             forFriend: userDetails.friendDetails,
           }
         );
+        console.log("🚀 ~ PreBook ~ response:", response.status)
 
         const bookingId = response.data.Booking.id;
         // console.log("🚀 ~ PreBook ~ bookingId11:", bookingId)
