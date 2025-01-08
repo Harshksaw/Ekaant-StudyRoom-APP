@@ -1,4 +1,6 @@
 import {
+  Alert,
+  BackHandler,
   Dimensions,
   Platform,
   RefreshControl,
@@ -13,8 +15,14 @@ import { Ionicons } from "@expo/vector-icons";
 import Carousel from "react-native-reanimated-carousel";
 
 import Header from "@/components/Header";
-import { router } from "expo-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 const { height } = Dimensions.get("window");
 
@@ -121,19 +129,37 @@ export default function index() {
       setIsLoading(false);
     }
   };
+  const backAction = () => {
+    Alert.alert(
+      "Are You Sure?",
+      "You Want to Exit From the application?",
+      [
+        {
+          text: "Exit",
+          onPress: () => BackHandler.exitApp(),
+        },
+        {
+          text: "continue to app",
+          onPress: () => {},
+          style: "cancel",
+        },
+      ],
+      {
+        cancelable: false,
+      }
+    );
+    return true;
+  };
 
-  // useEffect(() => {
-  //   const initialize = async () => {
-  //     await fetchSelectedLocation();
-  //     if(selectedLocation){
-
-  //       fetchLibraryDate();
-  //    }
-  //   };
-
-  //   initialize();
-
-  // }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+      return () => backHandler.remove();
+    }, [backAction])
+  );
 
   useEffect(() => {
     fetchSelectedLocation();
