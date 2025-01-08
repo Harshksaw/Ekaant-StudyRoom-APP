@@ -107,11 +107,12 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     });
   };
 
-  const { id, libraryId, ...filteredAmenities } = data.amenities || {};
-  console.log("🚀 ~ filteredAmenities:", filteredAmenities);
-
-  const trueAmenities = Object.keys(filteredAmenities).filter(
-    (key) => filteredAmenities[key]
+  
+  console.log("🚀 ~ data.amenities:", data.amenities.amenities)
+  // const { id, libraryId, ...filteredAmenities } = data.amenities || {};
+  // console.log("🚀 ~ filteredAmenities:", filteredAmenities);
+  const trueAmenities = Object.keys(data.amenities.amenities).filter(
+    (key) => data.amenities.amenities[key]
   );
   const price = data.Price || 0;
 
