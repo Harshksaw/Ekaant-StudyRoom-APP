@@ -410,7 +410,7 @@ const getLibrary = async (req, res) => {
 
 const getAllLibrary = async (req, res) => {
   try {
-    const { city } = req.body;
+    const { city , page = 1, limit = 2  } = req.body;
     console.log(city);
     if (!city) {
       return res
@@ -420,59 +420,35 @@ const getAllLibrary = async (req, res) => {
 
     const libraries = await prisma.library.findMany({
       where: {
+      approved: true,
+      address: {
+        path: ['city'],
+        equals: city.toLowerCase() || city.toUpperCase() ,
+      },
+      },
+      include: {
+      amenities: true,
+      },
+      skip: (page - 1) * limit,
+      take: parseInt(limit),
+    });
+
+    const totalLibraries = await prisma.library.count({
+      where: {
         approved: true,
         address: {
           path: ['city'],
           equals: city,
         },
       },
-      include: {
-        amenities: true,
-      },
     });
-    // Fetch distances for the specified city, including related library data and nested relationships
-    // const distances = await prisma.distance.findMany({
-    //   where: {
-    //     city,
-    //   },
-    //   include: {
-    //     library: {
-    //       include: {
-           
-    //         amenities: true, // Include amenities if needed
-    //       },
-    //     },
-    //   },
-    //   orderBy: {
-    //     distance: "asc",
-    //   },
-    // });
-    // console.log("🚀 ~ getAllLibrary ~ distances:", distances);
 
-    // Filter libraries to include only those that are approved and have rooms
-    // const filterLibrary = distances.filter(
-    //   (distance) =>
-    //     distance.library.approved === true && distance.library.rooms.length > 0
-    // );
-    // console.log("🚀 ~ getAllLibrary ~ filterLibrary:", filterLibrary);
-
-    // if (!filterLibrary.length) {
-    //   return res.status(404).json({
-    //     success: false,
-    //     message: "No libraries found for the specified city",
-    //   });
-    // }
-
-    // Map the filtered distances to include the library and distance
-    // const libraries = filterLibrary.map((distance) => ({
-    //   library: distance.library,
-    //   distance: distance.distance,
-    // }));
-
-    // Return the sorted libraries in the response
     res.status(200).json({
       success: true,
       count: libraries.length,
+      totalLibraries,
+      totalPages: Math.ceil(totalLibraries / limit),
+      currentPage: parseInt(page),
       data: libraries,
     });
   } catch (error) {

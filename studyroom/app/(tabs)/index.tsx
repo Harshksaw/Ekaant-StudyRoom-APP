@@ -1,4 +1,5 @@
 import {
+  Button,
   Dimensions,
   Platform,
   RefreshControl,
@@ -42,7 +43,7 @@ export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
-  const [notavailable, setNotAvailable] = useState(false);
+  const [notAvailable, setNotAvailable] = useState(false);
   const [notListed, setNotListed] = useState(false);
   const [reload, setReload] = useState(false);
   const toggleNotListedModal = () => setNotListed(!notListed);
@@ -55,6 +56,10 @@ export default function index() {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [stickyHeight, setStickyHeight] = useState(0);
   const scrollViewRef = useRef(null);
+
+
+  const [page, setPage] = useState(1);
+  const [limit] = useState(2);
   const handleLocationChange = (location) => {
     setSelectedLocation(location);
   };
@@ -83,7 +88,7 @@ export default function index() {
     return res;
   };
 
-  const fetchSelectedLocation = async () => {
+  const fetchSelectedLocation = async (page: number, limit: number) => {
     const location = await AsyncStorage.getItem("selectedLocation");
     setSelectedLocation(location);
   };
@@ -105,9 +110,12 @@ export default function index() {
         return;
       }
 
-      const fetchedData = await fetchRoomData({ selectedLocation });
-
-      setData(fetchedData || []);
+      const fetchedData = await fetchRoomData({ selectedLocation, page, limit });
+      setData((prevData) => [...prevData, ...(fetchedData || [])]);
+      Toast.show("Library", {
+        type: "success",
+        duration: 3000,
+      });
     } catch (error) {
       Toast.show("Failed to fetch room data", {
         type: "error",
@@ -135,17 +143,18 @@ export default function index() {
   //   initialize();
 
   // }, []);
-
   useEffect(() => {
     fetchSelectedLocation();
     getAppData();
 
-    // getTokenAndPrintIt();
-
     if (selectedLocation) {
-      fetchLibraryDate();
+      fetchLibraryDate(page, limit);
     }
-  }, [reload, selectedLocation]);
+  }, [reload, selectedLocation, page]);
+
+  const loadMore = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
 
   const [assets, error] = useAssets([
     require("../../assets/icons/setting-5.svg"),
@@ -483,6 +492,10 @@ export default function index() {
           <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
             {data &&
               data?.data?.map((item: any, index: number) => renderItem({ item, index }))}
+              {isLoading && <Text>Loading...</Text>}
+      {!isLoading && !notAvailable && (
+        <Button title="Load More" onPress={loadMore} />
+      )}
 
             {data?.data?.length == 0 && (
               <TouchableOpacity onPress={() => setReload(true)}>
