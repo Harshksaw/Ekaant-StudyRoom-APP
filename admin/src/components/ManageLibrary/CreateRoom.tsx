@@ -3,14 +3,16 @@ import axios from "axios";
 import { BASEURL } from "@/lib/utils";
 // import LocationSelector from "./LocationSelector";
 import Seats from "../seatinglayout/SeatLayout";
-import { FaDoorOpen } from "react-icons/fa";
+import { GiEntryDoor } from "react-icons/gi";
+import { HiOutlineSave } from "react-icons/hi";
 
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs from "dayjs";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "react-toastify";
 import { getLibraryDataById } from "@/hooks/libraryData";
-
+import { TbAirConditioning } from "react-icons/tb";
+import { IoBedOutline } from "react-icons/io5";
 
 const CreateRoom: React.FC = () => {
   const [libraryId, setLibraryId] = React.useState("");
@@ -24,17 +26,18 @@ const CreateRoom: React.FC = () => {
 
   const [selectedLibrary, setSelectedLibrary] = useState<any>(null);
   const [timeSlots, setTimeSlots] = useState<any[]>([
-    { from: null, to: null, price: 0 },
-    { from: null, to: null, price: 0 },
-    { from: null, to: null, price: 0 },
-    { from: null, to: null, price: 0 },
-    { from: null, to: null, price: 0 },
+    { from: null, to: null, price: "" },
+    { from: null, to: null, price: "" },
+    { from: null, to: null, price: "" },
+    { from: null, to: null, price: "" },
+    { from: null, to: null, price: "" },
   ]);
 
   const [Ac, setAc] = useState(false);
 
   const [autoFill24Hr, setAutoFill24Hr] = useState(false);
-  const [price24Hr, setPrice24Hr] = useState<number>(0);
+  const [price24Hr, setPrice24Hr] = useState<string>("");
+  const doorData = ["Left", "Left-Middle", "Middle", "Right-Middle", "Right"];
 
   const [doorPositions, setDoorPositions] = useState([0, 1, 0, 0, 0]);
 
@@ -42,7 +45,6 @@ const CreateRoom: React.FC = () => {
     const newPositions = doorPositions.map((pos, i) => (i === index ? 1 : 0));
     setDoorPositions(newPositions);
   };
-
 
   useEffect(() => {
     const fetchLibrary = async () => {
@@ -68,12 +70,9 @@ const CreateRoom: React.FC = () => {
     setSelectedLibrary(libraryObject);
   }, [libraryId]);
 
- 
-
   const handleSeatSelect = (seat: any) => {
+    toast.success("Seat layout saved");
     setSeatLayout(seat);
-    // console.log(seatLayout);
-    // setSeatLayout((prev) => [...prev, seat]);
   };
   const handleTimeChange = (index: any, type: any, newValue: any) => {
     const updatedTimeSlots = [...timeSlots];
@@ -166,7 +165,6 @@ const CreateRoom: React.FC = () => {
     }
   };
 
-
   React.useEffect(() => {
     const timer = setTimeout(() => setProgress(66), 500);
     return () => clearTimeout(timer);
@@ -191,8 +189,8 @@ const CreateRoom: React.FC = () => {
   }
 
   const handleAutoFill24HrChange = () => {
-    if (price24Hr <= 0) {
-      alert("Fill the price for 24 hr first");
+    if (+price24Hr <= 0) {
+      toast.error("Fill the price for 24 hr first");
       return;
     }
     setAutoFill24Hr(!autoFill24Hr);
@@ -212,159 +210,160 @@ const CreateRoom: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col bg-gray-100 items-center  gap-y-25 overflow-y-scroll h-screen mb-20">
-      <div className="mt-20 ">
-        <select value={libraryId} onChange={handleLibraryChange}>
-          <option value="">Select a Library</option>
-          {libraryData &&
-            libraryData?.map((library: any) => (
-              <option
-                key={library.id}
-                value={library.id}
-                className="bg-gray-500  rounded-lg mt-2 mb-5  p-10"
-              >
-                {library.name}
-              </option>
-            ))}
-        </select>
-      </div>
-      <div
-        className="mt-10 flex-col 
-      justify-center items-center  gap-y-5
-      "
-      >
-        <h2
-          style={{
-            fontSize: "32px",
-            color: "#333",
-            textAlign: "center",
-            margin: "20px 10px",
-          }}
-        >
-          You are creating Room no
-          <span
-            style={{
-              background: "#4CAF50",
-              color: "#fff",
-              padding: "15px 25px",
-              margin: "20px",
-              borderRadius: "5px",
-            }}
+    <div className="flex flex-col bg-gray-100 items-center min-h-screen p-5">
+      <div className="w-full flex items-end gap-[1rem]">
+        <div className="w-2/4">
+          <label
+            htmlFor="library"
+            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
+            Select a Library
+          </label>
+          <select
+            value={libraryId}
+            onChange={handleLibraryChange}
+            id="library"
+            className="bg-gray-50 h-[2.5rem] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          >
+            {libraryData &&
+              libraryData?.map((library: any) => (
+                <option
+                  key={library.id}
+                  value={library.id}
+                  className="bg-gray-500  rounded-lg mt-2 mb-5  p-10"
+                >
+                  {library.name}
+                </option>
+              ))}
+          </select>
+        </div>
+        <label
+          className={`flex justify-center gap-3 items-center px-5 h-[2.5rem] border-[1.4px] cursor-pointer ${
+            Ac
+              ? "border-blue-500 bg-blue-50 text-blue-500"
+              : "border-neutral-500 bg-white"
+          }`}
+        >
+          <input
+            type="checkbox"
+            checked={Ac}
+            hidden
+            onChange={() => setAc(!Ac)}
+          />
+          <TbAirConditioning />
+          <span className="text-md">AC</span>
+        </label>
+        <div
+          className={`flex justify-center items-center px-5 h-[2.5rem] border-[1.4px] cursor-pointer border-blue-500 bg-blue-50 text-blue-500 gap-3`}
+        >
+          <IoBedOutline />
+          <span>Room Number: </span>
+          <span className="text-lg bg-blue-600 px-5 rounded text-white">
             {selectedLibrary?.rooms ? selectedLibrary?.rooms.length + 1 : "1"}
           </span>
-        </h2>
-
-        <div>
-          <label className="flex justify-center items-center p-10">
-            <input
-              className="mr-2 text-2xl p-10 "
-              size={30}
-              type="checkbox"
-              checked={Ac}
-              onChange={() => setAc(!Ac)}
-            />
-            <h2 className="text-2xl">AC</h2>
-          </label>
         </div>
       </div>
 
-      <div className="mt-20 mb-48  h-[90vh] w-[80%] ">
-        <Seats onSeatSelect={handleSeatSelect} />
-      </div>
+      <Seats onSeatSelect={handleSeatSelect} />
 
-      <div className=" mt-20 mb-20 flex justify-center items-center rounded-lg flex-col">
-        <h2 className="text-3xl mb-10 ">Select Door Position</h2>
-    
-         <div className="door-layout flex space-x-4">
+      {!!Object.keys(seatLayout).length && (
+        <>
+          <div className="flex justify-center rounded-lg flex-col w-full">
+            <h2 className="text-xl font-semibold mb-4">
+              Create Seating Layout
+            </h2>
+
+            <div className="door-layout flex space-x-4">
               {doorPositions.map((position, index) => (
                 <button
                   key={index}
-                  className={`door-position p-4 rounded-md ${position == 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+                  className={`door-position px-4 py-2 rounded-md transition-all ${
+                    position == 1
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-800"
+                  }`}
                   onClick={() => handleSelectPosition(index)}
                 >
-                  <FaDoorOpen className="inline-block mr-2" />
-                  {position === 1 ? 'Door' : 'No Door'}
+                  <GiEntryDoor className="inline-block mr-2" />
+
+                  {doorData[index]}
                 </button>
               ))}
             </div>
-      </div>
-
-      <div className="w-[90%] mx-20 mt-60 flex flex-col  ">
-        <h2 className="text-center bg-blue-200 p-2  rounded-md text-3xl">
-          Select Time Slots
-        </h2>
-        <div className="flex  justify-center items-center gap-10 ">
-          <label className="flex justify-center items-center ">
-            <input
-              className="mr-2 text-2xl "
-              type="checkbox"
-              checked={autoFill24Hr}
-              onChange={handleAutoFill24HrChange}
-            />
-            <h2 className="text-2xl">Auto-fill 24-hour time slot</h2>
-          </label>
-          {true && (
-            <label className=" flex flex-row justify-center items-center gap-5">
-              Price
-              <input
-                type="number"
-                value={price24Hr || 0}
-                onChange={(e) => setPrice24Hr(Number(e.target.value))}
-                required
-              />
-            </label>
-          )}
-        </div>
-
-        {timeSlots.map((timeRange, index) => (
-          <div className="flex-col  justify-center items-center">
-            <div
-              key={index}
-              className="flex justify-evenly items-center bg-gray-200 p-2 mt-2 mb-5 rounded-xl"
-            >
-              <TimePicker
-                label="From"
-                value={timeRange.from}
-                onChange={(newValue) =>
-                  handleTimeChange(index, "from", newValue)
-                }
-              />
-              <TimePicker
-                label="To"
-                value={timeRange.to}
-                onChange={(newValue) => handleTimeChange(index, "to", newValue)}
-              />
-            </div>
-            <div className="max-w-[30%] mx-auto   justify-center items-center flex flex-row">
-              <label className="text-2xl ">Price</label>
-              <input
-                type="number"
-                className="form-input rounded-md ml-60"
-                value={timeRange.price}
-                onChange={(e) => handlePriceChange(index, e.target.value)}
-                placeholder="Price"
-              />
-            </div>
           </div>
-        ))}
-      </div>
 
-      {/* <div className=" w-full h-96 mt-20 mb-20 flex justify-center items-center rounded-lg">
-        <LocationSelector onLocationSelect={handleLocationSelect} />
-      </div> */}
-      <div className="flex-col  h-96 mt-20 mb-20 flex justify-center items-center rounded-lg">
-        <div className="flex justify-center mt-12 p-12">
+          <div className="w-full mt-10">
+            <h2 className="text-xl font-semibold mb-4">Create Slots</h2>
+            <div className="flex items-center gap-10 mb-5">
+              <label className=" flex flex-row justify-center items-center gap-5">
+                Price:
+                <input
+                  type="number"
+                  value={price24Hr}
+                  onChange={(e) => setPrice24Hr(e.target.value)}
+                  required
+                  placeholder="Enter Price"
+                  className="!rounded-none"
+                />
+              </label>
+              <label
+                className={`flex justify-center gap-3 items-center px-5 h-[2.5rem] border-[1.4px] cursor-pointer ${
+                  autoFill24Hr
+                    ? "border-blue-500 bg-blue-50 text-blue-500"
+                    : "border-neutral-500 bg-white"
+                }`}
+              >
+                <input
+                  className="mr-2 text-2xl "
+                  type="checkbox"
+                  // hidden
+                  checked={autoFill24Hr}
+                  onChange={handleAutoFill24HrChange}
+                />
+                <h2 className="text-xl">Auto-fill 24-hour Time Slot</h2>
+              </label>
+            </div>
+
+            {timeSlots.map((timeRange, index) => (
+              <div className="flex justify-center mt-2 gap-2" key={index}>
+                <TimePicker
+                  label="From"
+                  className="w-1/3"
+                  value={timeRange.from}
+                  onChange={(newValue) =>
+                    handleTimeChange(index, "from", newValue)
+                  }
+                />
+                <TimePicker
+                  label="To"
+                  className="w-1/3"
+                  value={timeRange.to}
+                  onChange={(newValue) =>
+                    handleTimeChange(index, "to", newValue)
+                  }
+                />
+                <input
+                  type="number"
+                  className="form-input !rounded !w-[30rem]"
+                  value={timeRange.price}
+                  onChange={(e) => handlePriceChange(index, e.target.value)}
+                  placeholder="Enter Price"
+                />
+              </div>
+            ))}
+          </div>
+
           <button
+            disabled={loading}
             onClick={handleSubmit}
-
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded focus:outline-none focus:shadow-outline"
-            disabled={loading} // Disable button when loading
+            className={`mt-4 bg-blue-500 flex items-center gap-4 rounded text-white px-4 py-2
+                        disabled:cursor-not-allowed disabled:opacity-80
+                        `}
           >
-            {loading ? "Submitting..." : "Submit"}{" "}
+            <HiOutlineSave /> {loading ? "Submitting..." : "Submit"}
           </button>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };
