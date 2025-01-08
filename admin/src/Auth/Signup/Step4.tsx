@@ -173,7 +173,7 @@ export const StepFour = ({
                   ...libraryDetails,
                   libraryAddress: {
                     ...libraryDetails.libraryAddress,
-                    city: e.target.value,
+                    city: (e.target.value).toLowerCase(),
                   },
                 });
               }}
