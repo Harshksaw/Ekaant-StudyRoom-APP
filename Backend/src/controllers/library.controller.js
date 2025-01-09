@@ -423,8 +423,8 @@ const getAllLibrary = async (req, res) => {
       approved: true,
       address: {
         path: ['city'],
-string_contains: city,
-          mode: 'insensitive',
+contains: city,
+
 
       },
       },
@@ -440,7 +440,8 @@ string_contains: city,
         approved: true,
         address: {
           path: ['city'],
-          equals: city,
+    contains: city,
+
         },
       },
     });
