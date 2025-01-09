@@ -53,6 +53,7 @@ const CreateRoom: React.FC = () => {
         // console.log(response.data.data, "--------");
         setLibraryData(response.data.data);
         setSelectedRoom(response.data.data?.rooms);
+        setLibraryId(response.data.data[0].id);
       } catch (error) {
         console.error("Error fetching library:", error);
         // Handle error
@@ -236,6 +237,8 @@ const CreateRoom: React.FC = () => {
                 </option>
               ))}
           </select>
+
+       
         </div>
         <label
           className={`flex justify-center gap-3 items-center px-5 h-[2.5rem] border-[1.4px] cursor-pointer ${
