@@ -16,7 +16,7 @@
         "foregroundImage": "./assets/images/AppIcon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 25,
+      "versionCode": 32,
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",

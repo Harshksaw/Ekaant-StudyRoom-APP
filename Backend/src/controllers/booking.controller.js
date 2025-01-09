@@ -39,6 +39,48 @@ function pingBookingController(req, res) {
 
   return res.json({ message: "Booking controller is up" });
 }
+
+async function hasBoughtEarlier(req, res) {
+  try {
+    const { userId, libraryId } = req.body;
+
+    if (!userId || !libraryId) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: "Both userId and libraryId are required",
+      });
+    }
+
+    // Check if the user has booked this library before
+    const previousBooking = await prisma.booking.findFirst({
+      where: {
+        userId: userId,
+        libraryId: libraryId,
+      },
+    });
+
+    if (previousBooking) {
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: "User has bought this library room earlier",
+        data: true,
+      });
+    } else {
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: "User has not bought this library room earlier",
+        data: false,
+      });
+    }
+  } catch (error) {
+    console.error("Error checking previous booking:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Failed to check previous booking. Please try again later.",
+      error: error.message,
+    });
+  }
+}
 async function createBooking(req, res) {
   try {
     const {
@@ -57,7 +99,7 @@ async function createBooking(req, res) {
     console.log("🚀 ~ createBooking ~ req.body", req.body);
 
     const user = await prisma.user.findFirst({ where: { id: userId } });
-    console.log("🚀 ~ createBooking ~ user:", user)
+    console.log("🚀 ~ createBooking ~ user:", user);
 
     const bookingFinalDate = new Date(bookingDate);
     bookingFinalDate.setMonth(bookingFinalDate.getMonth() + bookingPeriod);
@@ -69,48 +111,80 @@ async function createBooking(req, res) {
         .json({ message: "User not found" });
     }
 
-    if (!libraryId  || !finalPrice || timeSlot.length === 0 || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod) {
+    if (!libraryId || !finalPrice || timeSlot.length === 0 || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod) {
       console.log("-______-", libraryId, initialPrice, finalPrice, timeSlot.length, roomNo, bookedSeat, bookingDate, bookingPeriod);
       return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: "Please provide all the required fields" });
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "Please provide all the required fields" });
     }
 
-    // let friendConnect = undefined;
-    // if (forFriend) {
-    //   const friend = await prisma.friend.findFirst({ where: { id: forFriend } });
-    //   if (!friend) {
-    //     return res
-    //       .status(StatusCodes.BAD_REQUEST)
-    //       .json({ message: "Friend not found" });
-    //   }
-    //   friendConnect = { connect: { id: forFriend } };
-    // }
-
-    const newBooking = await prisma.booking.create({
-      data: {
-        user: { connect: { id: userId } },
-        library: { connect: { id: libraryId } },
-        initialPrice: parseFloat(initialPrice),
-        finalPrice: parseFloat(finalPrice),
-        roomNo,
-      // friend: friendConnect,
-        timeSlotDetails: timeSlot,
-        bookedSeat,
-        bookingDate,
-        bookingPeriod : parseInt(bookingPeriod),
-        bookingFinalDate: bookingFinalDate,
+    // Check if the user has booked this library before
+    const previousBooking = await prisma.booking.findFirst({
+      where: {
+        userId: userId,
+        libraryId: libraryId,
       },
     });
 
+    let totalAmount = finalPrice;
 
+    // If no previous booking, apply registration fee
+    if (!previousBooking) {
+      const library = await prisma.library.findUnique({ where: { id: libraryId } });
+      const registrationFee = library.registrationFees || 0 ; // Default to 50 if not specified
+      totalAmount += registrationFee;
 
-    return res.status(StatusCodes.CREATED).json({
+      // Create a transaction for the registration fee
+      await prisma.transaction.create({
+        data: {
+          amount: registrationFee,
+          type: 'REGISTRATION_FEE',
+          description: 'Registration fee for first-time booking',
+          userId: userId,
+          libraryId: libraryId,
+        },
+      });
+    }
+
+    // Create the booking
+    const booking = await prisma.booking.create({
+      data: {
+        userId,
+        libraryId,
+        initialPrice,
+        finalPrice: totalAmount,
+        timeSlot,
+        roomNo,
+        bookedSeat,
+        bookingDate,
+        bookingPeriod,
+      },
+    });
+
+    // Create a transaction for the booking payment
+    await prisma.transaction.create({
+      data: {
+        amount: finalPrice,
+        type: 'BOOKING_PAYMENT',
+        description: 'Payment for booking',
+        userId: userId,
+        libraryId: libraryId,
+        bookingId: booking.id,
+      },
+    });
+
+    res.status(StatusCodes.CREATED).json({
+      success: true,
       message: "Booking created successfully",
-      Booking: newBooking,
+      data: booking,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error creating booking:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Failed to create booking. Please try again later.",
+      error: error.message,
+    });
   }
 }
 
@@ -350,4 +424,5 @@ module.exports = {
   getBookingByLibId,
   confirmBooking,
   generateInvoice,
+  hasBoughtEarlier
 };

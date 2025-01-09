@@ -225,37 +225,34 @@ const deleteLocations = async (req, res) => {
 
   async function createBackup(req, res) {
     try {
-      const containerId = 'ekaant-studyroom-app-db-1'; // Use your container name
-      const backupFile = `/tmp/backup_${Date.now()}.dump`;
-      const command = `docker exec -t ${containerId} pg_dump -U my_user -d my_database -F c -b -v -f ${backupFile}`;
+      const backupDir = '/backup';
+      const containerName = 'postgres:latest';
+      const databaseName = 'postgres'; // Or use pg_dumpall -c for all databases
+      
 
-      exec(command, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error creating backup: ${error.message}`);
-          return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error creating backup', error: error.message });
-        }
-        if (stderr) {
-          console.error(`Backup stderr: ${stderr}`);
-        }
-        console.log(`Backup stdout: ${stdout}`);
-
-        // Optionally, copy the backup file to the host
-        const hostBackupPath = `/path/to/host/backup/backup_${Date.now()}.dump`;
-        const copyCommand = `docker cp ${containerId}:${backupFile} ${hostBackupPath}`;
-
-        exec(copyCommand, (copyError, copyStdout, copyStderr) => {
-          if (copyError) {
-            console.error(`Error copying backup to host: ${copyError.message}`);
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error copying backup to host', error: copyError.message });
+        // Create the backup directory if it doesn't exist
+        fs.mkdirSync(backupDir, { recursive: true }); 
+      
+        const timestamp = new Date().toISOString().replace(/[-:.]/g, ''); // Format timestamp
+        const backupFilename = `backup_db_${timestamp}.dump`;
+        const backupFilePath = `${backupDir}/${backupFilename}`;
+      
+        // Construct the pg_dump command
+        const command = `docker exec -it ${containerName} pg_dump -U postgres -Fc ${databaseName} > ${backupFilePath}`;
+      
+        // Execute the command
+        exec(command, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error creating backup: ${error}`);
+            return res.status(500).json({ error: 'Backup failed' });
           }
-          if (copyStderr) {
-            console.error(`Copy stderr: ${copyStderr}`);
-          }
-          console.log(`Copy stdout: ${copyStdout}`);
-
-          return res.status(200).json({ message: 'Backup created successfully', backupPath: hostBackupPath });
+      
+          console.log(`Backup created successfully: ${backupFilePath}`);
+          res.json({ message: 'Backup created', filename: backupFilename });
         });
-      });
+
+
+
     } catch (error) {
       console.error(`Error in createBackup: ${error.message}`);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error creating backup', error: error.message });
