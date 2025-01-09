@@ -423,7 +423,7 @@ const getAllLibrary = async (req, res) => {
       approved: true,
       address: {
         path: ['city'],
-contains: city,
+equals: city,
 
 
       },
@@ -440,7 +440,7 @@ contains: city,
         approved: true,
         address: {
           path: ['city'],
-    contains: city,
+    equals: city,
 
         },
       },
