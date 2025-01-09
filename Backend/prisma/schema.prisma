@@ -239,23 +239,7 @@ model Amenities {
   library   Library  @relation(fields: [libraryId], references: [id])
 }
 
-// model Amenities {
-//   id                Int      @id @default(autoincrement())
-//   coldWater          Boolean   @default(false)
-//   wifi              Boolean   @default(false)
-//   ac                Boolean   @default(false)
-//   locker            Boolean   @default(false)
-//   separateWashroom  Boolean   @default(false)
-//   news              Boolean   @default(false)
-//   discussionArea    Boolean   @default(false)
-//   lunchArea          Boolean   @default(false)
-//   movingChair        Boolean   @default(false)
-//   floorMat          Boolean   @default(false)
-//   separateParking    Boolean   @default(false)
-//   commonParking      Boolean   @default(false)
-//   libraryId         Int      @unique
-//   library           Library   @relation(fields: [libraryId], references: [id])
-// }
+
 
 
 

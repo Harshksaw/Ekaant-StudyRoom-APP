@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { BASEURL } from "@/lib/utils";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useParams } from "react-router-dom";
+import { predefinedAmenities } from "@/utils/constants";
 
 
 
@@ -249,20 +250,7 @@ const EditLibrary = () => {
     }
   }
 
-  const predefinedAmenities = [
-    "coldWater",
-    "wifi",
-    "ac",
-    "locker",
-    "separateWashroom",
-    "news",
-    "discussionArea",
-    "lunchArea",
-    "movingChair",
-    "floorMat",
-    "separateParking",
-    "commonParking",
-  ];
+
 
   return (
     <div className="w-full h-full flex-1 p-6">
