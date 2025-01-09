@@ -38,6 +38,7 @@ const BookingScreen: React.FC = () => {
   const params: any = useRoute();
 
   const Library = JSON.parse(params.params?.item);
+  console.log("🚀 ~ Library:", Library)
 
   const city = JSON.parse(params?.params?.location);
 
@@ -246,6 +247,7 @@ const BookingScreen: React.FC = () => {
 
   useEffect(() => {
     fetchRooms().then((data) => {
+      console.log("🚀 ~ fetchRooms ~ data:", data)
       setData(data.rooms);
       setLoading(false);
       console.log("🚀 ~ fetchRooms ~ data.rooms:", data.rooms);
