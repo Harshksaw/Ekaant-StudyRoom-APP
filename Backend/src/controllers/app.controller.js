@@ -64,11 +64,15 @@ async function getApp(req, res) {
 
 
     const app = await prisma.app.findFirst({ where: { id: 1 }, include:{
-      locations: true
+      locations: {
+        orderBy: {
+          location: 'asc', // Sort locations alphabetically by name
+        },
+      },
     } });
-    if (app && app.locations) {
-      app.locations.sort((a, b) => a.name.localeCompare(b.name));
-    }
+    // if (app && app.locations) {
+    //   app.locations.sort((a, b) => a.name.localeCompare(b.name));
+    // }
 
     return res.status(StatusCodes.OK).json({
       success: true,
