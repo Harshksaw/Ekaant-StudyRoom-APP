@@ -293,6 +293,35 @@ export default function profile() {
             </Text>
             <Ionicons name="arrow-forward" size={20} color="black" />
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              const url = `https://www.studyekaant.com/contact-us/`;
+              Linking.openURL(url);
+            }}
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginHorizontal: 20,
+              borderWidth: 0.3,
+              padding: w(10),
+              borderRadius: 3,
+              borderColor: "#949494",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontFamily: ff.deckMedium,
+                color: "black",
+                marginRight: 10,
+              }}
+            >
+            My Profile
+            </Text>
+            <Ionicons name="arrow-forward" size={20} color="black" />
+          </TouchableOpacity>
         </View>
         <View
           style={{

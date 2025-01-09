@@ -975,6 +975,47 @@ const editRoomName = async (req, res) => {
   }
 };
 
+async function updateAmenity(req, res) {
+  try {
+    const { oldAmenity, newAmenity } = req.body;
+
+    if (!oldAmenity || !newAmenity) {
+      return res.status(400).json({
+        success: false,
+        message: "Both oldAmenity and newAmenity are required",
+      });
+    }
+
+    const updatedLibraries = await prisma.library.updateMany({
+      where: {
+        amenities: {
+          has: oldAmenity,
+        },
+      },
+      data: {
+        amenities: {
+          set: {
+            // Replace oldAmenity with newAmenity
+            amenities: {
+              set: [newAmenity],
+            },
+          },
+        },
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Updated ${updatedLibraries.count} libraries.`,
+    });
+  } catch (error) {
+    console.error("Error updating amenities:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update amenities. Please try again later.",
+    });
+  }
+}
 module.exports = {
   editRoomName,
   pingAdmin,
@@ -998,4 +1039,5 @@ module.exports = {
   createReview,
   getReviews,
   calculateDistances,
+  updateAmenity
 };

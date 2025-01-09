@@ -2,6 +2,7 @@
 
 // import { set } from "react-hook-form";
 
+import { predefinedAmenities } from "@/utils/constants";
 import { toast } from "react-toastify";
 
 export const StepFive = ({
@@ -12,20 +13,7 @@ export const StepFive = ({
   handleFileChange,
 }: any) => {
 
-  const predefinedAmenities = [
-    "coldWater",
-    "wifi",
-    "ac",
-    "locker",
-    "separateWashroom",
-    "news",
-    "discussionArea",
-    "lunchArea",
-    "movingChair",
-    "floorMat",
-    "separateParking",
-    "commonParking",
-  ];
+ 
   //images  - Register 5
 
   const handleAmenityChange = (amenityKey: any, newValue: boolean) => {
