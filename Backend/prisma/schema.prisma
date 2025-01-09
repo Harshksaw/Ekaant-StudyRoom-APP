@@ -44,6 +44,8 @@ model Admin {
   updatedAt             DateTime  @updatedAt
   ownedProperties       Library[] @relation("OwnedProperties")
   libraryBookings       Library[] @relation("LibraryBookings")
+  transaction Transaction[]
+  
 }
 
 
@@ -78,6 +80,7 @@ model User {
   resetPasswordExpires DateTime?
   friends             Friend[]
   timeSlots           TimeSlot[]
+  transactions        Transaction[]
   reviews             Review[]
 }
 
@@ -121,6 +124,7 @@ model Library {
   admins              Admin[]   @relation("LibraryBookings")
   bookings            Booking[] @relation("LibraryBookings")
   invoices            Invoice[] @relation("LibraryInvoices")
+  transaction Transaction[]
 }
 
 model Room {
@@ -183,6 +187,7 @@ model Booking {
   timeStamp         DateTime  @default(now())
   invoice           Invoice?
   friends           BookingFriend[] @relation("BookingFriends")
+  transaction Transaction[]
 }
 
 
@@ -306,3 +311,28 @@ model Distance {
   distance  Float
 }
 
+model Transaction {
+  id             Int         @id @default(autoincrement())
+  transactionId  String      @unique @default(uuid())
+  amount         Float
+  type           TransactionType 
+  description    String      
+  createdAt      DateTime    @default(now())
+  // Relations to other models
+  userId        Int?
+  user          User?       @relation(fields: [userId], references: [id])
+  adminId        Int?
+  admin          Admin?       @relation(fields: [adminId], references: [id])
+  libraryId      Int?
+  library        Library?     @relation(fields: [libraryId], references: [id])
+  bookingId      Int?
+  booking        Booking?     @relation(fields: [bookingId], references: [id])
+}
+
+enum TransactionType {
+  REGISTRATION_FEE
+  BOOKING_PAYMENT
+  COMMISSION
+  REFUND 
+  // Add other types as needed
+}

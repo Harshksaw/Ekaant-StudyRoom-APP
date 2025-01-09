@@ -72,15 +72,14 @@ const Sidebar = () => {
           </div>
           <div className="flex items-center justify-between gap-[10px] py-[15px] cursor-pointer">
             <div className="flex items-center  gap-2 px-1">
-              <FaRegChartBar color="black" />
+              <FaRegChartBar color="black" size={20} />
+
+              <Link to="/report">
               <p className="text-[16px] leading-5 font-normal text-black">
-                Reports
+                Reports 
               </p>
-              <FaChevronDown
-                color="black"
-                fontSize="
-            11px"
-              />
+              </Link>
+            
             </div>
           </div>
         </div>

@@ -25,6 +25,7 @@ import LocationForm from "./components/Owner/AppConfig";
 import LibraryPage from "./components/Owner/DummyLib";
 import PhoneOtpForm from "./components/forgot-password";
 import LibraryBookings from "./components/ManageBookings/ViewLibraryBookings";
+import Report from "./pages/Report";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -69,6 +70,9 @@ function App() {
           <Route path="/manage-library/edit-library/:id" element={<EditLibrary />} />
 
           <Route path="/manage-seats" element={<ManageSeats />} />
+          <Route path="/report" element={<Report />} />
+
+
         </Route>
       )}
       {role === "Owner" && (

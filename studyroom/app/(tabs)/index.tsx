@@ -17,7 +17,7 @@ import {
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
-import Carousel from "react-native-reanimated-carousel";
+
 
 import Header from "@/components/Header";
 import { router, useFocusEffect } from "expo-router";
@@ -208,15 +208,11 @@ export default function index() {
     setPage((prevPage) => prevPage + 1);
   };
 
-  const handleScroll = ({ nativeEvent }) => {
-    if (isCloseToBottom(nativeEvent)) {
-      loadMore();
-    }
-  };
-  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-    const paddingToBottom = 20;
-    return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
-  };
+
+  // const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  //   const paddingToBottom = 20;
+  //   return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+  // };
 
 
 
@@ -363,9 +359,7 @@ export default function index() {
     </TouchableOpacity>
   );
 
-  const handleLayout = (event: any) => {
-    setStickyHeight(event.nativeEvent.layout.height);
-  };
+
 
   const userDetails = useSelector((state: any) => state.user);
 
@@ -575,7 +569,7 @@ export default function index() {
 
 {!allfetched && (
   <TouchableOpacity 
-  onPress={()=> loadMore()}
+  onPress={loadMore}
   style={{
     flex:1,
     justifyContent:'center',
