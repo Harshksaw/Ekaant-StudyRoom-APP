@@ -424,6 +424,7 @@ const getAllLibrary = async (req, res) => {
       address: {
         path: ['city'],
         equals:  city,
+        mode : 'insensitive'
       },
       },
       include: {
