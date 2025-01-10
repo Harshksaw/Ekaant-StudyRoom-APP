@@ -31,7 +31,7 @@ export const StepFour = ({
     setSelectedCity(selectedCity);
     setLibraryDetails((prevLibraryDetails: any) => ({
       ...prevLibraryDetails,
-      city: selectedCity,
+      city: event.target.value,
     }));
   };
   const validateFields = () => {
@@ -183,7 +183,7 @@ export const StepFour = ({
         <div className="flex w-full justify-between gap-2 rounded-2xl">
           <div className="w-2/4 flex flex-col gap-2 border-md rounded-2xl">
           <label htmlFor="city">City:</label>
-          <select id="city" value={selectedCity} onChange={handleCityChange}
+          <select id="city" value={selectedCity} onChange={(e) => handleCityChange(e)}
           className="w-full px-3 py-2 border  border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-2xl"
           >
           <option value="">Select a city</option>
