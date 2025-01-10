@@ -91,6 +91,7 @@ model Library {
   libraryOwnerId      Int?
   libraryOwner        Admin?    @relation(fields: [libraryOwnerId], references: [id], name: "OwnedProperties")
   name                String    
+  
   longDescription     String?
   shortDescription    String    
 
@@ -131,7 +132,7 @@ model Room {
   id        Int      @id @default(autoincrement())
   libraryId Int
   roomName  String?
-  library   Library  @relation(fields: [libraryId], references: [id], name: "Rooms")
+  library   Library  @relation(fields: [libraryId], references: [id], name: "Rooms", onDelete: Cascade)
   roomNo    Int      
   Ac        Boolean  @default(false)
   seats     Seat[]
@@ -144,7 +145,7 @@ model Seat {
   seatLabel String  
   rotation Int  @default(0)
   roomId    Int
-  room      Room    @relation(fields: [roomId], references: [id])
+  room      Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
   timeSlots TimeSlot[]
 }
 
@@ -160,7 +161,7 @@ model TimeSlot {
   price         Int       @default(0)   
   bookingEndDate DateTime?
   seatId        Int
-  seat          Seat      @relation(fields: [seatId], references: [id])
+  seat          Seat      @relation(fields: [seatId], references: [id], onDelete: Cascade)
 }
 
 
