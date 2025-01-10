@@ -11,15 +11,15 @@ const StateDropdown = ({ value, onChange }:any) => {
   
 
   return (
-    <div className="flex-col items-center justify-start mb-4 rounded-2xl ">
+    <div className="flex-col items-center justify-start mb-4 rounded-2xl gap-4 ">
       <label
         htmlFor="adminState"
-        className="w-1/2 text-gray-700 text-left font-mulish font-bold text-md leading-tight rounded-md"
+        className="w-1/2 text-gray-700 text-left font-mulish font-bold text-md leading-tight  gap-4  space-y-4 rounded-md"
       >
         State
       </label>
       <select
-        className="w-full px-5 py-2 border border-gray-500   rounded-xl "
+        className="w-full px-5 py-2 mt-2 border border-gray-500   rounded-xl "
         id="adminState"
         name="adminState"
         value={value}

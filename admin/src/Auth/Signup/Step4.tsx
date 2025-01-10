@@ -3,7 +3,8 @@
 // import { InfoIcon } from "lucide-react";
 
 import StateDropdown from "@/components/StateSelector";
-import { useState } from "react";
+import { fetchCities } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export const StepFour = ({
@@ -14,6 +15,25 @@ export const StepFour = ({
 }: any) => {
   const [errors, setErrors] = useState<any>({});
 
+
+  const [cities, setCities] = useState<{ id: number; location: string; locationImage: string; coords: string; appId: string }[]>([]);
+  console.log("🚀 ~ cities:", cities)
+  const [selectedCity, setSelectedCity] = useState<string>('');
+  useEffect(() => {
+    fetchCities().then((data) => {
+      console.log("🚀 ~ fetchCities ~ data:", data)
+      setCities(data.data.locations);
+    });
+  },[])
+
+    const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCity = event.target.value;
+    setSelectedCity(selectedCity);
+    setLibraryDetails((prevLibraryDetails: any) => ({
+      ...prevLibraryDetails,
+      city: selectedCity,
+    }));
+  };
   const validateFields = () => {
     const newErrors: any = {};
     if (!libraryDetails.libraryName)
@@ -160,24 +180,19 @@ export const StepFour = ({
           }}
         />
         {/* City */}
-        <div className="flex w-full justify-between gap-2">
-          <div className="w-2/4">
-            <input
-              className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              type="text"
-              id="adminLibraryAddressCity"
-              placeholder="City"
-              value={libraryDetails.libraryAddress.city}
-              onChange={(e) => {
-                setLibraryDetails({
-                  ...libraryDetails,
-                  libraryAddress: {
-                    ...libraryDetails.libraryAddress,
-                    city: (e.target.value).toLowerCase(),
-                  },
-                });
-              }}
-            />
+        <div className="flex w-full justify-between gap-2 rounded-2xl">
+          <div className="w-2/4 flex flex-col gap-2 border-md rounded-2xl">
+          <label htmlFor="city">City:</label>
+          <select id="city" value={selectedCity} onChange={handleCityChange}
+          className="w-full px-3 py-2 border  border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-2xl"
+          >
+          <option value="">Select a city</option>
+          {cities.map((city) => (
+            <option key={city.id} value={city.location}>
+              {city.location}
+            </option>
+          ))}
+        </select>
           </div>
           {/* State */}
           <div className="w-2/5">
