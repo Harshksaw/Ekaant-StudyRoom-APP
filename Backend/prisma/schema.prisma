@@ -100,7 +100,7 @@ model Library {
   Price               Int?
   address             Json?      
   commingSoonMessage  String?   @default("false") // Note: This is a String with default "false" since you have type: String in Mongoose
-  rooms               Room[]    @relation("Rooms") 
+ rooms           Room[]   @relation("LibraryRooms")
   coords              Float[]
   distances Distance[]
 
@@ -132,10 +132,10 @@ model Room {
   id        Int      @id @default(autoincrement())
   libraryId Int
   roomName  String?
-  library   Library  @relation(fields: [libraryId], references: [id], name: "Rooms", onDelete: Cascade)
+ library     Library  @relation(fields: [libraryId], references: [id], onDelete: Cascade, name: "LibraryRooms")
   roomNo    Int      
   Ac        Boolean  @default(false)
-  seats     Seat[]
+  seats     Seat[]  @relation("RoomSeats")
   doorPosition Int[] @default(dbgenerated("ARRAY[0, 0, 0, 0, 0]::Int[]"))
 }
 model Seat {
@@ -145,7 +145,7 @@ model Seat {
   seatLabel String  
   rotation Int  @default(0)
   roomId    Int
-  room      Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  room      Room   @relation(fields: [roomId], references: [id], onDelete: Cascade, name: "RoomSeats")
   timeSlots TimeSlot[]
 }
 
