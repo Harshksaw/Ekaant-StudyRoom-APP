@@ -32,6 +32,7 @@ import { BACKEND } from "@/utils/config";
 import Header from "@/components/Header";
 import { h, vw, w } from "@/constants/size";
 import ff from "@/constants/fonts";
+import { checkPreviousBookings } from "@/utils/bookingapi";
 
 const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
@@ -60,10 +61,10 @@ const BookingScreen: React.FC = () => {
 
   const [libraryDetails, setLibraryDetails] = useState<any>(null);
   const price = bookingData.details.price;
-  console.log("🚀 ~ bookingData.details:", bookingData.details.price);
+  // // console.log("🚀 ~ bookingData.details:", bookingData.details.price);
   const [totalAmount, setTotalAmount] = useState(0);
   const userSelect = useSelector((state: any) => state.user.user);
-  console.log("🚀 ~ userSelect:", JSON.parse(userSelect))
+  // // console.log("🚀 ~ userSelect:", JSON.parse(userSelect))
 
 
 
@@ -74,7 +75,7 @@ const BookingScreen: React.FC = () => {
     room: currentRoomNo,
     slot: selectedSlots,
   };
-  console.log("🚀 ~ BookedData.selectedDate:", selectedDate);
+  // // console.log("🚀 ~ BookedData.selectedDate:", selectedDate);
 
   useEffect(() => {
     const totalPrice = selectedSlots.reduce(
@@ -141,17 +142,17 @@ const BookingScreen: React.FC = () => {
     selectedSeat?.timeSlots.filter((slot) => slot.booked === false)
   );
 
-  // console.log("🚀 ~ selectedSeat:", selectedSeat)
+  // // console.log("🚀 ~ selectedSeat:", selectedSeat)
 
   const PreBook = async () => {
-    console.log("🚀 ~ selectedMonth:", selectedMonth)
+    // console.log("🚀 ~ selectedMonth:", selectedMonth)
     // const userData = await AsyncStorage.getItem("userData");
 
    
-    // console.log("🚀 ~ PreBook ~ userSelect:", userSelect)
+    // // console.log("🚀 ~ PreBook ~ userSelect:", userSelect)
 
     // const userid = JSON.parse(userData);
-    // console.log("🚀 ~ PreBook ~ userid:", userid)
+    // // console.log("🚀 ~ PreBook ~ userid:", userid)
 
     const userId = JSON.parse(userSelect)?.data.user.id;
 
@@ -188,10 +189,10 @@ const BookingScreen: React.FC = () => {
             forFriend: userDetails.friendDetails,
           }
         );
-        console.log("🚀 ~ PreBook ~ response:", response.status)
+        // console.log("🚀 ~ PreBook ~ response:", response.status)
 
         const bookingId = response.data.Booking.id;
-        // console.log("🚀 ~ PreBook ~ bookingId11:", bookingId)
+        // // console.log("🚀 ~ PreBook ~ bookingId11:", bookingId)
         setBookingId(bookingId);
 
         if (response.status === 200 || response.status === 201) {
@@ -248,7 +249,7 @@ const BookingScreen: React.FC = () => {
     fetchRooms().then((data) => {
       setData(data.rooms);
       setLoading(false);
-      console.log("🚀 ~ fetchRooms ~ data.rooms:", data.rooms);
+      // // console.log("🚀 ~ fetchRooms ~ data.rooms:", data.rooms);
     });
   }, []);
 
@@ -289,9 +290,12 @@ const BookingScreen: React.FC = () => {
   };
   const confirmBooking = async () => {
     setBookingLoader(true);
+    const hasBoughtEarlier = await checkPreviousBookings(userDetails?.user?.id, libraryDetails?.id);
+    // console.log("🚀 ~ confirmBooking ~ hasBoughtEarlier:", hasBoughtEarlier)
+
     await updateRoomDetails();
     const res = await PreBook();
-    console.log("🚀 ~ confirmBooking ~ res:", res);
+    // console.log("🚀 ~ confirmBooking ~ res:", res);
     setBookingLoader(false);
 
     if (res) {
@@ -312,8 +316,9 @@ const BookingScreen: React.FC = () => {
         ...newBookingData,
         libraryId: libraryDetails,
         bookingId: res,
+        hasBoughtEarlier,
       };
-      // console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
+      // // console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
       router.push({
         pathname: "/library/checkout.screen",
         params: {
@@ -323,7 +328,7 @@ const BookingScreen: React.FC = () => {
 
       resetBookingState();
     } else {
-      // console.log("🚀 ~ confirmBooking ~ res", res)
+      // // console.log("🚀 ~ confirmBooking ~ res", res)
       Toast.show("Booking failed. Please try again.", {
         type: "error",
       });

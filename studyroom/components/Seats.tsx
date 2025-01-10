@@ -15,7 +15,7 @@ import { LinearGradient } from "expo-linear-gradient";
 const windowWidth = Dimensions.get("window").width;
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
-  console.log("🚀 ~ Seat ~ roation:", rotation);
+  // console.log("🚀 ~ Seat ~ roation:", rotation);
   const isFullyBooked = seatData.timeSlots.every((slot) => slot.booked);
   const isPartiallyBooked = seatData.timeSlots.some((slot) => slot.booked);
 
