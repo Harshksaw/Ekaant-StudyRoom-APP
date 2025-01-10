@@ -34,14 +34,14 @@ const CheckoutScreen: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
   const [libraryData, setLibraryData] = useState(null);
   const [location, setLocation] = useState<String | null>(null);
-  console.log("🚀 ~ location:", location)
+  // console.log("🚀 ~ location:", location)
 
   //getting data  from booking screen
   const [libraryId, setLibraryId] = useState(null);
   const params = useRoute();
 
   const BookedData = JSON.parse(params.params.item);
-  // console.log("🚀 ~ BookedData:", BookedData)
+  // // console.log("🚀 ~ BookedData:", BookedData)
 
   if (!BookedData) {
     return (
@@ -56,9 +56,9 @@ const CheckoutScreen: React.FC = () => {
   // const BookingDate = BookedData?.bookingDate
   const BookingMonths = BookedData?.bookingPeriod;
   const BookingSeat = BookedData?.bookedSeat;
-  // console.log("🚀 ~ BookingSeat:", BookingSeat)
+  // // console.log("🚀 ~ BookingSeat:", BookingSeat)
   const BookingSlot = BookedData?.timeSlot;
-  // console.log("🚀 ~ BookingSlot:", BookedData)
+  // // console.log("🚀 ~ BookingSlot:", BookedData)
   const RoomNo = BookedData?.roomNo;
   const BookedDate = BookedData?.bookingDate.slice(0, 10);
 
@@ -78,14 +78,14 @@ const CheckoutScreen: React.FC = () => {
 
 
     setBookingId( BookedData.bookingId);
-    // console.log("🚀 ~ useEffect ~ BookedData.bookedSeat.bookingId:", BookedData.bookingId)
+    // // console.log("🚀 ~ useEffect ~ BookedData.bookedSeat.bookingId:", BookedData.bookingId)
     setRegistrationFees(BookedData?.libraryId?.registrationFees);
     setInitialPrice(BookedData?.price);
-        // console.log("🚀 ~ useEffect ~ BookedData?.libraryId.price:", BookedData?.libraryId.price)
+        // // console.log("🚀 ~ useEffect ~ BookedData?.libraryId.price:", BookedData?.libraryId.price)
     setFinalAmount(BookedData?.totalAmount);
     const getLibraryData = async () => {
       setLocation(BookedData?.libraryId?.address);
-      // console.log("🚀 ~ getLibraryData ~ BookedData?.address:", BookedData);
+      // // console.log("🚀 ~ getLibraryData ~ BookedData?.address:", BookedData);
 
       try {
         const userDataId = await AsyncStorage.getItem("userData");
@@ -194,7 +194,7 @@ const CheckoutScreen: React.FC = () => {
       Toast.show("Booking ID is missing");
     }
     try {
-      console.log("🚀 ~ confirmPayment ~ BookedData.timeSlot[0]:", BookedData.timeSlot[0])
+      // console.log("🚀 ~ confirmPayment ~ BookedData.timeSlot[0]:", BookedData.timeSlot[0])
       const data = {
         libraryId  : BookedData.libraryId.id,
         roomNo : BookedData.roomNo,
@@ -202,7 +202,7 @@ const CheckoutScreen: React.FC = () => {
         bookingId : BookedData.bookingId,
        BookedData : BookedData
       }
-      console.log("🚀 ~ confirmPayment ~ data:", data)
+      // console.log("🚀 ~ confirmPayment ~ data:", data)
       // console.log(bookingId, "-1-1-11-", BookedData)
       const res = await axios.post(
         `${BACKEND}/api/v1/booking/confirm/${bookingId}`,data
