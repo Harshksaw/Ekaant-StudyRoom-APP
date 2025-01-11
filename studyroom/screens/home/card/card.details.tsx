@@ -110,8 +110,8 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   
   // console.log("🚀 ~ data.amenities:", data.amenities.amenities)
   // const { id, libraryId, ...filteredAmenities } = data.amenities || {};
-  // // console.log("🚀 ~ filteredAmenities:", filteredAmenities);
-  const trueAmenities = data.amenities.amenities
+
+  const trueAmenities = data?.amenities?.amenities
 
   
   const price = data.Price || 0;
@@ -261,7 +261,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                   marginTop: 6,
                 }}
               >
-                {trueAmenities.length > 0 ? (
+                {trueAmenities && trueAmenities?.length > 0 ? (
                   trueAmenities.map((amenity, index) => (
                     <View
                       key={index}

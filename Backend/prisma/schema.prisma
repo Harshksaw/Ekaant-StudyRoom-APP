@@ -174,7 +174,7 @@ model Booking {
   initialPrice      Float
   finalPrice        Float
   paid              Boolean   @default(false)
-  timeSlotDetails   Json      // Details of the booked time slot
+  timeSlotDetails   Json?      // Details of the booked time slot
   roomNo            Int
   bookedSeat        Json      // Details of the booked seat
   bookingDate       DateTime
