@@ -44,7 +44,7 @@ model Admin {
   updatedAt             DateTime  @updatedAt
   ownedProperties       Library[] @relation("OwnedProperties")
   libraryBookings       Library[] @relation("LibraryBookings")
-  transaction TransactionDetails[]
+  transaction Transaction[]
   
 }
 
@@ -80,7 +80,7 @@ model User {
   resetPasswordExpires DateTime?
   friends             Friend[]
   timeSlots           TimeSlot[]
-  transactions        TransactionDetails[]
+  transactions        Transaction[]
   reviews             Review[]
 }
 
@@ -125,7 +125,7 @@ model Library {
   admins              Admin[]   @relation("LibraryBookings")
   bookings            Booking[] @relation("LibraryBookings")
   invoices            Invoice[] @relation("LibraryInvoices")
-  transaction TransactionDetails[]
+  transaction Transaction[]
 }
 
 model Room {
@@ -188,7 +188,7 @@ model Booking {
   timeStamp         DateTime  @default(now())
   invoice           Invoice?
   friends           BookingFriend[] @relation("BookingFriends")
-  transaction TransactionDetails[]
+  transactions Transaction[]   @relation("BookingTransactions")
 }
 
 
@@ -296,14 +296,14 @@ model Distance {
   distance  Float
 }
 
-model TransactionDetails {
+model Transaction {
   id             Int         @id @default(autoincrement())
   transactionId  String      @unique @default(uuid())
   amount         Float
   type           TransactionType 
   description    String      
   createdAt      DateTime    @default(now())
-  // Relations to other models
+
   userId        Int?
   user          User?       @relation(fields: [userId], references: [id])
   adminId        Int?
@@ -311,7 +311,7 @@ model TransactionDetails {
   libraryId      Int?
   library        Library?     @relation(fields: [libraryId], references: [id])
   bookingId      Int?
-  booking        Booking?     @relation(fields: [bookingId], references: [id])
+  booking        Booking?    @relation(fields: [bookingId], references: [id], name: "BookingTransactions")
 }
 
 enum TransactionType {
