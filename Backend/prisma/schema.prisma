@@ -44,7 +44,7 @@ model Admin {
   updatedAt             DateTime  @updatedAt
   ownedProperties       Library[] @relation("OwnedProperties")
   libraryBookings       Library[] @relation("LibraryBookings")
-  transaction Transaction[]
+  transaction TransactionDetails[]
   
 }
 
@@ -80,7 +80,7 @@ model User {
   resetPasswordExpires DateTime?
   friends             Friend[]
   timeSlots           TimeSlot[]
-  transactions        Transaction[]
+  transactions        TransactionDetails[]
   reviews             Review[]
 }
 
@@ -125,7 +125,7 @@ model Library {
   admins              Admin[]   @relation("LibraryBookings")
   bookings            Booking[] @relation("LibraryBookings")
   invoices            Invoice[] @relation("LibraryInvoices")
-  transaction Transaction[]
+  transaction TransactionDetails[]
 }
 
 model Room {
@@ -188,7 +188,7 @@ model Booking {
   timeStamp         DateTime  @default(now())
   invoice           Invoice?
   friends           BookingFriend[] @relation("BookingFriends")
-  transaction Transaction[]
+  transaction TransactionDetails[]
 }
 
 
@@ -296,7 +296,7 @@ model Distance {
   distance  Float
 }
 
-model Transaction {
+model TransactionDetails {
   id             Int         @id @default(autoincrement())
   transactionId  String      @unique @default(uuid())
   amount         Float
