@@ -7,7 +7,7 @@ const checkPreviousBookings = async (userId, libraryId) => {
         userId,
         libraryId,
       });
-      return response.data.hasBookedEarlier;
+      return response.data.data;
     } catch (error) {
       console.error('Error checking previous bookings:', error);
       return false;

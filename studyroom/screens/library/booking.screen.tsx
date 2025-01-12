@@ -145,16 +145,10 @@ const BookingScreen: React.FC = () => {
   // // // console.log("🚀 ~ selectedSeat:", selectedSeat)
 
   const PreBook = async () => {
-    // // console.log("🚀 ~ selectedMonth:", selectedMonth)
-    // const userData = await AsyncStorage.getItem("userData");
 
-   
-    // // // console.log("🚀 ~ PreBook ~ userSelect:", userSelect)
-
-    // const userid = JSON.parse(userData);
-    // // // console.log("🚀 ~ PreBook ~ userid:", userid)
 
     const userId = JSON.parse(userSelect)?.data.user.id;
+    console.log("🚀 ~ PreBook ~ userId:", userId)
 
     if (!userId) {
       Toast.show("user data not config properly, Relogin", {
@@ -163,7 +157,7 @@ const BookingScreen: React.FC = () => {
     }
 
 
-    console.log(BookedData.slot, "-----")
+
 
     
     if (
@@ -195,7 +189,8 @@ const BookingScreen: React.FC = () => {
         );
         // // console.log("🚀 ~ PreBook ~ response:", response.status)
 
-        const bookingId = response.data.Booking.id;
+        console.log("🚀 ~ PreBook ~ bookingId:", response.data.data.id)
+        const bookingId = response.data.data.id;
         // // // console.log("🚀 ~ PreBook ~ bookingId11:", bookingId)
         setBookingId(bookingId);
 
@@ -292,9 +287,7 @@ const BookingScreen: React.FC = () => {
     );
   }
 
-  // const formatTime = (time) => {
-  //   return moment(time, ["h:mm A"]).format("HH:mm");
-  // };
+ 
 
   const displayTimeRange = (from, to) => {
     if (from === "12:00 AM" && to === "11:59 PM") {
@@ -303,52 +296,79 @@ const BookingScreen: React.FC = () => {
     return `${from} - ${to}`;
   };
   const confirmBooking = async () => {
-    setBookingLoader(true);
-    const user = JSON.parse(userDetails.user);
-    const userId = user.data.user.id;
-    console.log("🚀 ~ confirmBooking ~ userDetails.user.id, libraryDetails?.id:", userId  , libraryDetails?.id)
-    const hasBoughtEarlier = await checkPreviousBookings(userId , libraryDetails?.id);
-    // console.log("🚀 ~ confirmBooking ~ hasBoughtEarlier:", hasBoughtEarlier)
+    try {
+      setBookingLoader(true);
+  
+      // Check if userDetails.user is defined
+      if (!userDetails || !userDetails.user) {
+        throw new Error("User details are not properly configured. Please relogin.");
+      }
+  
+      const user = JSON.parse(userDetails.user);
+      const userId = user?.data?.user?.id;
+      console.log("🚀 ~ confirmBooking ~ userId:", userId)
+  
+      // Check if userId is defined
+      if (!userId) {
+        throw new Error("User ID is not available. Please relogin.");
+      }
+  
+      // Check if libraryDetails is defined
+      if (!libraryDetails || !libraryDetails?.id) {
+        throw new Error("Library details are not properly configured.");
+      }
+  
+      console.log("🚀 ~ confirmBooking ~ userDetails.user.id, libraryDetails?.id:", userId, libraryDetails.id);
+  
+      const hasBoughtEarlier = await checkPreviousBookings(userId, libraryDetails.id);
+      console.log("🚀 ~ confirmBooking ~ hasBoughtEarlier:", hasBoughtEarlier);
+  
+      await updateRoomDetails();
+      const res = await PreBook();
+  
+      setBookingLoader(false);
+  
+      if (res) {
+        setIsModalVisible(false);
+  
+        const newBookingData = {
+          bookedSeat: selectedSeat,
+          registrationFees: libraryDetails?.registrationFees,
+          bookingDate: selectedDate,
+          bookingPeriod: selectedMonth,
+          roomNo: currentRoomNo,
+          timeSlot: selectedSlots,
+          price: finalPrice,
+          totalAmount,
+        };
+  
+        const Bookdata = {
+          ...newBookingData,
+          libraryId: libraryDetails.id,
+          bookingId: res,
+          hasBoughtEarlier,
+        };
+        console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
+        router.push({
+          pathname: "/library/checkout.screen",
+          params: {
+            item: JSON.stringify(Bookdata),
+          },
+        });
+  
+        resetBookingState();
+      } else {
 
-    await updateRoomDetails();
-    const res = await PreBook();
-    // // console.log("🚀 ~ confirmBooking ~ res:", res);
-    setBookingLoader(false);
-
-    if (res) {
-      setIsModalVisible(false);
-
-      const newBookingData = {
-        bookedSeat: selectedSeat,
-        registrationFees: libraryDetails?.registrationFees,
-        bookingDate: selectedDate,
-        bookingPeriod: selectedMonth,
-        roomNo: currentRoomNo,
-        timeSlot: selectedSlots,
-        price: finalPrice,
-        totalAmount,
-      };
-
-      const Bookdata = {
-        ...newBookingData,
-        libraryId: libraryDetails,
-        bookingId: res,
-        hasBoughtEarlier,
-      };
-      // // // console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
-      router.push({
-        pathname: "/library/checkout.screen",
-        params: {
-          item: JSON.stringify(Bookdata),
-        },
-      });
-
-      resetBookingState();
-    } else {
-      // // // console.log("🚀 ~ confirmBooking ~ res", res)
-      Toast.show("Booking failed. Please try again.", {
+        Toast.show("Booking failed. Please try again.", {
+          type: "error",
+        });
+      }
+    } catch (error) {
+      console.error("Error in confirmBooking:", error);
+      Toast.show(error.message, {
         type: "error",
       });
+      setBookingLoader(false);
     }
   };
 
@@ -610,7 +630,7 @@ const BookingScreen: React.FC = () => {
               >
                 {available?.map((slot, index) => {
                   const selected = selectedSlots.some(
-                    (selectedSlot) => selectedSlot.id === slot.id
+                    (selectedSlot) => selectedSlot?.id === slot.id
                   );
                   if (slot?.availability && slot?.from !== null) {
                     return (
