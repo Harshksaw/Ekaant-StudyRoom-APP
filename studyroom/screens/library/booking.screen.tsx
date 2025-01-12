@@ -65,7 +65,7 @@ const BookingScreen: React.FC = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const userSelect = useSelector((state: any) => state.user.user);
   // // // console.log("🚀 ~ userSelect:", JSON.parse(userSelect))
-const [hasBoughtEarlier, setHasBoughtEarlier] = useState(false);
+
 
 
   const BookedData = {
@@ -81,7 +81,7 @@ const getBoughtStatus = async () => {
 
   const hasBoughtEarlier = await checkPreviousBookings(userId, libraryDetails.id);
   return hasBoughtEarlier;
-  console.log("🚀 ~ confirmBooking ~ hasBoughtEarlier:", hasBoughtEarlier);
+  // console.log("🚀 ~ confirmBooking ~ hasBoughtEarlier:", hasBoughtEarlier);
 }
   useEffect(() => {
     const totalPrice = selectedSlots.reduce(
@@ -152,7 +152,7 @@ const getBoughtStatus = async () => {
     selectedSeat?.timeSlots.filter((slot) => slot.booked === false)
   );
 
-  // // // console.log("🚀 ~ selectedSeat:", selectedSeat)
+
 
   const PreBook = async () => {
 
@@ -322,8 +322,8 @@ const getBoughtStatus = async () => {
       
       console.log("🚀 ~ confirmBooking ~ userDetails.user.id, libraryDetails?.id:", userId, libraryDetails.id);
   
-
-      const totalAmount = hasBoughtEarlier
+      const Bought = await getBoughtStatus();
+      const totalAmount = Bought
       ? finalPrice
       : finalPrice + libraryDetails.registrationFees;
 
@@ -350,7 +350,7 @@ const getBoughtStatus = async () => {
           ...newBookingData,
           libraryId: libraryDetails,
           bookingId: res,
-          hasBoughtEarlier,
+          hasBoughtEarlier : Bought,
         };
         console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
         router.push({
