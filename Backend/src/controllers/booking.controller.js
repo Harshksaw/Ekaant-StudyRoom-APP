@@ -135,7 +135,7 @@ async function createBooking(req, res) {
       totalAmount += registrationFee;
 
       // Create a transaction for the registration fee
-      const bookingDetails = await prisma.transaction.create({
+      const bookingDetails = await prisma.transactionDetails.create({
         data: {
           amount: registrationFee,
           type: 'REGISTRATION_FEE',
