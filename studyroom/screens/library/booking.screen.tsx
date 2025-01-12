@@ -304,7 +304,10 @@ const BookingScreen: React.FC = () => {
   };
   const confirmBooking = async () => {
     setBookingLoader(true);
-    const hasBoughtEarlier = await checkPreviousBookings(userDetails?.user?.id, libraryDetails?.id);
+    const user = JSON.parse(userDetails.user);
+    const userId = user.data.user.id;
+    console.log("🚀 ~ confirmBooking ~ userDetails.user.id, libraryDetails?.id:", userId  , libraryDetails?.id)
+    const hasBoughtEarlier = await checkPreviousBookings(userId , libraryDetails?.id);
     // console.log("🚀 ~ confirmBooking ~ hasBoughtEarlier:", hasBoughtEarlier)
 
     await updateRoomDetails();
