@@ -92,8 +92,8 @@ async function createBooking(req, res) {
       roomNo,
       bookedSeat,
       bookingDate,
-      forFriend,
       bookingPeriod,
+      timeSlotDetails, // Ensure this field is included
     } = req.body;
 
     console.log("🚀 ~ createBooking ~ req.body", req.body);
@@ -111,31 +111,30 @@ async function createBooking(req, res) {
         .json({ message: "User not found" });
     }
 
-    if (!libraryId || !finalPrice || timeSlot.length === 0 || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod) {
-      console.log("-______-", libraryId, initialPrice, finalPrice, timeSlot.length, roomNo, bookedSeat, bookingDate, bookingPeriod);
+    if (!libraryId || !finalPrice || timeSlot.length === 0 || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod || !timeSlotDetails) {
+      console.log("-______-", libraryId, initialPrice, finalPrice, timeSlot.length, roomNo, bookedSeat, bookingDate, bookingPeriod, timeSlotDetails);
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "Please provide all the required fields" });
     }
 
-    // Check if the user has booked this library before
+    let totalAmount = finalPrice;
+
+    // Check if the user has a previous booking
     const previousBooking = await prisma.booking.findFirst({
       where: {
-        userId: userId,
-        libraryId: libraryId,
+        userId,
+        libraryId,
       },
     });
 
-    let totalAmount = finalPrice;
-
-    // If no previous booking, apply registration fee
     if (!previousBooking) {
       const library = await prisma.library.findUnique({ where: { id: libraryId } });
-      const registrationFee = library.registrationFees || 0 ; // Default to 50 if not specified
+      const registrationFee = library.registrationFees || 0; // Default to 0 if not specified
       totalAmount += registrationFee;
 
       // Create a transaction for the registration fee
-      const bookingDetails = await prisma.transactionDetails.create({
+      const bookingDetails = await prisma.transaction.create({
         data: {
           amount: registrationFee,
           type: 'REGISTRATION_FEE',
@@ -144,7 +143,7 @@ async function createBooking(req, res) {
           libraryId: libraryId,
         },
       });
-      console.log("🚀 ~ createBooking ~ bookingDetails:", bookingDetails)
+      console.log("🚀 ~ createBooking ~ bookingDetails:", bookingDetails);
     }
 
     // Create the booking
@@ -154,18 +153,16 @@ async function createBooking(req, res) {
         libraryId,
         initialPrice,
         finalPrice: totalAmount,
-        timeSlot,
+        timeSlotDetails, // Include this field in the data object
         roomNo,
         bookedSeat,
         bookingDate,
         bookingPeriod,
-
       },
     });
 
     // Create a transaction for the booking payment
-
-    await prisma.transactionDetails.create({
+    await prisma.transaction.create({
       data: {
         amount: finalPrice,
         type: 'BOOKING_PAYMENT',
