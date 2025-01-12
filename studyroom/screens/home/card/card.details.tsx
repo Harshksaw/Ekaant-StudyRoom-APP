@@ -41,7 +41,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const width = Dimensions.get("window").width;
   const [userReviews, setUserReviews] = useState([]);
   const params = useRoute();
-  console.log("🚀 ~ params.params.item:", params.params.item)
+  // console.log("🚀 ~ params.params.item:", params.params.item)
   const libData = JSON.parse(params.params.item);
   const data = { ...libData, _id: libData.id };
 
@@ -56,7 +56,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
       }
 
       const res = await getLocationName(data.location[0], data.location[1]);
-      console.log("🚀 ~ locationData ~ res:", res);
+      // console.log("🚀 ~ locationData ~ res:", res);
 
       // Check if res is not null before setting it
       if (res !== null) {
@@ -75,11 +75,11 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const getUserReviews = async () => {
     // Fetch user reviews here
     try {
-      console.log("🚀 ~ getUserReviews ~ data:", data.id);
+      // console.log("🚀 ~ getUserReviews ~ data:", data.id);
       const res = await axios.post(
         `${BACKEND}/api/v1/library/getReviews/${data.id}`
       );
-      // console.log("🚀 ~ getUserReviews ~ res:", res.data)
+      // // console.log("🚀 ~ getUserReviews ~ res:", res.data)
 
       setUserReviews(res.data);
     } catch (error) {
@@ -88,7 +88,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   };
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ data", data);
+    // console.log("🚀 ~ useEffect ~ data", data);
     // locationData();
     setCity(data.address.city);
     // getUserReviews();
@@ -108,12 +108,12 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   };
 
   
-  console.log("🚀 ~ data.amenities:", data.amenities.amenities)
+  // console.log("🚀 ~ data.amenities:", data.amenities.amenities)
   // const { id, libraryId, ...filteredAmenities } = data.amenities || {};
-  // console.log("🚀 ~ filteredAmenities:", filteredAmenities);
-  const trueAmenities = Object.keys(data.amenities.amenities).filter(
-    (key) => data.amenities.amenities[key]
-  );
+
+  const trueAmenities = data?.amenities?.amenities
+
+  
   const price = data.Price || 0;
 
   const Carasoul = useMemo(() => {
@@ -261,7 +261,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
                   marginTop: 6,
                 }}
               >
-                {trueAmenities.length > 0 ? (
+                {trueAmenities && trueAmenities?.length > 0 ? (
                   trueAmenities.map((amenity, index) => (
                     <View
                       key={index}
