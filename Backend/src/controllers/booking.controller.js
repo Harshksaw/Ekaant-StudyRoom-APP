@@ -141,7 +141,7 @@ async function createBooking(req, res) {
           description: 'Registration fee for first-time booking',
           userId: userId,
           libraryId: libraryId,
-          bookingId: booking.id,
+
         },
       });
       console.log("🚀 ~ createBooking ~ bookingDetails:", bookingDetails);
