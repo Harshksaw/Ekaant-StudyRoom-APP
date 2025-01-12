@@ -111,8 +111,8 @@ async function createBooking(req, res) {
         .json({ message: "User not found" });
     }
 
-    if (!libraryId || !finalPrice || timeSlot.length === 0 || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod || !timeSlotDetails) {
-      console.log("-______-", libraryId, initialPrice, finalPrice, timeSlot.length, roomNo, bookedSeat, bookingDate, bookingPeriod, timeSlotDetails);
+    if (!libraryId || !finalPrice || timeSlot.length === 0 || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod ) {
+      console.log("-______-", libraryId, initialPrice, finalPrice, timeSlot.length, roomNo, bookedSeat, bookingDate, bookingPeriod, );
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "Please provide all the required fields" });
@@ -153,7 +153,7 @@ async function createBooking(req, res) {
         libraryId,
         initialPrice,
         finalPrice: totalAmount,
-        timeSlotDetails, // Include this field in the data object
+        timeSlotDetails : timeSlot, // Include this field in the data object
         roomNo,
         bookedSeat,
         bookingDate,
