@@ -3,7 +3,7 @@ import { BACKEND } from "./config";
 
 const checkPreviousBookings = async (userId, libraryId) => {
     try {
-      const response = await axios.post(`${BACKEND}/api/v1/hasBoughtEarlier`, {
+      const response = await axios.post(`${BACKEND}/api/v1/booking/hasBoughtEarlier`, {
         userId,
         libraryId,
       });
