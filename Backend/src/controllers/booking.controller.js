@@ -56,7 +56,10 @@ async function hasBoughtEarlier(req, res) {
       where: {
         userId: userId,
         libraryId: libraryId,
+        paid: true,
+        bookingStatus: 'CONFIRMED',
       },
+
     });
 
     if (previousBooking) {
@@ -93,10 +96,10 @@ async function createBooking(req, res) {
       bookedSeat,
       bookingDate,
       bookingPeriod,
-      timeSlotDetails, // Ensure this field is included
+
     } = req.body;
 
-    console.log("🚀 ~ createBooking ~ req.body", req.body);
+    // console.log("🚀 ~ createBooking ~ req.body", req.body);
 
     const user = await prisma.user.findFirst({ where: { id: userId } });
     console.log("🚀 ~ createBooking ~ user:", user);
@@ -159,6 +162,7 @@ async function createBooking(req, res) {
         bookedSeat,
         bookingDate,
         bookingPeriod,
+        bookingFinalDate: new Date(new Date(bookingDate).setMonth(new Date(bookingDate).getMonth() + bookingPeriod)),
       },
     });
 

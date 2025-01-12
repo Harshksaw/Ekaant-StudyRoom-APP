@@ -65,7 +65,7 @@ const BookingScreen: React.FC = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const userSelect = useSelector((state: any) => state.user.user);
   // // // console.log("🚀 ~ userSelect:", JSON.parse(userSelect))
-
+const [hasBoughtEarlier, setHasBoughtEarlier] = useState(false);
 
 
   const BookedData = {
@@ -75,8 +75,14 @@ const BookingScreen: React.FC = () => {
     room: currentRoomNo,
     slot: selectedSlots,
   };
-  // // // console.log("🚀 ~ BookedData.selectedDate:", selectedDate);
 
+const getBoughtStatus = async () => {
+  const userId = JSON.parse(userSelect)?.data.user.id;
+
+  const hasBoughtEarlier = await checkPreviousBookings(userId, libraryDetails.id);
+  return hasBoughtEarlier;
+  console.log("🚀 ~ confirmBooking ~ hasBoughtEarlier:", hasBoughtEarlier);
+}
   useEffect(() => {
     const totalPrice = selectedSlots.reduce(
       (acc, slot) => acc + Number(slot.price),
@@ -86,7 +92,11 @@ const BookingScreen: React.FC = () => {
     setFinalPrice(totalPrice * selectedMonth);
     const registrationFees = libraryDetails?.registrationFees || 0;
 
-    setTotalAmount(registrationFees + totalPrice * selectedMonth);
+   
+
+    
+
+    setTotalAmount( totalPrice * selectedMonth);
   }, [selectedSlots, selectedMonth]);
 
   const handleSeatSelect = (seatDataFromChild) => {
@@ -208,16 +218,7 @@ const BookingScreen: React.FC = () => {
       }
     }
   };
-    // console.log("🚀 ~ PreBook ~ BookedData:", BookedData)
-    // console.log("🚀 ~ PreBook ~ BookedData:", BookedData)
-    // console.log("🚀 ~ PreBook ~ BookedData:", BookedData)
-    // console.log("🚀 ~ PreBook ~ BookedData:", BookedData)
-    // console.log("🚀 ~ PreBook ~ BookedData:", BookedData)
-    // console.log("🚀 ~ PreBook ~ BookedData:", BookedData)
-    // console.log("🚀 ~ PreBook ~  BookedData.slot:",  BookedData.slot)
-    // console.log("🚀 ~ PreBook ~ BookedData.slot:", BookedData.slot)
-    // console.log("🚀 ~ PreBook ~   BookedData.slot:",   BookedData.slot)
-    // console.log("🚀 ~ PreBook ~   BookedData.slot:",   BookedData.slot)
+
 
   const resetBookingState = () => {
     setSelectedSeat(null);
@@ -318,11 +319,14 @@ const BookingScreen: React.FC = () => {
         throw new Error("Library details are not properly configured.");
       }
   
+      
       console.log("🚀 ~ confirmBooking ~ userDetails.user.id, libraryDetails?.id:", userId, libraryDetails.id);
   
-      const hasBoughtEarlier = await checkPreviousBookings(userId, libraryDetails.id);
-      console.log("🚀 ~ confirmBooking ~ hasBoughtEarlier:", hasBoughtEarlier);
-  
+
+      const totalAmount = hasBoughtEarlier
+      ? finalPrice
+      : finalPrice + libraryDetails.registrationFees;
+
       await updateRoomDetails();
       const res = await PreBook();
   
@@ -344,7 +348,7 @@ const BookingScreen: React.FC = () => {
   
         const Bookdata = {
           ...newBookingData,
-          libraryId: libraryDetails.id,
+          libraryId: libraryDetails,
           bookingId: res,
           hasBoughtEarlier,
         };

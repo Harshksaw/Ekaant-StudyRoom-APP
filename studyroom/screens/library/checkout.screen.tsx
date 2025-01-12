@@ -40,8 +40,8 @@ const CheckoutScreen: React.FC = () => {
   const [libraryId, setLibraryId] = useState(null);
   const params = useRoute();
 
-  const BookedData = JSON.parse(params.params.item);
-  // // console.log("🚀 ~ BookedData:", BookedData)
+  const BookedData = JSON.parse(params?.params?.item);
+  console.log("🚀 ~ BookedData:", BookedData)
 
   if (!BookedData) {
     return (
@@ -56,9 +56,9 @@ const CheckoutScreen: React.FC = () => {
   // const BookingDate = BookedData?.bookingDate
   const BookingMonths = BookedData?.bookingPeriod;
   const BookingSeat = BookedData?.bookedSeat;
-  // // console.log("🚀 ~ BookingSeat:", BookingSeat)
+
   const BookingSlot = BookedData?.timeSlot;
-  // // console.log("🚀 ~ BookingSlot:", BookedData)
+
   const RoomNo = BookedData?.roomNo;
   const BookedDate = BookedData?.bookingDate.slice(0, 10);
 
@@ -78,14 +78,14 @@ const CheckoutScreen: React.FC = () => {
 
 
     setBookingId( BookedData.bookingId);
-    // // console.log("🚀 ~ useEffect ~ BookedData.bookedSeat.bookingId:", BookedData.bookingId)
+
     setRegistrationFees(BookedData?.libraryId?.registrationFees);
     setInitialPrice(BookedData?.price);
-        // // console.log("🚀 ~ useEffect ~ BookedData?.libraryId.price:", BookedData?.libraryId.price)
+
     setFinalAmount(BookedData?.totalAmount);
     const getLibraryData = async () => {
       setLocation(BookedData?.libraryId?.address);
-      // // console.log("🚀 ~ getLibraryData ~ BookedData?.address:", BookedData);
+
 
       try {
         const userDataId = await AsyncStorage.getItem("userData");
@@ -485,17 +485,19 @@ const CheckoutScreen: React.FC = () => {
                 color: "#000",
                 fontSize: w(16),
                 fontFamily: ff.deckRegular,
+                textDecorationLine: BookedData?.hasBoughtEarlier ? 'line-through' : 'none',
               }}
             >
               Registration Fee
             </Text>
             <Text
               style={{
-                flexDirection: "column",
-                flexWrap: "wrap",
-                color: "#000",
-                fontSize: w(16),
-                fontFamily: ff.deckSemiBold,
+              flexDirection: "column",
+              flexWrap: "wrap",
+              color: "#000",
+              fontSize: w(16),
+              fontFamily: ff.deckSemiBold,
+              textDecorationLine: BookedData?.hasBoughtEarlier ? 'line-through' : 'none',
               }}
             >
               ₹{RegistrationFees}
