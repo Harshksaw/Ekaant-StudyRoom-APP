@@ -164,6 +164,7 @@ async function createBooking(req, res) {
     });
 
     // Create a transaction for the booking payment
+
     await prisma.transactionDetails.create({
       data: {
         amount: finalPrice,
