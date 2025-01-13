@@ -138,47 +138,56 @@ const signinSchema = zod.object({
   password: zod.string().min(8),
 });
 async function signIn(req, res, next) {
-
   try {
-    const { phoneNumber, password } = req.body;
+    const { phoneNumber} = req.body;
 
-    // console.log(phoneNumber, password);
+    // Find user with the provided phone number
+    const user = await prisma.user.findFirst({ where: { phoneNumber: phoneNumber } });
 
-    const user = await prisma.user.findFirst({ where: { phoneNumber : phoneNumber} });
-    const inputPassword = req.body.password;
-    const storedHashedPassword = user.password;
-    // Find user with requested email
-    if (user) {
-      // Compare the input password with the stored hashed password
-      bcrypt.compare(inputPassword, storedHashedPassword, function(err, result) {
-        if (err) {
-          console.error('Error comparing passwords:', err);
-          return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Internal server error');
-        }
-    
-        if (result) {
-          // Passwords match
-          const token = jwt.sign({ user_id: user.id }, JWT_SECRET);
-          return res.status(StatusCodes.OK).json({
-            success: true,
-            message: "User authenticated successfully",
-            error: {},
-            data: { user, user_id: user },
-            token: token,
-          });
-        } else {
-          // Passwords do not match
-          return res.status(StatusCodes.UNAUTHORIZED).send('Invalid credentials');
-        }
-      });
-    } else {
+    if (!user) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
         success: false,
-        message: "Invalid credentials",
-        error: { 411: "Invalid credentials" },
+        message: "User not found",
+        error: { code: 404, message: "User not found" },
         data: {},
       });
     }
+
+    const inputPassword = req.body.password;
+    const storedHashedPassword = user.password;
+
+    // Compare the input password with the stored hashed password
+    bcrypt.compare(inputPassword, storedHashedPassword, function(err, result) {
+      if (err) {
+        console.error('Error comparing passwords:', err);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+          success: false,
+          message: "Internal server error",
+          error: { code: 500, message: "Internal server error" },
+          data: {},
+        });
+      }
+
+      if (result) {
+        // Passwords match
+        const token = jwt.sign({ user_id: user.id }, JWT_SECRET);
+        return res.status(StatusCodes.OK).json({
+          success: true,
+          message: "User authenticated successfully",
+          error: {},
+          data: { user, user_id: user.id },
+          token: token,
+        });
+      } else {
+        // Passwords do not match
+        return res.status(StatusCodes.UNAUTHORIZED).json({
+          success: false,
+          message: "Invalid credentials",
+          error: { code: 401, message: "Invalid credentials" },
+          data: {},
+        });
+      }
+    });
   } catch (error) {
     next(error);
   }
@@ -534,7 +543,7 @@ async function otpLogin(req, res) {
   if (!response) {
     return res.status(404).json({
       success: false,
-      message: "User not found",
+      message: "User Does not exist",
     });
   }
 
