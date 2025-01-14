@@ -12,7 +12,7 @@ const phoneotp = require("../models/phoneotp");
 const apiKey = process.env.FASTSMS;
 const { PrismaClient, Prisma } = require('@prisma/client');
 const mailSender = require("../utils/mailSender");
-
+const emailTemplate = require("../utils/mails/emailotp");
 const prisma = new PrismaClient();
 const cloudinary = require("cloudinary").v2;
 // signing up schema
@@ -281,9 +281,9 @@ async function verifyOtp(req, res) {
 }
 async function sendVerificationEmail(email, otp) {
   try{
+    // const EmailTemp = await emailTemplate(otp)
       const mailResponse = await mailSender(email,
-           "Verification EMAIL from Ekaant Study Room",
-           emailTemplate(otp));
+           "Verification EMAIL from Ekaant Study Room", emailTemplate(otp) );
       console.log("Email sent Successfully!! => ", mailResponse);
   } catch(error) {
       console.log("Error while sending email", error);
