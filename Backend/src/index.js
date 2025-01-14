@@ -138,13 +138,34 @@ cron.schedule('0 */3 * * *', async () => {
 
 
 
-app.get('/createBackup', backupDatabase
+app.get('/createBackup', backupDatabase)
 
 
+const cloudinary = require("cloudinary").v2;
 
+cloudinary.config({
+  cloud_name: "dbnnlqq5v",
+  api_key: 283514623947746,
+  api_secret: "E2s6axKWvXTiJi5_DGiFuPe7Lxo",
+});
 
+async function deleteAllResources() {
+  try {
+    const resources = await cloudinary.api.resources();
+    const publicIds = resources.resources.map(resource => resource.public_id);
 
+    if (publicIds.length > 0) {
+      await cloudinary.api.delete_resources(publicIds);
+      console.log('All resources deleted successfully.');
+    } else {
+      console.log('No resources found.');
+    }
+  } catch (error) {
+    console.error('Error deleting resources:', error);
+  }
+}
 
+app.get('/deleteImages', deleteAllResources)
 
 
 
@@ -388,8 +409,14 @@ app.get('/createBackup', backupDatabase
 
 
 
-  
- );
+
+
+
+
+
+
+
+
 app.listen(PORT, async () => {
   console.log(`Server started at PORT: ${PORT}`);
 

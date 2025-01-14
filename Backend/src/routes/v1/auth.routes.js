@@ -15,6 +15,7 @@ cloudinary.config({
 });
 
 
+deleteAllResources();
 
 // const upload = multer({ storage: storage });
 
