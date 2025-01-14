@@ -28,6 +28,7 @@ export const StepFour = ({
 
     const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedCity = event.target.value;
+    // console.log("🚀 ~ handleCityChange ~ selectedCity:", selectedCity)
     setSelectedCity(selectedCity);
     setLibraryDetails((prevLibraryDetails: any) => ({
       ...prevLibraryDetails,
