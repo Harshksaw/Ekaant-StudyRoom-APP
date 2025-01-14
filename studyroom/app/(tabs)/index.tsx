@@ -71,7 +71,7 @@ export default function index() {
   };
   var count = 0;
 
-  console.log("🚀 ~ file: index.tsx ~ line 77 ~ index ~ data", data);
+  // // // console.log("🚀 ~ file: index.tsx ~ line 77 ~ index ~ data", data);
   const getAppData = async () => {
     // TODO, tanstackquery
     try {
@@ -122,7 +122,7 @@ export default function index() {
         limit,
       });
       setTotalLibraries(fetchedData.totalLibraries);
-      // console.log("🚀 ~ fetchLibraryDate ~ fetchedData:", typeof  fetchedData)
+      // // // // console.log("🚀 ~ fetchLibraryDate ~ fetchedData:", typeof  fetchedData)
 
       setData((prevData) => [...prevData, ...fetchedData.data]);
 
@@ -169,7 +169,7 @@ export default function index() {
     return true;
   };
 
-  console.log(data[1], "----");
+  // console.log(data[1], "----");
 
   useFocusEffect(
     React.useCallback(() => {
@@ -374,7 +374,7 @@ export default function index() {
     parsedUser?.data.user?.username.split(" ")[0];
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    getAppData();
+  getAppData();
     fetchSelectedLocation();
     if (!selectedLocation) {
       AsyncStorage.getItem("selectedLocation");

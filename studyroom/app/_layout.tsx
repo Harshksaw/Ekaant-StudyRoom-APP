@@ -1,5 +1,5 @@
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { Navigator, Stack } from "expo-router";
 import React, { useEffect } from "react";
 
 import { ToastProvider } from "react-native-toast-notifications";
@@ -7,6 +7,7 @@ import { ToastProvider } from "react-native-toast-notifications";
 import { Provider } from "react-redux";
 
 import store from "@/redux/store";
+
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -25,11 +26,7 @@ export default function RootLayout() {
     textSemiBold: require("../assets/fonts/TASAOrbiterText-SemiBold.otf"),
   });
 
-  // useEffect(() => {
-  //   if (loaded) {
-  //     SplashScreen.hideAsync();
-  //   }
-  // }, [loaded]);
+
 
   if (!loaded) {
     return null;
@@ -39,6 +36,7 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+
   return (
     <Provider store={store}>
       <ToastProvider>

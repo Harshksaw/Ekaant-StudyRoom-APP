@@ -16,26 +16,7 @@ const { createBackup } = require("./controllers/app.controller");
 const backupDatabase = require("./backup");
 const prisma = new PrismaClient();
 
-// // Increment a counter
-// dogstatsd.increment('page.views');
 
-// // Record a gauge
-// dogstatsd.gauge('system.load', 0.75);
-
-// // Record a timing
-// dogstatsd.timing('response_time', 200);
-
-// // Record a histogram
-// dogstatsd.histogram('data_size', 512);
-
-// // Record a set
-// dogstatsd.set('unique_users', 12345);
-
-// // Record an event
-// dogstatsd.event('User Signup', 'A new user has signed up');
-
-// // Close the connection when done
-// dogstatsd.close();
 
 // const PORT
 const app = express();
