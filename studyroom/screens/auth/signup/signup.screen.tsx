@@ -232,9 +232,9 @@ export default function SignUpScreen() {
 
 
 
-      Toast.show("Use different Number", {
-        type: "danger",
-      });
+      // Toast.show("Use different Number", {
+      //   type: "danger",
+      // });
     }
   };
   const handleKeyPress = (e, index) => {
