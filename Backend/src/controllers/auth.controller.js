@@ -11,6 +11,7 @@ const otpGenerator = require("otp-generator");
 const phoneotp = require("../models/phoneotp");
 const apiKey = process.env.FASTSMS;
 const { PrismaClient, Prisma } = require('@prisma/client');
+const mailSender = require("../utils/mailSender");
 
 const prisma = new PrismaClient();
 const cloudinary = require("cloudinary").v2;
@@ -295,6 +296,9 @@ async function sendEmailOtp(req, res) {
   const existingAdmin = await prisma.admin.findFirst({ where: { 
     email:email
   } } ) 
+
+
+
   if (existingAdmin) {
     const token = jwt.sign({ admin_id: existingAdmin.id }, JWT_SECRET);
     return res.status(201).json({
