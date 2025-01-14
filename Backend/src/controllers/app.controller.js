@@ -188,9 +188,8 @@ async function editLocations(req, res) {
 async function getLocations(req, res) {
   try {
     const app = await prisma.app.findFirst({
-      where: { id: 1 },
       include: {
-        locations: true,
+      locations: true,
       },
     });
     return res.status(StatusCodes.OK).json({
