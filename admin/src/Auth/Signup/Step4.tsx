@@ -31,7 +31,10 @@ export const StepFour = ({
     setSelectedCity(selectedCity);
     setLibraryDetails((prevLibraryDetails: any) => ({
       ...prevLibraryDetails,
-      city: event.target.value,
+      libraryAddress: {
+        ...prevLibraryDetails.libraryAddress,
+        city: event.target.value,
+      },
     }));
   };
   const validateFields = () => {
