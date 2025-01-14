@@ -240,7 +240,7 @@ async function sendOtp(req, res) {
     return res.status(200).json({
       success: true,
       message: `OTP sent to ${phoneNumber}`,
-      data: otpBody,
+
     });
   } else {
     return res.status(response.status).json({
