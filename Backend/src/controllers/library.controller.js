@@ -151,7 +151,7 @@ const createLibrary = async (req, res) => {
     const gst = req.files.gst ? req.files.gst[0].path : null;
     const cin = req.files.cin ? req.files.cin[0].path : null;
     const tan = req.files.tan ? req.files.tan[0].path : null;
-    const msme = req.files.msme ? req.files.msme[0].path : null;
+    const msme = req.files && req.files.msme ? req.files.msme[0].path : null;
 
     // console.log(cardImage, images, gst, cin, tan, msme, ">>>>>uploadedFiles");
 
