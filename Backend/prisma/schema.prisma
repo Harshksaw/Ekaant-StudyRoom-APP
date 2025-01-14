@@ -42,7 +42,7 @@ model Admin {
   resetPasswordExpires  DateTime?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
-  ownedProperties       Library[] @relation("OwnedProperties")
+   ownedProperties     Library[] @relation("OwnedProperties", onDelete: Cascade)
   libraryBookings       Library[] @relation("LibraryBookings")
   transaction Transaction[]
   
@@ -89,7 +89,7 @@ model Library {
   id                  Int       @id @default(autoincrement())
 
   libraryOwnerId      Int?
-  libraryOwner        Admin?    @relation(fields: [libraryOwnerId], references: [id], name: "OwnedProperties")
+   libraryOwner        Admin?    @relation(fields: [libraryOwnerId], references: [id], name: "OwnedProperties", onDelete: Cascade)
   name                String    
   
   longDescription     String?
