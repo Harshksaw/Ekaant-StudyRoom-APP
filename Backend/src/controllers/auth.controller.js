@@ -75,7 +75,7 @@ async function signUp(req, res) {
       images = result.secure_url;
     } else {
       // Use a default DiceBear image if no image is provided
-      images = `https://avatars.dicebear.com/api/initials/${req.body.username}.svg`;
+      images = `https://eu.ui-avatars.com/api/?name=${req.body.username[0]}+ ${req?.body?.userName[1]}&size=250`;
     }
     const existingUser = await prisma.user.findUnique({
       where: { email: req.body.email },
@@ -271,9 +271,9 @@ async function verifyOtp(req, res) {
     });
   } else if (otp != response[0].phoneOtp) {
     // Invalid OTP
-    return res.status(400).json({
+    return res.status(401).json({
       success: false,
-      message: "The OTP you entered is wrong !!",
+      message: "Invalid Otp",
     });
   }
 

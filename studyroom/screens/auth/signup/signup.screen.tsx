@@ -129,17 +129,29 @@ export default function SignUpScreen() {
         phoneNumber: userInfo.phone,
         otp: otpValue,
       });
+      console.log("🚀 ~ verifyOtp ~ response:", response)
 
-      if (response.status == 200) {
+      if (response.status === 200) {
+        Toast.show(response.data.message || "OTP verified successfully", {
+          type: "success",
+          duration: 2000,
+          placement: "top",
+          style: {
+            backgroundColor: "green",
+            borderRadius: 10,
+            padding: 10,
+            marginTop: 50,
+          },
+        });
         handleSignUp(true);
       }
     } catch (error) {
-      Toast.show(error?.message ?? "something went wrong", {
+      Toast.show(error?.response?.data?.message || error?.message || "Something went wrong", {
         type: "danger",
         duration: 2000,
         placement: "top",
         style: {
-          backgroundColor: "green",
+          backgroundColor: "red",
           borderRadius: 10,
           padding: 10,
           marginTop: 50,
@@ -171,11 +183,7 @@ export default function SignUpScreen() {
 
     try {
       if (image) {
-        formData.append("image", {
-          uri: image,
-          name: "image.jpg",
-          type: "image/jpeg",
-        });
+        formData.append("image", image);
       }
 
       // Append other user info to formData
@@ -229,7 +237,7 @@ export default function SignUpScreen() {
       }
     } catch (error) {
       setButtonSpinner(false);
-      // console.log(error?.response?.data);
+      console.log(error.message);
 
       // Toast.show("Use different Number", {
       //   type: "danger",
