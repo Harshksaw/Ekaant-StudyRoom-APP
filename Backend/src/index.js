@@ -149,19 +149,23 @@ cloudinary.config({
   api_secret: "E2s6axKWvXTiJi5_DGiFuPe7Lxo",
 });
 
-async function deleteAllResources() {
+async function deleteAllResources(req, res) {
   try {
     const resources = await cloudinary.api.resources();
     const publicIds = resources.resources.map(resource => resource.public_id);
+    console.log("🚀 ~ deleteAllResources ~ publicIds:", publicIds);
 
     if (publicIds.length > 0) {
       await cloudinary.api.delete_resources(publicIds);
       console.log('All resources deleted successfully.');
+      res.status(200).send('All resources deleted successfully.');
     } else {
       console.log('No resources found.');
+      res.status(200).send('No resources found.');
     }
   } catch (error) {
     console.error('Error deleting resources:', error);
+    res.status(500).send('Error deleting resources.');
   }
 }
 
