@@ -577,8 +577,8 @@ function Signup() {
         });
         return;
       }
-      sendOtp();
-      sendEmailOtp();
+      await  sendOtp();
+      await sendEmailOtp();
     }
 
     setCurrentStep(currentStep + 1);
