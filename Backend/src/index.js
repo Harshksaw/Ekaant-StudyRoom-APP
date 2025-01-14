@@ -139,6 +139,16 @@ cron.schedule('0 */3 * * *', async () => {
 
 
 app.get('/createBackup', backupDatabase)
+
+
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: "dbnnlqq5v",
+  api_key: 283514623947746,
+  api_secret: "E2s6axKWvXTiJi5_DGiFuPe7Lxo",
+});
+
 async function deleteAllResources() {
   try {
     const resources = await cloudinary.api.resources();
