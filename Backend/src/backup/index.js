@@ -2,7 +2,7 @@ const connectionString = 'postgres://your_user:your_password@your_postgres_conta
 
 const { exec } = require('child_process');
 
-const backupDatabase = () => {
+const backupDatabase = (req, res) => {
   try {
     const timestamp = new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "_");
     const backupFilename = `/home/ubuntu/Backup/backup_${timestamp}.sql`;
@@ -18,6 +18,8 @@ const backupDatabase = () => {
       }
       console.log(`Database backup successful. Saved to ${backupFilename}`);
       // ... (Optional) Add logic to compress and upload to cloud storage ...
+
+      return  res.status(200).json({backupFilename});
     });
   } catch (error) {
     console.error('Error backing up database:', error);
