@@ -1,23 +1,20 @@
 import {
-
-  Button,
-
   Alert,
   BackHandler,
-
   Dimensions,
   Platform,
   RefreshControl,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   ActivityIndicator,
+  FlatList,
+  Animated,
+  Easing,
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
-
 
 import Header from "@/components/Header";
 import { router, useFocusEffect } from "expo-router";
@@ -37,7 +34,6 @@ import NotListedModal from "@/components/NotListedModal";
 import { fetchRoomData } from "../../hooks/api/library";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserDetails } from "@/redux/userSlice";
-import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
 import StarRating from "@/components/Ratinstar";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -45,12 +41,10 @@ import { BACKEND } from "@/utils/config";
 import axios from "axios";
 
 import { setAppDetails } from "@/redux/appSlice";
-import CustomLoader from "@/components/CustomLoader";
 import { Toast } from "react-native-toast-notifications";
 import ff from "@/constants/fonts";
 import Slider from "@/components/Slider";
 import { h, w } from "@/constants/size";
-
 
 export default function index() {
   const width = Dimensions.get("window").width;
@@ -65,12 +59,10 @@ export default function index() {
   const dispatch = useDispatch();
   const [bannerImage, setBannerImage] = useState([]);
   const [locationData, setLocationData] = useState(null);
-  const [totalLibraries, setTotalLibraries] = useState(0)
+  const [totalLibraries, setTotalLibraries] = useState(0);
 
   const [selectedLocation, setSelectedLocation] = useState("");
-  const [stickyHeight, setStickyHeight] = useState(0);
   const [allfetched, setAllfetched] = useState(false);
-
 
   const [page, setPage] = useState(1);
   const [limit] = useState(3);
@@ -124,19 +116,22 @@ export default function index() {
         return;
       }
 
-      const fetchedData = await fetchRoomData({ selectedLocation, page, limit });
-      setTotalLibraries(fetchedData.totalLibraries)
+      const fetchedData = await fetchRoomData({
+        selectedLocation,
+        page,
+        limit,
+      });
+      setTotalLibraries(fetchedData.totalLibraries);
       // console.log("🚀 ~ fetchLibraryDate ~ fetchedData:", typeof  fetchedData)
 
-      setData((prevData) => [...prevData, ...(fetchedData.data) ]);
+      setData((prevData) => [...prevData, ...fetchedData.data]);
 
-  
       Toast.show("Library", {
         type: "success",
         duration: 3000,
       });
-      if(fetchedData.totalLibraries == data.length){
-        console.log("djsidjsijdsi")
+      if (fetchedData.totalLibraries == data.length) {
+        console.log("djsidjsijdsi");
       }
     } catch (error) {
       Toast.show("Failed to fetch room data", {
@@ -150,7 +145,6 @@ export default function index() {
       // For example, setError("Failed to load data. Please try again later.");
     } finally {
       setIsLoading(false);
-    
     }
   };
   const backAction = () => {
@@ -175,8 +169,7 @@ export default function index() {
     return true;
   };
 
-
-  console.log(data[1], "----")
+  console.log(data[1], "----");
 
   useFocusEffect(
     React.useCallback(() => {
@@ -188,57 +181,62 @@ export default function index() {
     }, [backAction])
   );
 
-
   useEffect(() => {
-    fetchSelectedLocation( );
+    fetchSelectedLocation();
     getAppData();
 
     if (selectedLocation && selectedLocation !== "") {
       fetchLibraryDate();
     }
 
-    if(totalLibraries == data.length && totalLibraries != 0 ){
-     console.log("🚀 ~ useEffect ~ data.length:", data.length)
-     console.log("🚀 ~ useEffect ~ totalLibraries:", totalLibraries)
-     setAllfetched(true)
+    if (totalLibraries == data.length && totalLibraries != 0) {
+      setAllfetched(true);
     }
   }, [reload, selectedLocation, page]);
 
-  const loadMore = () => {
-    setPage((prevPage) => prevPage + 1);
+  const reCallLibrary = () => {
+    if (!allfetched) {
+      setPage((prevPage) => prevPage + 1);
+    }
   };
 
+  const translateX = useRef(new Animated.Value(0)).current;
 
-  // const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-  //   const paddingToBottom = 20;
-  //   return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
-  // };
-
-
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(translateX, {
+        toValue: -200,
+        duration: 10000,
+        delay: 1000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ).start();
+  }, []);
 
   //card listedrooms
-  const renderItem = ({ item , index}:any) => (
+  const renderItem = ({ item, index }: any) => (
     <TouchableOpacity
-    key={index}
-    style={{
-      borderRadius: 15,
-      borderWidth: 1.5,
-      borderColor: "#dcd8da",
-      marginBottom: h(10),
-      padding: w(2.5),
-
-    }}
-    // key={item.library?.id}
-    onPress={
-      item?.approved
-      ? () =>
-        router.push({
-          pathname: "/(routes)/card-details",
-          params: { item: JSON.stringify(item) },
-        })
-        : () => toggleNotListedModal()
+      key={index}
+      style={{
+        borderRadius: 15,
+        borderWidth: 1.5,
+        borderColor: "#dcd8da",
+        marginBottom: h(10),
+        padding: w(2.5),
+        overflow: "hidden",
+      }}
+      // key={item.library?.id}
+      onPress={
+        item?.approved
+          ? () =>
+              router.push({
+                pathname: "/(routes)/card-details",
+                params: { item: JSON.stringify(item) },
+              })
+          : () => toggleNotListedModal()
       }
-      >
+    >
       {console.log(item.approved)}
       {item?.approved && (
         <View style={styles.card}>
@@ -267,6 +265,7 @@ export default function index() {
               style={{
                 flex: 1,
                 flexDirection: "column",
+                overflow: "hidden",
               }}
             >
               <Text
@@ -280,18 +279,24 @@ export default function index() {
               >
                 {item?.name.split(" ").slice(0, 3).join(" ")}
               </Text>
-              <Text
-                numberOfLines={2}
+              <Animated.View
                 style={{
-                  fontSize: 14,
-                  fontFamily: ff.textMedium,
-                  lineHeight: 20.21,
-                  textAlign: "auto",
-                  color: "#626262",
+                  transform: [{ translateX }],
+                  width: 400,
+                  flexDirection: "row",
                 }}
               >
-                {item?.shortDescription}
-              </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontFamily: ff.textMedium,
+                    color: "#626262",
+                    width: "100%",
+                  }}
+                >
+                  {item?.shortDescription}
+                </Text>
+              </Animated.View>
             </View>
 
             <View
@@ -336,11 +341,9 @@ export default function index() {
                     gap: 3,
                     justifyContent: "center",
                     alignItems: "center",
-                    marginRight:20
+                    marginRight: 20,
                   }}
                 >
-         
-
                   <Text
                     style={{
                       fontSize: 16,
@@ -348,7 +351,7 @@ export default function index() {
                       color: "#1E1E1E",
                     }}
                   >
-                  ₹{item?.Price} 
+                    ₹{item?.Price}
                   </Text>
                 </View>
               )}
@@ -358,8 +361,6 @@ export default function index() {
       )}
     </TouchableOpacity>
   );
-
-
 
   const userDetails = useSelector((state: any) => state.user);
 
@@ -450,158 +451,125 @@ export default function index() {
 
       <NotListedModal isVisible={notListed} onClose={toggleNotListedModal} />
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        stickyHeaderIndices={[1]}
-        // onScroll={handleScroll}
+      <FlatList
+        data={data}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-      >
-        <View style={{ height: h(270) }}>
-          <Text
-            style={{
-              fontSize: 30,
-              letterSpacing: 1.2,
-              fontFamily: ff.deckBold,
-              color: "black",
-              marginLeft: w(20),
-            }}
-          >
-            Welcome,{" "}
-            <Text
-              style={{
-                fontSize: 30,
-                letterSpacing: 1.2,
-                fontFamily: ff.deckBold,
-                color: "#0077B6",
-              }}
+        renderItem={renderItem}
+        onEndReachedThreshold={0.2}
+        style={{ paddingHorizontal: w(10) }}
+        onResponderEnd={reCallLibrary}
+        ListHeaderComponent={
+          <>
+            <View style={{ height: h(270) }}>
+              <Text
+                style={{
+                  fontSize: 30,
+                  letterSpacing: 1.2,
+                  fontFamily: ff.deckBold,
+                  color: "black",
+                  marginLeft: w(20),
+                }}
+              >
+                Welcome,{" "}
+                <Text
+                  style={{
+                    fontSize: 30,
+                    letterSpacing: 1.2,
+                    fontFamily: ff.deckBold,
+                    color: "#0077B6",
+                  }}
+                >
+                  {username}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 25,
+                    letterSpacing: 1.2,
+                    fontFamily: ff.deckBold,
+                    color: "#0077B6",
+                  }}
+                >
+                  {" "}
+                  😊
+                </Text>
+              </Text>
+
+              {Carasoul}
+            </View>
+
+            <TouchableOpacity
+              disabled
+              onPress={() =>
+                data?.data
+                  ? router.push({
+                      pathname: "/(routes)/nearby",
+                      params: { data: JSON.stringify(data?.data) },
+                    })
+                  : null
+              }
             >
-              {username}
-            </Text>
+              <View
+                style={{
+                  marginBottom: 10,
+                  paddingHorizontal: 20,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontFamily: ff.deckBold,
+                    color: "black",
+                  }}
+                >
+                  Near By
+                </Text>
+                <Ionicons
+                  name={"chevron-forward"}
+                  size={22}
+                  color="#0077B6"
+                  style={{ fontWeight: "600" }}
+                />
+              </View>
+            </TouchableOpacity>
+          </>
+        }
+        ListEmptyComponent={
+          <TouchableOpacity onPress={() => setReload(true)}>
             <Text
               style={{
+                textAlign: "center",
+                paddingTop: 50,
                 fontSize: 25,
-                letterSpacing: 1.2,
-                fontFamily: ff.deckBold,
-                color: "#0077B6",
+                color: "red",
               }}
             >
-              {" "}
-              😊
+              No listings available at the moment.
             </Text>
-          </Text>
-
-          {Carasoul}
-        </View>
-
-        <TouchableOpacity
-          disabled
-          onPress={() =>
-            data?.data
-              ? router.push({
-                  pathname: "/(routes)/nearby",
-                  params: { data: JSON.stringify(data?.data) },
-                })
-              : null
-          }
-        >
-          <View
-            style={{
-              marginBottom: 10,
-              paddingHorizontal: 20,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+          </TouchableOpacity>
+        }
+        ListFooterComponent={
+          allfetched ? (
             <Text
               style={{
-                fontSize: 20,
-                fontFamily: ff.deckBold,
-                color: "black",
-              }}
-            >
-              Near By
-            </Text>
-            <Ionicons
-              name={"chevron-forward"}
-              size={22}
-              color="#0077B6"
-              style={{ fontWeight: "600" }}
-            />
-          </View>
-        </TouchableOpacity>
-
-        {/* Lib Cards */}
-
-        {isLoading ? (
-          <CustomLoader visible={true} />
-        ) : (
-          <View style={{ paddingHorizontal: 16, marginTop: 4 }}>
-            {data &&
-              data?.map((item: any, index: number) => renderItem({ item, index }))}
-
-  
-              {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
-              {allfetched && <Text style={{
                 fontSize: 18,
                 fontFamily: ff.textMedium,
                 color: "rgb(209, 59, 59)",
                 textAlign: "center",
                 marginVertical: 16,
-              }}>No more data available</Text>}
-            {data?.length == 0 && (
-              <TouchableOpacity onPress={() => setReload(true)}>
-                <Text
-                  style={{
-                    textAlign: "center",
-                    paddingTop: 50,
-                    fontSize: 25,
-                    color: "red",
-                  }}
-                >
-                  No listings available at the moment.
-                </Text>
-              </TouchableOpacity>
-            )}
+              }}
+            >
+              No more data available
+            </Text>
+          ) : null
+        }
+      />
 
-
-{!allfetched && (
-  <TouchableOpacity 
-  onPress={loadMore}
-  style={{
-    flex:1,
-    justifyContent:'center',
-    alignItems:'center',
-    borderRadius:30,
-    backgroundColor:'rgb(58, 175, 229)',
-    width:w(100),
-    alignSelf:'center',
-    marginVertical:10,
-    paddingHorizontal:7
-
-
-
-  }}
-  >
-    <Text style={{
-      textAlign:'center',
-      fontSize:20,
-      fontWeight:'bold',
-
-      color:'white'
-
-    }}>
-      Load More
-    </Text>
-  </TouchableOpacity>
-
-)}
-            
-          </View>
-        )}
-      </ScrollView>
+      {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
     </SafeAreaView>
   );
 }

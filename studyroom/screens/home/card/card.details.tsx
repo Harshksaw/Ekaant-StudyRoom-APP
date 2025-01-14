@@ -1,12 +1,8 @@
-import Avatar from "@/components/AvatarComponent";
-
-import StarRating from "@/components/Ratinstar";
-
 import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -17,12 +13,13 @@ import {
   ScrollView,
   Modal,
   Platform,
+  Animated,
+  Easing,
 } from "react-native";
 
 import Carousel from "@/components/Slider";
 
 import { router } from "expo-router";
-import Button from "@/components/Button";
 import getLocationName from "@/utils/location";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Toast } from "react-native-toast-notifications";
@@ -30,8 +27,7 @@ import axios from "axios";
 import { BACKEND } from "@/utils/config";
 import ReviewList from "@/components/Review";
 import ff from "@/constants/fonts";
-import TimeSlot from "../../../components/TimeSlot";
-import { h, w } from "@/constants/size";
+import { h, vw, w } from "@/constants/size";
 
 interface CardDetailScreenProps {
   // Define your params here
@@ -41,6 +37,26 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const width = Dimensions.get("window").width;
   const [userReviews, setUserReviews] = useState([]);
   const params = useRoute();
+
+  const translateX = useRef(new Animated.Value(-vw + vw * 0.5)).current;
+
+  useEffect(() => {
+    // Animate the translateX value with a loop and delay between each loop
+    Animated.loop(
+      Animated.sequence([
+        // Animation for translating to the final position
+        Animated.timing(translateX, {
+          toValue: 300, // Change this to your desired final value
+          duration: 1500, // Duration for the animation
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        // Delay after the animation is finished
+        Animated.delay(1000), // Delay between loops (1 second)
+      ])
+    ).start();
+  }, []);
+
   // console.log("🚀 ~ params.params.item:", params.params.item)
   const libData = JSON.parse(params.params.item);
   const data = { ...libData, _id: libData.id };
@@ -107,13 +123,11 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     });
   };
 
-  
   // console.log("🚀 ~ data.amenities:", data.amenities.amenities)
   // const { id, libraryId, ...filteredAmenities } = data.amenities || {};
 
-  const trueAmenities = data?.amenities?.amenities
+  const trueAmenities = data?.amenities?.amenities;
 
-  
   const price = data.Price || 0;
 
   const Carasoul = useMemo(() => {
@@ -345,24 +359,53 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
           </View>
         </ScrollView>
       </ScrollView>
-      <View
+
+      <TouchableOpacity
         style={{
-          // position: "absolute",
-          marginBottom: 10,
           bottom: 0,
           flexDirection: "row",
           justifyContent: "center",
-          borderRadius: 20,
+          backgroundColor: "#0077B6",
+          borderRadius: 3,
+          marginBottom: h(12),
+          width: "80%",
+          overflow: "hidden",
         }}
+        onPress={() => librarybooking()}
       >
-        <TouchableOpacity onPress={() => librarybooking()}>
-          <View>
-            <Button text="Book Now" width={300} />
-          </View>
+        <Text
+          style={{
+            alignItems: "center",
+            padding: w(10),
+            borderRadius: 20,
+            fontSize: w(16),
+            fontFamily: ff.deckSemiBold,
+            color: "#fff",
+            letterSpacing: 1,
+          }}
+        >
+          Book Now
+        </Text>
 
-          {/* pathname: "/(routes)/library/library.booking", */}
-        </TouchableOpacity>
-      </View>
+        <Animated.View
+          style={{
+            position: "absolute",
+            transform: [{ translateX }, { translateY: -30 }],
+            opacity: 0.7,
+          }}
+        >
+          <Image
+            source={require("@/assets/blurShadow.png")}
+            resizeMode="contain"
+            style={{
+              flex: 1,
+              transform: [{ rotate: "-60deg" }],
+              width: 150,
+              height: 100,
+            }}
+          />
+        </Animated.View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -370,7 +413,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 12,
+    paddingHorizontal: 12,
     alignItems: "center",
     flexDirection: "column",
     backgroundColor: "#fff",

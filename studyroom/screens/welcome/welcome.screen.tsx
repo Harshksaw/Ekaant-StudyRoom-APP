@@ -119,10 +119,10 @@ export default function Home() {
             source={{
               uri: "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597055/assets/zkh6zr51x1fmgrwai59i.png",
             }}
-            contentFit="contain"
             style={{
-              width: vw * 0.7,
-              height: vw * 0.7,
+              width: vw * 0.65,
+              height: vw * 0.65,
+              resizeMode: "contain",
             }}
           />
           <Image

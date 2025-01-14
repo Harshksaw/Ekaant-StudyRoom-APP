@@ -173,8 +173,8 @@ export default function SignUpScreen() {
       if (image) {
         formData.append("image", {
           uri: image,
-          name: "image.jpg", // Replace with desired filename
-          type: "image/jpeg", // Replace with correct image type
+          name: "image.jpg",
+          type: "image/jpeg",
         });
       }
 
@@ -194,7 +194,7 @@ export default function SignUpScreen() {
           },
         }
       );
-      if (response.status ===  200 || response.status ===  201) {
+      if (response.status === 200 || response.status === 201) {
         await AsyncStorage.setItem(
           "token",
           JSON.stringify(response.data.token)
@@ -221,16 +221,15 @@ export default function SignUpScreen() {
         // router.push("/(tabs)");
       }
 
-      if(response.status === 400){
+      if (response.status === 400) {
         setButtonSpinner(false);
         Toast.show("User Already exist", {
-          type: "danger",});
+          type: "danger",
+        });
       }
     } catch (error) {
       setButtonSpinner(false);
-      console.log(error);
-
-
+      // console.log(error?.response?.data);
 
       // Toast.show("Use different Number", {
       //   type: "danger",
@@ -388,39 +387,51 @@ export default function SignUpScreen() {
             >
               {!showOtp && (
                 <View
-                  style={[
-                    styles.input,
-                    {
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      paddingLeft: w(10),
-                    },
-                  ]}
+                  style={{
+                    paddingLeft: 10,
+                    borderRadius: 20,
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    backgroundColor: "#f8f8f8",
+                  }}
                 >
-                  <Text style={{ fontSize: 20 }}>🇮🇳</Text>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                      marginLeft: 10,
+                      color: "black",
+                    }}
+                  >
+                    🇮🇳 |
+                  </Text>
+
                   <View
                     style={{
-                      height: 30,
-                      borderWidth: 1,
-                      width: 1,
-                      borderColor: "black",
-                      marginLeft: 10,
+                      flex: 1,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
                     }}
-                  ></View>
-                  <TextInput
-                    autoComplete="sms-otp"
-                    style={{ paddingLeft: 20, color: "#000" }}
-                    keyboardType="phone-pad"
-                    value={userInfo.phone ? userInfo.phone.toString() : ""} // Conditionally render value
-                    placeholder="Your Number"
-                    onChangeText={(value) =>
-                      setUserInfo({
-                        ...userInfo,
-                        phone: value ? parseInt(value, 10) : 0, // Convert input value to number; use 0 as fallback
-                      })
-                    }
-                  />
+                  >
+                    <TextInput
+                      style={{
+                        width: "100%",
+                        height: 55,
+                        paddingLeft: w(10),
+                      }}
+                      keyboardType="numeric"
+                      maxLength={10}
+                      value={userInfo.phone ? userInfo.phone.toString() : ""}
+                      onChangeText={(value) =>
+                        setUserInfo({
+                          ...userInfo,
+                          phone: value ? parseInt(value, 10) : 0, // Convert input value to number; use 0 as fallback
+                        })
+                      }
+                      placeholder="Enter your phone number"
+                    />
+                  </View>
                 </View>
               )}
               {/* {showOtp && Number(userInfo.phone) >= 1000000000 && (

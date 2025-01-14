@@ -310,15 +310,16 @@ export default function profile() {
               borderColor: "#949494",
             }}
           >
+            <Ionicons name="call-outline" color={"black"} size={w(18)} />
             <Text
               style={{
                 fontSize: 20,
                 fontFamily: ff.deckMedium,
                 color: "black",
-                marginRight: 10,
+                marginHorizontal: 10,
               }}
             >
-            My Profile
+              Contact Us
             </Text>
             <Ionicons name="arrow-forward" size={20} color="black" />
           </TouchableOpacity>

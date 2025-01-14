@@ -86,24 +86,24 @@ const LoginScreen: React.FC = () => {
         otp: text ?? otp.join(""),
       });
       // console.log("🚀 ~ loginWithOtp ~ response:", response)
-  
+
       setLoading(false);
       if (response.status === 200) {
         // console.log(response.data, "res---");
-  
+
         await AsyncStorage.setItem(
           "token",
           JSON.stringify(response.data.token)
         );
         await AsyncStorage.setItem("userData", JSON.stringify(response.data));
         dispatch(login({ user: response.data, token: response.data.token }));
-  
+
         Toast.show("Login Successful", {
           type: "success",
           placement: "top",
           duration: 2000,
         });
-  
+
         router.dismissAll();
         router.replace("/(routes)/location");
       } else {
@@ -141,14 +141,14 @@ const LoginScreen: React.FC = () => {
         duration: 2000,
       });
     }
-  
+
     try {
       const response = await axios.post(`${BACKEND}/api/v1/auth/signin`, {
         phoneNumber,
         password,
       });
       setLoading(false);
-  
+
       if (response.data.success) {
         await AsyncStorage.setItem(
           "token",
@@ -188,7 +188,6 @@ const LoginScreen: React.FC = () => {
       }
     }
   };
-
 
   const handleKeyPress = (e, index) => {
     if (e.nativeEvent.key === "Backspace" && otp[index] === "" && index > 0) {
@@ -668,6 +667,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "#f8f8f8",
     paddingLeft: w(10),
+    width: "100%",
     fontSize: 16,
     color: "#434343",
     fontFamily: ff.deckMedium,

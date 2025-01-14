@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    letterSpacing: 1.3,
+    // letterSpacing: 1.3,
     fontFamily: ff.textBold,
   },
 });
