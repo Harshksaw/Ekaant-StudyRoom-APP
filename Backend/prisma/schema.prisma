@@ -62,7 +62,7 @@ model PanCardDetails {
   panNumber     String  
   panCardFile   String  
   adminId      Int     @unique
-  admin        Admin   @relation(fields: [adminId], references: [id])
+admin        Admin   @relation(fields: [adminId], references: [id], onDelete: Cascade)
 }
 
 //Users
