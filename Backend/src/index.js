@@ -13,6 +13,7 @@ const cron = require('node-cron');
 // const dogstatsd = new StatsD();
 const { PrismaClient } = require('@prisma/client');
 const { createBackup } = require("./controllers/app.controller");
+const backupDatabase = require("./backup");
 const prisma = new PrismaClient();
 
 // // Increment a counter
@@ -135,28 +136,9 @@ cron.schedule('0 */3 * * *', async () => {
   }
 });
 
-app.get('/createBackup', async(req, res) => {
-  // const { locationId } = req.params;
-  // console.log("🚀 ~ deleteLocations ~ locationId:", locationId);
 
-  // const updatedLocations = await prisma.app.delete({
-  //   where: { id: 1 },
-  // });
 
-  // return res.status(StatusCodes.OK).json({
-  //   success: true,
-  //   message: "Locations deleted successfully",
-  //   data: updatedLocations,
-  // });
-  const response = await createBackup();
-  console.log("Backup created successfully");
-  return res.json({
-    success: true,
-    data: response,
-    message: "Backup created successfully",
-  });
-
-})
+app.get('/createBackup', backupDatabase);
 app.listen(PORT, async () => {
   console.log(`Server started at PORT: ${PORT}`);
 

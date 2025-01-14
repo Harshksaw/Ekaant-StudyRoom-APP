@@ -19,14 +19,21 @@ import { BACKEND } from "@/utils/config";
 import ff from "@/constants/fonts";
 import { Entypo, EvilIcons } from "@expo/vector-icons";
 import { h, w } from "@/constants/size";
+import Placeholder from '../../../components/loader';
+import { useAssets } from "expo-asset";
 
 const LocationsScreen = () => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [locations, setLocations] = useState([]);
   const [filteredLocations, setFilteredLocations] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const citiesData = useSelector((state: any) => state.app);
+  const [assets] = useAssets([
+    require("../../../assets/images/placeholder.png"),
 
+  ]);
   useEffect(() => {
     setLocations(citiesData.locations || []);
   }, [citiesData.locations]);
@@ -86,6 +93,8 @@ const LocationsScreen = () => {
 
     return () => clearTimeout(timeoutId);
   }, [searchQuery, locations]);
+
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -160,15 +169,25 @@ const LocationsScreen = () => {
                 shadowColor: "#acacac",
               }}
             >
-              <Image
-                source={{
-                  uri:
-                    item?.locationImage ||
-                    "https://th.bing.com/th/id/OIP.m78y_Nupeq-RtHFEeNk5PwHaH5?rs=1&pid=ImgDetMain",
-                }}
-                style={styles.image}
-                resizeMode="cover"
-              />
+          {!imageLoaded && assets && (
+
+
+        <Image
+          source={ assets[0] } // Placeholder image URL
+          style={styles.image}
+          width={100}
+          height={100}
+          resizeMode="cover"
+        />
+      )}
+      <Image
+        source={{
+          uri: item?.locationImage || "https://th.bing.com/th/id/OIP.m78y_Nupeq-RtHFEeNk5PwHaH5?rs=1&pid=ImgDetMain",
+        }}
+        style={[styles.image, !imageLoaded && { display: 'none' }]}
+        resizeMode="cover"
+        onLoad={() => setImageLoaded(true)}
+      />
             </View>
             <Text style={styles.locationItem} numberOfLines={1}>
               {item?.location}

@@ -83,7 +83,7 @@ async function signUp(req, res) {
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: 'Email already exists',
+        message: 'User already exists',
       });
     }
 
