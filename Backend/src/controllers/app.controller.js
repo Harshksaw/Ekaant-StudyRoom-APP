@@ -63,13 +63,15 @@ async function getApp(req, res) {
    
 
 
-    const app = await prisma.app.findFirst({ where: { id: 1 }, include:{
+    const app = await prisma.app.findFirst({
+      include: {
       locations: {
         orderBy: {
-          location: 'asc', // Sort locations alphabetically by name
+        location: 'asc', // Sort locations alphabetically by name
         },
       },
-    } });
+      },
+    });
     // if (app && app.locations) {
     //   app.locations.sort((a, b) => a.name.localeCompare(b.name));
     // }
@@ -157,12 +159,13 @@ async function editLocations(req, res) {
 
  
   
+    const app = await prisma.app.findFirst();
     const updatedLocations = await prisma.location.create({
       data: {
-        ...locationObj,
-        app: {
-          connect: { id: 1 },
-        },
+      ...locationObj,
+      app: {
+        connect: { id: app.id },
+      },
       },
     });
 
