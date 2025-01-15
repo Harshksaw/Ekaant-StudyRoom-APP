@@ -108,20 +108,10 @@ function Signup() {
     librarySliders: [],
     halls: 0,
     amentities: {
-      coldWater: false,
-      wifi: false,
-      ac: false,
-      locker: false,
-      separateWashroom: false,
-      News: false,
-      discussionArea: false,
-      LunchArea: false,
-      MovingChair: false,
-      FloorMat: false,
-      SeparateParking: false,
-      CommonParking: false,
+      
     },
   });
+
 
   useEffect(() => {
     // Clear OTP state on component mount
@@ -151,7 +141,7 @@ function Signup() {
 
   const sendOtp = async () => {
     const { phone } = userInfo;
-    //@GourishMarkan - Add toast ike this and replace the older method
+
     toast("Sent OTP", {
       position: "top-right",
       autoClose: 2000,

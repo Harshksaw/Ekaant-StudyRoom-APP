@@ -1,5 +1,5 @@
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { Navigator, Stack } from "expo-router";
 import React, { useEffect } from "react";
 
 import { ToastProvider } from "react-native-toast-notifications";
@@ -24,12 +24,6 @@ export default function RootLayout() {
     textRegular: require("../assets/fonts/TASAOrbiterText-Regular.otf"),
     textSemiBold: require("../assets/fonts/TASAOrbiterText-SemiBold.otf"),
   });
-
-  // useEffect(() => {
-  //   if (loaded) {
-  //     SplashScreen.hideAsync();
-  //   }
-  // }, [loaded]);
 
   if (!loaded) {
     return null;
