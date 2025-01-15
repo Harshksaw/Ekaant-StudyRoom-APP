@@ -17,6 +17,9 @@ import {
   ScrollView,
   SafeAreaView,
   ActivityIndicator,
+  Animated,
+  Image,
+  Easing,
 } from "react-native";
 
 import { setBookingDetails } from "@/redux/bookingSlice";
@@ -66,7 +69,22 @@ const BookingScreen: React.FC = () => {
   const userSelect = useSelector((state: any) => state.user.user);
   // // // console.log("🚀 ~ userSelect:", JSON.parse(userSelect))
 
+  const translateX = useRef(new Animated.Value(-vw + vw * 0.5)).current;
 
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(translateX, {
+          toValue: 300,
+          duration: 1500,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+
+        Animated.delay(1000),
+      ])
+    ).start();
+  }, []);
 
   const BookedData = {
     seat: selectedSeat,
@@ -76,13 +94,16 @@ const BookingScreen: React.FC = () => {
     slot: selectedSlots,
   };
 
-const getBoughtStatus = async () => {
-  const userId = JSON.parse(userSelect)?.data.user.id;
+  const getBoughtStatus = async () => {
+    const userId = JSON.parse(userSelect)?.data.user.id;
 
-  const hasBoughtEarlier = await checkPreviousBookings(userId, libraryDetails.id);
-  return hasBoughtEarlier;
-  // console.log("🚀 ~ confirmBooking ~ hasBoughtEarlier:", hasBoughtEarlier);
-}
+    const hasBoughtEarlier = await checkPreviousBookings(
+      userId,
+      libraryDetails.id
+    );
+    return hasBoughtEarlier;
+    // console.log("🚀 ~ confirmBooking ~ hasBoughtEarlier:", hasBoughtEarlier);
+  };
   useEffect(() => {
     const totalPrice = selectedSlots.reduce(
       (acc, slot) => acc + Number(slot.price),
@@ -92,11 +113,7 @@ const getBoughtStatus = async () => {
     setFinalPrice(totalPrice * selectedMonth);
     const registrationFees = libraryDetails?.registrationFees || 0;
 
-   
-
-    
-
-    setTotalAmount( totalPrice * selectedMonth);
+    setTotalAmount(totalPrice * selectedMonth);
   }, [selectedSlots, selectedMonth]);
 
   const handleSeatSelect = (seatDataFromChild) => {
@@ -152,13 +169,9 @@ const getBoughtStatus = async () => {
     selectedSeat?.timeSlots.filter((slot) => slot.booked === false)
   );
 
-
-
   const PreBook = async () => {
-
-
     const userId = JSON.parse(userSelect)?.data.user.id;
-    console.log("🚀 ~ PreBook ~ userId:", userId)
+    console.log("🚀 ~ PreBook ~ userId:", userId);
 
     if (!userId) {
       Toast.show("user data not config properly, Relogin", {
@@ -166,10 +179,6 @@ const getBoughtStatus = async () => {
       });
     }
 
-
-
-
-    
     if (
       userId &&
       finalPrice &&
@@ -199,7 +208,7 @@ const getBoughtStatus = async () => {
         );
         // // console.log("🚀 ~ PreBook ~ response:", response.status)
 
-        console.log("🚀 ~ PreBook ~ bookingId:", response.data.data.id)
+        console.log("🚀 ~ PreBook ~ bookingId:", response.data.data.id);
         const bookingId = response.data.data.id;
         // // // console.log("🚀 ~ PreBook ~ bookingId11:", bookingId)
         setBookingId(bookingId);
@@ -218,7 +227,6 @@ const getBoughtStatus = async () => {
       }
     }
   };
-
 
   const resetBookingState = () => {
     setSelectedSeat(null);
@@ -288,8 +296,6 @@ const getBoughtStatus = async () => {
     );
   }
 
- 
-
   const displayTimeRange = (from, to) => {
     if (from === "12:00 AM" && to === "11:59 PM") {
       return `24/7`;
@@ -299,42 +305,47 @@ const getBoughtStatus = async () => {
   const confirmBooking = async () => {
     try {
       setBookingLoader(true);
-  
+
       // Check if userDetails.user is defined
       if (!userDetails || !userDetails.user) {
-        throw new Error("User details are not properly configured. Please relogin.");
+        throw new Error(
+          "User details are not properly configured. Please relogin."
+        );
       }
-  
+
       const user = JSON.parse(userDetails.user);
       const userId = user?.data?.user?.id;
-      console.log("🚀 ~ confirmBooking ~ userId:", userId)
-  
+      console.log("🚀 ~ confirmBooking ~ userId:", userId);
+
       // Check if userId is defined
       if (!userId) {
         throw new Error("User ID is not available. Please relogin.");
       }
-  
+
       // Check if libraryDetails is defined
       if (!libraryDetails || !libraryDetails?.id) {
         throw new Error("Library details are not properly configured.");
       }
-  
-      
-      console.log("🚀 ~ confirmBooking ~ userDetails.user.id, libraryDetails?.id:", userId, libraryDetails.id);
-  
+
+      console.log(
+        "🚀 ~ confirmBooking ~ userDetails.user.id, libraryDetails?.id:",
+        userId,
+        libraryDetails.id
+      );
+
       const Bought = await getBoughtStatus();
       const totalAmount = Bought
-      ? finalPrice
-      : finalPrice + libraryDetails.registrationFees;
+        ? finalPrice
+        : finalPrice + libraryDetails.registrationFees;
 
       await updateRoomDetails();
       const res = await PreBook();
-  
+
       setBookingLoader(false);
-  
+
       if (res) {
         setIsModalVisible(false);
-  
+
         const newBookingData = {
           bookedSeat: selectedSeat,
           registrationFees: libraryDetails?.registrationFees,
@@ -345,24 +356,23 @@ const getBoughtStatus = async () => {
           price: finalPrice,
           totalAmount,
         };
-  
+
         const Bookdata = {
           ...newBookingData,
           libraryId: libraryDetails,
           bookingId: res,
-          hasBoughtEarlier : Bought,
+          hasBoughtEarlier: Bought,
         };
-        console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata)
+        console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata);
         router.push({
           pathname: "/library/checkout.screen",
           params: {
             item: JSON.stringify(Bookdata),
           },
         });
-  
+
         resetBookingState();
       } else {
-
         Toast.show("Booking failed. Please try again.", {
           type: "error",
         });
@@ -493,7 +503,7 @@ const getBoughtStatus = async () => {
         style={{
           flexDirection: "row",
           justifyContent: "center",
-          paddingLeft: w(24),
+          marginTop: h(10),
         }}
       >
         {/* <TouchableOpacity
@@ -512,7 +522,7 @@ const getBoughtStatus = async () => {
         >
           <Ionicons name="person-add-outline" size={24} color="#706f6f" />
         </TouchableOpacity> */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={{
             paddingRight: 20,
             opacity: !selectedSeat ? 0.6 : 1,
@@ -530,6 +540,63 @@ const getBoughtStatus = async () => {
           }}
         >
           <Button text="Book" width={200} />
+        </TouchableOpacity> */}
+
+        <TouchableOpacity
+          style={{
+            bottom: 0,
+            flexDirection: "row",
+            justifyContent: "center",
+            backgroundColor: "#0077B6",
+            borderRadius: 3,
+            marginBottom: h(12),
+            width: "60%",
+            overflow: "hidden",
+          }}
+          onPress={() => {
+            if (!selectedDate) {
+              Toast.show("Please Select Date");
+              return;
+            }
+            if (!selectedSeat) {
+              Toast.show("Please Select Another Seat");
+              return;
+            }
+            setIsModalVisible(true);
+          }}
+        >
+          <Text
+            style={{
+              alignItems: "center",
+              padding: w(10),
+              borderRadius: 20,
+              fontSize: w(16),
+              fontFamily: ff.deckSemiBold,
+              color: "#fff",
+              letterSpacing: 1,
+            }}
+          >
+            Book
+          </Text>
+
+          <Animated.View
+            style={{
+              position: "absolute",
+              transform: [{ translateX }, { translateY: -30 }],
+              opacity: 0.7,
+            }}
+          >
+            <Image
+              source={require("@/assets/blurShadow.png")}
+              resizeMode="contain"
+              style={{
+                flex: 1,
+                transform: [{ rotate: "-60deg" }],
+                width: 150,
+                height: 100,
+              }}
+            />
+          </Animated.View>
         </TouchableOpacity>
       </View>
 

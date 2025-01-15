@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
+  Animated,
+  Easing,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -41,7 +43,7 @@ const CheckoutScreen: React.FC = () => {
   const params = useRoute();
 
   const BookedData = JSON.parse(params?.params?.item);
-  console.log("🚀 ~ BookedData:", BookedData)
+  console.log("🚀 ~ BookedData:", BookedData);
 
   if (!BookedData) {
     return (
@@ -74,10 +76,24 @@ const CheckoutScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 
+  const translateX = useRef(new Animated.Value(-vw + vw * 0.6)).current;
+
   useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(translateX, {
+          toValue: 400,
+          duration: 1500,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
 
-
-    setBookingId( BookedData.bookingId);
+        Animated.delay(1000),
+      ])
+    ).start();
+  }, []);
+  useEffect(() => {
+    setBookingId(BookedData.bookingId);
 
     setRegistrationFees(BookedData?.libraryId?.registrationFees);
     setInitialPrice(BookedData?.price);
@@ -85,7 +101,6 @@ const CheckoutScreen: React.FC = () => {
     setFinalAmount(BookedData?.totalAmount);
     const getLibraryData = async () => {
       setLocation(BookedData?.libraryId?.address);
-
 
       try {
         const userDataId = await AsyncStorage.getItem("userData");
@@ -113,20 +128,12 @@ const CheckoutScreen: React.FC = () => {
 
     getLibraryData();
   }, []);
-   
-
-
-
-
-
 
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
 
- 
   const PaymentPrice = finalAmount;
 
   useEffect(() => {
-
     if (isinvoiceComplete) {
       router.push({
         pathname: "/library/invoice.screen",
@@ -140,8 +147,6 @@ const CheckoutScreen: React.FC = () => {
     }
   }, [isPaymentComplete]);
   const handlePayment = async () => {
-
-
     setIsPaymentProcessing(true);
     var options = {
       description: "Room Booking",
@@ -158,7 +163,7 @@ const CheckoutScreen: React.FC = () => {
         name: `${userData?.data?.user_id?.username}`,
       },
     };
-  
+
     try {
       const data = await RazorpayCheckout.open(options);
       console.log("Payment data:", data);
@@ -166,15 +171,15 @@ const CheckoutScreen: React.FC = () => {
       setPaymentData(data);
       setPaymentId(data.razorpay_payment_id);
       setIsPaymentComplete(true);
-  
+
       Toast.show("Payment Success", {
         successColor: "green",
         duration: 4000,
       });
-  
+
       const res = await confirmPayment();
       console.log("Payment confirmation response:", res);
-  
+
       router.push("/(tabs)/bookings");
     } catch (error) {
       console.error("Payment error:", error);
@@ -196,22 +201,22 @@ const CheckoutScreen: React.FC = () => {
     try {
       // console.log("🚀 ~ confirmPayment ~ BookedData.timeSlot[0]:", BookedData.timeSlot[0])
       const data = {
-        libraryId  : BookedData.libraryId.id,
-        roomNo : BookedData.roomNo,
-        bookedSeat : BookedData.timeSlot[0],
-        bookingId : BookedData.bookingId,
-       BookedData : BookedData
-      }
+        libraryId: BookedData.libraryId.id,
+        roomNo: BookedData.roomNo,
+        bookedSeat: BookedData.timeSlot[0],
+        bookingId: BookedData.bookingId,
+        BookedData: BookedData,
+      };
       // console.log("🚀 ~ confirmPayment ~ data:", data)
       // console.log(bookingId, "-1-1-11-", BookedData)
       const res = await axios.post(
-        `${BACKEND}/api/v1/booking/confirm/${bookingId}`,data
+        `${BACKEND}/api/v1/booking/confirm/${bookingId}`,
+        data
       );
-
 
       // console.log(bookingId, "-1-1-11-", paymentData, paymentId, paymentStatus, BookedData)
 
-      if(res.data.status === "success") {
+      if (res.data.status === "success") {
         Toast.show("Payment Success", {});
       }
 
@@ -249,8 +254,7 @@ const CheckoutScreen: React.FC = () => {
     );
   }
 
-
-  if(isPaymentProcessing) {
+  if (isPaymentProcessing) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -268,9 +272,6 @@ const CheckoutScreen: React.FC = () => {
         paddingTop: 50,
       }}
     >
-
-
-
       <View>
         <Text
           style={{
@@ -485,19 +486,23 @@ const CheckoutScreen: React.FC = () => {
                 color: "#000",
                 fontSize: w(16),
                 fontFamily: ff.deckRegular,
-                textDecorationLine: BookedData?.hasBoughtEarlier ? 'line-through' : 'none',
+                textDecorationLine: BookedData?.hasBoughtEarlier
+                  ? "line-through"
+                  : "none",
               }}
             >
               Registration Fee
             </Text>
             <Text
               style={{
-              flexDirection: "column",
-              flexWrap: "wrap",
-              color: "#000",
-              fontSize: w(16),
-              fontFamily: ff.deckSemiBold,
-              textDecorationLine: BookedData?.hasBoughtEarlier ? 'line-through' : 'none',
+                flexDirection: "column",
+                flexWrap: "wrap",
+                color: "#000",
+                fontSize: w(16),
+                fontFamily: ff.deckSemiBold,
+                textDecorationLine: BookedData?.hasBoughtEarlier
+                  ? "line-through"
+                  : "none",
               }}
             >
               ₹{RegistrationFees}
@@ -575,7 +580,7 @@ const CheckoutScreen: React.FC = () => {
                   }}
                 >
                   {/* {location?.split(" ").slice(0, 2).join(" ")}{" "} */}
-                 { location?.line1}, {location?.city}
+                  {location?.line1}, {location?.city}
                 </Text>
               </View>
               <View
@@ -593,7 +598,7 @@ const CheckoutScreen: React.FC = () => {
                     fontFamily: ff.deckRegular,
                   }}
                 >
-          {location?.state}, {location?.pincode}
+                  {location?.state}, {location?.pincode}
                 </Text>
               </View>
             </View>
@@ -666,6 +671,24 @@ const CheckoutScreen: React.FC = () => {
           >
             Total Amount: ₹{finalAmount}
           </Text>
+          <Animated.View
+            style={{
+              position: "absolute",
+              transform: [{ translateX }],
+              opacity: 0.7,
+            }}
+          >
+            <Image
+              source={require("@/assets/blurShadow.png")}
+              resizeMode="contain"
+              style={{
+                flex: 1,
+                transform: [{ rotate: "-60deg" }],
+                width: 150,
+                height: 100,
+              }}
+            />
+          </Animated.View>
           <Ionicons name="arrow-forward" size={w(20)} color="white" />
         </View>
       </TouchableOpacity>

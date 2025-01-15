@@ -42,7 +42,7 @@ function RootLayoutNav() {
   return (
     <Provider store={store}>
       <ToastProvider>
-        <Stack   screenOptions={{ headerShown: false }} initialRouteName="index">
+        <Stack screenOptions={{ headerShown: false }} initialRouteName="index">
           <Stack.Screen
             name="index"
             options={{
@@ -51,6 +51,12 @@ function RootLayoutNav() {
           />
           <Stack.Screen
             name="(routes)/splash/index"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="(routes)/NoConnection"
             options={{
               headerShown: false,
             }}

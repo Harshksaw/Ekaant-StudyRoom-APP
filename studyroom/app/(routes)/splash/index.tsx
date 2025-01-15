@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import NetInfo from "@react-native-community/netinfo";
 
 const Splash = () => {
   const isAuthenticated = useSelector(
@@ -12,7 +13,14 @@ const Splash = () => {
     // Simulate a delay to show the splash screen
     const timer = setTimeout(() => {
       router.dismissAll();
-      router.replace(isAuthenticated ? "/(tabs)" : "(routes)/onboarding");
+      NetInfo.fetch().then((state) => {
+        if (!state.isConnected) {
+          router.dismiss();
+          router.replace("/(routes)/NoConnection");
+        } else {
+          router.replace(isAuthenticated ? "/(tabs)" : "(routes)/onboarding");
+        }
+      });
     }, 3000); // Adjust the delay as needed
 
     return () => clearTimeout(timer);

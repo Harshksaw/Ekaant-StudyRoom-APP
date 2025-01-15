@@ -41,18 +41,16 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const translateX = useRef(new Animated.Value(-vw + vw * 0.5)).current;
 
   useEffect(() => {
-    // Animate the translateX value with a loop and delay between each loop
     Animated.loop(
       Animated.sequence([
-        // Animation for translating to the final position
         Animated.timing(translateX, {
-          toValue: 300, // Change this to your desired final value
-          duration: 1500, // Duration for the animation
+          toValue: 300,
+          duration: 1500,
           easing: Easing.linear,
           useNativeDriver: true,
         }),
-        // Delay after the animation is finished
-        Animated.delay(1000), // Delay between loops (1 second)
+
+        Animated.delay(1000),
       ])
     ).start();
   }, []);

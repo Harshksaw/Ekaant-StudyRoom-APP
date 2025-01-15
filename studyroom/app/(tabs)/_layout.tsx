@@ -1,9 +1,72 @@
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  FontAwesome5,
+  FontAwesome6,
+  Ionicons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Provider } from "react-redux";
 import store from "@/redux/store";
 import Feather from "react-native-vector-icons/Feather";
-import { View } from "react-native";
+import { Text, View } from "react-native";
+import React from "react";
+import ff from "@/constants/fonts";
+import { h, w } from "@/constants/size";
+import { Profile } from "@/assets/svg";
+
+const tabBarIcon = (
+  focused: boolean,
+  IconType: React.ComponentType<any>,
+  IconName: string,
+  title: string
+) => {
+  const Icon = IconType;
+  return (
+    <View
+      style={{
+        alignItems: "center",
+        marginTop: title ? 0 : h(-10),
+        backgroundColor: !title ? "#0077B6" : "transparent",
+        borderRadius: 999,
+        padding: w(title ? 0 : 8),
+      }}
+    >
+      {title === "Profile" ? (
+        <Profile fill={focused ? "#0077B6" : "#263238"} />
+      ) : (
+        <Icon
+          name={IconName}
+          color={title ? (focused ? "#0077B6" : "#263238") : "#fff"}
+          size={w(title === "Job" ? 23 : 20)}
+        />
+      )}
+      {title && (
+        <Text
+          style={{
+            fontFamily: ff.deckRegular,
+            color: focused ? "#0077B6" : "#263238",
+            fontSize: w(12),
+            marginTop: h(2),
+          }}
+        >
+          {title}
+        </Text>
+      )}
+      {/* {focused && (
+        <View
+          style={{
+            backgroundColor: "#0077B6",
+            width: 16,
+            height: 2,
+            borderRadius: 10,
+            marginTop: 4,
+          }}
+        />
+      )} */}
+    </View>
+  );
+};
 
 export default function TabsLayout() {
   return (
@@ -11,86 +74,43 @@ export default function TabsLayout() {
       <Tabs
         screenOptions={({ route }) => ({
           headerShown: false,
-          tabBarShowLabel: false,
+          tabBarLabel: () => null,
+          tabBarStyle: {
+            height: h(50),
+          },
         })}
       >
         <Tabs.Screen
           name="index"
           options={{
-            title: "Profile",
-
-            tabBarIcon: ({ focused }) => (
-              <>
-                <Feather
-                  name="home"
-                  color={focused ? "#0077B6" : "#263238"}
-                  size={27}
-                />
-                {focused && (
-                  <View
-                    style={{
-                      backgroundColor: "#0077B6",
-                      width: 16,
-                      height: 2,
-                      borderRadius: 10,
-                      marginTop: 4,
-                    }}
-                  />
-                )}
-              </>
-            ),
+            title: "Home",
+            tabBarIcon: ({ focused }) =>
+              tabBarIcon(focused, Feather, "home", "Home"),
           }}
         />
         <Tabs.Screen
           name="search/index"
           options={{
-            title: "Profile",
-            tabBarIcon: ({ focused }) => (
-              <>
-                <Ionicons
-                  name="bag-handle-outline"
-                  color={focused ? "#0077B6" : "#263238"}
-                  size={28}
-                />
-                {focused && (
-                  <View
-                    style={{
-                      backgroundColor: "#0077B6",
-                      width: 16,
-                      height: 2,
-                      borderRadius: 10,
-                      marginTop: 4,
-                    }}
-                  />
-                )}
-              </>
-            ),
+            title: "Job",
+            tabBarIcon: ({ focused }) =>
+              tabBarIcon(focused, Ionicons, "bag-handle-outline", "Job"),
+          }}
+        />
+        <Tabs.Screen
+          name="menu/index"
+          options={{
+            title: "Menu",
+
+            tabBarIcon: ({ focused }) =>
+              tabBarIcon(focused, Ionicons, "grid-outline", ""),
           }}
         />
         <Tabs.Screen
           name="bookings/index"
           options={{
-            title: "Profile",
-            tabBarIcon: ({ focused }) => (
-              <>
-                <Ionicons
-                  name="bookmarks-outline"
-                  color={focused ? "#0077B6" : "#263238"}
-                  size={24}
-                />
-                {focused && (
-                  <View
-                    style={{
-                      backgroundColor: "#0077B6",
-                      width: 16,
-                      height: 2,
-                      borderRadius: 10,
-                      marginTop: 4,
-                    }}
-                  />
-                )}
-              </>
-            ),
+            title: "Bookings",
+            tabBarIcon: ({ focused }) =>
+              tabBarIcon(focused, Ionicons, "bookmarks-outline", "Bookings"),
           }}
         />
 
@@ -98,52 +118,8 @@ export default function TabsLayout() {
           name="profile/index"
           options={{
             title: "Profile",
-            tabBarIcon: ({ focused }) => (
-              <>
-                <Ionicons
-                  name="person-circle-outline"
-                  color={focused ? "#0077B6" : "#263238"}
-                  size={30}
-                />
-                {focused && (
-                  <View
-                    style={{
-                      backgroundColor: "#0077B6",
-                      width: 16,
-                      height: 2,
-                      borderRadius: 10,
-                      marginTop: 4,
-                    }}
-                  />
-                )}
-              </>
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="menu/index"
-          options={{
-            title: "Menu",
-            tabBarIcon: ({ focused }) => (
-              <>
-                <MaterialIcons
-                  name="format-list-bulleted"
-                  color={focused ? "#0077B6" : "#263238"}
-                  size={24}
-                />
-                {focused && (
-                  <View
-                    style={{
-                      backgroundColor: "#0077B6",
-                      width: 16,
-                      height: 2,
-                      borderRadius: 10,
-                      marginTop: 4,
-                    }}
-                  />
-                )}
-              </>
-            ),
+            tabBarIcon: ({ focused }) =>
+              tabBarIcon(focused, FontAwesome, "user-o", "Profile"),
           }}
         />
       </Tabs>

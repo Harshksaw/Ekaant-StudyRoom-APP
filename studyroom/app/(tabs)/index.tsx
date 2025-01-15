@@ -45,6 +45,7 @@ import { Toast } from "react-native-toast-notifications";
 import ff from "@/constants/fonts";
 import Slider from "@/components/Slider";
 import { h, w } from "@/constants/size";
+import NoConnection from "../(routes)/NoConnection";
 
 export default function index() {
   const width = Dimensions.get("window").width;
@@ -71,7 +72,6 @@ export default function index() {
   };
   var count = 0;
 
-  console.log("🚀 ~ file: index.tsx ~ line 77 ~ index ~ data", data);
   const getAppData = async () => {
     // TODO, tanstackquery
     try {
@@ -122,16 +122,10 @@ export default function index() {
         limit,
       });
       setTotalLibraries(fetchedData.totalLibraries);
-      // console.log("🚀 ~ fetchLibraryDate ~ fetchedData:", typeof  fetchedData)
 
       setData((prevData) => [...prevData, ...fetchedData.data]);
 
-      Toast.show("Library", {
-        type: "success",
-        duration: 3000,
-      });
       if (fetchedData.totalLibraries == data.length) {
-        console.log("djsidjsijdsi");
       }
     } catch (error) {
       Toast.show("Failed to fetch room data", {
@@ -169,8 +163,6 @@ export default function index() {
     return true;
   };
 
-  console.log(data[1], "----");
-
   useFocusEffect(
     React.useCallback(() => {
       const backHandler = BackHandler.addEventListener(
@@ -205,7 +197,7 @@ export default function index() {
   useEffect(() => {
     Animated.loop(
       Animated.timing(translateX, {
-        toValue: -200,
+        toValue: -300,
         duration: 10000,
         delay: 1000,
         easing: Easing.linear,
@@ -237,7 +229,6 @@ export default function index() {
           : () => toggleNotListedModal()
       }
     >
-      {console.log(item.approved)}
       {item?.approved && (
         <View style={styles.card}>
           <Image
@@ -282,7 +273,7 @@ export default function index() {
               <Animated.View
                 style={{
                   transform: [{ translateX }],
-                  width: 400,
+                  width: 600,
                   flexDirection: "row",
                 }}
               >
@@ -290,7 +281,7 @@ export default function index() {
                   style={{
                     fontSize: 14,
                     fontFamily: ff.textMedium,
-                    color: "#626262",
+                    color: "#0077B6",
                     width: "100%",
                   }}
                 >
@@ -334,7 +325,7 @@ export default function index() {
                 </View>
               )}
 
-              {item?.approved && (
+              {/* {item?.approved && (
                 <View
                   style={{
                     flexDirection: "row",
@@ -354,7 +345,7 @@ export default function index() {
                     ₹{item?.Price}
                   </Text>
                 </View>
-              )}
+              )} */}
             </View>
           </View>
         </View>
@@ -459,7 +450,7 @@ export default function index() {
         renderItem={renderItem}
         onEndReachedThreshold={0.2}
         style={{ paddingHorizontal: w(10) }}
-        onResponderEnd={reCallLibrary}
+        onEndReached={reCallLibrary}
         ListHeaderComponent={
           <>
             <View style={{ height: h(270) }}>
@@ -570,6 +561,7 @@ export default function index() {
       />
 
       {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+      <NoConnection />
     </SafeAreaView>
   );
 }
