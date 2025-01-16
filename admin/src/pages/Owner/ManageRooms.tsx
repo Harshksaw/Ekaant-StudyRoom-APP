@@ -421,6 +421,7 @@ const ManageRooms = () => {
         {activeTab === "libraryDetails" && renderLibraryDetails()}
         {activeTab === "roomDetails" && (
         <RoomDetails
+        lib_id={lib_id}
           roomData={roomData}
           expandedRoom={expandedRoom}
           toggleRoomExpansion={toggleRoomExpansion}

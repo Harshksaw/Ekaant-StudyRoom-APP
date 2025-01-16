@@ -16,7 +16,7 @@ interface BookingModalProps {
     onSubmit: (date: string) => void;
   }
   
-const RoomDetails: React.FC<RoomDetailsProps> = ({ roomData, expandedRoom, toggleRoomExpansion }) => {
+const RoomDetails: React.FC<RoomDetailsProps> = ({lib_id , roomData, expandedRoom, toggleRoomExpansion }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
   console.log("🚀 ~ selectedSlot:", selectedSlot)
@@ -35,8 +35,17 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({ roomData, expandedRoom, toggl
     // Call API to book the slot
     // toast.loading('Booking slot...');
 
+    const userId =  await localStorage.getItem('userId');
+
     const res = await axios.post(`${BASEURL}/api/v1/admin/bookSeat`,{
+        libraryId :lib_id,
+
         
+         roomNo : selectedSlot.roomNo,
+         seatId: selectedSlot.seatId
+         
+         , adminId : userId
+         , date
 
 
     })
