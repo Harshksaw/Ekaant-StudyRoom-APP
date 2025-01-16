@@ -38,6 +38,7 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({ roomData, expandedRoom, toggl
     const res = await axios.post(`${BASEURL}/api/v1/admin/bookSeat`,{
         
 
+
     })
 
 

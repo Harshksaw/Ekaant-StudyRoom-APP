@@ -382,7 +382,8 @@ async function ResetAdminPassword(req, res, next) {
 }
 
 async function BookSeat(req, res) {
-  const { libraryId, roomNo, seatId, adminId } = req.body;
+  const { libraryId, roomNo, seatId, adminId, date } = req.body;
+  const { slotId} = req.body;
   // console.log("🚀 ~ BookSeat ~ req.body:", req.body)
 
   try {
@@ -430,6 +431,7 @@ async function BookSeat(req, res) {
           booked: true,
           bookedById: adminId,
           bookingSource: "admin",
+          bookingEndDate: new Date(date),
 
         },
       });
