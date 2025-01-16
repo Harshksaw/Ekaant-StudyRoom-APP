@@ -273,7 +273,7 @@ export default function index() {
               <Animated.View
                 style={{
                   transform: [{ translateX }],
-                  width: 600,
+                  width: 1000,
                   flexDirection: "row",
                 }}
               >
@@ -561,7 +561,6 @@ export default function index() {
       />
 
       {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
-      <NoConnection />
     </SafeAreaView>
   );
 }

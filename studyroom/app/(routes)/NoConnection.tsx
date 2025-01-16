@@ -1,11 +1,40 @@
-import { View, Text, StatusBar, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+  Animated,
+  Easing,
+} from "react-native";
+import React, { useEffect, useRef } from "react";
 import { h, w } from "@/constants/size";
 import ff from "@/constants/fonts";
-import { router } from "expo-router";
+import * as Updates from "expo-updates";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const NoConnection = () => {
+  const translateY = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(translateY, {
+          toValue: 20,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateY, {
+          toValue: 0,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [translateY]);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar backgroundColor={"#fff"} translucent={false} />
@@ -32,9 +61,9 @@ const NoConnection = () => {
           </Text>
         </View>
 
-        <Image
+        <Animated.Image
           source={require("@/assets/images/cloud.png")}
-          //   style={{ width: w(50), height: w(50) }}
+          style={{ transform: [{ translateY }] }}
         />
 
         <Text
@@ -72,8 +101,9 @@ const NoConnection = () => {
             marginTop: h(30),
           }}
           onPress={() => {
-            router.dismiss();
-            router.replace("/(routes)/splash");
+            console.log("ret");
+
+            Updates.reloadAsync();
           }}
         >
           <Text

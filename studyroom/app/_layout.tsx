@@ -1,12 +1,15 @@
 import { useFonts } from "expo-font";
-import { Navigator, Stack } from "expo-router";
-import React, { useEffect } from "react";
+import { Navigator, router, Stack } from "expo-router";
+import React, { useEffect, useState } from "react";
 
 import { ToastProvider } from "react-native-toast-notifications";
 
 import { Provider } from "react-redux";
 
 import store from "@/redux/store";
+import { useColorScheme } from "react-native";
+import NetInfo from "@react-native-community/netinfo";
+import NoConnection from "./(routes)/NoConnection";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -33,6 +36,18 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+  const [reachable, setReachable] = useState<boolean | null>(null);
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setReachable(
+        state.isInternetReachable == null ? true : state.isInternetReachable
+      );
+    });
+    return () => unsubscribe();
+  }, []);
+  if (!reachable) {
+    return <NoConnection />;
+  }
   return (
     <Provider store={store}>
       <ToastProvider>

@@ -163,9 +163,12 @@ const Slider = ({
     if (!flatlistRef?.current || page < 0 || page >= data.length) {
       return;
     }
-    flatlistRef.current.scrollToIndex({
-      index: page,
-    });
+
+    if (isNaN(page)) {
+      flatlistRef?.current?.scrollToIndex({
+        index: page,
+      });
+    }
   };
 
   const handleOnLayout = ({ nativeEvent: { layout } }: LayoutChangeEvent) => {
@@ -258,8 +261,8 @@ const Slider = ({
 
   const handleEvent = ({ nativeEvent }: NativeSyntheticEvent<any>) => {
     const { x } = nativeEvent?.contentOffset || {};
-    if (flatlistRef.current && x < 0) {
-      flatlistRef.current.scrollToOffset({ offset: 0, animated: true });
+    if (flatlistRef?.current && x < 0) {
+      flatlistRef?.current?.scrollToOffset({ offset: 0, animated: true });
     }
 
     const positionItem = x % itemWidth;

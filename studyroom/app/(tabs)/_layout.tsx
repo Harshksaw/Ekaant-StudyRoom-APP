@@ -9,11 +9,11 @@ import { Tabs } from "expo-router";
 import { Provider } from "react-redux";
 import store from "@/redux/store";
 import Feather from "react-native-vector-icons/Feather";
-import { Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import React from "react";
 import ff from "@/constants/fonts";
 import { h, w } from "@/constants/size";
-import { Profile } from "@/assets/svg";
+import { BookSvg, JobSvg, Profile } from "@/assets/svg";
 
 const tabBarIcon = (
   focused: boolean,
@@ -32,14 +32,19 @@ const tabBarIcon = (
         padding: w(title ? 0 : 8),
       }}
     >
-      {title === "Profile" ? (
+      {title === "Profile" && (
         <Profile fill={focused ? "#0077B6" : "#263238"} />
-      ) : (
+      )}
+      {(title === "Home" || !title) && (
         <Icon
           name={IconName}
           color={title ? (focused ? "#0077B6" : "#263238") : "#fff"}
-          size={w(title === "Job" ? 23 : 20)}
+          size={w(20)}
         />
+      )}
+      {title === "Job" && <JobSvg color={focused ? "#0077B6" : "#263238"} />}
+      {title === "Bookings" && (
+        <BookSvg color={focused ? "#0077B6" : "#263238"} />
       )}
       {title && (
         <Text
