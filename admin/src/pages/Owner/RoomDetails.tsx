@@ -1,5 +1,8 @@
+import { BASEURL } from '@/lib/utils';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { FaChevronUp, FaChevronDown } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 
 interface RoomDetailsProps {
@@ -7,10 +10,16 @@ interface RoomDetailsProps {
   expandedRoom: string | null;
   toggleRoomExpansion: (roomId: string) => void;
 }
-
+interface BookingModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSubmit: (date: string) => void;
+  }
+  
 const RoomDetails: React.FC<RoomDetailsProps> = ({ roomData, expandedRoom, toggleRoomExpansion }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  console.log("🚀 ~ selectedSlot:", selectedSlot)
 
   const handleBookClick = (slot: any) => {
     setSelectedSlot(slot);
@@ -22,12 +31,28 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({ roomData, expandedRoom, toggl
     setSelectedSlot(null);
   };
 
-  const handleModalSubmit = (date: string) => {
+  const handleModalSubmit = async(date: string) => {
     // Call API to book the slot
+    // toast.loading('Booking slot...');
+
+    const res = await axios.post(`${BASEURL}/api/v1/admin/bookSeat`,{
+        
+
+    })
+
+
     console.log('Booking slot:', selectedSlot, 'for date:', date);
     setIsModalOpen(false);
     setSelectedSlot(null);
   };
+
+  const handleUnbookClick = (slot: any) => {
+    if (window.confirm('Are you sure you want to unbook this slot?')) {
+      // Call API to unbook the slot
+      console.log('Unbooking slot:', slot);
+    }
+  };
+
 
   return (
     <div className="w-full h-full overflow-y-auto p-4">
@@ -53,9 +78,17 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({ roomData, expandedRoom, toggl
                           <p className="text-gray-600 text-left ">Time Slot: {slot.from} - {slot.to}</p>
                           <p className="text-gray-600 text-left">Booked: {slot.booked ? "Yes" : "No"}</p>
                           {slot.booked && (
-                            <p className="text-gray-600">
-                              Booking End Date: {new Date(slot.bookingEndDate!).toLocaleDateString()}
-                            </p>
+                           <>
+                           <p className="text-gray-600">
+                             Booking End Date: {new Date(slot.bookingEndDate!).toLocaleDateString()}
+                           </p>
+                           <button
+                             onClick={() => handleUnbookClick(slot)}
+                             className="px-4 py-2 bg-red-500 text-white rounded mt-4 w-32 text-center mx-auto"
+                           >
+                             Unbook
+                           </button>
+                         </>
                           )}
                           {!slot.booked && (
                             <button
@@ -92,35 +125,54 @@ export default RoomDetails;
 
 const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [date, setDate] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleSubmit = () => {
+    const selectedDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate <= today) {
+      toast.error('Please select a future date.');
+      return;
+    }
+
+    setIsProcessing(true);
+    onSubmit(date);
+    setIsProcessing(false);
+    toast.success('Booking successful!');
+  };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4">Book Time Slot</h2>
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="border p-2 w-full mb-4"
-        />
-        <div className="flex justify-end">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-500 text-white rounded mr-2"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() => onSubmit(date)}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            Submit
-          </button>
-        </div>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-20">
+    <div className="bg-white p-16 rounded-lg shadow-lg gap-10">
+      <h2 className="text-xl font-bold mb-4">Book Time Slot</h2>
+      <input
+        type="date"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        className="border p-2 w-full mb-4"
+      />
+      <div className="flex justify-end">
+        <button
+          onClick={onClose}
+          className="px-4 py-2 bg-gray-500 text-white rounded mr-2"
+          disabled={isProcessing}
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSubmit}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+          disabled={isProcessing}
+        >
+          {isProcessing ? 'Processing...' : 'Submit'}
+        </button>
       </div>
     </div>
+  </div>
   );
 };
 
