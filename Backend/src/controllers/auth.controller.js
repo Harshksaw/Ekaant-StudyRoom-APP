@@ -254,30 +254,38 @@ async function sendOtp(req, res) {
 async function verifyOtp(req, res) {
   const { phoneNumber, otp } = req.body;
 
-  const response = await prisma.phoneOtp.findMany({
-    where: { phoneNumber: String(phoneNumber) },
-    orderBy: { createdAt: 'desc' },
-    take: 1
-  });
-  // console.log("🚀 ~ verifyOtp ~ response:", response)
-
-
-
-  if (response[0].phoneOtp === '') {
-
-    return res.status(400).json({
-      success: false,
-      message: "The OTP is not valid",
+  try {
+    const response = await prisma.phoneOtp.findMany({
+      where: { phoneNumber: String(phoneNumber) },
+      orderBy: { createdAt: 'desc' },
+      take: 1
     });
-  } else if (otp != response[0].phoneOtp) {
-    // Invalid OTP
-    return res.status(401).json({
+
+    if (response.length === 0 || !response[0].phoneOtp) {
+      return res.status(400).json({
+        success: false,
+        message: "The OTP is not valid",
+      });
+    } else if (otp !== response[0].phoneOtp) {
+      // Invalid OTP
+      return res.status(401).json({
+        success: false,
+        message: "Invalid OTP",
+      });
+    }
+
+    // OTP is valid
+    return res.status(200).json({
+      success: true,
+      message: "OTP verified successfully",
+    });
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+    return res.status(500).json({
       success: false,
-      message: "Invalid Otp",
+      message: "Internal server error",
     });
   }
-
-  return res.status(200).json({ message: "OTP verified successfully" });
 }
 async function sendVerificationEmail(email, otp) {
   try{

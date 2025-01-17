@@ -39,16 +39,18 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({lib_id , roomData, expandedRoo
 
     const res = await axios.post(`${BASEURL}/api/v1/admin/bookSeat`,{
         libraryId :lib_id,
-
         
-         roomNo : selectedSlot.roomNo,
-         seatId: selectedSlot.seatId
-         
-         , adminId : userId
-         , date
-
-
-    })
+        
+        roomNo : selectedSlot.roomNo,
+        seatId: selectedSlot.seatId
+        
+        , adminId : userId
+        , date,
+        slotId : selectedSlot.id
+        
+        
+      })
+      console.log("🚀 ~ handleModalSubmit ~ res:", res.data)
 
 
     console.log('Booking slot:', selectedSlot, 'for date:', date);
