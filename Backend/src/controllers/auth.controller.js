@@ -74,9 +74,11 @@ async function signUp(req, res) {
       });
       images = result.secure_url;
     } else {
-      // Use a default DiceBear image if no image is provided
-      images = `https://eu.ui-avatars.com/api/?name=${req.body.username[0]}+ ${req?.body?.userName[1]}&size=250`;
-    }
+     // Use a default DiceBear image if no image is provided
+     const username = req.body.username || '';
+     const initials = username.length > 1 ? `${username[0]}${username[1]}` : username[0] || '';
+     images = `https://eu.ui-avatars.com/api/?name=${initials}&size=250`;
+   }
     const existingUser = await prisma.user.findUnique({
       where: { email: req.body.email },
     });
