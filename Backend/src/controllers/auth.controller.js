@@ -86,7 +86,7 @@ async function signUp(req, res) {
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: 'User already exists',
+        message: 'User already registered',
       });
     }
 
@@ -129,7 +129,7 @@ async function signUp(req, res) {
     console.log("error is ", error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "An error occurred during sign up",
+      message: "User already registered",
       error: error.message,
       data: {},
     });
