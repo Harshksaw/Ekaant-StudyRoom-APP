@@ -417,19 +417,19 @@ const getAllLibrary = async (req, res) => {
         .status(400)
         .json({ success: false, message: "City is required" });
     }
-
     const libraries = await prisma.library.findMany({
       where: {
       approved: true,
       address: {
         path: ['city'],
-equals: city,
-
-
+        equals: city,
       },
       },
       include: {
       amenities: true,
+      },
+      orderBy: {
+      name: 'asc',
       },
       skip: (page - 1) * limit,
       take: parseInt(limit),
