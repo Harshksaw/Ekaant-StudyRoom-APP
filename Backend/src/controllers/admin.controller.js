@@ -382,53 +382,65 @@ async function ResetAdminPassword(req, res, next) {
 }
 
 async function BookSeat(req, res) {
-  const { libraryId, roomNo, seatId, adminId,label } = req.body;
+  const { libraryId, roomNo, seatId, adminId, date } = req.body;
+  const { slotId} = req.body;
   // console.log("🚀 ~ BookSeat ~ req.body:", req.body)
 
   try {
-    const library = await  prisma.library.findById(libraryId);
-    if (!library) {
+    await prisma.$transaction(async (prisma) => {
+      const library = await prisma.library.findUnique({
+        where: { id: libraryId }
+      });
+      if (!library) {
+        return res.status(404).json({ message: "Library not found" });
+      }
 
-      return res.status(404).json({ message: "Library not found" });
-    }
+      const room = await prisma.room.findFirst({
+        where: {
+          libraryId: libraryId,
+          roomNo: Number(roomNo)
+        }
+      });
+      if (!room) {
+        return res.status(404).json({ message: "Room not found" });
+      }
 
-    const room =  await prisma.library.findFirst( room => room.roomNo === Number(roomNo));
-    // const room = )  library.rooms.find(room => room.roomNo === Number(roomNo));
-    if (!room) {
-      // console.error(`Room with number ${roomNo} not found in library ${libraryId}`);
-      return res.status(404).json({ message: "Room not found" });
-    }
+    const timeslot = await prisma.timeSlot.findUnique({
+        where: { id: slotId }
+      });
+      if (!timeslot) {
+        return res.status(404).json({ message: "Timeslot not found" });
+      }
+      if (timeslot.booked) {
+        return res.status(400).json({ message: "Timeslot is already booked" });
+      }
 
-    const updatedSeat = await prisma.seat.update({
-      where: { id: seatId },
-      data: {
-        booked: true,
-        bookedBy: adminId,
-        bookingSource: "admin",
-        label: label,
-      },
+      const updatedSeat = await prisma.seat.update({
+        where: { id: seatId },
+        data: {
+          booked: true,
+          bookedBy: adminId,
+          bookingSource: "admin",
+
+        },
+      });
+
+      const updatedTimeslot = await prisma.timeSlot.update({
+        where: { id: slotId },
+        data: {
+          booked: true,
+          bookedById: adminId,
+          bookingSource: "admin",
+          bookingEndDate: new Date(date),
+
+        },
+      });
+      console.log("🚀 ~ awaitprisma.$transaction ~ updatedSeat:", updatedSeat)
+      console.log("🚀 ~ awaitprisma.$transaction ~ updatedTimeslot:", updatedTimeslot)
+
+      res.status(200).json({ message: "Seat and timeslot booked successfully" });
     });
-    // if (!seat) {
-    //   console.error(`Seat with ID ${seatId} not found in room ${roomNo}`);
-    //   return res.status(404).json({ message: "Seat not found" });
-    // }
 
-    // if (seat.booked) {
-    //   console.error(`Seat with ID ${seatId} is already booked`);
-    //   return res.status(400).json({ message: "Seat is already booked" });
-    // }
-
-    // if (seat.booked) {
-    //   return res.status(400).json({ message: "Seat is already booked" });
-    // }
-
-    // seat.booked = true;
-    // seat.bookedBy = adminId;
-    // seat.bookingSource = "admin";
-    // seat.label = label;
-
-    // await library.save();
-    res.status(200).json({ message: "Seat booked successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error booking seat", error });
   }
