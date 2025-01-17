@@ -164,7 +164,7 @@ const Slider = ({
       return;
     }
 
-    if (isNaN(page)) {
+    if (!isNaN(page)) {
       flatlistRef?.current?.scrollToIndex({
         index: page,
       });

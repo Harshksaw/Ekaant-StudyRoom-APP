@@ -6,15 +6,33 @@ import {
   TouchableOpacity,
   Animated,
   Easing,
+  ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { h, w } from "@/constants/size";
 import ff from "@/constants/fonts";
 import * as Updates from "expo-updates";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const NoConnection = () => {
+  const [loader, setLoader] = useState<boolean>(true);
   const translateY = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      setLoader(true);
+    }, 500);
+
+    return clearTimeout(timeOut);
+  }, []);
+
+  if (loader) {
+    return (
+      <View style={{ flex: 1 }}>
+        <ActivityIndicator size={"large"} color={"#0077B6"} />
+      </View>
+    );
+  }
 
   useEffect(() => {
     Animated.loop(

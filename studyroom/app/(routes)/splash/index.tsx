@@ -15,7 +15,6 @@ const Splash = () => {
       router.dismissAll();
       NetInfo.fetch().then((state) => {
         if (!state.isConnected) {
-          router.dismiss();
           router.replace("/(routes)/NoConnection");
         } else {
           router.replace(isAuthenticated ? "/(tabs)" : "(routes)/onboarding");

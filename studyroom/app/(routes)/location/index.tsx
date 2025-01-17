@@ -187,9 +187,7 @@ const LocationsScreen = () => {
                 onLoad={() => setImageLoaded(true)}
               />
             </View>
-            <Text style={styles.locationItem} numberOfLines={1}>
-              {item?.location}
-            </Text>
+            <Text style={styles.locationItem}>{item?.location}</Text>
           </TouchableOpacity>
         )}
       />
@@ -247,10 +245,10 @@ const styles = StyleSheet.create({
     opacity: 0.94,
   },
   locationItem: {
-    fontSize: w(13),
+    fontSize: w(12),
     letterSpacing: 0.1,
     textAlign: "center",
-    fontFamily: ff.deckMedium,
+    fontFamily: ff.deckBold,
   },
 });
 

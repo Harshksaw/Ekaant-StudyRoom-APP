@@ -261,7 +261,7 @@ export default function index() {
             >
               <Text
                 style={{
-                  fontSize: 20,
+                  fontSize: w(18),
                   lineHeight: 26.01,
                   textAlign: "left",
                   fontFamily: ff.deckMedium,
@@ -279,7 +279,7 @@ export default function index() {
               >
                 <Text
                   style={{
-                    fontSize: 14,
+                    fontSize: w(14),
                     fontFamily: ff.textMedium,
                     color: "#0077B6",
                     width: "100%",
@@ -447,6 +447,7 @@ export default function index() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        keyExtractor={(_, index) => index.toString()}
         renderItem={renderItem}
         onEndReachedThreshold={0.2}
         style={{ paddingHorizontal: w(10) }}

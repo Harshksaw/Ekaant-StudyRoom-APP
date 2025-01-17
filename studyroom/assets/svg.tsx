@@ -493,8 +493,8 @@ export function Profile(props: any) {
 
 export const BookSvg = (props: any) => (
   <Svg
-    width={w(21)}
-    height={w(21)}
+    width={w(23)}
+    height={w(23)}
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -525,8 +525,8 @@ export const BookSvg = (props: any) => (
 );
 export const JobSvg = (props: any) => (
   <Svg
-    width={w(21)}
-    height={w(21)}
+    width={w(23)}
+    height={w(23)}
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

@@ -39,7 +39,7 @@ const tabBarIcon = (
         <Icon
           name={IconName}
           color={title ? (focused ? "#0077B6" : "#263238") : "#fff"}
-          size={w(20)}
+          size={w(21)}
         />
       )}
       {title === "Job" && <JobSvg color={focused ? "#0077B6" : "#263238"} />}
