@@ -429,7 +429,7 @@ async function BookSeat(req, res) {
           bookedBy: adminId,
           libraryId: libraryId,
           type: "OFFLINE_BOOKING",
-          amount: 0, // Add appropriate amount
+          amount: 0,
           description: "Seat booking by admin",
           adminId: adminId,
           createdAt: new Date(),
@@ -452,7 +452,7 @@ async function BookSeat(req, res) {
     });
 
   } catch (error) {
-    res.status(500).json({ message: "Error booking seat", error.message });
+    res.status(500).json({ message: "Error booking seat", error });
   }
 
 
