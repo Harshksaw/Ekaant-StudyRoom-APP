@@ -10,12 +10,14 @@ import RoomDetails from "./RoomDetails";
 const ManageRooms = () => {
   const { lib_id } = useParams();
   const [room, setRoom] = React.useState<any>(null);
+  console.log("🚀 ~ ManageRooms ~ room:", room)
   const [activeTab, setActiveTab] = useState<any>("userDetails");
   const [showAadhaar, setShowAadhaar] = useState<any>(false);
   const [showPanCard, setShowPanCard] = useState<any>(false);
   const [loading, setLoading] = useState<any>(false);
   const [roomData, setRoomData] = useState<any>([]);
   const [expandedRoom, setExpandedRoom] = useState<any>(null); // Track expanded room
+  console.log("🚀 ~ ManageRooms ~ expandedRoom:", expandedRoom)
   // const [position, setPosition] = useState<[number, number] | null>(null);
   React.useEffect(() => {
     const fetchLibrary = async () => {
@@ -271,6 +273,7 @@ const ManageRooms = () => {
   );
 
   const toggleRoomExpansion = (roomId: string) => {
+    console.log("🚀 ~ toggleRoomExpansion ~ roomId:", roomId)
     setExpandedRoom(expandedRoom === roomId ? null : roomId);
   };
   // const renderRoomDetails = () => (
