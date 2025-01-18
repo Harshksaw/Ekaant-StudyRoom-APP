@@ -425,17 +425,18 @@ async function BookSeat(req, res) {
       console.log("Timeslot found:", timeslot);
 
       const updatedSeat = await prisma.transaction.create({
-
-      data: {
-
-        bookedBy: adminId,
-        libraryId: libraryId,
-        type:"OFFLINE_BOOKING"
-
-      },
+        data: {
+          bookedBy: adminId,
+          libraryId: libraryId,
+          type: "OFFLINE_BOOKING",
+          amount: 0, // Add appropriate amount
+          description: "Seat booking by admin",
+          adminId: adminId,
+          createdAt: new Date(),
+        },
       });
       console.log("Seat updated:", updatedSeat);
-
+ 
       const updatedTimeslot = await prisma.timeSlot.update({
       where: { id: slotId },
       data: {
@@ -451,7 +452,7 @@ async function BookSeat(req, res) {
     });
 
   } catch (error) {
-    res.status(500).json({ message: "Error booking seat", error });
+    res.status(500).json({ message: "Error booking seat", error.message });
   }
 
 
