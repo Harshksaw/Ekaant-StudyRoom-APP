@@ -53,12 +53,20 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({ lib_id, roomData, expandedRoo
 
       const res = await axios.post(`${BASEURL}/api/v1/admin/bookSeat`, payload);
       console.log("🚀 ~ handleModalSubmit ~ res:", res.data);
+      toast.success('Booking successful!');
+
+      // Refresh the page
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
 
       // console.log('Booking slot:', selectedSlot, 'for date:', date);
       setIsModalOpen(false);
       setSelectedSlot(null);
       setSelectedRoomNo(null);
     } catch (error) {
+      toast.error('Error booking seat');
+      console.error("Error booking seat:", error.response ? error.response.data : error.message);
       // console.error("Error booking seat:", error.response ? error.response.data : error.message);
     }
   };
@@ -99,7 +107,7 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({ lib_id, roomData, expandedRoo
                              Booking End Date: {new Date(slot.bookingEndDate!).toLocaleDateString()}
                            </p>
                            <button
-                             onClick={() => handleBookClick(roomDetail.roomNo, slot)}
+                             onClick={() => handleUnbookClick(roomDetail.roomNo, slot)}
                              className="px-4 py-2 bg-red-500 text-white rounded mt-4 w-32 text-center mx-auto"
                            >
                              Unbook
@@ -108,7 +116,7 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({ lib_id, roomData, expandedRoo
                           )}
                           {!slot.booked && (
                             <button
-                              onClick={() =>  handleBookClick(roomDetail.roomNo, slot)}
+                              onClick={() => handleBookClick(roomDetail.roomNo, slot)}
                               className="px-4 py-2 bg-green-500 text-white rounded mt-4 w-32 text-center mx-auto "
                             >
                               Book
