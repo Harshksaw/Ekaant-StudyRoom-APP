@@ -1,27 +1,31 @@
-import { BASEURL } from '@/lib/utils';
-import axios from 'axios';
 import React, { useState } from 'react';
-import { FaChevronUp, FaChevronDown } from 'react-icons/fa';
-import { toast } from 'react-toastify';
-
+import axios from 'axios';
+import { BASEURL } from '../../lib/utils';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { toast } from 'sonner';
 
 interface RoomDetailsProps {
+  lib_id: string;
   roomData: any[];
   expandedRoom: string | null;
   toggleRoomExpansion: (roomId: string) => void;
 }
+
 interface BookingModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onSubmit: (date: string) => void;
-  }
-  
-const RoomDetails: React.FC<RoomDetailsProps> = ({lib_id , roomData, expandedRoom, toggleRoomExpansion }) => {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (date: string) => void;
+}
+
+const RoomDetails: React.FC<RoomDetailsProps> = ({ lib_id, roomData, expandedRoom, toggleRoomExpansion }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
-  console.log("🚀 ~ selectedSlot:", selectedSlot)
+  const [selectedRoomNo, setSelectedRoomNo] = useState<string | null>(null);
+  // console.log("🚀 ~ selectedSlot:", selectedSlot);
 
-  const handleBookClick = (slot: any) => {
+  const handleBookClick = (roomNo: string, slot: any) => {
+    console.log("🚀 ~ handleBookClick ~ roomNo:", roomNo)
+    setSelectedRoomNo(roomNo);
     setSelectedSlot(slot);
     setIsModalOpen(true);
   };
@@ -29,36 +33,36 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({lib_id , roomData, expandedRoo
   const handleModalClose = () => {
     setIsModalOpen(false);
     setSelectedSlot(null);
+    setSelectedRoomNo(null);
   };
 
-  const handleModalSubmit = async(date: string) => {
-    // Call API to book the slot
-    // toast.loading('Booking slot...');
+  const handleModalSubmit = async (date: string) => {
+    try {
+      const userId = await localStorage.getItem('userId');
+      
+      const payload = {
+        libraryId: lib_id,
+        roomNo: selectedRoomNo,
+        seatId: selectedSlot.seatId,
+        adminId: userId,
+        date,
+        slotId: selectedSlot.id,
+      };
 
-    const userId =  await localStorage.getItem('userId');
+      // console.log("🚀 ~ handleModalSubmit ~ payload:", payload);
 
-    const res = await axios.post(`${BASEURL}/api/v1/admin/bookSeat`,{
-        libraryId :lib_id,
-        
-        
-        roomNo : selectedSlot.roomNo,
-        seatId: selectedSlot.seatId
-        
-        , adminId : userId
-        , date,
-        slotId : selectedSlot.id
-        
-        
-      })
-      console.log("🚀 ~ handleModalSubmit ~ res:", res.data)
+      const res = await axios.post(`${BASEURL}/api/v1/admin/bookSeat`, payload);
+      console.log("🚀 ~ handleModalSubmit ~ res:", res.data);
 
-
-    console.log('Booking slot:', selectedSlot, 'for date:', date);
-    setIsModalOpen(false);
-    setSelectedSlot(null);
+      // console.log('Booking slot:', selectedSlot, 'for date:', date);
+      setIsModalOpen(false);
+      setSelectedSlot(null);
+      setSelectedRoomNo(null);
+    } catch (error) {
+      // console.error("Error booking seat:", error.response ? error.response.data : error.message);
+    }
   };
-
-  const handleUnbookClick = (slot: any) => {
+  const handleUnbookClick = (roomNo: string, slot: any) => {
     if (window.confirm('Are you sure you want to unbook this slot?')) {
       // Call API to unbook the slot
       console.log('Unbooking slot:', slot);
@@ -95,7 +99,7 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({lib_id , roomData, expandedRoo
                              Booking End Date: {new Date(slot.bookingEndDate!).toLocaleDateString()}
                            </p>
                            <button
-                             onClick={() => handleUnbookClick(slot)}
+                             onClick={() => handleBookClick(roomDetail.roomNo, slot)}
                              className="px-4 py-2 bg-red-500 text-white rounded mt-4 w-32 text-center mx-auto"
                            >
                              Unbook
@@ -104,7 +108,7 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({lib_id , roomData, expandedRoo
                           )}
                           {!slot.booked && (
                             <button
-                              onClick={() => handleBookClick(slot)}
+                              onClick={() =>  handleUnbookClick(roomDetail.roomNo, slot)}
                               className="px-4 py-2 bg-green-500 text-white rounded mt-4 w-32 text-center mx-auto "
                             >
                               Book
