@@ -2,11 +2,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASEURL } from "../../lib/utils";
 import { toast } from "react-toastify";
+import { Navigate, Router, useNavigate } from "react-router-dom";
 
 // Function to fetch all libraries
 const fetchLibraries = async () => {
   try {
-    const response = await axios.get(`${BASEURL}/api/v1/library/getAllLibraries`);
+    const adminId = localStorage.getItem("userId");
+    const response = await axios.post(`${BASEURL}/api/v1/library/getAdminLibraries`, {
+      userId: adminId,
+    });
     return response.data.data;
   } catch (error) {
     console.error("Error fetching libraries:", error);
@@ -17,7 +21,8 @@ const fetchLibraries = async () => {
 // Function to fetch rooms by library ID
 const fetchRoomsByLibraryId = async (libraryId: string) => {
   try {
-    const response = await axios.post(`${BASEURL}/api/v1/room/getRoomsByLibraryId`, { libraryId });
+    const response = await axios.post(`${BASEURL}/api/v1/library/getLibraryById`, { id: libraryId });
+    console.log("🚀 ~ fetchRoomsByLibraryId ~ response.data.data:", response.data.data)
     return response.data.data;
   } catch (error) {
     console.error("Error fetching rooms:", error);
@@ -26,23 +31,26 @@ const fetchRoomsByLibraryId = async (libraryId: string) => {
 };
 
 // Function to fetch seats by room ID
-const fetchSeatsByRoomId = async (roomId: string) => {
-  try {
-    const response = await axios.post(`${BASEURL}/api/v1/seat/getSeatsByRoomId`, { roomId });
-    return response.data.data;
-  } catch (error) {
-    console.error("Error fetching seats:", error);
-    return [];
-  }
-};
+// const fetchSeatsByRoomId = async (roomId: string) => {
+//   try {
+//     const response = await axios.post(`${BASEURL}/api/v1/seat/getSeatsByRoomId`, { roomId });
+//     return response.data.data;
+//   } catch (error) {
+//     console.error("Error fetching seats:", error);
+//     return [];
+//   }
+// };
 
 // Component to display bookings
 const LibraryBookings = () => {
   const [libraries, setLibraries] = useState<any[]>([]);
   const [rooms, setRooms] = useState<any[]>([]);
+  console.log("🚀 ~ LibraryBookings ~ rooms:", rooms)
   const [seats, setSeats] = useState<any[]>([]);
   const [selectedLibrary, setSelectedLibrary] = useState<string | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
+  console.log("🚀 ~ LibraryBookings ~ selectedRoom:", selectedRoom)
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getLibraries = async () => {
@@ -56,7 +64,17 @@ const LibraryBookings = () => {
     if (selectedLibrary) {
       const getRooms = async () => {
         const rooms = await fetchRoomsByLibraryId(selectedLibrary);
-        setRooms(rooms);
+
+        if(rooms.rooms.length === 0) {
+          toast.error('No rooms found for this library');
+          setTimeout(() => {
+            toast.info('create room') 
+            navigate('/manage-library/create-room')
+
+          }, 3000);
+          return;
+        }
+        setRooms(rooms.rooms);
       };
       getRooms();
     }
@@ -65,12 +83,53 @@ const LibraryBookings = () => {
   useEffect(() => {
     if (selectedRoom) {
       const getSeats = async () => {
-        const seats = await fetchSeatsByRoomId(selectedRoom);
+        const room = rooms.find((room) => room.id == selectedRoom);
+        const seats = room ? room.seats : [];
+        console.log("🚀 ~ getSeats ~ seats:", seats)
         setSeats(seats);
       };
       getSeats();
     }
   }, [selectedRoom]);
+
+  const handleBookSeat = async (seatId: string) => {
+    try {
+      // await bookSeat(seatId);
+      toast.success('Seat booked successfully');
+      // Refresh seats
+      const seats = await fetchSeatsByRoomId(selectedRoom!);
+      setSeats(seats);
+    } catch (error) {
+      toast.error('Error booking seat');
+    }
+  };
+
+  const handleUnbookSeat = async (seatId: string) => {
+    try {
+      // await unbookSeat(seatId);
+      toast.success('Seat unbooked successfully');
+      // Refresh seats
+      const seats = await fetchSeatsByRoomId(selectedRoom!);
+      setSeats(seats);
+    } catch (error) {
+      toast.error('Error unbooking seat');
+    }
+  };
+  const getSeatMatrix = () => {
+    if (!seats || seats.length === 0) return [];
+
+    const maxRow = Math.max(...seats.map((seat) => parseInt(seat.seatId.split('-')[0])));
+    const maxCol = Math.max(...seats.map((seat) => parseInt(seat.seatId.split('-')[1])));
+
+    const matrix = Array.from({ length: maxRow + 1 }, () => Array(maxCol + 1).fill(null));
+
+    seats.forEach((seat) => {
+      const [row, col] = seat.seatId.split('-').map(Number);
+      matrix[row][col] = seat;
+    });
+
+    return matrix;
+  };
 
   return (
     <div className="flex-1 min-h-96 justify-center flex-col p-4">
@@ -114,15 +173,40 @@ const LibraryBookings = () => {
         </div>
       )}
 
-      {selectedRoom && (
-        <div className="mt-4">
+{selectedRoom && (
+        <div className="mt-4 bg-blue-200 rounded-md">
           <h2 className="text-xl font-bold mb-4">Seat Layout</h2>
-          <div className="grid grid-cols-4 gap-4">
-            {seats.map((seat) => (
-              <div key={seat.id} className="border p-4">
-                <p>Seat: {seat.seatLabel}</p>
-                <p>Booked: {seat.booked ? "Yes" : "No"}</p>
-              </div>
+          <div className="overflow-x-auto">
+            {getSeatMatrix().map((row, rowIndex) => (
+                <div key={rowIndex} className="flex gap-4 justify-center">
+                {row.map((seat, colIndex) => (
+                  <div key={colIndex} className="border p-4 h-32 m-5 w-32 flex flex-col items-center justify-center rounded-md border-black">
+                  {seat ? (
+                    <>
+                    <p className="font-bold">Seat: {seat.seatLabel}</p>
+                    <p className="text-sm">Booked: {seat.timeSlots[0].booked ? "Yes" : "No"}</p>
+                    {seat.timeSlots[0].booked ? (
+                      <button
+                      onClick={() => handleUnbookSeat(seat.id)}
+                      className="px-4 py-2 mt-2 bg-red-500 text-white rounded"
+                      >
+                      Unbook
+                      </button>
+                    ) : (
+                      <button
+                      onClick={() => handleBookSeat(seat.id)}
+                      className="px-4 py-2 mt-2 bg-green-500 text-white rounded"
+                      >
+                      Book
+                      </button>
+                    )}
+                    </>
+                  ) : (
+                    <div className="border p-4"></div>
+                  )}
+                  </div>
+                ))}
+                </div>
             ))}
           </div>
         </div>
