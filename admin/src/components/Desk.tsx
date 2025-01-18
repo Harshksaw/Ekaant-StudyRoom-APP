@@ -2,9 +2,9 @@ import React from "react";
 
 const Desk = () => {
   return (
-    <div>
+    <div className="mx-5 p-0">
       <svg
-        className="h-8"
+        className="h-10 w-auto"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
         width="512"

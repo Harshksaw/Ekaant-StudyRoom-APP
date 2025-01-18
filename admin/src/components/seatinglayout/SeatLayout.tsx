@@ -2,7 +2,8 @@ import { useState } from "react";
 import { RiArmchairLine } from "react-icons/ri";
 import { MdRotateLeft } from "react-icons/md";
 import { HiOutlineSave } from "react-icons/hi";
-
+import Desk from "../Desk";
+import { CiDesktop } from "react-icons/ci";
 const Seat = ({
   seatData,
   isSelected,
@@ -35,8 +36,12 @@ const Seat = ({
       `}
         onClick={handleClick}
       >
-        <div style={isSelected ? style : null}>
-          <RiArmchairLine size={32} className="m-auto" />
+        <div style={isSelected ? style : null} >
+         <div className="m-auto">
+          <Desk/>
+         </div>
+
+         
         </div>
       </button>
       {isSelected && (
