@@ -41,10 +41,10 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({ lib_id, roomData, expandedRoo
       const userId = await localStorage.getItem('userId');
       
       const payload = {
-        libraryId: lib_id,
+        libraryId: parseInt(lib_id),
         roomNo: selectedRoomNo,
         seatId: selectedSlot.seatId,
-        adminId: userId,
+        adminId: parseInt(userId),
         date,
         slotId: selectedSlot.id,
       };
@@ -108,7 +108,7 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({ lib_id, roomData, expandedRoo
                           )}
                           {!slot.booked && (
                             <button
-                              onClick={() =>  handleUnbookClick(roomDetail.roomNo, slot)}
+                              onClick={() =>  handleBookClick(roomDetail.roomNo, slot)}
                               className="px-4 py-2 bg-green-500 text-white rounded mt-4 w-32 text-center mx-auto "
                             >
                               Book

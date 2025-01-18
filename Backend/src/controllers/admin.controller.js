@@ -424,12 +424,14 @@ async function BookSeat(req, res) {
       }
       console.log("Timeslot found:", timeslot);
 
-      const updatedSeat = await prisma.seat.update({
+      const updatedSeat = await prisma.transaction.create({
       where: { id: seatId },
       data: {
         booked: true,
         bookedBy: adminId,
-        bookingSource: "admin",
+        libraryId: libraryId,
+        type:"OFFLINE_BOOKING"
+
       },
       });
       console.log("Seat updated:", updatedSeat);
