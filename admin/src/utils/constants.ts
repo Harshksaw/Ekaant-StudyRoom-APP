@@ -6,7 +6,7 @@ const predefinedAmenities = [
     "Separate Washroom",
     "News",
     "Discussion Area",
-    "LunchArea",
+    "Lunch Area",
     "Moving Chair",
     "Floor Mat",
     "Separate Parking",

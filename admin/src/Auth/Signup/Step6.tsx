@@ -45,7 +45,7 @@ const Step6 = ({ handleLocationSelect, nextStep, prevStep }: any) => {
           className="center mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
           onClick={nextStep}
         >
-          Next
+          Submit
         </button>
       </div>
     </div>

@@ -5,7 +5,7 @@ import { BASEURL } from "@/lib/utils";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useParams } from "react-router-dom";
 import { predefinedAmenities } from "@/utils/constants";
-
+import { FaCloudUploadAlt } from "react-icons/fa";
 interface Room {
   _id: string;
   roomNo: number;
@@ -252,29 +252,8 @@ const EditLibrary = () => {
       <h2 className="text-2xl font-bold mb-4">Edit Library</h2>
 
       <div>
-        <div className="mb-6">
-          <label
-            className="flex flex-row justify-center items-center text-gray-700 text-sm font-bold mb-2"
-            htmlFor="cardImage"
-          >
-            Card Image
-          </label>
-          {library.cardImage && (
-            <img
-              src={library.cardImage}
-              alt="Card"
-              className="mb-4 w-96 h-72  rounded-xl"
-            />
-          )}
-          <input
-            id="cardImage"
-            type="file"
-            onChange={handleCardImageChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
 
-        <div className="mb-6">
+      <div className="mb-6">
           <label
             className="block text-gray-700  font-bold mb-2 text-3xl"
             htmlFor="images"
@@ -282,7 +261,7 @@ const EditLibrary = () => {
             Images
           </label>
           <p className="font-bold ">Upto 5 Images only</p>
-          <div className="flex items-center justify-center flex-wrap py-10 gap-4 border border-1 border-gray-800 rounded-xl mt-2">
+          <div className="flex items-center justify-start flex-wrap px-4 py-10 gap-4 border border-1 border-gray-800 rounded-xl mt-2">
             {library.images.map((image, index) => (
               <img
                 key={index}
@@ -292,16 +271,66 @@ const EditLibrary = () => {
               />
             ))}
           </div>
-          <input
-            id="images"
-            type="file"
-            multiple
-            onChange={handleImageChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
+          <div className="flex px-4 mt-4">
+              <label
+                htmlFor="cardImage"
+                className="cursor-pointer flex items-center gap-3 justify-center bg-gradient-to-r border border-black hover:text-white py-3 px-12 rounded-xl text-lg font-semibold transition duration-300 hover:bg-blue-500"
+              >
+               Upload Image
+               <FaCloudUploadAlt size={36}/>
+              </label>
+              <input
+                   id="images"
+                   type="file"
+                   multiple
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </div>
+          
         </div>
+        <div>
+          <div className="mb-6">
+            <label
+              className="flex text-2xl flex-row  items-center text-gray-700 font-bold mb-2"
+              htmlFor="cardImage"
+            >
+              Card Image
+            </label>
+
+            {/* Image preview */}
+            {library.cardImage && (
+              <div className="flex  mb-4 px-6 border border-black w-96 rounded-xl py-10">
+                <img
+                  src={library.cardImage}
+                  alt="Card"
+                  className="w-96 h-72 object-cover rounded-xl shadow-lg"
+                />
+              </div>
+            )}
+
+            {/* File Upload Button */}
+            <div className="flex px-4">
+              <label
+                htmlFor="cardImage"
+                className="cursor-pointer flex justify-center items-center gap-3 border border-black hover:text-white py-3 px-12 rounded-xl text-lg font-semibold transition duration-300 hover:bg-blue-500"
+              >
+                Upload Image
+               <FaCloudUploadAlt size={36}/>
+              </label>
+              <input
+                id="cardImage"
+                type="file"
+                onChange={handleCardImageChange}
+                className="hidden"
+              />
+            </div>
+          </div>
+        </div>  
+
+    
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-10"
+          className="bg-blue-500 hover:bg-blue-700 rounded-xl  text-white font-bold py-3 px-6  focus:outline-none focus:shadow-outline mb-10"
           onClick={updateLibraryImages}
         >
           Update Images
