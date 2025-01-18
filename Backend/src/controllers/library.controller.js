@@ -541,8 +541,8 @@ const getLibraryRooms = async (req, res) => {
 };
 
 const getLibraryByUserId = async (req, res) => {
-  const { id } = req.body;
-  console.log(id);
+  const { id } = req.params;
+
   try {
     const room = await prisma.library.findFirst({
       where: {
