@@ -17,6 +17,10 @@ BookingRouter.post('/invoices/:bookingId', BookingController.generateInvoice);
 BookingRouter.post('/hasBoughtEarlier', BookingController.hasBoughtEarlier);
 
 
+
+BookingRouter.post('/adminBooking', BookingController.adminBooking);
+
+
 // BookingRouter.post('/getLibrary', BookingController.generateOtp);
 // BookingRouter.post('/verifyOtp', BookingController.verifyOtp);
 
