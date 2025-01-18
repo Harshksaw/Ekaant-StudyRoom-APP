@@ -16,9 +16,9 @@ const Navbar = () => {
     
   }
   return (
-    <div className="flex">
+    <div className="flex mx-5 mt-2">
       <div className="flex w-full h-17 gap-1">
-        <img src={firstPic} alt="" className="w-10" />
+        <img src={firstPic} alt="" className="w-12" />
         <div className="items-center ml-2">
           <SearchInput />
         </div>

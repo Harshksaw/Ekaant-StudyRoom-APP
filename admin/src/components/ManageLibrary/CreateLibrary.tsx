@@ -213,7 +213,7 @@ const CreateLibrary = () => {
             <h2 className="text-5xl text-blue-400">Coming Soon</h2>
             <p className="text-gray-600 mt-4">Stay tuned for exciting updates!</p>
             <button 
-            onClick={() => navigate('/dashboard') }
+            onClick={() => navigate('/manage-library/my-library') }
             className="bg-blue-500 text-white px-4 py-2 mt-6 rounded-md hover:bg-blue-600">
               Close
             </button>

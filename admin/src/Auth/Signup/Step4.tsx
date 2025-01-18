@@ -89,6 +89,7 @@ export const StepFour = ({
             type="text"
             id="adminAppShortDescription"
             placeholder="shortDescription"
+            maxLength={85}
             value={libraryDetails.libraryApp.shortDescription}
             onChange={(e) => {
               setLibraryDetails({
@@ -121,6 +122,7 @@ export const StepFour = ({
             type="text"
             id="adminAppLongDescription"
             placeholder="LongDescription"
+            maxLength={85}
             value={libraryDetails.libraryApp.longDescription}
             onChange={(e) => {
               setLibraryDetails({
@@ -216,7 +218,9 @@ export const StepFour = ({
           </div>
         </div>
         {/* Pincode */}
+        
         <div className="w-1/3">
+        <label >Pincode:</label>
           <input
             className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"

@@ -6,8 +6,6 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { useParams } from "react-router-dom";
 import { predefinedAmenities } from "@/utils/constants";
 
-
-
 interface Room {
   _id: string;
   roomNo: number;
@@ -231,26 +229,23 @@ const EditLibrary = () => {
     }
   };
   const handleRoomNameChange = async (room) => {
-    
-    console.log("🚀 ~ handleRoomNameChange ~ roomId:", room)
-    toast.loading("Updating Room Name")
+    console.log("🚀 ~ handleRoomNameChange ~ roomId:", room);
+    toast.loading("Updating Room Name");
     try {
-      const res = await axios.post(`${BASEURL}/api/v1/library/editRoomName/${room.id}`, {
-        newName: roomName
-      })
+      const res = await axios.post(
+        `${BASEURL}/api/v1/library/editRoomName/${room.id}`,
+        {
+          newName: roomName,
+        }
+      );
       if (res.status === 200) {
-        toast.dismiss()
-        toast.success("Room Name Updated Successfully")
+        toast.dismiss();
+        toast.success("Room Name Updated Successfully");
       }
-
-
     } catch (error) {
-      console.log("🚀 ~ handleRoomNameChange ~ error", error)
-
+      console.log("🚀 ~ handleRoomNameChange ~ error", error);
     }
-  }
-
-
+  };
 
   return (
     <div className="w-full h-full flex-1 p-6">
@@ -268,7 +263,7 @@ const EditLibrary = () => {
             <img
               src={library.cardImage}
               alt="Card"
-              className="mb-4 w-96 h-72"
+              className="mb-4 w-96 h-72  rounded-xl"
             />
           )}
           <input
@@ -281,19 +276,19 @@ const EditLibrary = () => {
 
         <div className="mb-6">
           <label
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700  font-bold mb-2 text-3xl"
             htmlFor="images"
           >
             Images
           </label>
-          <p>Upto 5 Images only</p>
-          <div className="grid grid-cols-2 gap-4 border border-1 border-gray-800">
+          <p className="font-bold ">Upto 5 Images only</p>
+          <div className="flex items-center justify-center flex-wrap py-10 gap-4 border border-1 border-gray-800 rounded-xl mt-2">
             {library.images.map((image, index) => (
               <img
                 key={index}
                 src={image}
                 alt={`Library ${index}`}
-                className="mb-4 w-60 h-60"
+                className="mb-4 w-96 h-72 rounded-xl"
               />
             ))}
           </div>
@@ -309,7 +304,7 @@ const EditLibrary = () => {
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-10"
           onClick={updateLibraryImages}
         >
-          Update ImageS
+          Update Images
         </button>
       </div>
 
@@ -387,6 +382,7 @@ const EditLibrary = () => {
           Address Line 1
         </label>
         <input
+          readOnly
           id="line1"
           name="line1"
           type="text"
@@ -403,6 +399,7 @@ const EditLibrary = () => {
           Address Line 2
         </label>
         <input
+          readOnly
           id="line2"
           name="line2"
           type="text"
@@ -419,6 +416,7 @@ const EditLibrary = () => {
           City
         </label>
         <input
+          readOnly
           id="city"
           name="city"
           type="text"
@@ -435,6 +433,7 @@ const EditLibrary = () => {
           State
         </label>
         <input
+          readOnly
           id="state"
           name="state"
           type="text"
@@ -451,6 +450,7 @@ const EditLibrary = () => {
           Pincode
         </label>
         <input
+          readOnly
           id="pincode"
           name="pincode"
           type="text"
@@ -467,6 +467,7 @@ const EditLibrary = () => {
           Registration Fees
         </label>
         <input
+          readOnly
           id="registration"
           name="registration"
           type="number"
@@ -490,27 +491,21 @@ const EditLibrary = () => {
             key={room?._id}
             className="flex  flex-row justify-between items-center p-4 border rounded"
           >
-
-
             <div className="w-32 flex flex-row gap-5">
-
-
-              <p>
-                {room.roomNo}
-              </p>
+              <p>{room.roomNo}</p>
               <input
                 type="number"
                 className="mr-2 w-8"
                 onChange={(e) => {
                   setRoomName(e.target.value);
-
                 }}
                 value={room?.roomName}
               />
             </div>
             <button
               onClick={() => handleRoomNameChange(room)}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline">
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline"
+            >
               Save
             </button>
 

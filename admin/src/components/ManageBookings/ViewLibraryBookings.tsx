@@ -39,7 +39,7 @@ const LibraryBookings = () => {
 
   return (
     <div className="flex-1 min-h-96 justify-center flex-col p-4">
-      <div className="text-xl mb-4">Bookings</div>
+      {/* <div className="text-xl mb-4">Bookings</div>
       <div className="overflow-y-auto max-h-96">
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
@@ -86,7 +86,20 @@ const LibraryBookings = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
+
+<div className="flex flex-col items-center justify-center h-[80vh]  text-center">
+     
+     <h1 className="text-2xl ">Booki</h1>
+               <p className="text-xl md:text-6xl font-bold  mb-8">
+               Coming Soon!
+               </p>
+           <div
+             className="w-32 h-32 md:w-40 md:h-40 bg-blue-500 rounded-full flex items-center justify-center animate-pulse"
+           >
+             <span className="text-white font-bold text-lg"></span>
+           </div>
+         </div>
     </div>
   );
 };

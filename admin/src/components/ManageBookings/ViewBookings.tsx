@@ -62,7 +62,7 @@ const ViewBookings = () => {
 
 <div className="overflow-y-auto flex-1 min-h-96 justify-center flex-col p-4">
 <table className="min-w-full bg-white border border-gray-300 h-full">
-            <thead className="sticky top-0 bg-white"> 
+            <thead className="bg-white"> 
                 <tr>
                   <th className="py-2 px-4 border-b">Email</th>
                   <th className="py-2 px-4 border-b">Phone Number</th>

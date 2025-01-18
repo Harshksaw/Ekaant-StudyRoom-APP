@@ -1,18 +1,18 @@
 const predefinedAmenities = [
-    "coldWater",
-    "wifi",
-    "ac",
-    "locker",
-    "separateWashroom",
-    "news",
-    "discussionArea",
-    "lunchArea",
-    "movingChair",
-    "floorMat",
-    "separateParking",
-    "commonParking",
-    "separateRoomForGirl's",
-    "separateRoomForBoy's"
+    "Cold Water",
+    "Wifi",
+    "Ac",
+    "Locker",
+    "Separate Washroom",
+    "News",
+    "Discussion Area",
+    "LunchArea",
+    "Moving Chair",
+    "Floor Mat",
+    "Separate Parking",
+    "Common Parking",
+    "Separate Room For Girl's",
+    "Separate Room For Boy's"
   ];
 
   export { predefinedAmenities };

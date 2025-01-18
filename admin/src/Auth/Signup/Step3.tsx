@@ -1,4 +1,3 @@
-
 import StateDropdown from "@/components/StateSelector";
 
 import { DayPicker } from "react-day-picker";
@@ -7,6 +6,9 @@ import "react-day-picker/style.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+
+const minAgeDate = new Date();
+minAgeDate.setFullYear(minAgeDate.getFullYear() - 18);
 export const StepThree = ({
   nextStep,
   prevStep,
@@ -104,15 +106,21 @@ any) => {
         <div className="flex-col items-center justify-start">
           <div className="flex-col mb-4 relative" ref={datePickerRef}>
             {showDatePicker && (
-              <div className="absolute z-10 bg-white border border-gray-300 rounded shadow-lg mt-2">
+              <div className="absolute z-10 bg-white border border-gray-300 rounded-xl p-3  shadow-lg mt-7">
                 <DayPicker
                   mode="single"
                   selected={userDetails.dob}
                   onSelect={handleDateChange}
                   captionLayout="dropdown"
+                  fromYear={1950} // Start year in the dropdown
+                  toYear={new Date().getFullYear()} // End year in the dropdown
+                  disabled={{ after: minAgeDate,
+                    before : new Date()
+                   }}  // Disable future dates
                 />
               </div>
             )}
+
             <label>Date of Birth:</label>
             <input
               className="w-full px-3 py-2 border border-gray-800 rounded focus:outline-none"
@@ -148,18 +156,24 @@ any) => {
             Aadhar Card
           </label>
           <input
-            className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
-            maxLength={12}
             id="adminAadharCard"
             name="adminAadharCard"
             value={userDetails.aadharCard}
-            onChange={(e) =>
-              setUserDetails({ ...userDetails, aadharCard: e.target.value })
-            }
+            onChange={(e) => {
+              // Allow only numbers and ensure the length is 12
+              const value = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+              if (value.length <= 12) {
+                setUserDetails({ ...userDetails, aadharCard: value });
+              }
+            }}
+            maxLength={12} // Ensure max length is 12
+            minLength={12} // Ensure min length is 12
             placeholder="Aadhar Card Number"
           />
         </div>
+
         {/* Upload Aadhar */}
 
         <div className="flex-col mb-4">
@@ -192,23 +206,31 @@ any) => {
         <div className="flex-col items-center justify-start mt-2">
           <label
             htmlFor="adminPanCard"
-            className="w-1/3 text-gray-700 text-left  font-mulish font-bold text-md leading-tight"
+            className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
           >
             PAN Card
           </label>
           <input
-            className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
-            maxLength={10}
+            maxLength={10} // Maximum length set to 10
+            minLength={10} // Minimum length set to 10
             id="adminPanCard"
             name="adminPanCard"
             value={userDetails.panCard}
-            onChange={(e) =>
-              setUserDetails({ ...userDetails, panCard: e.target.value })
-            }
+            onChange={(e) => {
+              // Allow alphanumeric characters and restrict length to 10
+              const value = e.target.value
+                .toUpperCase()
+                .replace(/[^A-Za-z0-9]/g, ""); // Allow only letters and numbers
+              if (value.length <= 10) {
+                setUserDetails({ ...userDetails, panCard: value });
+              }
+            }}
             placeholder="Pan Card Number"
           />
         </div>
+
         <div className="flex-col mb-4">
           {panPreview && (
             <img
@@ -291,6 +313,7 @@ any) => {
 
           {/* city */}
           <div className="w-2/3">
+          <label className="font-bold" >City:</label>
             <input
               className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
               type="text"
@@ -310,6 +333,7 @@ any) => {
           </div>
           {/* pinCode */}
           <div className="w-1/2">
+          <label className="font-bold" >Pincode:</label>
             <input
               className="w-32 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
               type="text"

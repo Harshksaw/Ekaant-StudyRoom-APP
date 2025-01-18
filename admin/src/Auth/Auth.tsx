@@ -102,10 +102,10 @@ const Auth = ({ type }: { type: "signin" }) => {
           <p className="font-semibold text-3xl">
             Welcome to Ekaant Admin Panel
           </p>
-          <p className="font-normal text-base">
+          {/* <p className="font-normal text-base">
             Lorem ipsum dolor sit amet, conscs <br /> ectetur adipiscing elit
             velit.
-          </p>
+          </p> */}
         </div>
       </div>
 

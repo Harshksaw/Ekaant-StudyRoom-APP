@@ -127,6 +127,7 @@ export const StepFive = ({
           onChange={(e) =>
             setLibraryDetails({ ...libraryDetails, halls: e.target.value })
           }
+          min={0}
           placeholder="halls"
         />
       </div>

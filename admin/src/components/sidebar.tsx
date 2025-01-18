@@ -83,7 +83,7 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
-        <div className="pt-4 border-b  border-black pb-4 gap-5">
+        {/* <div className="pt-4 border-b  border-black pb-4 gap-5">
           <div className="flex items-center justify-between gap-[10px] py-[15px] cursor-pointer">
             <div className="flex items-center gap-[10px]">
               <FaStickyNote color="black" />
@@ -104,11 +104,11 @@ const Sidebar = () => {
             <FaRegSun color="black" />
             <p className="text-[14px] leading-5 font-normal text-black">Help</p>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* todo-- yeh bhi theek krna hai */}
-      <div className="">
+      {/* <div className="">
         <div className=" flex-end flex items-end justify-center gap-4 ">
           <FaRegSun color="black" />
 
@@ -116,7 +116,7 @@ const Sidebar = () => {
 
           <FaRegSun color="black" />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
