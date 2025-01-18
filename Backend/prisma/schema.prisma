@@ -319,5 +319,6 @@ enum TransactionType {
   BOOKING_PAYMENT
   COMMISSION
   REFUND 
+  OFFLINE_BOOKING
   // Add other types as needed
 }
