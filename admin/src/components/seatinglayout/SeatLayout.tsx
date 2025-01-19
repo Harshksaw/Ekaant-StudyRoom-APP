@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { RiArmchairLine } from "react-icons/ri";
+
 import { MdRotateLeft } from "react-icons/md";
 import { HiOutlineSave } from "react-icons/hi";
 import Desk from "../Desk";
-import { CiDesktop } from "react-icons/ci";
+
 const Seat = ({
   seatData,
   isSelected,
@@ -87,7 +87,7 @@ const Seats = ({ onSeatSelect, seatLayout }: SeatsProps) => {
     [key: string]: number;
   }>({});
   const [seatNames, setSeatNames] = useState<{ [key: string]: string }>({});
-  console.log("🚀 ~ Seats ~ seatName:", seatLayout);
+  // console.log("🚀 ~ Seats ~ seatName:", seatLayout);
 
   const handleRotate = (seatData: SeatData) => {
     const seatKey = seatData.id;

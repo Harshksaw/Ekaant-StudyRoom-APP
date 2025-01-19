@@ -421,6 +421,95 @@ async function generateInvoice(req, res) {
   }
 }
 
+
+async function adminBooking(req, res) {
+  try {
+    const { bookingEndDate } = req.body;
+    const { libraryId, roomNo, bookedSeat, bookingId, BookedData  , name ,phoneNumber , bookingMonths} = req.body;
+    console.log(`Confirming booking for libraryId: ${libraryId},
+       roomNo: ${roomNo}, bookedSeat: ${bookedSeat}, bookingId: ${bookingId}`);
+
+    const { room, seat } = await findRoomAndSeat(libraryId, roomNo, bookedSeat.seatId);
+    console.log(`Found room: ${room.id}, seat: ${seat}`);
+
+    const timeSlotId = BookedData.timeSlot[0].slotId;
+    console.log(`Finding time slot with id: ${timeSlotId}`);
+    const timeSlot = BookedData.timeSlot[0];
+    console.log("🚀 ~ confirmBooking ~ timeSlot:", timeSlot);
+    
+    if (!timeSlot) {
+      return res.status(404).json({ error: "Time slot not found" });
+    }
+    
+    if (timeSlot.booked) {
+      return res.status(400).json({ error: "Time slot already booked" });
+    }
+
+    console.log(`Marking time slot as booked`);
+    timeSlot.booked = true;
+
+
+    const booking = await prisma.booking.create({
+      where: { id: bookingId },
+      data: { approved: true, bookingStatus: 'CONFIRMED',
+        transactionDetails:{
+          name,
+          phoneNumber,
+          bookingEndDate
+        },
+        bookingFinalDate:  new Date(new Date().setMonth(new Date().getMonth() + bookingMonths)),
+        bookingPeriod: bookingMonths,
+        
+        bookingStatus: 'CONFIRMED' 
+
+       },
+    });
+
+    console.log(`Updating library with id: ${libraryId}`);
+    await prisma.library.update({
+      where: { id: libraryId },
+      data: {
+        rooms: {
+          update: {
+            where: { id: room.id },
+            data: {
+              seats: {
+                update: {
+                  where: { id: seat.id },
+                  data: {
+                    timeSlots: {
+                      update: {
+                        where: { id: timeSlot.id },
+                        data: { booked: true
+                        },
+                      },
+                    },
+
+
+                  },
+
+                },
+              },
+            },
+
+          },
+        },
+      },
+    });
+
+    console.log(`Updating booking with id: ${bookingId}`);
+
+    console.log("🚀 ~ confirmBooking ~ booking:", booking
+    );
+
+    console.log(`Creating invoice for bookingId: ${BookedData.bookingId}`);
+
+  } catch (error) {
+    console.error(`Error confirming booking: ${error.message}`);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error confirming booking', error: error.message });
+  }
+}
+
 module.exports = {
   createBooking,
   pingBookingController,
@@ -429,5 +518,6 @@ module.exports = {
   getBookingByLibId,
   confirmBooking,
   generateInvoice,
-  hasBoughtEarlier
+  hasBoughtEarlier,
+  adminBooking
 };
