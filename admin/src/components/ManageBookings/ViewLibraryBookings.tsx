@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASEURL } from "../../lib/utils";
 import { toast } from "react-toastify";
-import { Navigate, Router, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const fetchLibraries = async () => {
   try {
@@ -129,7 +129,7 @@ const LibraryBookings = () => {
   };
 const bookSeat = async (seatId: string, bookingData: any) => {
   try {
-  const response = await axios.post(`${BASEURL}/api/v1/admin/adminBooking`, {
+  const response = await axios.post(`${BASEURL}/api/v1/booking/adminBooking`, {
       seatId,
       bookingData,
     });

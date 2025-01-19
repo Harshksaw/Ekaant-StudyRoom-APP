@@ -424,89 +424,99 @@ async function generateInvoice(req, res) {
 
 async function adminBooking(req, res) {
   try {
-    const { bookingEndDate } = req.body;
-    const { libraryId, roomNo, bookedSeat, bookingId, BookedData  , name ,phoneNumber , bookingMonths} = req.body;
-    console.log(`Confirming booking for libraryId: ${libraryId},
-       roomNo: ${roomNo}, bookedSeat: ${bookedSeat}, bookingId: ${bookingId}`);
+    //create booking via admin ,and bloakc the seat
 
-    const { room, seat } = await findRoomAndSeat(libraryId, roomNo, bookedSeat.seatId);
-    console.log(`Found room: ${room.id}, seat: ${seat}`);
-
-    const timeSlotId = BookedData.timeSlot[0].slotId;
-    console.log(`Finding time slot with id: ${timeSlotId}`);
-    const timeSlot = BookedData.timeSlot[0];
-    console.log("🚀 ~ confirmBooking ~ timeSlot:", timeSlot);
+    const { libraryId, roomNo,seatId , timeSlot, name , email , phoneNumber } = req.body;
+    console.log("🚀 ~ adminBooking ~ req.body", req.body)
     
-    if (!timeSlot) {
-      return res.status(404).json({ error: "Time slot not found" });
-    }
-    
-    if (timeSlot.booked) {
-      return res.status(400).json({ error: "Time slot already booked" });
-    }
-
-    console.log(`Marking time slot as booked`);
-    timeSlot.booked = true;
-
-
-    const booking = await prisma.booking.create({
-      where: { id: bookingId },
-      data: { approved: true, bookingStatus: 'CONFIRMED',
-        transactionDetails:{
-          name,
-          phoneNumber,
-          bookingEndDate
-        },
-        bookingFinalDate:  new Date(new Date().setMonth(new Date().getMonth() + bookingMonths)),
-        bookingPeriod: bookingMonths,
-        
-        bookingStatus: 'CONFIRMED' 
-
-       },
+    const room = await prisma.room.findFirst({
+      where: { libraryId, roomNo },
     });
 
-    console.log(`Updating library with id: ${libraryId}`);
-    await prisma.library.update({
-      where: { id: libraryId },
+    if (!room) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+
+    const seat = await prisma.seat.findFirst({
+      where: { roomId: room.id, seatId },
+    });
+
+    if (!seat) {
+      return res.status(404).json({ error: "Seat not found" });
+    }
+   // Find the time slot
+   const timeSlotData = await prisma.timeSlot.findFirst({
+    where: { seatId: seat.id, id: timeSlot },
+  });
+
+  if (!timeSlotData) {
+    return res.status(404).json({ error: "Time slot not found" });
+  }
+
+  if (timeSlotData.booked) {
+    return res.status(400).json({ error: "Time slot already booked" });
+  }
+
+
+    // Create the transaction
+    const transaction = await prisma.transaction.create({
       data: {
-        rooms: {
-          update: {
-            where: { id: room.id },
-            data: {
-              seats: {
-                update: {
-                  where: { id: seat.id },
-                  data: {
-                    timeSlots: {
-                      update: {
-                        where: { id: timeSlot.id },
-                        data: { booked: true
-                        },
-                      },
-                    },
-
-
-                  },
-
-                },
-              },
-            },
-
-          },
-        },
+        amount: timeSlotData.price,
+        type: "OFFLINE_BOOKING",
+        description: `Booking by admin ${adminId}`,
+        adminId,
+        libraryId,
+        bookingId: null, // Will update this after creating the booking
       },
     });
 
-    console.log(`Updating booking with id: ${bookingId}`);
+    // Create the booking
+    const booking = await prisma.booking.create({
+      data: {
+        userId: adminId, // Assuming admin is also a user
+        libraryId,
+        initialPrice: timeSlotData.price,
+        finalPrice: timeSlotData.price,
+        paid: true,
+        timeSlotDetails: JSON.stringify(timeSlotData),
+        roomNo,
+        bookedSeat: JSON.stringify(seat),
+        bookingDate: new Date(),
+        bookingPeriod: 1, // Assuming 1 month booking period
+        bookingStatus: "CONFIRMED",
+        approved: true,
+        bookedByAdminId: adminId,
+      },
+    });
 
-    console.log("🚀 ~ confirmBooking ~ booking:", booking
-    );
+    // Update the transaction with the bookingId
+    await prisma.transaction.update({
+      where: { id: transaction.id },
+      data: { bookingId: booking.id },
+    });
 
-    console.log(`Creating invoice for bookingId: ${BookedData.bookingId}`);
+    // Block the seat by updating the time slot
+    await prisma.timeSlot.update({
+      where: { id: timeSlotData.id },
+      data: { booked: true, bookedById: adminId },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Booking created successfully",
+      booking,
+      transaction,
+    });
+
+
 
   } catch (error) {
-    console.error(`Error confirming booking: ${error.message}`);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error confirming booking', error: error.message });
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to create booking",
+      message: error.message,
+    });
   }
 }
 
