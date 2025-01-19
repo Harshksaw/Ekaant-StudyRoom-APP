@@ -425,7 +425,7 @@ async function generateInvoice(req, res) {
 async function adminBooking(req, res) {
   try {
     const { bookingEndDate } = req.body;
-    const { libraryId, roomNo, bookedSeat, bookingId, BookedData  , name ,phoneNumber} = req.body;
+    const { libraryId, roomNo, bookedSeat, bookingId, BookedData  , name ,phoneNumber , bookingMonths} = req.body;
     console.log(`Confirming booking for libraryId: ${libraryId},
        roomNo: ${roomNo}, bookedSeat: ${bookedSeat}, bookingId: ${bookingId}`);
 
@@ -447,6 +447,23 @@ async function adminBooking(req, res) {
 
     console.log(`Marking time slot as booked`);
     timeSlot.booked = true;
+
+
+    const booking = await prisma.booking.create({
+      where: { id: bookingId },
+      data: { approved: true, bookingStatus: 'CONFIRMED',
+        transactionDetails:{
+          name,
+          phoneNumber,
+          bookingEndDate
+        },
+        bookingFinalDate:  new Date(new Date().setMonth(new Date().getMonth() + bookingMonths)),
+        bookingPeriod: bookingMonths,
+        
+        bookingStatus: 'CONFIRMED' 
+
+       },
+    });
 
     console.log(`Updating library with id: ${libraryId}`);
     await prisma.library.update({
@@ -481,10 +498,7 @@ async function adminBooking(req, res) {
     });
 
     console.log(`Updating booking with id: ${bookingId}`);
-    const booking = await prisma.booking.update({
-      where: { id: bookingId },
-      data: { approved: true, bookingStatus: 'CONFIRMED' },
-    });
+
     console.log("🚀 ~ confirmBooking ~ booking:", booking
     );
 

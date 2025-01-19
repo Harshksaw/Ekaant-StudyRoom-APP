@@ -127,11 +127,22 @@ const LibraryBookings = () => {
 
     return matrix;
   };
-
+const bookSeat = async (seatId: string, bookingData: any) => {
+  try {
+  const response = await axios.post(`${BASEURL}/api/v1/admin/adminBooking`, {
+      seatId,
+      bookingData,
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error("Error booking seat:", error);
+    return null;
+  }
+}
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // await bookSeat(selectedSeat.id, bookingData);
+      await bookSeat(selectedSeat.id, bookingData);
       toast.success('Seat booked successfully');
       setIsModalOpen(false);
       // Refresh seats
