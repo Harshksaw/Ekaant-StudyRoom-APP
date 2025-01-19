@@ -438,7 +438,7 @@ async function adminBooking(req, res) {
     }
 
     const seat = await prisma.seat.findFirst({
-      where: { roomId: room.id, seatId },
+      where: { roomId: room.id, seatId: String(seatId) },
     });
 
     if (!seat) {
