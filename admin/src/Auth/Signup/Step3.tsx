@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import dayjs from "dayjs"; // Import dayjs
 import { TextField } from "@mui/material";
 import StateDropdown from "@/components/StateSelector";
-// Get the current date and calculate the min (18 years ago) and max (100 years ago) dates
+
 const currentDate = dayjs(); // Use dayjs to get the current date
 
 export const StepThree = ({
@@ -94,14 +94,14 @@ export const StepThree = ({
               justifyContent: "center",
               gap: "77px",
               alignItems: "center",
-              width: "100%", 
+              width: "100%",
               "& .MuiOutlinedInput-notchedOutline": {
                 borderColor: "black",
                 borderRadius: "14px",
               },
             },
             "& .MuiInputBase-input": {
-              padding: "8px 0px", 
+              padding: "8px 0px",
             },
           },
         },
