@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+.custom-text-field input {
+  padding: 12px !important; /* Increased padding */
+}
+
+.custom-text-field fieldset {
+  border-color: #333 !important; /* Darker border color */
+}
+
+.custom-text-field .MuiInputBase-root {
+  padding: 6px 12px !important; /* Inner input padding */
+}
+
 body {
   margin: 0;
   padding: 0;

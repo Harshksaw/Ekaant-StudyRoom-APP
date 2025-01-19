@@ -252,8 +252,7 @@ const EditLibrary = () => {
       <h2 className="text-2xl font-bold mb-4">Edit Library</h2>
 
       <div>
-
-      <div className="mb-6">
+        <div className="mb-6">
           <label
             className="block text-gray-700  font-bold mb-2 text-3xl"
             htmlFor="images"
@@ -272,22 +271,21 @@ const EditLibrary = () => {
             ))}
           </div>
           <div className="flex px-4 mt-4">
-              <label
-                htmlFor="cardImage"
-                className="cursor-pointer flex items-center gap-3 justify-center bg-gradient-to-r border border-black hover:text-white py-3 px-12 rounded-xl text-lg font-semibold transition duration-300 hover:bg-blue-500"
-              >
-               Upload Image
-               <FaCloudUploadAlt size={36}/>
-              </label>
-              <input
-                   id="images"
-                   type="file"
-                   multiple
-                onChange={handleImageChange}
-                className="hidden"
-              />
-            </div>
-          
+            <label
+              htmlFor="cardImage"
+              className="cursor-pointer flex items-center gap-3 justify-center bg-gradient-to-r border border-black hover:text-white py-3 px-12 rounded-xl text-lg font-semibold transition duration-300 hover:bg-blue-500"
+            >
+              Upload Image
+              <FaCloudUploadAlt size={36} />
+            </label>
+            <input
+              id="images"
+              type="file"
+              multiple
+              onChange={handleImageChange}
+              className="hidden"
+            />
+          </div>
         </div>
         <div>
           <div className="mb-6">
@@ -316,7 +314,7 @@ const EditLibrary = () => {
                 className="cursor-pointer flex justify-center items-center gap-3 border border-black hover:text-white py-3 px-12 rounded-xl text-lg font-semibold transition duration-300 hover:bg-blue-500"
               >
                 Upload Image
-               <FaCloudUploadAlt size={36}/>
+                <FaCloudUploadAlt size={36} />
               </label>
               <input
                 id="cardImage"
@@ -326,9 +324,8 @@ const EditLibrary = () => {
               />
             </div>
           </div>
-        </div>  
+        </div>
 
-    
         <button
           className="bg-blue-500 hover:bg-blue-700 rounded-xl  text-white font-bold py-3 px-6  focus:outline-none focus:shadow-outline mb-10"
           onClick={updateLibraryImages}
@@ -389,6 +386,7 @@ const EditLibrary = () => {
           predefinedAmenities.map((amenity) => (
             <div key={amenity} className="flex items-center mb-2">
               <input
+                disabled  
                 id={amenity}
                 name={amenity}
                 type="checkbox"
@@ -508,12 +506,12 @@ const EditLibrary = () => {
 
       <button
         onClick={handleUpdateLibrary}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        className="bg-blue-500 mb-10 rounded-xl hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline "
       >
         Update Library
       </button>
 
-      <h3 className="text-xl font-bold mt-8 mb-4">Rooms</h3>
+      {/* <h3 className="text-xl font-bold mt-8 mb-4">Rooms</h3>
       <div className="grid grid-cols-1 gap-4">
         {library?.rooms?.map((room) => (
           <div
@@ -546,7 +544,7 @@ const EditLibrary = () => {
             </button>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
