@@ -170,6 +170,25 @@ export const StepThree = ({
           </div>
         </div>
 
+        <div className="flex-col items-center justify-start mt-2">
+  <label
+    htmlFor="adminPassportPhoto"
+    className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
+  >
+    Passport Photo
+  </label>
+  <input
+    className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+    type="file"
+    id="adminPassportPhoto"
+    name="adminPassportPhoto"
+    onChange={(e) => {
+      const file = e.target.files ? e.target.files[0] : null;
+      setUserDetails({ ...userDetails, passportPhoto: file });
+    }}
+  />
+</div>
+
         {/* Aadhar Card */}
         <div className="flex-col items-center justify-start">
           <label
@@ -224,6 +243,7 @@ export const StepThree = ({
             />
           </label>
         </div>
+
 
         {/* PAN Card */}
         <div className="flex-col items-center justify-start mt-2">

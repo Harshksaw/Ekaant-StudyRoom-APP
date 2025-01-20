@@ -68,6 +68,7 @@ function Signup() {
     uploadAadharCard: null,
     panCard: "",
     uploadPanCard: null,
+    passportPhoto: null, // Add this line
     address: {
       line1: "",
       line2: "",
@@ -103,6 +104,9 @@ function Signup() {
       showmsme: false,
       msme: "",
       uploadmsme: null,
+      propertyType: "", // Add this line
+      uploadElectricityBill: null, // Add this line
+      uploadLeaseAgreement: null, // Add this line
     },
     librayCardImage: null,
     librarySliders: [],

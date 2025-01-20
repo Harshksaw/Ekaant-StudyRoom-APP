@@ -38,6 +38,7 @@ model Admin {
   address               Json
   adhaarCardDetails     AdhaarCardDetails? 
   panCardDetails        PanCardDetails?
+  passportPhoto             String?
   profileImage          String?
   resetPasswordExpires  DateTime?
   createdAt             DateTime  @default(now())
@@ -118,6 +119,11 @@ model Library {
   tanCertificateFile  String?
   msmeNumber          String?
   msmeCertificateFile String?
+
+
+  propertyType        String?
+  uploadElectricityBill String?
+  uploadLeaseAgreement String?
 
   registrationFees    Int    @default(500)
   avgRating      Float?   // Add this line to define avgRating

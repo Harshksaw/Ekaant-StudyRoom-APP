@@ -20,7 +20,9 @@ AdminRouter.get("/ping", AdminController.pingAdminController);
 AdminRouter.post(
   "/registerAdmin",
 
-  upload.fields([{ name: 'pancard', maxCount: 1 }, { name: 'aadhar', maxCount: 1 }]), 
+  upload.fields([{ name: 'pancard', maxCount: 1 }, { name: 'aadhar', maxCount: 1 },
+    {name: 'passport', maxCount: 1}
+  ]), 
 
   AdminController.RegisterAdmin
 );

@@ -115,6 +115,103 @@ export const StepFour = ({
         {errors.shortDescription && (
           <p className="text-red-500">{errors.shortDescription}</p>
         )}
+
+
+<div className="flex gap-5 mx-5 my-5">
+  <label>Property Type</label>
+  <div>
+    <label>
+      <input
+        type="radio"
+        name="propertyType"
+        value="Owned"
+        onChange={() => {
+          setLibraryDetails({
+            ...libraryDetails,
+            libraryLegal: {
+              ...libraryDetails.libraryLegal,
+              propertyType: "Owned",
+            },
+          });
+        }}
+      />
+      Owned
+    </label>
+  </div>
+  <div>
+    <label>
+      <input
+        type="radio"
+        name="propertyType"
+        value="Rented"
+        onChange={() => {
+          setLibraryDetails({
+            ...libraryDetails,
+            libraryLegal: {
+              ...libraryDetails.libraryLegal,
+              propertyType: "Rented",
+            },
+          });
+        }}
+      />
+      Rented
+    </label>
+  </div>
+</div>
+
+{libraryDetails.libraryLegal.propertyType === "Owned" && (
+  <div className="flex-col items-center justify-start mt-2">
+    <label
+      htmlFor="uploadElectricityBill"
+      className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
+    >
+      Upload Electricity Bill
+    </label>
+    <input
+      className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      type="file"
+      id="uploadElectricityBill"
+      name="uploadElectricityBill"
+      onChange={(e) => {
+        const file = e.target.files ? e.target.files[0] : null;
+        setLibraryDetails({
+          ...libraryDetails,
+          libraryLegal: {
+            ...libraryDetails.libraryLegal,
+            uploadElectricityBill: file,
+          },
+        });
+      }}
+    />
+  </div>
+)}
+
+{libraryDetails.libraryLegal.propertyType === "Rented" && (
+  <div className="flex-col items-center justify-start mt-2">
+    <label
+      htmlFor="uploadLeaseAgreement"
+      className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
+    >
+      Upload Lease Agreement
+    </label>
+    <input
+      className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      type="file"
+      id="uploadLeaseAgreement"
+      name="uploadLeaseAgreement"
+      onChange={(e) => {
+        const file = e.target.files ? e.target.files[0] : null;
+        setLibraryDetails({
+          ...libraryDetails,
+          libraryLegal: {
+            ...libraryDetails.libraryLegal,
+            uploadLeaseAgreement: file,
+          },
+        });
+      }}
+    />
+  </div>
+)}
         {/* Long description */}
         <div className="relative ">
           <input

@@ -41,6 +41,8 @@ async function RegisterAdmin(req, res, next) {
       username,
     } = req.body;
 
+    const passportPhoto = req.files && req.files.passportPhoto ? req.files.passportPhoto[0].path : null;
+
 
     const existingAdmin = await prisma.admin.findFirst({ where : { email : email }});
     if (existingAdmin) {
@@ -52,7 +54,7 @@ async function RegisterAdmin(req, res, next) {
         token,
       });
     }
-       const uploadToS3 = (file, folder) => {
+    const uploadToS3 = (file, folder) => {
         const params = {
           Bucket: process.env.S3_BUCKET_NAME,
           Key: `${folder}/${file.originalname}`,
@@ -98,6 +100,7 @@ async function RegisterAdmin(req, res, next) {
             adhaarCardFile: aadharUpload.Location,
           },
         },
+        passportPhoto: passportPhoto,
         panCardDetails: {
           create: {
             panNumber: PanNumber,
