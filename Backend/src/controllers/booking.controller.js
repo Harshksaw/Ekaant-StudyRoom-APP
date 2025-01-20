@@ -495,7 +495,7 @@ async function adminBooking(req, res) {
         bookingPeriod: 1, // Assuming 1 month booking period
         bookingStatus: "CONFIRMED",
         approved: true,
-        bookedByAdminId: adminId,
+
       },
     });
 
