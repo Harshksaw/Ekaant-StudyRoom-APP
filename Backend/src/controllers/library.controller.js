@@ -153,6 +153,9 @@ const createLibrary = async (req, res) => {
     const tan = req.files.tan ? req.files.tan[0].path : null;
     const msme = req.files && req.files.msme ? req.files.msme[0].path : null;
 
+
+    const uploadElectricityBill = req.files && req.files.uploadElectricityBill ? req.files.uploadElectricityBill[0].path : null;
+    const uploadLeaseAgreement = req.files && req.files.uploadLeaseAgreement ? req.files.uploadLeaseAgreement[0].path : null;
     // console.log(cardImage, images, gst, cin, tan, msme, ">>>>>uploadedFiles");
 
     const jsonData = JSON.parse(req.body.jsonData);
@@ -170,6 +173,7 @@ const createLibrary = async (req, res) => {
       cinNumber,
       tanNumber,
       coords,
+
 
       msmeNumber,
     } = jsonData;
@@ -199,6 +203,11 @@ const createLibrary = async (req, res) => {
       tanCertificateFile: tan,
       msmeNumber,
       msmeCertificateFile: msme,
+      propertyType: propertyType,
+      uploadElectricityBill: uploadElectricityBill,
+      uploadLeaseAgreement: uploadLeaseAgreement,
+
+
     };
 
     const LibraryData = await prisma.library.create({ data: libraryData });
@@ -541,8 +550,8 @@ const getLibraryRooms = async (req, res) => {
 };
 
 const getLibraryByUserId = async (req, res) => {
-  const { id } = req.body;
-  console.log(id);
+  const { id } = req.params;
+
   try {
     const room = await prisma.library.findFirst({
       where: {

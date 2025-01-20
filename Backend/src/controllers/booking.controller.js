@@ -421,6 +421,115 @@ async function generateInvoice(req, res) {
   }
 }
 
+
+async function adminBooking(req, res) {
+  try {
+    //create booking via admin ,and bloakc the seat
+
+    const { libraryId, roomNo,seatId , timeSlot, name , email , phoneNumber , adminId} = req.body;
+    console.log("🚀 ~ adminBooking ~ req.body", req.body)
+    
+    const room = await prisma.room.findFirst({
+      where: { libraryId, id: roomNo },
+    });
+    console.log("🚀 ~ adminBooking ~ room:", room)
+
+    if (!room) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+
+    const seat = await prisma.seat.findFirst({
+      where: { roomId: room.id, id: seatId },
+    });
+
+    if (!seat) {
+      return res.status(404).json({ error: "Seat not found" });
+    }
+   // Find the time slot
+   const timeSlotData = await prisma.timeSlot.findFirst({
+    where: { seatId: seatId, id: timeSlot },
+  });
+   console.log("🚀 ~ adminBooking ~ timeSlotData:", timeSlotData)
+
+  if (!timeSlotData) {
+    return res.status(404).json({ error: "Time slot not found" });
+  }
+
+  if (timeSlotData.booked) {
+    return res.status(400).json({ error: "Time slot already booked" });
+  }
+
+
+    // Create the transaction
+    const transaction = await prisma.transaction.create({
+      data: {
+        amount: timeSlotData.price,
+        type: "OFFLINE_BOOKING",
+        description: `Booking by admin ${adminId}`,
+        adminId,
+        libraryId,
+        bookingId: null, // Will update this after creating the booking
+      },
+    });
+
+    // Create the booking
+    const booking = await prisma.booking.create({
+      data: {
+        userId: adminId, // Assuming admin is also a user
+        libraryId,
+        initialPrice: timeSlotData.price,
+        finalPrice: timeSlotData.price,
+        paid: true,
+        timeSlotDetails: JSON.stringify(timeSlotData),
+        roomNo,
+
+  transactionDetails:{
+    transactionId: transaction.id,
+    transactionDate: new Date(),
+    bookedFor : name,
+    email,
+    phoneNumber
+  },
+        bookedSeat: JSON.stringify(seat),
+        bookingDate: new Date(),
+        bookingPeriod: 1, // Assuming 1 month booking period
+        bookingStatus: "CONFIRMED",
+        approved: true,
+
+      },
+    });
+
+    // Update the transaction with the bookingId
+    await prisma.transaction.update({
+      where: { id: transaction.id },
+      data: { bookingId: booking.id },
+    });
+
+    // Block the seat by updating the time slot
+    await prisma.timeSlot.update({
+      where: { id: timeSlotData.id },
+      data: { booked: true, bookedById: adminId, bookingEndDate: new Date(new Date().setMonth(new Date().getMonth() + 1)) },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Booking created successfully",
+      booking,
+      transaction,
+    });
+
+
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to create booking",
+      message: error.message,
+    });
+  }
+}
+
 module.exports = {
   createBooking,
   pingBookingController,
@@ -429,5 +538,6 @@ module.exports = {
   getBookingByLibId,
   confirmBooking,
   generateInvoice,
-  hasBoughtEarlier
+  hasBoughtEarlier,
+  adminBooking
 };

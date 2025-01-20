@@ -1,5 +1,3 @@
-
-
 // import { InfoIcon } from "lucide-react";
 
 import StateDropdown from "@/components/StateSelector";
@@ -15,18 +13,25 @@ export const StepFour = ({
 }: any) => {
   const [errors, setErrors] = useState<any>({});
 
-
-  const [cities, setCities] = useState<{ id: number; location: string; locationImage: string; coords: string; appId: string }[]>([]);
-  console.log("🚀 ~ cities:", cities)
-  const [selectedCity, setSelectedCity] = useState<string>('');
+  const [cities, setCities] = useState<
+    {
+      id: number;
+      location: string;
+      locationImage: string;
+      coords: string;
+      appId: string;
+    }[]
+  >([]);
+  console.log("🚀 ~ cities:", cities);
+  const [selectedCity, setSelectedCity] = useState<string>("");
   useEffect(() => {
     fetchCities().then((data) => {
-      console.log("🚀 ~ fetchCities ~ data:", data)
+      console.log("🚀 ~ fetchCities ~ data:", data);
       setCities(data.data.locations);
     });
-  },[])
+  }, []);
 
-    const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedCity = event.target.value;
     // console.log("🚀 ~ handleCityChange ~ selectedCity:", selectedCity)
     setSelectedCity(selectedCity);
@@ -115,6 +120,140 @@ export const StepFour = ({
         {errors.shortDescription && (
           <p className="text-red-500">{errors.shortDescription}</p>
         )}
+
+        <div className="flex flex-col gap-6 p-6 bg-white  rounded-lg max-w-md ">
+          {/* Title */}
+          <p className="text-xl font-semibold text-gray-800">
+            Select Property Type
+          </p>
+
+          {/* Options */}
+          <div className="flex items-center gap-4">
+            {/* Owned Option */}
+            <label
+              htmlFor="propertyOwned"
+              className={`flex items-center justify-center gap-2 px-6 py-3 cursor-pointer rounded-lg border transition-all duration-300 
+      ${
+        libraryDetails?.libraryLegal?.propertyType === "Owned"
+          ? "bg-blue-600 text-white border-blue-600 shadow-md"
+          : "bg-gray-50 text-gray-700 hover:bg-gray-100 hover:border-gray-300"
+      }`}
+              role="radio"
+              aria-checked={
+                libraryDetails?.libraryLegal?.propertyType === "Owned"
+                  ? "true"
+                  : "false"
+              }
+            >
+              <input
+                type="radio"
+                name="propertyType"
+                id="propertyOwned"
+                value="Owned"
+                className="hidden"
+                onChange={() => {
+                  setLibraryDetails({
+                    ...libraryDetails,
+                    libraryLegal: {
+                      ...libraryDetails.libraryLegal,
+                      propertyType: "Owned",
+                    },
+                  });
+                }}
+              />
+              <span>Owned</span>
+            </label>
+
+            {/* Rented Option */}
+            <label
+              htmlFor="propertyRented"
+              className={`flex items-center justify-center gap-2 px-6 py-3 cursor-pointer rounded-lg border transition-all duration-300 
+      ${
+        libraryDetails?.libraryLegal?.propertyType === "Rented"
+          ? "bg-blue-600 text-white border-blue-600 shadow-md"
+          : "bg-gray-50 text-gray-700 hover:bg-gray-100 hover:border-gray-300"
+      }`}
+              role="radio"
+              aria-checked={
+                libraryDetails?.libraryLegal?.propertyType === "Rented"
+                  ? "true"
+                  : "false"
+              }
+            >
+              <input
+                type="radio"
+                name="propertyType"
+                id="propertyRented"
+                value="Rented"
+                className="hidden"
+                onChange={() => {
+                  setLibraryDetails({
+                    ...libraryDetails,
+                    libraryLegal: {
+                      ...libraryDetails.libraryLegal,
+                      propertyType: "Rented",
+                    },
+                  });
+                }}
+              />
+              <span>Rented</span>
+            </label>
+          </div>
+        </div>
+
+        {libraryDetails.libraryLegal.propertyType === "Owned" && (
+          <div className="flex-col items-center justify-start mt-2">
+            <label
+              htmlFor="uploadElectricityBill"
+              className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
+            >
+              Upload Electricity Bill
+            </label>
+            <input
+              className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              type="file"
+              id="uploadElectricityBill"
+              name="uploadElectricityBill"
+              onChange={(e) => {
+                const file = e.target.files ? e.target.files[0] : null;
+                setLibraryDetails({
+                  ...libraryDetails,
+                  libraryLegal: {
+                    ...libraryDetails.libraryLegal,
+                    uploadElectricityBill: file,
+                  },
+                });
+              }}
+            />
+          </div>
+        )}
+
+        {libraryDetails.libraryLegal.propertyType === "Rented" && (
+          <div className="flex-col items-center justify-start mt-2">
+            <label
+              htmlFor="uploadLeaseAgreement"
+              className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
+            >
+              Upload Lease Agreement
+            </label>
+            <input
+              className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              type="file"
+              id="uploadLeaseAgreement"
+              name="uploadLeaseAgreement"
+              onChange={(e) => {
+                const file = e.target.files ? e.target.files[0] : null;
+                setLibraryDetails({
+                  ...libraryDetails,
+                  libraryLegal: {
+                    ...libraryDetails.libraryLegal,
+                    uploadLeaseAgreement: file,
+                  },
+                });
+              }}
+            />
+          </div>
+        )}
         {/* Long description */}
         <div className="relative ">
           <input
@@ -188,17 +327,20 @@ export const StepFour = ({
         {/* City */}
         <div className="flex w-full justify-between gap-2 rounded-2xl">
           <div className="w-2/4 flex flex-col gap-2 border-md rounded-2xl">
-          <label htmlFor="city">City:</label>
-          <select id="city" value={selectedCity} onChange={(e) => handleCityChange(e)}
-          className="w-full px-3 py-2 border  border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-2xl"
-          >
-          <option value="">Select a city</option>
-          {cities.map((city) => (
-            <option key={city.id} value={city.location}>
-              {city.location}
-            </option>
-          ))}
-        </select>
+            <label htmlFor="city">City:</label>
+            <select
+              id="city"
+              value={selectedCity}
+              onChange={(e) => handleCityChange(e)}
+              className="w-full px-3 py-2 border  border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-2xl"
+            >
+              <option value="">Select a city</option>
+              {cities.map((city) => (
+                <option key={city.id} value={city.location}>
+                  {city.location}
+                </option>
+              ))}
+            </select>
           </div>
           {/* State */}
           <div className="w-2/5">
@@ -218,9 +360,9 @@ export const StepFour = ({
           </div>
         </div>
         {/* Pincode */}
-        
+
         <div className="w-1/3">
-        <label >Pincode:</label>
+          <label>Pincode:</label>
           <input
             className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"

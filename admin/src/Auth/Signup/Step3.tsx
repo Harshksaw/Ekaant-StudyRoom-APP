@@ -21,7 +21,7 @@ export const StepThree = ({
   const [aadharPreview, setAadharPreview] = useState<string | null>(null);
   const [panPreview, setPanPreview] = useState<string | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
-
+    const [preview, setPreview] = useState(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
 
   const handleFileChange = async (
@@ -56,6 +56,22 @@ export const StepThree = ({
     if (date) {
       setUserDetails({ ...userDetails, dob: date });
       setShowDatePicker(false);
+    }
+  };
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+
+    if (file) {
+      // Update user details and show success toast
+      setUserDetails((prevDetails) => ({
+        ...prevDetails,
+        passportPhoto: file,
+      }));
+      setPreview(URL.createObjectURL(file));
+      toast.success("Passport photo uploaded successfully!");
+    } else {
+      toast.error("Failed to upload passport photo. Please try again.");
     }
   };
 
@@ -119,6 +135,7 @@ export const StepThree = ({
             className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
           >
             Full Name
+            <span className="text-red-500 ml-1">*</span>
           </label>
           <input
             className="w-full  px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -137,6 +154,7 @@ export const StepThree = ({
         <div className="flex-col items-center justify-start mt-2">
           <label htmlFor="" className="font-semibold">
             Date of Birth:
+            <span className="text-red-500 ml-1">*</span>
           </label>
           <div className="flex mb-4 relative mt-2">
             <div>
@@ -170,6 +188,45 @@ export const StepThree = ({
           </div>
         </div>
 
+        <div className="flex flex-col items-start justify-start mt-4">
+      <label
+        htmlFor="adminPassportPhoto"
+        className="w-full text-gray-700 font-mulish font-bold text-md mb-2"
+      >
+        Passport Photo
+        <span className="text-red-500 ml-1">*</span>
+      </label>
+     
+
+<label className="cursor-pointer">
+            <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
+              <div className=" w-full md:w-64  text-center flex justify-center items-center h-full border-2 border-solid border-black">
+                Upload Passport  Photo
+              </div>
+              <div className="w-[30%] bg-[#0077B6] h-full flex justify-center items-center text-white">
+                Select File
+              </div>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoChange}
+              style={{ display: "none" }}
+            />
+          </label>
+    
+      {preview && (
+        <div className="mt-3">
+          <p className="text-gray-600 text-sm mb-2">Preview:</p>
+          <img
+            src={preview}
+            alt="Passport Preview"
+            className="w-full h-64 max-h-64 border border-gray-300 rounded-md object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
+          />
+        </div>
+      )}
+    </div>
+
         {/* Aadhar Card */}
         <div className="flex-col items-center justify-start">
           <label
@@ -177,13 +234,21 @@ export const StepThree = ({
             className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
           >
             Aadhar Card
+            <span className="text-red-500 ml-1">*</span>
           </label>
           <input
+            required
             className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminAadharCard"
             name="adminAadharCard"
             value={userDetails.aadharCard}
+            onBlur={() => {
+              if (userDetails.aadharCard.length !== 12) {
+                // Show toast error when Aadhaar card is not 12 digits
+                toast.error("Aadhaar Card number must be 12 digits long!");
+              }
+            }}
             onChange={(e) => {
               const value = e.target.value.replace(/[^0-9]/g, "");
               if (value.length <= 12) {
@@ -232,8 +297,10 @@ export const StepThree = ({
             className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
           >
             PAN Card
+            <span className="text-red-500 ml-1">*</span>
           </label>
           <input
+            required
             className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             maxLength={10}
@@ -241,6 +308,12 @@ export const StepThree = ({
             id="adminPanCard"
             name="adminPanCard"
             value={userDetails.panCard}
+            onBlur={() => {
+              if (userDetails.panCard.length !== 10) {
+                // Show toast error when PAN card is not 10 characters
+                toast.error("PAN Card number must be exactly 10 characters!");
+              }
+            }}
             onChange={(e) => {
               const value = e.target.value
                 .toUpperCase()
@@ -283,9 +356,13 @@ export const StepThree = ({
 
         {/* Address Fields */}
         <div className="flex flex-col gap-2">
-          <label className="text-xl mt-5">Address</label>
+          <label className="text-xl mt-5">
+            Address
+            <span className="text-red-500 ml-1">*</span>
+          </label>
           {/* line 1 */}
           <input
+            required
             className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminAddressLine1"
@@ -334,8 +411,12 @@ export const StepThree = ({
 
           {/* city */}
           <div className="w-2/3">
-            <label className="font-bold">City:</label>
+            <label className="font-bold">
+              City:
+              <span className="text-red-500 ml-1">*</span>
+            </label>
             <input
+              required
               className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
               type="text"
               id="adminAddressCity"
@@ -354,8 +435,12 @@ export const StepThree = ({
           </div>
           {/* pinCode */}
           <div className="w-1/2">
-            <label className="font-bold">Pincode:</label>
+            <label className="font-bold">
+              Pincode:
+              <span className="text-red-500 ml-1">*</span>
+            </label>
             <input
+              required
               className="w-32 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
               type="text"
               id="adminAddressPinCode"
