@@ -426,7 +426,7 @@ async function adminBooking(req, res) {
   try {
     //create booking via admin ,and bloakc the seat
 
-    const { libraryId, roomNo,seatId , timeSlot, name , email , phoneNumber } = req.body;
+    const { libraryId, roomNo,seatId , timeSlot, name , email , phoneNumber , adminId} = req.body;
     console.log("🚀 ~ adminBooking ~ req.body", req.body)
     
     const room = await prisma.room.findFirst({
@@ -465,7 +465,7 @@ async function adminBooking(req, res) {
       data: {
         amount: timeSlotData.price,
         type: "OFFLINE_BOOKING",
-        description: `Booking by admin `,
+        description: `Booking by admin ${adminId}`,
         adminId,
         libraryId,
         bookingId: null, // Will update this after creating the booking

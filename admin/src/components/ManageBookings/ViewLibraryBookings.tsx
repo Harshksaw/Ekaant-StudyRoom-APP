@@ -129,8 +129,11 @@ const LibraryBookings = () => {
   };
 const bookSeat = async (seatId: string, bookingData: any) => {
   try {
+
+    const adminId = await localStorage.getItem("userId");
   const response = await axios.post(`${BASEURL}/api/v1/booking/adminBooking`, {
     libraryId:parseInt( selectedLibrary),
+    adminId: parseInt(adminId),
 
     seatId,
 
