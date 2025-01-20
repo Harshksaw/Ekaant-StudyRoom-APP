@@ -97,6 +97,7 @@ const LibraryBookings = () => {
 
   const handleBookSeat = (seat: any) => {
     setSelectedSeat(seat);
+    setBookingData({ name: '', email: '', phoneNumber: '', month: '', timeSlot: '' }); // Clear previous booking data
     setIsModalOpen(true);
   };
   
