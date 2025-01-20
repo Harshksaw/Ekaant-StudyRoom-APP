@@ -432,6 +432,7 @@ async function adminBooking(req, res) {
     const room = await prisma.room.findFirst({
       where: { libraryId, roomNo },
     });
+    console.log("🚀 ~ adminBooking ~ room:", room)
 
     if (!room) {
       return res.status(404).json({ error: "Room not found" });
