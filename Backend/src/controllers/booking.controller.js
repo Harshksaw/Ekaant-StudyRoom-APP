@@ -480,6 +480,14 @@ async function adminBooking(req, res) {
         paid: true,
         timeSlotDetails: JSON.stringify(timeSlotData),
         roomNo,
+
+  transactionDetails:{
+    transactionId: transaction.id,
+    transactionDate: new Date(),
+    bookedFor : name,
+    email,
+    phoneNumber
+  },
         bookedSeat: JSON.stringify(seat),
         bookingDate: new Date(),
         bookingPeriod: 1, // Assuming 1 month booking period
