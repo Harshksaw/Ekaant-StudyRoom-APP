@@ -130,11 +130,15 @@ const LibraryBookings = () => {
 const bookSeat = async (seatId: string, bookingData: any) => {
   try {
   const response = await axios.post(`${BASEURL}/api/v1/booking/adminBooking`, {
-      seatId,
-      bookingData,
-    });
+    seatId,
+    bookingData,
+  });
     return response.data.data;
   } catch (error) {
+
+    toast.error('Error booking seat', error.response ? error.response.data : error.message, {
+      autoClose: 5000,
+    });
     console.error("Error booking seat:", error);
     return null;
   }
