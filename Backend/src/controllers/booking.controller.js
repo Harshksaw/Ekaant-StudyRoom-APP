@@ -508,7 +508,7 @@ async function adminBooking(req, res) {
     // Block the seat by updating the time slot
     await prisma.timeSlot.update({
       where: { id: timeSlotData.id },
-      data: { booked: true, bookedById: adminId },
+      data: { booked: true, bookedById: adminId, bookingEndDate: new Date(new Date().setMonth(new Date().getMonth() + 1)) },
     });
 
     return res.status(200).json({
