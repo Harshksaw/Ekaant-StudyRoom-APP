@@ -447,8 +447,9 @@ async function adminBooking(req, res) {
     }
    // Find the time slot
    const timeSlotData = await prisma.timeSlot.findFirst({
-    where: { seatId: seat.id, id: timeSlot },
+    where: { seatId: seatId, id: timeSlot },
   });
+   console.log("🚀 ~ adminBooking ~ timeSlotData:", timeSlotData)
 
   if (!timeSlotData) {
     return res.status(404).json({ error: "Time slot not found" });
@@ -464,7 +465,7 @@ async function adminBooking(req, res) {
       data: {
         amount: timeSlotData.price,
         type: "OFFLINE_BOOKING",
-        description: `Booking by admin ${adminId}`,
+        description: `Booking by admin `,
         adminId,
         libraryId,
         bookingId: null, // Will update this after creating the booking

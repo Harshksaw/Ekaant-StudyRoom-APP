@@ -131,6 +131,7 @@ const bookSeat = async (seatId: string, bookingData: any) => {
   try {
   const response = await axios.post(`${BASEURL}/api/v1/booking/adminBooking`, {
     libraryId:parseInt( selectedLibrary),
+
     seatId,
 
 
@@ -139,7 +140,7 @@ const bookSeat = async (seatId: string, bookingData: any) => {
     email: bookingData.email,
     phoneNumber: bookingData.phoneNumber,
     month: bookingData.month,
-    timeSlot: bookingData.timeSlot,
+    timeSlot: parseInt(bookingData.timeSlot),
 
   });
     return response.data.data;
