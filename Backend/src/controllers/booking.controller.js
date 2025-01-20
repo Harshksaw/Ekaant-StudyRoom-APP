@@ -430,7 +430,7 @@ async function adminBooking(req, res) {
     console.log("🚀 ~ adminBooking ~ req.body", req.body)
     
     const room = await prisma.room.findFirst({
-      where: { libraryId, roomNo },
+      where: { libraryId, id: roomNo },
     });
     console.log("🚀 ~ adminBooking ~ room:", room)
 

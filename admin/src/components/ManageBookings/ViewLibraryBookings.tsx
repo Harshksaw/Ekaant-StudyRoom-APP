@@ -51,7 +51,7 @@ const LibraryBookings = () => {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedSeat, setSelectedSeat] = useState<any>(null);
-  console.log("🚀 ~ LibraryBookings ~ selectedSeat:", selectedSeat)
+
   const [bookingData, setBookingData] = useState<any>({ name: '', email: '', phoneNumber: '', month: '', timeSlot: '' });
   const navigate = useNavigate();
 
@@ -130,8 +130,17 @@ const LibraryBookings = () => {
 const bookSeat = async (seatId: string, bookingData: any) => {
   try {
   const response = await axios.post(`${BASEURL}/api/v1/booking/adminBooking`, {
+    libraryId:parseInt( selectedLibrary),
     seatId,
-    bookingData,
+
+
+    roomNo: parseInt(selectedRoom),
+    name: bookingData.name,
+    email: bookingData.email,
+    phoneNumber: bookingData.phoneNumber,
+    month: bookingData.month,
+    timeSlot: bookingData.timeSlot,
+
   });
     return response.data.data;
   } catch (error) {
@@ -181,27 +190,25 @@ const bookSeat = async (seatId: string, bookingData: any) => {
       {selectedLibrary && (
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="room">
-            Select Room
+        Select Room
           </label>
-          <select
+            <select
             id="room"
             value={selectedRoom || ""}
             onChange={(e) => setSelectedRoom(e.target.value)}
-            className="block appearance-none w-full bg-white border
-             border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow 
-             leading-tight focus:outline-none focus:shadow-outline"
-          >
+            className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+            >
             <option value="" disabled>Select a room</option>
             {rooms.map((room) => (
               <option key={room.id} value={room.id}>
-                Room No: {room.roomNo}
+              Room No: {room.roomNo}
               </option>
             ))}
-          </select>
-        </div>
-      )}
+            </select>
+          </div>
+          )}
 
-{selectedRoom && (
+          {selectedRoom && (
         <div className="mt-4 bg-blue-50 rounded-md">
           <h2 className="text-xl font-bold mb-4 text-center ">Seat Layout</h2>
             <div className="overflow-x-auto"></div>
