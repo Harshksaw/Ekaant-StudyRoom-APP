@@ -131,6 +131,8 @@ const LibraryBookings = () => {
 const bookSeat = async (seatId: string, bookingData: any) => {
   try {
 
+    toast.loading('Booking seat...');
+
     const adminId = await localStorage.getItem("userId");
   const response = await axios.post(`${BASEURL}/api/v1/booking/adminBooking`, {
     libraryId:parseInt( selectedLibrary),
@@ -147,8 +149,14 @@ const bookSeat = async (seatId: string, bookingData: any) => {
     timeSlot: parseInt(bookingData.timeSlot),
 
   });
+  toast.dismiss()
+  setSelectedRoom(null)
+  setSelectedLibrary(null)
+
     return response.data.data;
+
   } catch (error) {
+    toast.dismiss()
 
     toast.error('Error booking seat', error.response ? error.response.data : error.message, {
       autoClose: 5000,
@@ -218,35 +226,42 @@ const bookSeat = async (seatId: string, bookingData: any) => {
           <h2 className="text-xl font-bold mb-4 text-center ">Seat Layout</h2>
             <div className="overflow-x-auto"></div>
             {getSeatMatrix().map((row, rowIndex) => (
-              <div key={rowIndex} className="flex gap-4 justify-center overflow-auto  ">
-              {row.map((seat, colIndex) => (
-                <div key={colIndex} className={`border p-4 h-32 m-5 w-32 flex flex-col items-center justify-center rounded-md border-black ${!seat ? 'invisible' : ''}`}>
-                {seat ? (
-                <>
-                <p className="font-bold">Seat: {seat.seatLabel}</p>
-                <p className="text-sm">Booked: {seat.timeSlots[0].booked ? "Yes" : "No"}</p>
-                {seat.timeSlots[0].booked ? (
-                  <button
-                  onClick={() => handleUnbookSeat(seat.id)}
-                  className="px-4 py-2 mt-2 bg-red-500 text-white rounded"
-                  >
-                  Unbook
-                  </button>
-                ) : (
-                  <button
-                  onClick={() => handleBookSeat(seat)}
-                  className="px-4 py-2 mt-2 bg-green-500 text-white rounded"
-                  >
-                  Book
-                  </button>
-                )}
-                </>
-                ) : (
-                <div className="border p-4"></div>
-                )}
+                <div key={rowIndex} className="flex gap-4 justify-center overflow-auto">
+                {row.map((seat, colIndex) => {
+                const allBooked = seat?.timeSlots.every((slot: any) => slot.booked);
+                const partiallyBooked = seat?.timeSlots.some((slot: any) => slot.booked) && !allBooked;
+
+                return (
+                  <div key={colIndex} className={`border p-4 h-32 m-5 w-32 flex flex-col items-center justify-center rounded-md border-black ${!seat ? 'invisible' : ''}`}>
+                  {seat ? (
+                    <>
+                    <p className="font-bold">Seat: {seat.seatLabel}</p>
+                    <p className="text-sm">
+                      {allBooked ? "Booked" : partiallyBooked ? "Partially Booked" : "Available"}
+                    </p>
+                    {allBooked ? (
+                      <button
+                      onClick={() => handleUnbookSeat(seat.id)}
+                      className="px-4 py-2 mt-2 bg-red-500 text-white rounded"
+                      >
+                      Unbook
+                      </button>
+                    ) : (
+                      <button
+                      onClick={() => handleBookSeat(seat)}
+                      className="px-4 py-2 mt-2 bg-green-500 text-white rounded"
+                      >
+                      Book
+                      </button>
+                    )}
+                    </>
+                  ) : (
+                    <div className="border p-4"></div>
+                  )}
+                  </div>
+                );
+                })}
                 </div>
-              ))}
-              </div>
             ))}
             </div>
 
