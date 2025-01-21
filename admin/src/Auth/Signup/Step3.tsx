@@ -24,7 +24,6 @@ export const StepThree = ({
   const [preview, setPreview] = useState(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
   const [errors, setErrors] = useState<any>({});
-  
   const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     type: "aadhar" | "pan"
@@ -443,7 +442,9 @@ export const StepThree = ({
             placeholder="Address Line 1"
           />
         
-       
+          {errors.address.line1 && (
+            <p className="text-red-500 ml-2">{errors.address.line1}</p>
+          )}
           <StateDropdown
             label={"Select State"}
             value={userDetails.address.line2}

@@ -345,7 +345,7 @@ function Signup() {
       } 
       console.log("message" , response.data.token)
       if (response.status !== 201) {
-      
+        console.log("re" , response.data)
         toast(`${response.data.message}`, {
           
           position: "top-right",
@@ -554,102 +554,27 @@ function Signup() {
         return;
       }
     }
-    const nextStep = async () => {
-      if (currentStep === 1) {
-        if (
-          userInfo.phone.toString().length !== 10 ||
-          userInfo.email === "" ||
-          userInfo.password === ""
-        ) {
-          toast.error("Please fill all the fields", {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          return;
-        }
-    
-        try {
-          const response = await axios.post(
-            `${BASEURL}/api/v1/admin/registerAdmin`,
-            formData
-          );
-    
-          console.log("API Response:", response.data); // Log the response for inspection
-    
-          // Check if email is already registered
-          if (response.status === 200 && response.data.message === "Admin already registered") {
-            toast.error("Email is already registered", {
-              position: "top-right",
-              autoClose: 2000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });
-    
-            // Redirect to register page if email exists (assuming you're using React Router)
-            history.push("/signup");  // Adjust the path as needed
-            return; // Stop further execution
-          }
-    
-          if (response.status === 201 || response.status === 200) {
-            setLoading(false);
-    
-            // Store necessary data in localStorage
-            localStorage.setItem("role", "ADMIN");
-            localStorage.setItem("token", response.data.token);
-            localStorage.setItem("userId", response.data.data.id);
-            setAdminId(response.data.data.id);
-    
-            // Reset form data
-            setUserDetails({
-              fullName: "",
-              dob: "",
-              aadharCard: "",
-              uploadAadharCard: null,
-              panCard: "",
-              uploadPanCard: null,
-              address: {
-                line1: "",
-                line2: "",
-                city: "",
-                pincode: "",
-              },
-            });
-            setUserInfo({
-              phone: "",
-              email: "",
-              password: "",
-            });
-    
-            // Proceed to next step
-            setCurrentStep(currentStep + 1);
-          }
-        } catch (error) {
-          setLoading(false);
-          console.error("Error during registration:", error);
-          toast.error("Something went wrong. Please try again.", {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        }
+    if (currentStep === 1) {
+      if (
+        userInfo.phone.toString().length !== 10 ||
+        userInfo.email === "" ||
+        userInfo.password === ""
+      ) {
+        toast.error("Please fill all the fields", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
       }
-    };
-    
+      await  sendOtp();
+      await sendEmailOtp();
+    }
 
     setCurrentStep(currentStep + 1);
   };
@@ -673,12 +598,16 @@ function Signup() {
         );
       case 2:
         return (
-          <StepThree
+          <StepTwo
+          userOTP={userOTP}
+          setOtpInputs={setOtpInputs}
+          userEmailOTP={emailOtpInputs}
+          setOtpEmailInputs={setEmailOtpInputs}
+          // handleInputChange={handleInputChange}
+          // handleEmailInputChange={handleEmailOtpInputChange}
+          verified={verfiedOtp}
           nextStep={nextStep}
-          userDetails={userDetails}
-          setUserDetails={setUserDetails}
           prevStep={prevStep}
-          // createUser={createUser}
         />
         );
 
