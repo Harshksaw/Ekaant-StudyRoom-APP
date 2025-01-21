@@ -24,6 +24,7 @@ export const StepThree = ({
   const [preview, setPreview] = useState(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
   const [errors, setErrors] = useState<any>({});
+  
   const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     type: "aadhar" | "pan"
@@ -75,7 +76,7 @@ export const StepThree = ({
     }
   };
 
-  console.log("u" , userDetails)
+  console.log("u", userDetails);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -126,27 +127,48 @@ export const StepThree = ({
     },
   });
 
-
-  
   const validateForm = () => {
     const newErrors: any = {};
+
+    // Validate full name
     if (!userDetails.fullName) {
-      newErrors.fullName = "full Name is required";
+      newErrors.fullName = "Full Name is required";
     }
-   
+
+    // Validate date of birth
     if (!userDetails.dob) {
       newErrors.dob = "Date of birth is required";
     }
-     
+
+    // Validate Aadhar card
     if (!userDetails.aadharCard) {
       newErrors.aadharCard = "Aadhar Card is required";
     }
+
+    // Validate PAN card
     if (!userDetails.panCard) {
-      newErrors.panCard= "PanCard is required";
+      newErrors.panCard = "PAN Card is required";
     }
-    if (!userDetails.address) {
-      newErrors.address = "Address Card is required";
+
+    // Validate address
+    if (!userDetails.address.line1 ) {
+      newErrors.address = "Address is required";
+    } else {
+      const { line1, city, pincode } = userDetails.address;
+
+      if (!line1) {
+        newErrors.addressLine1 = "Address Line 1 is required";
+      }
+      if (!city) {
+        newErrors.addressCity = "City is required";
+      }
+      if (!pincode) {
+        newErrors.addressPincode = "Pincode is required";
+      } else if (!/^\d{6}$/.test(pincode)) {
+        newErrors.addressPincode = "Pincode must be a 6-digit number";
+      }
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -179,9 +201,9 @@ export const StepThree = ({
             }
             placeholder="Full Name"
           />
-           {errors.fullName && (
-          <p className="text-red-500 ml-2">{errors.fullName}</p>
-        )}
+          {errors.fullName && (
+            <p className="text-red-500 ml-2">{errors.fullName}</p>
+          )}
         </div>
 
         {/* Date of Birth */}
@@ -219,12 +241,10 @@ export const StepThree = ({
                 </LocalizationProvider>
               </ThemeProvider>
             </div>
-          
           </div>
           {errors.dob && (
-          <p className="text-red-500 ml-2">{errors.dob}</p>
-        )}
-
+            <p className="text-red-500 ml-2 -mt-3">{errors.dob}</p>
+          )}
         </div>
 
         <div className="flex flex-col items-start justify-start mt-4">
@@ -297,9 +317,9 @@ export const StepThree = ({
             minLength={12}
             placeholder="Aadhar Card Number"
           />
-             {errors.aadharCard && (
-          <p className="text-red-500 ml-2">{errors.aadharCard}</p>
-        )}
+          {errors.aadharCard && (
+            <p className="text-red-500 ml-2">{errors.aadharCard}</p>
+          )}
         </div>
 
         {/* Upload Aadhar */}
@@ -365,9 +385,9 @@ export const StepThree = ({
             }}
             placeholder="Pan Card Number"
           />
-            {errors.panCard && (
-          <p className="text-red-500 ml-2">{errors.panCard}</p>
-        )}
+          {errors.panCard && (
+            <p className="text-red-500 ml-2">{errors.panCard}</p>
+          )}
         </div>
 
         <div className="flex-col mb-4">
@@ -422,9 +442,8 @@ export const StepThree = ({
             }}
             placeholder="Address Line 1"
           />
-             {errors.address && (
-          <p className="text-red-500 ml-2">{errors.address}</p>
-        )}
+        
+       
           <StateDropdown
             label={"Select State"}
             value={userDetails.address.line2}
@@ -479,6 +498,9 @@ export const StepThree = ({
               }}
               placeholder="City"
             />
+            {errors.address?.city && (
+              <p className="text-red-500 ml-2">{errors.address.city}</p>
+            )}
           </div>
           {/* pinCode */}
           <div className="w-1/2">
@@ -503,6 +525,9 @@ export const StepThree = ({
               }}
               placeholder="pincode"
             />
+              {errors.pincode?.city && (
+              <p className="text-red-500 ml-2">{errors.address.pincode}</p>
+            )}
           </div>
         </div>
         {/* Buttons */}

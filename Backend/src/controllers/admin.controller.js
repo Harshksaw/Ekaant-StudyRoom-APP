@@ -27,103 +27,103 @@ const s3 = new AWS.S3({
   region: process.env.REGION
 });
 
-async function RegisterAdmin(req, res, next) {
-  try {
-    const {
-      phoneNumber,
-      email,
-      password,
-      fullName,
-      Dob,
-      AddharNumber,
-      PanNumber,
-      Address,
-      username,
-    } = req.body;
-
-    const passportPhoto = req.files && req.files.passportPhoto ? req.files.passportPhoto[0].path : null;
-
-
-    const existingAdmin = await prisma.admin.findFirst({ where : { email : email }});
-    if (existingAdmin) {
-      const token = jwt.sign({ admin_id: existingAdmin.id }, JWT_SECRET);
-      return res.status(200).json({
-        success: true,
-        message: 'Admin already registered',
-        data: existingAdmin,
-        token,
-      });
-    }
-    const uploadToS3 = (file, folder) => {
-        const params = {
-          Bucket: process.env.S3_BUCKET_NAME,
-          Key: `${folder}/${file.originalname}`,
-          Body: file.buffer,
-          ContentType: file.mimetype
-        };
-        return s3.upload(params).promise();
-      };
-    const { pancard, aadhar } = req.files;
-
-    if (!pancard || !pancard[0]) {
-      return res.status(400).json({ message: 'Pancard file is required' });
-    }
-
-    if (!aadhar || !aadhar[0]) {
-      return res.status(400).json({ message: 'Aadhar file is required' });
-    }
-
-
-
-    const pancardUpload = await uploadToS3(pancard[0], `admin/${username}`);
-    const aadharUpload = await uploadToS3(aadhar[0], `admin/${username}`);
-  
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newAdmin = await prisma.admin.create({
-
-      data :{
-
+  async function RegisterAdmin(req, res, next) {
+    try {
+      const {
         phoneNumber,
-        username,
         email,
-        password: hashedPassword,
+        password,
         fullName,
-        Dob : new Date(Dob),
+        Dob,
         AddharNumber,
         PanNumber,
-        address: Address,
-        adhaarCardDetails: {
-          create: {
-            adhaarNumber: AddharNumber,
-            adhaarCardFile: aadharUpload.Location,
-          },
-        },
-        passportPhoto: passportPhoto,
-        panCardDetails: {
-          create: {
-            panNumber: PanNumber,
-            panCardFile: pancardUpload.Location,
-          },
-        },
+        Address,
+        username,
+      } = req.body;
+
+      const passportPhoto = req.files && req.files.passportPhoto ? req.files.passportPhoto[0].path : null;
+
+
+      const existingAdmin = await prisma.admin.findFirst({ where : { email : email }});
+      if (existingAdmin) {
+        const token = jwt.sign({ admin_id: existingAdmin.id }, JWT_SECRET);
+        return res.status(200).json({
+          success: true,
+          message: 'Admin already registered',
+          data: existingAdmin,
+          token,
+        });
       }
+      const uploadToS3 = (file, folder) => {
+          const params = {
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: `${folder}/${file.originalname}`,
+            Body: file.buffer,
+            ContentType: file.mimetype
+          };
+          return s3.upload(params).promise();
+        };
+      const { pancard, aadhar } = req.files;
+
+      if (!pancard || !pancard[0]) {
+        return res.status(400).json({ message: 'Pancard file is required' });
+      }
+
+      if (!aadhar || !aadhar[0]) {
+        return res.status(400).json({ message: 'Aadhar file is required' });
+      }
+
+
+
+      const pancardUpload = await uploadToS3(pancard[0], `admin/${username}`);
+      const aadharUpload = await uploadToS3(aadhar[0], `admin/${username}`);
+    
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const newAdmin = await prisma.admin.create({
+
+        data :{
+
+          phoneNumber,
+          username,
+          email,
+          password: hashedPassword,
+          fullName,
+          Dob : new Date(Dob),
+          AddharNumber,
+          PanNumber,
+          address: Address,
+          adhaarCardDetails: {
+            create: {
+              adhaarNumber: AddharNumber,
+              adhaarCardFile: aadharUpload.Location,
+            },
+          },
+          passportPhoto: passportPhoto,
+          panCardDetails: {
+            create: {
+              panNumber: PanNumber,
+              panCardFile: pancardUpload.Location,
+            },
+          },
+        }
+        });
+      console.log("🚀 ~ RegisterAdmin ~ newAdmin:", newAdmin)
+
+      const token = jwt.sign({ admin_id: newAdmin.id }, JWT_SECRET);
+
+      return res.status(201).json({
+        success: true,
+        message: 'Admin created successfully',
+        data: newAdmin,
+        token,
       });
-    console.log("🚀 ~ RegisterAdmin ~ newAdmin:", newAdmin)
-
-    const token = jwt.sign({ admin_id: newAdmin.id }, JWT_SECRET);
-
-    return res.status(201).json({
-      success: true,
-      message: 'Admin created successfully',
-      data: newAdmin,
-      token,
-    });
-  } catch (error) {
-    console.error('Error in RegisterAdmin:', error);
-    next(error);
+    } catch (error) {
+      console.error('Error in RegisterAdmin:', error);
+      next(error);
+    }
   }
-}
 
 // login--
 async function LoginAdmin(req, res) {
