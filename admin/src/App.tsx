@@ -26,6 +26,7 @@ import LibraryPage from "./components/Owner/DummyLib";
 import PhoneOtpForm from "./components/forgot-password";
 import LibraryBookings from "./components/ManageBookings/ViewLibraryBookings";
 import Report from "./pages/Report";
+import { useEffect, useState } from "react";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -37,7 +38,32 @@ function App() {
   //     const response = await User
   //   }
   // }, []);
+  const [isMobile, setIsMobile] = useState(false);
 
+  useEffect(() => {
+    const checkDevice = () => {
+      const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
+      setIsMobile(isMobileDevice);
+    };
+
+    checkDevice();
+    window.addEventListener("resize", checkDevice);
+
+    return () => {
+      window.removeEventListener("resize", checkDevice);
+    };
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-100">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-500">Restricted Access</h1>
+          <p className="mt-4 text-lg">Please open the admin panel on a laptop or desktop.</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <BrowserRouter basename="/">
     <Routes>
