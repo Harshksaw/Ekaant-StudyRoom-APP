@@ -54,6 +54,137 @@ export const StepFour = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  const [error, setError] = useState({
+    gstNumber: "",
+  });
+
+  const validateGST = (gstNumber) => {
+    const alphanumericRegex = /^[a-zA-Z0-9]{15}$/;
+    if (!gstNumber) {
+      return "GST number is required.";
+    }
+    if (!alphanumericRegex.test(gstNumber)) {
+      return "GST number must be exactly 15 alphanumeric characters.";
+    }
+    return "";
+  };
+
+  const handleGSTBlur = (e) => {
+    const gstNumber = e.target.value;
+    const error = validateGST(gstNumber);
+
+    setErrors({
+      ...errors,
+      gstNumber: error,
+    });
+
+    if (!error) {
+      setLibraryDetails({
+        ...libraryDetails,
+        libraryLegal: {
+          ...libraryDetails.libraryLegal,
+          gstNumber,
+        },
+      });
+    }
+  };
+
+  const validateCIN = (cin) => {
+    const alphanumericRegex = /^[a-zA-Z0-9]{15}$/;
+    if (!cin) {
+      return "CIN is required.";
+    }
+    if (!alphanumericRegex.test(cin)) {
+      return "CIN must be exactly 15 alphanumeric characters.";
+    }
+    return "";
+  };
+
+  // Event handler for CIN blur
+  const handleCINBlur = (e) => {
+    const cin = e.target.value;
+    const error = validateCIN(cin);
+
+    setErrors({
+      ...errors,
+      cin: error,
+    });
+
+    if (!error) {
+      setLibraryDetails({
+        ...libraryDetails,
+        libraryLegal: {
+          ...libraryDetails.libraryLegal,
+          cin,
+        },
+      });
+    }
+  };
+
+  // Function to validate TAN
+  const validateTAN = (tan) => {
+    const alphanumericRegex = /^[a-zA-Z0-9]{10}$/; // TAN must be 10 alphanumeric characters
+    if (!tan) {
+      return "TAN is required.";
+    }
+    if (!alphanumericRegex.test(tan)) {
+      return "TAN must be exactly 10 alphanumeric characters.";
+    }
+    return "";
+  };
+
+  // Event handler for TAN blur
+  const handleTANBlur = (e) => {
+    const tan = e.target.value;
+    const error = validateTAN(tan);
+
+    setErrors({
+      ...errors,
+      tan: error,
+    });
+
+    if (!error) {
+      setLibraryDetails({
+        ...libraryDetails,
+        libraryLegal: {
+          ...libraryDetails.libraryLegal,
+          tan,
+        },
+      });
+    }
+  };
+
+  const validateMSME = (msme) => {
+    const alphanumericRegex = /^[a-zA-Z0-9]{12}$/;
+    if (!msme) {
+      return "MSME number is required.";
+    }
+    if (!alphanumericRegex.test(msme)) {
+      return "MSME number must be exactly 12 alphanumeric characters.";
+    }
+    return "";
+  };
+  // Event handler for MSME blur
+  const handleMSMEBlur = (e) => {
+    const msme = e.target.value;
+    const error = validateMSME(msme);
+
+    setErrors({
+      ...errors,
+      msme: error,
+    });
+
+    if (!error) {
+      setLibraryDetails({
+        ...libraryDetails,
+        libraryLegal: {
+          ...libraryDetails.libraryLegal,
+          msme,
+        },
+      });
+    }
+  };
+
   const handleNextStep = () => {
     if (validateFields()) {
       nextStep();
@@ -185,7 +316,7 @@ export const StepFour = ({
                 name="propertyType"
                 id="propertyRented"
                 value="Rented"
-                className="hidden"
+                className="hidden "
                 onChange={() => {
                   setLibraryDetails({
                     ...libraryDetails,
@@ -210,7 +341,7 @@ export const StepFour = ({
               Upload Electricity Bill
             </label>
             <input
-              className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full mt-2 rounded-2xl px-6 py-4 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
               type="file"
               id="uploadElectricityBill"
               name="uploadElectricityBill"
@@ -229,7 +360,7 @@ export const StepFour = ({
         )}
 
         {libraryDetails.libraryLegal.propertyType === "Rented" && (
-          <div className="flex-col items-center justify-start mt-2">
+          <div className="flex-col items-center  justify-start mt-2">
             <label
               htmlFor="uploadLeaseAgreement"
               className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
@@ -237,7 +368,7 @@ export const StepFour = ({
               Upload Lease Agreement
             </label>
             <input
-              className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full  mt-2 rounded-2xl px-6 py-4  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
               type="file"
               id="uploadLeaseAgreement"
               name="uploadLeaseAgreement"
@@ -255,7 +386,7 @@ export const StepFour = ({
           </div>
         )}
         {/* Long description */}
-        <div className="relative ">
+        <div className="relative  mt-5">
           <input
             className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
@@ -288,44 +419,46 @@ export const StepFour = ({
           </section>
         </div>
         {/* Library address */}
-        <label> Address</label>
-        {/* Line 1 */}
-        <input
-          className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          type="text"
-          id="adminLibraryAddressLine1"
-          placeholder="Address Line 1"
-          value={libraryDetails.libraryAddress.line1}
-          onChange={(e) => {
-            setLibraryDetails({
-              ...libraryDetails,
-              libraryAddress: {
-                ...libraryDetails.libraryAddress,
-                line1: e.target.value,
-              },
-            });
-          }}
-        />
+        <div className="mt-2 space-y-2">
+          <label className=" ml-1"> Address</label>
+          {/* Line 1 */}
+          <input
+            className="w-full px-3  py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            type="text"
+            id="adminLibraryAddressLine1"
+            placeholder="Address Line 1"
+            value={libraryDetails.libraryAddress.line1}
+            onChange={(e) => {
+              setLibraryDetails({
+                ...libraryDetails,
+                libraryAddress: {
+                  ...libraryDetails.libraryAddress,
+                  line1: e.target.value,
+                },
+              });
+            }}
+          />
 
-        {/* Line 2 */}
-        <input
-          className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          type="text"
-          id="adminLibraryAddressLine2"
-          placeholder="Address Line 2"
-          value={libraryDetails.libraryAddress.line2}
-          onChange={(e) => {
-            setLibraryDetails({
-              ...libraryDetails,
-              libraryAddress: {
-                ...libraryDetails.libraryAddress,
-                line2: e.target.value,
-              },
-            });
-          }}
-        />
+          {/* Line 2 */}
+          <input
+            className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            type="text"
+            id="adminLibraryAddressLine2"
+            placeholder="Address Line 2"
+            value={libraryDetails.libraryAddress.line2}
+            onChange={(e) => {
+              setLibraryDetails({
+                ...libraryDetails,
+                libraryAddress: {
+                  ...libraryDetails.libraryAddress,
+                  line2: e.target.value,
+                },
+              });
+            }}
+          />
+        </div>
         {/* City */}
-        <div className="flex w-full justify-between gap-2 rounded-2xl">
+        <div className="flex mt-2 w-full justify-between gap-2 rounded-2xl">
           <div className="w-2/4 flex flex-col gap-2 border-md rounded-2xl">
             <label htmlFor="city">City:</label>
             <select
@@ -423,60 +556,53 @@ export const StepFour = ({
           </select>
         </div>
         {/* GST */}
-        <div className="flex gap-5 mx-5 my-5">
-          <label>GST</label>
-          <div>
-            <label>
-              <input
-                type="radio"
-                name="showGst"
-                value="true"
-                id="gst-true"
-                // checked={true}
-                //  TODO:DISCUSS WITH TEAM
-                onChange={(e) => {
-                  console.log(e.target.value);
-                  // if (libraryDetails.libraryLegal.showGst === false) {
-                  setLibraryDetails({
-                    ...libraryDetails,
-                    libraryLegal: {
-                      ...libraryDetails.libraryLegal,
-                      showGst: true,
-                    },
-                  });
-                  console.log(libraryDetails.libraryLegal.showGst);
-                  // }
-                }}
-              />
-              Yes
-            </label>
+        <div className="flex flex-col gap-5 mx-5 my-5">
+          <div className="flex gap-5">
+            <label>GST</label>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  name="showGst"
+                  value="true"
+                  id="gst-true"
+                  onChange={(e) => {
+                    setLibraryDetails({
+                      ...libraryDetails,
+                      libraryLegal: {
+                        ...libraryDetails.libraryLegal,
+                        showGst: true,
+                      },
+                    });
+                  }}
+                />
+                Yes
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  name="showGst"
+                  value="false"
+                  id="gst-false"
+                  onChange={() => {
+                    setLibraryDetails({
+                      ...libraryDetails,
+                      libraryLegal: {
+                        ...libraryDetails.libraryLegal,
+                        showGst: false,
+                        gstNumber: "",
+                      },
+                    });
+                    setErrors({ ...errors, gstNumber: "" });
+                  }}
+                />
+                No
+              </label>
+            </div>
           </div>
-          <div>
-            <label>
-              <input
-                type="radio"
-                name="showGst"
-                value="false"
-                id="gst-false"
-                onChange={() => {
-                  // handleLibraryLegalChange("showGst", false);
 
-                  setLibraryDetails({
-                    ...libraryDetails,
-                    libraryLegal: {
-                      ...libraryDetails.libraryLegal,
-                      showGst: false,
-                    },
-                  });
-
-                  console.log(libraryDetails.libraryLegal.showGst);
-                }}
-              />
-              No
-            </label>
-          </div>
-        </div>
-        <div>
           {libraryDetails.libraryLegal.showGst && (
             <div className="">
               {/* gst input */}
@@ -495,7 +621,13 @@ export const StepFour = ({
                       },
                     });
                   }}
+                  onBlur={handleGSTBlur}
                 />
+                {errors.gstNumber && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.gstNumber}
+                  </p>
+                )}
               </div>
               {/* UPLOAD GST  */}
               <div className="flex justify-start mt-1 border-black items-center">
@@ -536,7 +668,8 @@ export const StepFour = ({
               </div>
             </div>
           )}
-
+        </div>
+        <div>
           {/* CIN */}
           <div className="flex gap-5 mx-5 my-5">
             <label>CIN</label>
@@ -604,9 +737,13 @@ export const StepFour = ({
                       },
                     });
                   }}
+                  onBlur={handleCINBlur}
                   placeholder="CIN"
                   className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
+                {errors.cin && (
+                  <p className="text-red-500 text-sm">{errors.cin}</p>
+                )}
               </div>
 
               {/* Upload CIN */}
@@ -715,7 +852,11 @@ export const StepFour = ({
                       },
                     });
                   }}
+                  onBlur={handleTANBlur}
                 />
+                {errors.tan && (
+                  <p className="text-red-500 text-sm mt-1">{errors.tan}</p>
+                )}
               </div>
 
               {/* Upload TAN */}
@@ -757,7 +898,7 @@ export const StepFour = ({
             </div>
           )}
           {/* msme */}
-          <div className="flex gap-5 mx-5 my-5">
+          <div className="flex gap-[13px] mx-5 my-5">
             <label>msme</label>
             <div>
               <input
@@ -817,7 +958,11 @@ export const StepFour = ({
                       },
                     });
                   }}
+                  onBlur={handleMSMEBlur}
                 />
+                {errors.msme && (
+                  <p className="text-red-500 text-sm mt-1">{errors.msme}</p>
+                )}
               </div>
 
               {/* Upload msme */}

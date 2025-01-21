@@ -342,6 +342,7 @@ const EditLibrary = () => {
           Name
         </label>
         <input
+              readOnly
           id="name"
           type="text"
           value={name}
@@ -357,6 +358,7 @@ const EditLibrary = () => {
           Short Description
         </label>
         <textarea
+              readOnly
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -371,6 +373,7 @@ const EditLibrary = () => {
           Long Description
         </label>
         <textarea
+              readOnly
           id="longdescription"
           value={longdescription}
           onChange={(e) => setLongDescription(e.target.value)}
@@ -486,7 +489,7 @@ const EditLibrary = () => {
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       </div>
-      <div className="mb-6">
+      <div className="mb-6 pb-8">
         <label
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="registration"
@@ -504,12 +507,12 @@ const EditLibrary = () => {
         />
       </div>
 
-      <button
+      {/* <button
         onClick={handleUpdateLibrary}
         className="bg-blue-500 mb-10 rounded-xl hover:bg-blue-700 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline "
       >
         Update Library
-      </button>
+      </button> */}
 
       {/* <h3 className="text-xl font-bold mt-8 mb-4">Rooms</h3>
       <div className="grid grid-cols-1 gap-4">

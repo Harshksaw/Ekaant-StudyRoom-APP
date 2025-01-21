@@ -99,7 +99,7 @@ const Auth = ({ type }: { type: "signin" }) => {
           <img src={reading} alt="pic" width={400} height={400} />
         </div>
         <div className="flex flex-col">
-          <p className="font-semibold text-3xl">
+          <p className="font-semibold text-white text-3xl">
             Welcome to Ekaant Admin Panel
           </p>
           {/* <p className="font-normal text-base">
@@ -184,9 +184,9 @@ const Auth = ({ type }: { type: "signin" }) => {
               )}
             </div>
 
-            <div>
+            <div className="mt-1">
               <Link to="/forgot-password">
-                <p className="ml-40 text-blue-500">ForgotPassword</p>
+                <p className="ml-40 text-blue-500">Forgot Password</p>
               </Link>
             </div>
           </div>

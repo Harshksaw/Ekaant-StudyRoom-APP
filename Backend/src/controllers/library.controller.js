@@ -173,8 +173,6 @@ const createLibrary = async (req, res) => {
       cinNumber,
       tanNumber,
       coords,
-
-
       msmeNumber,
     } = jsonData;
 

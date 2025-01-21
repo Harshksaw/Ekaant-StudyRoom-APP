@@ -593,12 +593,16 @@ function Signup() {
         );
       case 2:
         return (
-          <StepThree
+          <StepTwo
+          userOTP={userOTP}
+          setOtpInputs={setOtpInputs}
+          userEmailOTP={emailOtpInputs}
+          setOtpEmailInputs={setEmailOtpInputs}
+          // handleInputChange={handleInputChange}
+          // handleEmailInputChange={handleEmailOtpInputChange}
+          verified={verfiedOtp}
           nextStep={nextStep}
-          userDetails={userDetails}
-          setUserDetails={setUserDetails}
           prevStep={prevStep}
-          // createUser={createUser}
         />
         );
 
@@ -697,7 +701,7 @@ function Signup() {
           <img src={reading} alt="pic" width={400} height={400} />
         </div>
         <div className="flex flex-col">
-          <p className="font-semibold text-3xl">
+          <p className="font-semibold text-white   text-3xl">
             Welcome to Ekaant Admin Panel
           </p>
           {/* <p className="font-normal text-base">

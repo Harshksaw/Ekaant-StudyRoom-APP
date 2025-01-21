@@ -52,6 +52,8 @@ const CreateRoom: React.FC = () => {
         const response = await getLibraryDataById();
         // console.log(response.data.data, "--------");
         setLibraryData(response.data.data);
+        console.log("data",response.data.data)
+        console.log("data name",response.data.data[0].name)
         setSelectedRoom(response.data.data?.rooms);
         setLibraryId(response.data.data[0].id);
       } catch (error) {

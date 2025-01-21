@@ -21,9 +21,9 @@ export const StepThree = ({
   const [aadharPreview, setAadharPreview] = useState<string | null>(null);
   const [panPreview, setPanPreview] = useState<string | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
-    const [preview, setPreview] = useState(null);
+  const [preview, setPreview] = useState(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
-
+  const [errors, setErrors] = useState<any>({});
   const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     type: "aadhar" | "pan"
@@ -75,6 +75,7 @@ export const StepThree = ({
     }
   };
 
+  console.log("u" , userDetails)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -125,6 +126,36 @@ export const StepThree = ({
     },
   });
 
+
+  
+  const validateForm = () => {
+    const newErrors: any = {};
+    if (!userDetails.fullName) {
+      newErrors.fullName = "full Name is required";
+    }
+   
+    if (!userDetails.dob) {
+      newErrors.dob = "Date of birth is required";
+    }
+     
+    if (!userDetails.aadharCard) {
+      newErrors.aadharCard = "Aadhar Card is required";
+    }
+    if (!userDetails.panCard) {
+      newErrors.panCard= "PanCard is required";
+    }
+    if (!userDetails.address) {
+      newErrors.address = "Address Card is required";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNextStep = () => {
+    if (validateForm()) {
+      nextStep();
+    }
+  };
   return (
     <div className="flex flex-1 overflow-y-auto px-10 py-6 bg-white rounded-lg">
       <div className="flex-col w-full mb-100 gap-25">
@@ -148,6 +179,9 @@ export const StepThree = ({
             }
             placeholder="Full Name"
           />
+           {errors.fullName && (
+          <p className="text-red-500 ml-2">{errors.fullName}</p>
+        )}
         </div>
 
         {/* Date of Birth */}
@@ -185,23 +219,27 @@ export const StepThree = ({
                 </LocalizationProvider>
               </ThemeProvider>
             </div>
+          
           </div>
+          {errors.dob && (
+          <p className="text-red-500 ml-2">{errors.dob}</p>
+        )}
+
         </div>
 
         <div className="flex flex-col items-start justify-start mt-4">
-      <label
-        htmlFor="adminPassportPhoto"
-        className="w-full text-gray-700 font-mulish font-bold text-md mb-2"
-      >
-        Passport Photo
-        <span className="text-red-500 ml-1">*</span>
-      </label>
-     
+          <label
+            htmlFor="adminPassportPhoto"
+            className="w-full text-gray-700 font-mulish font-bold text-md mb-2"
+          >
+            Passport Photo
+            <span className="text-red-500 ml-1">*</span>
+          </label>
 
-<label className="cursor-pointer">
+          <label className="cursor-pointer">
             <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
               <div className=" w-full md:w-64  text-center flex justify-center items-center h-full border-2 border-solid border-black">
-                Upload Passport  Photo
+                Upload Passport Photo
               </div>
               <div className="w-[30%] bg-[#0077B6] h-full flex justify-center items-center text-white">
                 Select File
@@ -214,18 +252,18 @@ export const StepThree = ({
               style={{ display: "none" }}
             />
           </label>
-    
-      {preview && (
-        <div className="mt-3">
-          <p className="text-gray-600 text-sm mb-2">Preview:</p>
-          <img
-            src={preview}
-            alt="Passport Preview"
-            className="w-full h-64 max-h-64 border border-gray-300 rounded-md object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
-          />
+
+          {preview && (
+            <div className="mt-3">
+              <p className="text-gray-600 text-sm mb-2">Preview:</p>
+              <img
+                src={preview}
+                alt="Passport Preview"
+                className="w-full h-64 max-h-64 border border-gray-300 rounded-md object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
+              />
+            </div>
+          )}
         </div>
-      )}
-    </div>
 
         {/* Aadhar Card */}
         <div className="flex-col items-center justify-start">
@@ -259,6 +297,9 @@ export const StepThree = ({
             minLength={12}
             placeholder="Aadhar Card Number"
           />
+             {errors.aadharCard && (
+          <p className="text-red-500 ml-2">{errors.aadharCard}</p>
+        )}
         </div>
 
         {/* Upload Aadhar */}
@@ -324,6 +365,9 @@ export const StepThree = ({
             }}
             placeholder="Pan Card Number"
           />
+            {errors.panCard && (
+          <p className="text-red-500 ml-2">{errors.panCard}</p>
+        )}
         </div>
 
         <div className="flex-col mb-4">
@@ -378,6 +422,9 @@ export const StepThree = ({
             }}
             placeholder="Address Line 1"
           />
+             {errors.address && (
+          <p className="text-red-500 ml-2">{errors.address}</p>
+        )}
           <StateDropdown
             label={"Select State"}
             value={userDetails.address.line2}
@@ -468,7 +515,9 @@ export const StepThree = ({
           </button>
           <button
             className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
-            onClick={nextStep}
+            onClick={() => {
+              handleNextStep();
+            }}
           >
             Next
           </button>
