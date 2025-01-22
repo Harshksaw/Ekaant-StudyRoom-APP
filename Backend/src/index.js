@@ -125,9 +125,9 @@ app.get('/createBackup', backupDatabase)
 const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
-  cloud_name: "dbnnlqq5v",
-  api_key: 283514623947746,
-  api_secret: "E2s6axKWvXTiJi5_DGiFuPe7Lxo",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 async function deleteAllResources(req, res) {
