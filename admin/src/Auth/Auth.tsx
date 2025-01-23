@@ -100,7 +100,7 @@ const Auth = ({ type }: { type: "signin" }) => {
         </div>
         <div className="flex flex-col">
           <p className="font-semibold text-white text-3xl">
-            Welcome to Ekaant Admin Panel
+            Welcome to Ekaant Library Portal
           </p>
           {/* <p className="font-normal text-base">
             Lorem ipsum dolor sit amet, conscs <br /> ectetur adipiscing elit
