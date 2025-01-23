@@ -556,11 +556,16 @@ export const StepFour = ({
           </select>
         </div>
         {/* GST */}
-        <div className="flex flex-col gap-5 mx-5 my-5">
-          <div className="flex gap-5">
-            <label>GST</label>
-            <div>
-              <label>
+        <div className="flex flex-col gap-5  my-2">
+          <div className="flex flex-col gap-4 px-2 py-2">
+            <label className="text-lg font-semibold">
+              Do you have a GST Number?
+            </label>
+
+            <fieldset className="flex gap-4">
+              <legend className="sr-only">GST Information</legend>
+
+              <div className="flex items-center gap-4">
                 <input
                   type="radio"
                   name="showGst"
@@ -575,12 +580,24 @@ export const StepFour = ({
                       },
                     });
                   }}
+                  className="hidden"
                 />
-                Yes
-              </label>
-            </div>
-            <div>
-              <label>
+                <label
+                  htmlFor="gst-true"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200"
+                >
+                  <span
+                    className={`w-5 h-5 rounded-full border-2 ${
+                      libraryDetails.libraryLegal.showGst === true
+                        ? "bg-blue-500 border-blue-500"
+                        : "border-gray-300"
+                    }`}
+                  ></span>
+                  Yes
+                </label>
+              </div>
+
+              <div className="flex items-center gap-4">
                 <input
                   type="radio"
                   name="showGst"
@@ -597,10 +614,23 @@ export const StepFour = ({
                     });
                     setErrors({ ...errors, gstNumber: "" });
                   }}
+                  className="hidden"
                 />
-                No
-              </label>
-            </div>
+                <label
+                  htmlFor="gst-false"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200"
+                >
+                  <span
+                    className={`w-5 h-5 rounded-full border-2 ${
+                      libraryDetails.libraryLegal.showGst === false
+                        ? "bg-blue-500 border-blue-500"
+                        : "border-gray-300"
+                    }`}
+                  ></span>
+                  No
+                </label>
+              </div>
+            </fieldset>
           </div>
 
           {libraryDetails.libraryLegal.showGst && (
@@ -671,56 +701,81 @@ export const StepFour = ({
         </div>
         <div>
           {/* CIN */}
-          <div className="flex gap-5 mx-5 my-5">
-            <label>CIN</label>
-            <div>
-              <input
-                type="radio"
-                name="cin"
-                value="true"
-                id="cin-true"
-                // checked={true}
-                onChange={() => {
-                  // handleLibraryLegalChange("cin", true);
+          <div className="flex flex-col gap-4 px-2 py-2">
+            <label className="text-lg font-semibold">Do you have a CIN?</label>
 
-                  setLibraryDetails({
-                    ...libraryDetails,
-                    libraryLegal: {
-                      ...libraryDetails.libraryLegal,
-                      showCin: true,
-                    },
-                  });
-                  console.log(libraryDetails.libraryLegal.showCin);
-                }}
-              />
-              <label>Yes</label>
-            </div>
-            <div>
-              <input
-                type="radio"
-                name="cin"
-                value="false"
-                id="cin-false"
-                // checked={libraryDetails.libraryLegal.showCin === false}
-                onChange={() => {
-                  // handleLibraryLegalChange("cin", false);
+            <fieldset className="flex gap-4">
+              <legend className="sr-only">CIN Information</legend>
 
-                  setLibraryDetails({
-                    ...libraryDetails,
-                    libraryLegal: {
-                      ...libraryDetails.libraryLegal,
-                      showCin: false,
-                    },
-                  });
-                  console.log(libraryDetails.libraryLegal.showCin);
-                }}
-              />
-              <label>No</label>
-            </div>
+              <div className="flex items-center gap-4">
+                <input
+                  type="radio"
+                  name="showCin"
+                  value="true"
+                  id="cin-true"
+                  onChange={() => {
+                    setLibraryDetails({
+                      ...libraryDetails,
+                      libraryLegal: {
+                        ...libraryDetails.libraryLegal,
+                        showCin: true,
+                      },
+                    });
+                  }}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="cin-true"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200"
+                >
+                  <span
+                    className={`w-5 h-5 rounded-full border-2 ${
+                      libraryDetails.libraryLegal.showCin === true
+                        ? "bg-blue-500 border-blue-500"
+                        : "border-gray-300"
+                    }`}
+                  ></span>
+                  Yes
+                </label>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <input
+                  type="radio"
+                  name="showCin"
+                  value="false"
+                  id="cin-false"
+                  onChange={() => {
+                    setLibraryDetails({
+                      ...libraryDetails,
+                      libraryLegal: {
+                        ...libraryDetails.libraryLegal,
+                        showCin: false,
+                      },
+                    });
+                  }}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="cin-false"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200"
+                >
+                  <span
+                    className={`w-5 h-5 rounded-full border-2 ${
+                      libraryDetails.libraryLegal.showCin === false
+                        ? "bg-blue-500 border-blue-500"
+                        : "border-gray-300"
+                    }`}
+                  ></span>
+                  No
+                </label>
+              </div>
+            </fieldset>
           </div>
+
           {/* conditional rendering */}
           {libraryDetails.libraryLegal.showCin && (
-            <div>
+            <div className="mx-4">
               <div>
                 {/* {cin oinput} */}
 
@@ -787,17 +842,18 @@ export const StepFour = ({
           )}
 
           {/* TAN */}
-          <div className="flex gap-5 mx-5 my-5">
-            <label>TAN</label>
-            <div>
-              <label>
+          <div className="flex flex-col gap-4 px-2 py-2">
+            <label className="text-lg font-semibold">Do you have a TAN?</label>
+
+            <fieldset className="flex gap-4">
+              <legend className="sr-only">TAN Information</legend>
+
+              <div className="flex items-center gap-4">
                 <input
                   type="radio"
-                  name="tan"
+                  name="showTan"
+                  value="true"
                   id="tan-true"
-                  // @ts-ignore
-                  value={true}
-                  // checked={true}
                   onChange={() => {
                     setLibraryDetails({
                       ...libraryDetails,
@@ -807,18 +863,29 @@ export const StepFour = ({
                       },
                     });
                   }}
+                  className="hidden"
                 />
-                Yes
-              </label>
-            </div>
-            <div>
-              <label>
+                <label
+                  htmlFor="tan-true"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200"
+                >
+                  <span
+                    className={`w-5 h-5 rounded-full border-2 ${
+                      libraryDetails.libraryLegal.showTan === true
+                        ? "bg-blue-500 border-blue-500"
+                        : "border-gray-300"
+                    }`}
+                  ></span>
+                  Yes
+                </label>
+              </div>
+
+              <div className="flex items-center gap-4">
                 <input
                   type="radio"
-                  name="tan"
+                  name="showTan"
                   value="false"
                   id="tan-false"
-                  // checked={libraryDetails.libraryLegal.tan === false}
                   onChange={() => {
                     setLibraryDetails({
                       ...libraryDetails,
@@ -828,14 +895,28 @@ export const StepFour = ({
                       },
                     });
                   }}
+                  className="hidden"
                 />
-                No
-              </label>
-            </div>
+                <label
+                  htmlFor="tan-false"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200"
+                >
+                  <span
+                    className={`w-5 h-5 rounded-full border-2 ${
+                      libraryDetails.libraryLegal.showTan === false
+                        ? "bg-blue-500 border-blue-500"
+                        : "border-gray-300"
+                    }`}
+                  ></span>
+                  No
+                </label>
+              </div>
+            </fieldset>
           </div>
+
           {/* conditional rendering */}
           {libraryDetails.libraryLegal.showTan && (
-            <div>
+            <div className="mx-3">
               {/* TAN input */}
               <div className=" ">
                 <input
@@ -898,47 +979,80 @@ export const StepFour = ({
             </div>
           )}
           {/* msme */}
-          <div className="flex gap-[13px] mx-5 my-5">
-            <label>msme</label>
-            <div>
-              <input
-                type="radio"
-                name="msme"
-                value="true"
-                id="msme-true"
-                // checked={true}
-                onChange={() => {
-                  setLibraryDetails({
-                    ...libraryDetails,
-                    libraryLegal: {
-                      ...libraryDetails.libraryLegal,
-                      showmsme: true,
-                    },
-                  });
-                }}
-              />
-              <label>Yes</label>
-            </div>
-            <div>
-              <input
-                type="radio"
-                name="msme"
-                value="false"
-                id="msme-false"
-                // checked={libraryDetails.libraryLegal.msme === false}
-                onChange={() => {
-                  setLibraryDetails({
-                    ...libraryDetails,
-                    libraryLegal: {
-                      ...libraryDetails.libraryLegal,
-                      showmsme: false,
-                    },
-                  });
-                }}
-              />
-              <label>No</label>
-            </div>
+          <div className="flex flex-col gap-4 px-2 py-4">
+            <label className="text-lg font-semibold">
+              Do you have an MSME?
+            </label>
+
+            <fieldset className="flex gap-4">
+              <legend className="sr-only">MSME Information</legend>
+
+              <div className="flex items-center gap-4">
+                <input
+                  type="radio"
+                  name="showMsme"
+                  value="true"
+                  id="msme-true"
+                  onChange={() => {
+                    setLibraryDetails({
+                      ...libraryDetails,
+                      libraryLegal: {
+                        ...libraryDetails.libraryLegal,
+                        showmsme: true,
+                      },
+                    });
+                  }}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="msme-true"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200"
+                >
+                  <span
+                    className={`w-5 h-5 rounded-full border-2 ${
+                      libraryDetails.libraryLegal.showmsme === true
+                        ? "bg-blue-500 border-blue-500"
+                        : "border-gray-300"
+                    }`}
+                  ></span>
+                  Yes
+                </label>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <input
+                  type="radio"
+                  name="showMsme"
+                  value="false"
+                  id="msme-false"
+                  onChange={() => {
+                    setLibraryDetails({
+                      ...libraryDetails,
+                      libraryLegal: {
+                        ...libraryDetails.libraryLegal,
+                        showmsme: false,
+                      },
+                    });
+                  }}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="msme-false"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200"
+                >
+                  <span
+                    className={`w-5 h-5 rounded-full border-2 ${
+                      libraryDetails.libraryLegal.showmsme === false
+                        ? "bg-blue-500 border-blue-500"
+                        : "border-gray-300"
+                    }`}
+                  ></span>
+                  No
+                </label>
+              </div>
+            </fieldset>
           </div>
+
           {/* conditional rendering */}
           {libraryDetails.libraryLegal.showmsme && (
             <div>

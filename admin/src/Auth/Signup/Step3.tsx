@@ -149,24 +149,7 @@ export const StepThree = ({
       newErrors.panCard = "PAN Card is required";
     }
 
-    // Validate address
-    if (!userDetails.address.line1 ) {
-      newErrors.address = "Address is required";
-    } else {
-      const { line1, city, pincode } = userDetails.address;
-
-      if (!line1) {
-        newErrors.addressLine1 = "Address Line 1 is required";
-      }
-      if (!city) {
-        newErrors.addressCity = "City is required";
-      }
-      if (!pincode) {
-        newErrors.addressPincode = "Pincode is required";
-      } else if (!/^\d{6}$/.test(pincode)) {
-        newErrors.addressPincode = "Pincode must be a 6-digit number";
-      }
-    }
+   
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -442,9 +425,7 @@ export const StepThree = ({
             placeholder="Address Line 1"
           />
         
-          {errors.address.line1 && (
-            <p className="text-red-500 ml-2">{errors.address.line1}</p>
-          )}
+      
           <StateDropdown
             label={"Select State"}
             value={userDetails.address.line2}

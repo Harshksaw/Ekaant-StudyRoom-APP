@@ -18,6 +18,7 @@ const AdminSchema = new mongoose.Schema({
     required: true,
     maxLength: 10,
     minLength: 10,
+    unique: true,
   },
   Dob: {
     
