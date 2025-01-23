@@ -74,12 +74,12 @@ const Auth = ({ type }: { type: "signin" }) => {
         } else {
           // Handle unsuccessful login attempt
           setLoading(false);
-          alert("Login failed. Please check your credentials.");
+          toast.error("Login failed. Please check your credentials.");
         }
       } catch (e) {
         setLoading(false);
         console.error("Error during login:", e);
-        alert(
+        toast.error(
           "Error while signing up. Please check the console for more details."
         );
       }
@@ -156,7 +156,7 @@ const Auth = ({ type }: { type: "signin" }) => {
               label="Enter Email Id"
               placeholder="Email"
               onChange={(e) =>
-                setUserInfo({ ...userInfo, email: e.target.value })
+                setUserInfo({ ...userInfo, email: e.target.value.toLowerCase() })
               }
             />
             <input

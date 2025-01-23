@@ -10,79 +10,83 @@ export const StepTwo = ({
 }: any) => (
 
   <div>
-    <div>
-      <label>Enter Phone's OTP</label>
-      <div className="flex flex-row items-center justify-between mx-auto w-full max-w-xs">
-        {/* {[1, 2, 3, 4].map((index) => (
-          <div key={index} className="w-16 h-16 mr-1 mt-2">
-            <input
-              type="number"
-              name={`otp${index}`}
-              id="adminPhoneOTP"
-              className="w-full h-full text-center outline-none border border-gray-200 bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
-              maxLength={1}
-              value={userOTP[`otp${index}`]}
-              onChange={handleInputChange}
-              placeholder="0"
-            />
-          </div>
-        ))} */}
-        <OtpInput value={userOTP} numInputs={4} onChange={setOtpInputs}
-          inputType='number'
-        placeholder='0000'
-        containerStyle={
-          {
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '10px',
-            padding: '10px'
-          }
-        }
-
-          renderSeparator={<span>-</span>}
-          renderInput={(props) => <input {...props} style={
-            {
-              width: '50px',
-              height: '50px',
-              borderRadius: '10px',
-              border: '1px solid #ccc',
-              textAlign: 'center'
-            }
-          } />}
+       {/* Phone OTP Section */}
+    <div className="w-full max-w-sm mb-6">
+      <label
+        htmlFor="phoneOTP"
+        className="block text-sm font-semibold text-gray-700 mb-2"
+      >
+        Enter Phone OTP
+      </label>
+      <OtpInput
+        value={userOTP}
+        numInputs={4}
+        onChange={setOtpInputs}
+        inputType="number"
+        placeholder="0000"
+        containerStyle={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "10px",
+          padding: "10px",
+        }}
+        renderInput={(props) => (
+          <input
+            {...props}
+            id="phoneOTP"
+            style={{
+              width: "55px",
+              height: "55px",
+              borderRadius: "8px",
+              border: "1px solid #ddd",
+              textAlign: "center",
+              fontSize: "18px",
+              fontWeight: "bold",
+              boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
+            }}
           />
-      </div>
+        )}
+      />
     </div>
 
-    {/* Email OTP */}
-    <div className="mt-2">
-      <label>Enter Email's OTP</label>
-      <div className="flex flex-row items-center justify-between mx-auto w-full max-w-xs">
-    
-
-        <OtpInput value={userEmailOTP} numInputs={4} onChange={setOtpEmailInputs}
-             inputType='number'
-             placeholder='0000'
-             containerStyle={
-               {
-                 display: 'flex',
-                 justifyContent: 'center',
-                 gap: '10px',
-                 padding: '10px'
-               }
-             }
-     
-               renderSeparator={<span>-</span>}
-               renderInput={(props) => <input {...props} style={
-                 {
-                   width: '50px',
-                   height: '50px',
-                   borderRadius: '10px',
-                   border: '1px solid #ccc',
-                   textAlign: 'center'
-                 }
-               } />}
-               />
-      </div>
+    {/* Email OTP Section */}
+    <div className="w-full max-w-sm mb-8">
+      <label
+        htmlFor="emailOTP"
+        className="block text-sm font-semibold text-gray-700 mb-2 b"
+      >
+        Enter Email OTP
+      </label>
+      <OtpInput
+        value={userEmailOTP}
+        numInputs={4}
+        onChange={setOtpEmailInputs}
+        inputType="number"
+        placeholder="0000"
+        containerStyle={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "10px",
+          padding: "10px",
+          
+        }}
+        renderInput={(props) => (
+          <input
+            {...props}
+            id="emailOTP"
+            style={{
+              width: "55px",
+              height: "55px",
+              borderRadius: "8px",
+              border: "1px solid #ddd",
+              textAlign: "center",
+              fontSize: "18px",
+              fontWeight: "bold",
+              boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
+            }}
+          />
+        )}
+      />
     </div>
 
     <div className="flex flex-row gap-40  absolute bottom-10 right-6  items-center justify-between">
