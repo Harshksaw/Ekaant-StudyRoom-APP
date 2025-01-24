@@ -38,18 +38,14 @@ const Auth = ({ type }: { type: "signin" }) => {
           console.log("🚀 ~ sendRequest ~ response:", response);
 
           const token = response.data.token;
-
           const accountType = response.data.data.accountType;
           const accountId = response.data.data.id;
 
           localStorage.setItem("token", token);
-
           localStorage.setItem("userId", accountId);
-
           localStorage.setItem("role", accountType);
 
           const role = localStorage.getItem("role");
-          // console.log("----65");
           setLoading(false);
 
           if (role === "Owner") {
@@ -58,12 +54,10 @@ const Auth = ({ type }: { type: "signin" }) => {
             return;
           }
 
-          //@ts-ignore
-          if (!response?.hasRooms) {
+          if (!response?.data?.hasRooms) {
             toast.info(
               "You don't have any rooms yet. Please create a room to continue."
             );
-
             navigate("/manage-library/create-room");
             window.location.reload();
           } else {
@@ -72,16 +66,25 @@ const Auth = ({ type }: { type: "signin" }) => {
               : navigate("/admin", { replace: true });
           }
         } else {
-          // Handle unsuccessful login attempt
           setLoading(false);
           toast.error("Login failed. Please check your credentials.");
         }
-      } catch (e) {
+      } catch (error) {
         setLoading(false);
-        console.error("Error during login:", e);
-        toast.error(
-          "Error while signing up. Please check the console for more details."
-        );
+        if (axios.isAxiosError(error) && error.response) {
+          const { status, data } = error.response;
+
+          if (status === 401) {
+            toast.error("Invalid email or password.");
+          } else {
+            toast.error(
+              data.message || "Something went wrong. Please try again."
+            );
+          }
+        } else {
+          console.error("Unexpected error during login:", error);
+          toast.error("An unexpected error occurred. Please try again.");
+        }
       }
     }
   }
@@ -156,7 +159,10 @@ const Auth = ({ type }: { type: "signin" }) => {
               label="Enter Email Id"
               placeholder="Email"
               onChange={(e) =>
-                setUserInfo({ ...userInfo, email: e.target.value.toLowerCase() })
+                setUserInfo({
+                  ...userInfo,
+                  email: e.target.value.toLowerCase(),
+                })
               }
             />
             <input
