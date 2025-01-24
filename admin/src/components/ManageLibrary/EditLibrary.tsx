@@ -514,7 +514,7 @@ const EditLibrary = () => {
         Update Library
       </button> */}
 
-      {/* <h3 className="text-xl font-bold mt-8 mb-4">Rooms</h3>
+      <h3 className="text-xl font-bold mt-8 mb-4">Rooms</h3>
       <div className="grid grid-cols-1 gap-4">
         {library?.rooms?.map((room) => (
           <div
@@ -547,7 +547,7 @@ const EditLibrary = () => {
             </button>
           </div>
         ))}
-      </div> */}
+      </div>
     </div>
   );
 };
