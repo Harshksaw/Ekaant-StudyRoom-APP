@@ -5,12 +5,9 @@ import { LabelledInput } from "./LabelledInput";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { BASEURL } from "@/lib/utils";
-// import { Activity, Send } from "lucide-react";
-// import { set } from "react-hook-form";
 import Loader from "@/components/Loader";
 import { toast } from "react-toastify";
-// import { ForgotPassword } from '@/screens/auth/forgotpassword';
-
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 const Auth = ({ type }: { type: "signin" }) => {
   const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState({
@@ -20,9 +17,37 @@ const Auth = ({ type }: { type: "signin" }) => {
     password: "",
   });
 
+  const [password, setPassword] = useState(false);
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = { email: "", password: "" };
+
+    if (!userInfo.email) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    }
+
+    if (!userInfo.password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   async function sendRequest() {
+    if (!validateForm()) {
+      return;
+    }
+
     if (type === "signin") {
       try {
         setLoading(true);
@@ -90,12 +115,12 @@ const Auth = ({ type }: { type: "signin" }) => {
   }
 
   return (
-    <div className="flex h-screen   flex-1  w-screen ">
-      {/* pic  */}
+    <div className="flex h-screen flex-1 w-screen">
+      {/* Left Section */}
       <div className="flex flex-col items-center justify-center bg-gradient-to-r from-sky-400 to-sky-700 w-1/2">
         <div className="flex justify-center items-center gap-10">
           <img src={studyMain} alt="pic" width={100} height={100} />
-          <p className=" h-30 font-semibold text-7xl text-white">EKAANT</p>
+          <p className="h-30 font-semibold text-7xl text-white">EKAANT</p>
         </div>
 
         <div className="flex justify-center items-center">
@@ -105,19 +130,16 @@ const Auth = ({ type }: { type: "signin" }) => {
           <p className="font-semibold text-white text-3xl">
             Welcome to Ekaant Library Portal
           </p>
-          {/* <p className="font-normal text-base">
-            Lorem ipsum dolor sit amet, conscs <br /> ectetur adipiscing elit
-            velit.
-          </p> */}
         </div>
       </div>
 
+      {/* Right Section */}
       <div className="flex justify-center items-center flex-col border w-1/2 p-5">
         <div className="self-end mb-5">
           {type === "signin" ? (
             <Link
               to="/signup"
-              className="absolute top-0 right-0 mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-4 rounded-full"
+              className="absolute top-0 right-0 mt-10 mr-8 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-4 rounded-full"
             >
               REGISTER
             </Link>
@@ -130,7 +152,7 @@ const Auth = ({ type }: { type: "signin" }) => {
             </Link>
           )}
         </div>
-        <div className="w-full max-w-md ">
+        <div className="w-full max-w-md">
           <h1 className="text-5xl font-bold mb-2 text-center">
             {type === "signin" ? "Login" : "Register"}
           </h1>
@@ -138,42 +160,48 @@ const Auth = ({ type }: { type: "signin" }) => {
             Hello! Let's get started
           </h6>
           <div className="px-20">
-            {/* {showOtp && userInfo.phone >= 1000000 && (
-              <div className="flex justify-between items-center gap-2 mb-4">
+            {/* Email Input */}
+            <div className="mb-4">
+              <LabelledInput
+                label="Enter Email Id"
+                placeholder="Email"
+                onChange={(e) =>
+                  setUserInfo({
+                    ...userInfo,
+                    email: e.target.value.toLowerCase(),
+                  })
+                }
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm ml-3">{errors.email}</p>
+              )}
+            </div>
+            {/* Password Input */}
+            <div className="mb-4">
+              <label className="font-semibold text-[14px]">Enter Password</label>
+              <div className="relative">
                 <input
-                  className="px-4 py-2 w-full rounded-lg border text-base bg-white text-gray-400"
-                  type="number"
-                  value={otp}
-                  placeholder="Otp"
-                  onChange={(e) => setOtp(e.target.valueAsNumber)}
+                  type={password ? "text" : "password"}
+                  placeholder="Password"
+                  value={userInfo.password}
+                  className="text-gray-900 text-sm block w-full p-2.5 pr-10"
+                  onChange={(e) =>
+                    setUserInfo({ ...userInfo, password: e.target.value })
+                  }
                 />
-                <button
-                  className="border rounded-full p-2 bg-blue-500 text-white"
-                  onClick={verifyOtp}
+                <p
+                  className="absolute cursor-pointer inset-y-0 right-0 flex items-center pr-3 "
+                  onClick={() => setPassword(!password)}
                 >
-                  Verify
-                </button>
+                  {password ? <IoEyeOutline /> : <IoEyeOffOutline />}
+                </p>
               </div>
-            )} */}
-            <LabelledInput
-              label="Enter Email Id"
-              placeholder="Email"
-              onChange={(e) =>
-                setUserInfo({
-                  ...userInfo,
-                  email: e.target.value.toLowerCase(),
-                })
-              }
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={userInfo.password}
-              className=" text-gray-900 text-sm  block w-full p-2.5"
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, password: e.target.value })
-              }
-            />
+              {errors.password && (
+                <p className="text-red-500 text-sm ml-3">{errors.password}</p>
+              )}
+            </div>
+
+            {/* Submit Button */}
             <div>
               {loading ? (
                 <div className="flex justify-center items-center gap-2">

@@ -3,10 +3,10 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "@/components/Loader";
-
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 export const StepOne = ({ nextStep, userInfo, setUserInfo }: any) => {
   const [loading, setLoading] = useState(false); // Add loading state
-
+  const [password, setPassword] = useState(false);
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputVal = e.target.value;
 
@@ -85,18 +85,32 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }: any) => {
         </div>
 
         {/* Password */}
-        <div>
+        <div className="mb-4">
           <label className="font-bold">Enter Password</label>
-          <input
-            required
-            type="password"
-            value={userInfo.password}
-            placeholder="Password"
-            id="adminPassword"
-            onChange={(e) => {
-              setUserInfo({ ...userInfo, password: e.target.value });
-            }}
-          />
+          <div className="relative">
+            <input
+              required
+              type={password ? "text" : "password"}
+              value={userInfo.password}
+              placeholder="Password"
+              id="adminPassword"
+              className="text-gray-900 text-sm block w-full p-2.5 pr-10"
+              onChange={(e) => {
+                setUserInfo({ ...userInfo, password: e.target.value });
+              }}
+            />
+            <p
+              className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-gray-500"
+              onClick={() => setPassword(!password)}
+            >
+              {password ? (
+                 <IoEyeOutline size={20} />
+            
+              ) : (
+                <IoEyeOffOutline size={20} />
+              )}
+            </p>
+          </div>
         </div>
       </div>
 

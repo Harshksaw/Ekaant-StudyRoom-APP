@@ -18,7 +18,7 @@ const Sidebar = () => {
   return (
     <div
       className="
-     mt-10
+     mt-16
      h-full px-[25px] 
      flex
       flex-col
