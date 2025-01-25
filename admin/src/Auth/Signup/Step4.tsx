@@ -224,7 +224,7 @@ export const StepFour = ({
             className="w-full pl-3 py-2 pr-40  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminAppShortDescription"
-            placeholder="shortDescription"
+            placeholder="Short Description"
             maxLength={85}
             value={libraryDetails.libraryApp.shortDescription}
             onChange={(e) => {
@@ -252,7 +252,7 @@ export const StepFour = ({
           <p className="text-red-500">{errors.shortDescription}</p>
         )}
 
-        <div className="flex flex-col gap-6 p-6 bg-white  rounded-lg max-w-md ">
+        <div className="flex flex-col gap-6 py-6 px-1  bg-white  rounded-lg max-w-md ">
           {/* Title */}
           <p className="text-xl font-semibold text-gray-800">
             Select Property Type
@@ -391,7 +391,7 @@ export const StepFour = ({
             className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminAppLongDescription"
-            placeholder="LongDescription"
+            placeholder="Long Description"
             maxLength={85}
             value={libraryDetails.libraryApp.longDescription}
             onChange={(e) => {
@@ -500,14 +500,17 @@ export const StepFour = ({
             className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminLibraryAddressPincode"
+            maxLength={6}
+            minLength={6}
             placeholder="pincode"
             value={libraryDetails.libraryAddress.pincode}
             onChange={(e) => {
+              const value = e.target.value.replace(/[^0-9]/g, "");
               setLibraryDetails({
                 ...libraryDetails,
                 libraryAddress: {
                   ...libraryDetails.libraryAddress,
-                  pincode: e.target.value,
+                  pincode: value,
                 },
               });
             }}

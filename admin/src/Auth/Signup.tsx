@@ -91,16 +91,16 @@ function Signup() {
     },
     libraryLegal: {
       registration: "",
-      showGst: false,
+      showGst: null,
       gst: "",
       uploadGst: null,
-      showCin: false,
+      showCin: null,
       cin: "",
       uploadCin: null,
-      showTan: false,
+      showTan: null,
       tan: "",
       uploadTan: null,
-      showmsme: false,
+      showmsme: null,
       msme: "",
       uploadmsme: null,
     },
@@ -704,9 +704,9 @@ function Signup() {
         await sendOtp(); // Send the OTP
         await sendEmailOtp(); // Send the email OTP
       } catch (error) {
-        console.error("Error while sending OTPs:", error)
+        console.error("Error while sending OTPs:", error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     }
 

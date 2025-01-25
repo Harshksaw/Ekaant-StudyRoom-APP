@@ -75,7 +75,6 @@ export const StepThree = ({
     }
   };
 
-  console.log("u", userDetails);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -148,8 +147,6 @@ export const StepThree = ({
     if (!userDetails.panCard) {
       newErrors.panCard = "PAN Card is required";
     }
-
-   
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -239,11 +236,11 @@ export const StepThree = ({
           </label>
 
           <label className="cursor-pointer">
-            <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
-              <div className=" w-full md:w-64  text-center flex justify-center items-center h-full border-2 border-solid border-black">
+            <div className="bg-white py-2 h-[4rem]  text-black text-center flex justify-between items-center px-3">
+              <div className=" w-full md:w-72 rounded-l-xl  text-center flex justify-center items-center h-full border-2 border-solid border-black">
                 Upload Passport Photo
               </div>
-              <div className="w-[30%] bg-[#0077B6] h-full flex justify-center items-center text-white">
+              <div className="w-[40%] rounded-r-xl bg-[#0077B6] h-full flex justify-center items-center text-white">
                 Select File
               </div>
             </div>
@@ -256,12 +253,12 @@ export const StepThree = ({
           </label>
 
           {preview && (
-            <div className="mt-3">
+            <div className="mt-3 ">
               <p className="text-gray-600 text-sm mb-2">Preview:</p>
               <img
                 src={preview}
                 alt="Passport Preview"
-                className="w-full h-64 max-h-64 border border-gray-300 rounded-md object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
+                className="mt-2 mx-20  h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
               />
             </div>
           )}
@@ -278,14 +275,13 @@ export const StepThree = ({
           </label>
           <input
             required
-            className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full md:w-10 px-3   border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminAadharCard"
             name="adminAadharCard"
             value={userDetails.aadharCard}
             onBlur={() => {
               if (userDetails.aadharCard.length !== 12) {
-                // Show toast error when Aadhaar card is not 12 digits
                 toast.error("Aadhaar Card number must be 12 digits long!");
               }
             }}
@@ -307,20 +303,23 @@ export const StepThree = ({
         {/* Upload Aadhar */}
         <div className="flex-col mb-4">
           {aadharPreview && (
-            <img
-              src={aadharPreview}
-              alt="Aadhar Preview"
-              className="mt-2 mx-auto h-32 object-cover"
-            />
+            <div>
+              <p className="text-gray-600 text-sm mb-2">Preview:</p>
+              <img
+                src={aadharPreview}
+                alt="Aadhar Preview"
+                className="mt-2 mx-auto h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
+              />
+            </div>
           )}
           <label className="cursor-pointer">
-            <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
-              <div className="mx-auto w-full text-center flex justify-center items-center h-full border-2 border-solid border-black">
+            <div className="bg-white py-2 h-[4rem]  text-black text-center flex justify-between items-center px-3">
+              <div className="mx-auto w-full  rounded-l-xl text-center flex justify-center items-center h-full border-2 border-solid border-black">
                 {userDetails.uploadAadharCard
                   ? userDetails.uploadAadharCard.name
                   : "Upload Aadhar Card"}
               </div>
-              <div className="w-[30%] bg-[#0077B6] h-full flex justify-center items-center text-white">
+              <div className="w-[40%] bg-[#0077B6] h-full flex justify-center items-center rounded-r-xl  text-white">
                 Select File
               </div>
             </div>
@@ -344,7 +343,7 @@ export const StepThree = ({
           </label>
           <input
             required
-            className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-full px-3  py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             maxLength={10}
             minLength={10}
@@ -374,20 +373,23 @@ export const StepThree = ({
 
         <div className="flex-col mb-4">
           {panPreview && (
-            <img
-              src={panPreview}
-              alt="PAN Preview"
-              className="mt-2 mx-auto h-32 object-cover"
-            />
+            <div>
+              <p className="text-gray-600 text-sm mb-2">Preview:</p>
+              <img
+                src={panPreview}
+                alt="PAN Preview"
+                className="mt-2 mx-auto h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
+              />
+            </div>
           )}
           <label className="cursor-pointer">
             <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
-              <div className="mx-auto w-full text-center flex justify-center items-center h-full border-2 border-solid border-black">
+              <div className="mx-auto w-full rounded-l-xl text-center flex justify-center items-center h-full border-2 border-solid border-black">
                 {userDetails.uploadPanCard
                   ? userDetails.uploadPanCard.name
                   : "Upload PAN Card"}
               </div>
-              <div className="w-[30%] bg-[#0077B6] h-full flex justify-center items-center text-white">
+              <div className="w-[40%] rounded-r-xl bg-[#0077B6] h-full flex justify-center items-center text-white">
                 Select File
               </div>
             </div>
@@ -424,21 +426,25 @@ export const StepThree = ({
             }}
             placeholder="Address Line 1"
           />
-        
-      
-          <StateDropdown
-            label={"Select State"}
-            value={userDetails.address.line2}
-            onChange={(e: any) =>
-              setUserDetails({
-                ...userDetails,
-                address: {
-                  ...userDetails.address,
-                  line2: e.target.value,
-                },
-              })
-            }
-          />
+          <div className="flex relative flex-col gap-2">
+            <label className="font-medium text-gray-700">
+              <span className="text-red-500 ml-1 absolute left-10 top-1">*</span>
+            </label>
+            <StateDropdown
+              label={"Select State"}
+              value={userDetails.address.line2}
+              onChange={(e: any) =>
+                setUserDetails({
+                  ...userDetails,
+                  address: {
+                    ...userDetails.address,
+                    line2: e.target.value,
+                  },
+                })
+              }
+            />
+          </div>
+
           {/* line 2 */}
           {/* <input
           className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -492,22 +498,25 @@ export const StepThree = ({
             </label>
             <input
               required
+              maxLength={6}
+              minLength={6}
               className="w-32 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
               type="text"
               id="adminAddressPinCode"
               value={userDetails.address.pincode}
               onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9]/g, "");
                 setUserDetails({
                   ...userDetails,
                   address: {
                     ...userDetails.address,
-                    pincode: e.target.value,
+                    pincode: value,
                   },
                 });
               }}
               placeholder="pincode"
             />
-              {errors.pincode?.city && (
+            {errors.pincode?.city && (
               <p className="text-red-500 ml-2">{errors.address.pincode}</p>
             )}
           </div>
