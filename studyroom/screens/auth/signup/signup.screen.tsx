@@ -129,7 +129,6 @@ export default function SignUpScreen() {
         phoneNumber: userInfo.phone,
         otp: otpValue,
       });
-      console.log("🚀 ~ verifyOtp ~ response:", response)
 
       if (response.status === 200) {
         Toast.show(response.data.message || "OTP verified successfully", {
@@ -146,17 +145,22 @@ export default function SignUpScreen() {
         handleSignUp(true);
       }
     } catch (error) {
-      Toast.show(error?.response?.data?.message || error?.message || "Something went wrong", {
-        type: "danger",
-        duration: 2000,
-        placement: "top",
-        style: {
-          backgroundColor: "red",
-          borderRadius: 10,
-          padding: 10,
-          marginTop: 50,
-        },
-      });
+      Toast.show(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong",
+        {
+          type: "danger",
+          duration: 2000,
+          placement: "top",
+          style: {
+            backgroundColor: "red",
+            borderRadius: 10,
+            padding: 10,
+            marginTop: 50,
+          },
+        }
+      );
     }
   };
 
@@ -186,7 +190,6 @@ export default function SignUpScreen() {
         formData.append("image", image);
       }
 
-      // Append other user info to formData
       formData.append("username", userInfo.name);
       formData.append("email", userInfo.email);
       formData.append("password", userInfo.password);
