@@ -142,25 +142,19 @@ const calculateLowestPrice = async (libraryId) => {
 // Assuming LibraryController.createLibrary is an async function
 const createLibrary = async (req, res) => {
   try {
-    // console.log(req.files, "=================>");
+    console.log("Uploaded Files: ", req.files);
+    console.log("Request Body: ", req.body);
 
-    const cardImage = req.files.card[0].path;
-    const images = req.files.images
-      ? req.files.images.map((file) => file.path)
-      : [];
-    const gst = req.files.gst ? req.files.gst[0].path : null;
-    const cin = req.files.cin ? req.files.cin[0].path : null;
-    const tan = req.files.tan ? req.files.tan[0].path : null;
-    const msme = req.files && req.files.msme ? req.files.msme[0].path : null;
+    const cardImage = req.files.card?.[0]?.path || null;
+    const images = req.files.images?.map((file) => file.path) || [];
+    const gst = req.files.gst?.[0].path || null;
+    const cin = req.files.cin?.[0].path || null;
+    const tan = req.files.tan?.[0].path || null;
+    const msme = req.files.msme?.[0].path || null;
+    const uploadElectricityBill = req.files.uploadElectricityBill?.[0].path || null;
+    const uploadLeaseAgreement = req.files.uploadLeaseAgreement?.[0].path || null;
 
-
-    const uploadElectricityBill = req.files && req.files.uploadElectricityBill ? req.files.uploadElectricityBill[0].path : null;
-    const uploadLeaseAgreement = req.files && req.files.uploadLeaseAgreement ? req.files.uploadLeaseAgreement[0].path : null;
-    // console.log(cardImage, images, gst, cin, tan, msme, ">>>>>uploadedFiles");
-
-    const jsonData = JSON.parse(req.body.jsonData);
-    // console.log("🚀 ~ createLibrary ~ jsonData:", jsonData);
-
+    const jsonData = JSON.parse(req.body.jsonData || "{}");
     const {
       libraryOwner,
       name,
@@ -174,24 +168,23 @@ const createLibrary = async (req, res) => {
       tanNumber,
       coords,
       msmeNumber,
+      propertyType,
     } = jsonData;
 
+    if (!libraryOwner || !name || !address) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
     const libraryData = {
-      libraryOwner: {
-        connect: { id: parseInt(libraryOwner) }, // Ensure the libraryOwner is connected correctly
-      },
+      libraryOwner: { connect: { id: parseInt(libraryOwner) } },
       name,
       longDescription,
       shortDescription,
       address,
-      coords: coords,
-      amenities: {
-        create: {
-          amenities : amenities
-        },
-      },
-      cardImage: cardImage,
-      images: images,
+      coords,
+      amenities: { create: { amenities } },
+      cardImage,
+      images,
       legal,
       gstNumber,
       gstCertificateFile: gst,
@@ -201,27 +194,23 @@ const createLibrary = async (req, res) => {
       tanCertificateFile: tan,
       msmeNumber,
       msmeCertificateFile: msme,
-      propertyType: propertyType,
-      uploadElectricityBill: uploadElectricityBill,
-      uploadLeaseAgreement: uploadLeaseAgreement,
-
-
+      propertyType,
+      uploadElectricityBill,
+      uploadLeaseAgreement,
     };
 
     const LibraryData = await prisma.library.create({ data: libraryData });
 
-    // await calculateDistances(LibraryData.id);
-
-    // calculateLowestPrice(LibraryData.id);
     res.status(201).json({
       message: "Library created successfully",
       library: LibraryData,
     });
   } catch (error) {
-    console.error("Error ", error);
+    console.error("Error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 // createRoom
 const createRoom = async (req, res) => {

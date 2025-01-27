@@ -141,7 +141,7 @@ const Auth = ({ type }: { type: "signin" }) => {
               to="/signup"
               className="absolute top-0 right-0 mt-10 mr-8 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-4 rounded-full"
             >
-              REGISTER
+              Register
             </Link>
           ) : (
             <Link

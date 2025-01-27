@@ -483,13 +483,14 @@ export const StepFour = ({
 
             {/* Image Preview */}
             {libraryDetails.libraryLegal.electricityBillPreview && (
-              <div className="mt-2">
+              <div className="mt-3">
+                  <p className="text-gray-600 text-sm mb-2">Preview:</p>
                 <img
                   src={
                     libraryDetails.libraryLegal.electricityBillPreview as string
                   }
                   alt="Electricity Bill Preview"
-                  className="w-full object-cover rounded-lg"
+                  className="mt-2 mx-auto h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"  
                 />
               </div>
             )}
@@ -555,12 +556,13 @@ export const StepFour = ({
             {/* Image Preview */}
             {libraryDetails.libraryLegal.leaseAgreementPreview && (
               <div className="mt-2">
+                  <p className="text-gray-600 text-sm mb-2">Preview:</p>
                 <img
                   src={
                     libraryDetails.libraryLegal.leaseAgreementPreview as string
                   }
                   alt="Lease Agreement Preview"
-                  className=" object-cover rounded-lg"
+                  className="mt-2 mx-auto h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105" 
                 />
               </div>
             )}
@@ -1303,8 +1305,8 @@ export const StepFour = ({
                 </label>
               </div>
             </fieldset>
-            {errors.showmsme && (
-              <p className="text-red-500 text-sm mt-1">{errors.showmsme}</p>
+            {errors.showCin && (
+              <p className="text-red-500 text-sm mt-1">{errors.showCin}</p>
             )}
           </div>
 
