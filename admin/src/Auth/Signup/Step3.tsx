@@ -10,7 +10,6 @@ import dayjs from "dayjs"; // Import dayjs
 import { TextField } from "@mui/material";
 import StateDropdown from "@/components/StateSelector";
 
-const currentDate = dayjs(); // Use dayjs to get the current date
 
 export const StepThree = ({
   nextStep,
