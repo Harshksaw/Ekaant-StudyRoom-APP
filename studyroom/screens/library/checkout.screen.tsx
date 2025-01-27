@@ -645,7 +645,17 @@ const CheckoutScreen: React.FC = () => {
       </View>
 
       {/* Summary */}
-
+      <Text
+        style={{
+          fontFamily: ff.deckBold,
+          fontSize: w(14),
+          color: "red",
+          paddingHorizontal: w(20),
+        }}
+      >
+        Ekaant does not handle refund requests. For assistance, please reach out
+        directly to the respective library.
+      </Text>
       <TouchableOpacity onPress={handlePayment}>
         <View
           style={{
