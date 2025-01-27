@@ -820,9 +820,9 @@ const BookingScreen: React.FC = () => {
                       backgroundColor: "#0077B6",
                       borderRadius: 3,
                       marginBottom: h(10),
-                      opacity: !selectedSlots.length ? 0.5 : 1,
+                      opacity: !selectedSlots.length || bookingloader ? 0.5 : 1,
                     }}
-                    disabled={!selectedSlots.length}
+                    disabled={!selectedSlots.length || bookingloader}
                     onPress={confirmBooking}
                   >
                     {bookingloader ? (
@@ -836,10 +836,10 @@ const BookingScreen: React.FC = () => {
                         }}
                       >
                         <ActivityIndicator
-                          size="large"
+                          size="small"
                           color="#fff"
                           style={{
-                            padding: w(10),
+                            paddingHorizontal: w(40),
                             borderRadius: 20,
                           }}
                         />

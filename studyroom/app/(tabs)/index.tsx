@@ -198,7 +198,7 @@ export default function index() {
     Animated.loop(
       Animated.timing(translateX, {
         toValue: -300,
-        duration: 10000,
+        duration: 20000,
         delay: 1000,
         easing: Easing.linear,
         useNativeDriver: true,
@@ -272,7 +272,12 @@ export default function index() {
               </Text>
               <Animated.View
                 style={{
-                  transform: [{ translateX }],
+                  transform: [
+                    {
+                      translateX:
+                        item?.shortDescription?.length > 25 ? translateX : 0,
+                    },
+                  ],
                   width: 1000,
                   flexDirection: "row",
                 }}
@@ -555,7 +560,7 @@ export default function index() {
                 marginVertical: 16,
               }}
             >
-              No more data available
+              No more Library available
             </Text>
           ) : null
         }
