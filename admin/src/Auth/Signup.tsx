@@ -108,7 +108,7 @@ function Signup() {
     librayCardImage: null,
     librarySliders: [],
     halls: 0,
-    amentities: {},
+    amenities: {},
   });
 
   useEffect(() => {
