@@ -16,6 +16,7 @@ import {
   Image,
   Animated,
   Easing,
+  ScrollView,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -27,7 +28,7 @@ import { Toast } from "react-native-toast-notifications";
 import RazorpayCheckout from "react-native-razorpay";
 
 import getLocationName from "@/utils/location";
-import { vw, w } from "@/constants/size";
+import { h, vw, w } from "@/constants/size";
 import ff from "@/constants/fonts";
 
 const CheckoutScreen: React.FC = () => {
@@ -272,348 +273,261 @@ const CheckoutScreen: React.FC = () => {
         paddingTop: 50,
       }}
     >
-      <View>
-        <Text
-          style={{
-            color: "#000",
-            fontSize: w(30),
-            fontFamily: ff.deckSemiBold,
-            paddingLeft: 20,
-            marginBottom: w(17),
-          }}
-        >
-          Booking Confirmation
-        </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            marginHorizontal: 20,
-            justifyContent: "flex-start",
-            gap: 20,
-            alignItems: "center",
-          }}
-        >
-          <View style={{}}>
-            <Image
-              source={{ uri: BookedData?.libraryId?.images[0] }}
-              style={{
-                width: vw / 2.5,
-                height: 200,
-                borderRadius: 10,
-              }}
-            />
-          </View>
-          <View
+      <ScrollView>
+        <View>
+          <Text
             style={{
-              flexDirection: "column",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              gap: 10,
+              color: "#000",
+              fontSize: w(30),
+              fontFamily: ff.deckSemiBold,
+              paddingLeft: 20,
+              marginBottom: w(17),
             }}
           >
-            <View
-              style={{
-                borderRadius: 5,
-                backgroundColor: "#fff", // Example background color
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight: 10,
-                borderWidth: 1,
-                borderColor: "#828282",
-                paddingVertical: w(5),
-                paddingHorizontal: w(10),
-              }}
-            >
-              {userDetails?.bookingsForFriend ? (
-                <View style={{ flexDirection: "column", alignItems: "center" }}>
-                  <Text
-                    style={{
-                      color: "#000",
-                      fontSize: w(12),
-                      fontFamily: ff.deckSemiBold,
-                    }}
-                  >
-                    Booking for friend
-                  </Text>
-                  <Text
-                    style={{
-                      color: "#000",
-                      fontSize: w(12),
-                      fontFamily: ff.deckSemiBold,
-                    }}
-                  >
-                    {userDetails?.friendDetails?.name}
-                  </Text>
-                </View>
-              ) : (
-                <Text
-                  style={{
-                    color: "#000",
-                    fontSize: w(12),
-                    fontFamily: ff.deckSemiBold,
-                  }}
-                >
-                  Booking for SELF
-                </Text>
-              )}
-            </View>
-
-            <Text
-              style={{
-                color: "#000",
-                fontSize: w(20),
-                fontFamily: ff.deckSemiBold,
-              }}
-            >
-              {BookedData?.libraryId?.name || "Library Name"}
-            </Text>
-
-            <View
-              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
-            >
-              <Ionicons name="time-outline" size={20} color="black" />
-              <Text
-                style={{
-                  color: "#000",
-                  fontSize: w(14),
-                  fontFamily: ff.deckMedium,
-                }}
-              >
-                Period - {BookedData.bookingPeriod} Month
-                {BookedData.bookingPeriod > 1 ? "s" : ""}
-              </Text>
-            </View>
-
-            <View
-              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
-            >
-              <Text
-                style={{
-                  color: "#000",
-                  fontSize: w(13),
-                  fontFamily: ff.deckMedium,
-                  letterSpacing: 0.5,
-                }}
-              >
-                A/C Rooms - {BookedData?.libraryId[0]?.Ac ? "Yes" : "No"}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Image and Side Details */}
-        <View
-          style={{
-            flexDirection: "row",
-            marginHorizontal: 20,
-            marginTop: 20,
-            alignItems: "center",
-            gap: 40,
-          }}
-        >
+            Booking Confirmation
+          </Text>
           <View
             style={{
               flexDirection: "row",
-              gap: 10,
+              marginHorizontal: 20,
+              justifyContent: "flex-start",
+              gap: 20,
               alignItems: "center",
-              width: 150,
             }}
           >
-            <Ionicons name="calendar-outline" size={40} color="black" />
-            <View style={{ flexDirection: "column", gap: 10 }}>
-              <Text
+            <View style={{}}>
+              <Image
+                source={{ uri: BookedData?.libraryId?.images[0] }}
                 style={{
-                  color: "#000",
-                  fontSize: w(14),
-                  fontFamily: ff.textRegular,
+                  width: vw / 2.5,
+                  height: 200,
+                  borderRadius: 10,
                 }}
-              >
-                {BookedDate}
-              </Text>
-              <Text
-                style={{
-                  color: "#000",
-                  fontSize: w(14),
-                  fontFamily: ff.textRegular,
-                }}
-              >
-                {endDate.toISOString().split("T")[0]}
-              </Text>
+              />
             </View>
-          </View>
-          <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-            <SeatsCheckout />
-            <Text
-              style={{
-                flexDirection: "column",
-                flexWrap: "wrap",
-                color: "#000",
-                fontSize: w(18),
-                fontFamily: ff.deckRegular,
-              }}
-            >
-              Seat No.{" "}
-              {/* {formatSeatLabel(BookedData?.bookedSeat?.seatId)}{" "} */}
-              {BookedData?.bookedSeat.seatLabel}
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            height: 1,
-            backgroundColor: "black",
-            marginHorizontal: 20,
-            marginVertical: 10,
-          }}
-        />
-
-        {/* Payment Summary */}
-        <View
-          style={{
-            marginHorizontal: 20,
-            marginTop: 20,
-            flexDirection: "column",
-            gap: 15,
-          }}
-        >
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text
-              style={{
-                flexDirection: "column",
-                flexWrap: "wrap",
-                color: "#000",
-                fontSize: w(16),
-                fontFamily: ff.deckRegular,
-                textDecorationLine: BookedData?.hasBoughtEarlier
-                  ? "line-through"
-                  : "none",
-              }}
-            >
-              Registration Fee
-            </Text>
-            <Text
-              style={{
-                flexDirection: "column",
-                flexWrap: "wrap",
-                color: "#000",
-                fontSize: w(16),
-                fontFamily: ff.deckSemiBold,
-                textDecorationLine: BookedData?.hasBoughtEarlier
-                  ? "line-through"
-                  : "none",
-              }}
-            >
-              ₹{RegistrationFees}
-            </Text>
-          </View>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text
-              style={{
-                flexDirection: "column",
-                flexWrap: "wrap",
-                color: "#000",
-                fontSize: w(16),
-                fontFamily: ff.deckRegular,
-              }}
-            >
-              Sub Total
-            </Text>
-            <Text
-              style={{
-                flexDirection: "column",
-                flexWrap: "wrap",
-                color: "#000",
-                fontSize: w(16),
-                fontFamily: ff.deckSemiBold,
-              }}
-            >
-              ₹{initialPrice}
-            </Text>
-          </View>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            {BookedData?.libraryId?.[0]?.timeSlot?.map((slot, index) => (
-              <View key={index} style={{ flexDirection: "row", gap: 5 }}>
-                <Text
-                  style={{
-                    flexDirection: "column",
-                    flexWrap: "wrap",
-                    color: "#000",
-                    fontSize: w(16),
-                    fontFamily: ff.deckRegular,
-                  }}
-                >
-                  {slot.from || ""} - {slot.to || ""}
-                </Text>
-              </View>
-            ))}
-          </View>
-
-          {/* Display Location */}
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            <CheckoutScreenLoc />
             <View
               style={{
                 flexDirection: "column",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
                 gap: 10,
               }}
             >
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  gap: 10,
+                  borderRadius: 5,
+                  backgroundColor: "#fff", // Example background color
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 10,
+                  borderWidth: 1,
+                  borderColor: "#828282",
+                  paddingVertical: w(5),
+                  paddingHorizontal: w(10),
                 }}
               >
+                {userDetails?.bookingsForFriend ? (
+                  <View
+                    style={{ flexDirection: "column", alignItems: "center" }}
+                  >
+                    <Text
+                      style={{
+                        color: "#000",
+                        fontSize: w(12),
+                        fontFamily: ff.deckSemiBold,
+                      }}
+                    >
+                      Booking for friend
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#000",
+                        fontSize: w(12),
+                        fontFamily: ff.deckSemiBold,
+                      }}
+                    >
+                      {userDetails?.friendDetails?.name}
+                    </Text>
+                  </View>
+                ) : (
+                  <Text
+                    style={{
+                      color: "#000",
+                      fontSize: w(12),
+                      fontFamily: ff.deckSemiBold,
+                    }}
+                  >
+                    Booking for SELF
+                  </Text>
+                )}
+              </View>
+
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: w(20),
+                  fontFamily: ff.deckSemiBold,
+                }}
+              >
+                {BookedData?.libraryId?.name || "Library Name"}
+              </Text>
+
+              <View
+                style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+              >
+                <Ionicons name="time-outline" size={20} color="black" />
                 <Text
                   style={{
-                    flexDirection: "column",
-                    flexWrap: "wrap",
                     color: "#000",
-                    fontSize: w(16),
-                    fontFamily: ff.deckRegular,
+                    fontSize: w(14),
+                    fontFamily: ff.deckMedium,
                   }}
                 >
-                  {/* {location?.split(" ").slice(0, 2).join(" ")}{" "} */}
-                  {location?.line1}, {location?.city}
+                  Period - {BookedData.bookingPeriod} Month
+                  {BookedData.bookingPeriod > 1 ? "s" : ""}
                 </Text>
               </View>
+
               <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
+                style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
               >
                 <Text
                   style={{
-                    flexDirection: "column",
-                    flexWrap: "wrap",
                     color: "#000",
-                    fontSize: w(16),
-                    fontFamily: ff.deckRegular,
+                    fontSize: w(13),
+                    fontFamily: ff.deckMedium,
+                    letterSpacing: 0.5,
                   }}
                 >
-                  {location?.state}, {location?.pincode}
+                  A/C Rooms - {BookedData?.libraryId[0]?.Ac ? "Yes" : "No"}
                 </Text>
               </View>
             </View>
           </View>
+
+          {/* Image and Side Details */}
           <View
             style={{
               flexDirection: "row",
-              gap: 10,
-              // alignItems: "center",
-              justifyContent: "flex-start",
-              marginTop: 10,
+              marginHorizontal: 20,
+              marginTop: 20,
+              alignItems: "center",
+              gap: 40,
             }}
           >
-            <Note />
-            <View>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                alignItems: "center",
+                width: 150,
+              }}
+            >
+              <Ionicons name="calendar-outline" size={40} color="black" />
+              <View style={{ flexDirection: "column", gap: 10 }}>
+                <Text
+                  style={{
+                    color: "#000",
+                    fontSize: w(14),
+                    fontFamily: ff.textRegular,
+                  }}
+                >
+                  {BookedDate}
+                </Text>
+                <Text
+                  style={{
+                    color: "#000",
+                    fontSize: w(14),
+                    fontFamily: ff.textRegular,
+                  }}
+                >
+                  {endDate.toISOString().split("T")[0]}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+            >
+              <SeatsCheckout />
+              <Text
+                style={{
+                  flexDirection: "column",
+                  flexWrap: "wrap",
+                  color: "#000",
+                  fontSize: w(18),
+                  fontFamily: ff.deckRegular,
+                }}
+              >
+                Seat No.{" "}
+                {/* {formatSeatLabel(BookedData?.bookedSeat?.seatId)}{" "} */}
+                {BookedData?.bookedSeat.seatLabel}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{
+              height: 1,
+              backgroundColor: "black",
+              marginHorizontal: 20,
+              marginVertical: 10,
+            }}
+          />
+
+          {/* Payment Summary */}
+          <View
+            style={{
+              marginHorizontal: 20,
+              marginTop: 20,
+              flexDirection: "column",
+              gap: 15,
+            }}
+          >
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text
+                style={{
+                  flexDirection: "column",
+                  flexWrap: "wrap",
+                  color: "#000",
+                  fontSize: w(16),
+                  fontFamily: ff.deckRegular,
+                  textDecorationLine: BookedData?.hasBoughtEarlier
+                    ? "line-through"
+                    : "none",
+                }}
+              >
+                Registration Fee
+              </Text>
+              <Text
+                style={{
+                  flexDirection: "column",
+                  flexWrap: "wrap",
+                  color: "#000",
+                  fontSize: w(16),
+                  fontFamily: ff.deckSemiBold,
+                  textDecorationLine: BookedData?.hasBoughtEarlier
+                    ? "line-through"
+                    : "none",
+                }}
+              >
+                ₹{RegistrationFees}
+              </Text>
+            </View>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text
+                style={{
+                  flexDirection: "column",
+                  flexWrap: "wrap",
+                  color: "#000",
+                  fontSize: w(16),
+                  fontFamily: ff.deckRegular,
+                }}
+              >
+                Sub Total
+              </Text>
               <Text
                 style={{
                   flexDirection: "column",
@@ -623,85 +537,186 @@ const CheckoutScreen: React.FC = () => {
                   fontFamily: ff.deckSemiBold,
                 }}
               >
-                Slot Time -
+                ₹{initialPrice}
               </Text>
-              <Text
+            </View>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              {BookedData?.libraryId?.[0]?.timeSlot?.map((slot, index) => (
+                <View key={index} style={{ flexDirection: "row", gap: 5 }}>
+                  <Text
+                    style={{
+                      flexDirection: "column",
+                      flexWrap: "wrap",
+                      color: "#000",
+                      fontSize: w(16),
+                      fontFamily: ff.deckRegular,
+                    }}
+                  >
+                    {slot.from || ""} - {slot.to || ""}
+                  </Text>
+                </View>
+              ))}
+            </View>
+
+            {/* Display Location */}
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <CheckoutScreenLoc />
+              <View
                 style={{
                   flexDirection: "column",
-                  flexWrap: "wrap",
-                  color: "#000",
-                  fontSize: w(16),
-                  fontFamily: ff.deckRegular,
-                  marginRight: w(20),
+                  gap: 10,
                 }}
               >
-                {formatTimeSlots(
-                  BookedData?.timeSlot ?? BookedData.bookedSeat.timeSlot
-                )}
-              </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    gap: 10,
+                  }}
+                >
+                  <Text
+                    style={{
+                      flexDirection: "column",
+                      flexWrap: "wrap",
+                      color: "#000",
+                      fontSize: w(16),
+                      fontFamily: ff.deckRegular,
+                    }}
+                  >
+                    {/* {location?.split(" ").slice(0, 2).join(" ")}{" "} */}
+                    {location?.line1}, {location?.city}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text
+                    style={{
+                      flexDirection: "column",
+                      flexWrap: "wrap",
+                      color: "#000",
+                      fontSize: w(16),
+                      fontFamily: ff.deckRegular,
+                    }}
+                  >
+                    {location?.state}, {location?.pincode}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                // alignItems: "center",
+                justifyContent: "flex-start",
+                marginTop: 10,
+              }}
+            >
+              <Note />
+              <View>
+                <Text
+                  style={{
+                    flexDirection: "column",
+                    flexWrap: "wrap",
+                    color: "#000",
+                    fontSize: w(16),
+                    fontFamily: ff.deckSemiBold,
+                  }}
+                >
+                  Slot Time -
+                </Text>
+                <Text
+                  style={{
+                    flexDirection: "column",
+                    flexWrap: "wrap",
+                    color: "#000",
+                    fontSize: w(16),
+                    fontFamily: ff.deckRegular,
+                    marginRight: w(20),
+                  }}
+                >
+                  {formatTimeSlots(
+                    BookedData?.timeSlot ?? BookedData.bookedSeat.timeSlot
+                  )}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
-
-      {/* Summary */}
-      <Text
+      </ScrollView>
+      <View
         style={{
-          fontFamily: ff.deckBold,
-          fontSize: w(14),
-          color: "red",
-          paddingHorizontal: w(20),
+          position: "absolute",
+          paddingBottom: 25,
+          paddingTop: h(8),
+          bottom: 0,
+          gap: 10,
+          backgroundColor: "#fff",
+          alignSelf: "center",
         }}
       >
-        Ekaant does not handle refund requests. For assistance, please reach out
-        directly to the respective library.
-      </Text>
-      <TouchableOpacity onPress={handlePayment}>
-        <View
+        <Text
           style={{
-            flexDirection: "row",
-            position: "absolute",
-            bottom: 25,
-            width: "90%",
-            justifyContent: "space-between",
-            marginHorizontal: 20,
-            alignItems: "center",
-            padding: 20,
-            backgroundColor: "#0077B6",
-            borderRadius: 4,
+            fontFamily: ff.deckBold,
+            fontSize: w(14),
+            color: "red",
+            paddingHorizontal: w(20),
           }}
         >
-          <Text
+          Ekaant does not handle refund requests. For assistance, please reach
+          out directly to the respective library.
+        </Text>
+        <TouchableOpacity onPress={handlePayment}>
+          <View
             style={{
-              color: "#FFFFF5",
-              fontSize: w(20),
-              fontFamily: ff.deckBold,
-              letterSpacing: 1.5,
+              flexDirection: "row",
+              width: "90%",
+              justifyContent: "space-between",
+              marginHorizontal: 20,
+              alignItems: "center",
+              padding: 20,
+              backgroundColor: "#0077B6",
+              borderRadius: 4,
             }}
           >
-            Total Amount: ₹{finalAmount}
-          </Text>
-          <Animated.View
-            style={{
-              position: "absolute",
-              transform: [{ translateX }],
-              opacity: 0.7,
-            }}
-          >
-            <Image
-              source={require("@/assets/blurShadow.png")}
-              resizeMode="contain"
+            <Text
               style={{
-                flex: 1,
-                transform: [{ rotate: "-60deg" }],
-                width: 150,
-                height: 100,
+                color: "#FFFFF5",
+                fontSize: w(20),
+                fontFamily: ff.deckBold,
+                letterSpacing: 1.5,
               }}
-            />
-          </Animated.View>
-          <Ionicons name="arrow-forward" size={w(20)} color="white" />
-        </View>
-      </TouchableOpacity>
+            >
+              Total Amount: ₹{finalAmount}
+            </Text>
+            <Animated.View
+              style={{
+                position: "absolute",
+                transform: [{ translateX }],
+                opacity: 0.7,
+              }}
+            >
+              <Image
+                source={require("@/assets/blurShadow.png")}
+                resizeMode="contain"
+                style={{
+                  flex: 1,
+                  transform: [{ rotate: "-60deg" }],
+                  width: 150,
+                  height: 100,
+                }}
+              />
+            </Animated.View>
+            <Ionicons name="arrow-forward" size={w(20)} color="white" />
+          </View>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
