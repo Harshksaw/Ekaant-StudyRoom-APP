@@ -103,6 +103,7 @@ function Signup() {
       showmsme: null,
       msme: "",
       uploadmsme: null,
+      propertyType: ""
     },
     librayCardImage: null,
     librarySliders: [],

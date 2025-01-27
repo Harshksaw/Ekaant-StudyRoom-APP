@@ -43,13 +43,111 @@ export const StepFour = ({
       },
     }));
   };
+
   const validateFields = () => {
     const newErrors: any = {};
-    if (!libraryDetails.libraryName)
+
+    if (!libraryDetails.libraryLegal.propertyType) {
+      newErrors.propertyType = "Please select a property type.";
+    }
+
+    // Validate library name
+    if (!libraryDetails.libraryName) {
       newErrors.libraryName = "Library Name is required";
-    if (!libraryDetails.libraryApp.shortDescription)
+    }
+
+    // Validate library app fields
+    if (!libraryDetails.libraryApp.shortDescription) {
       newErrors.shortDescription = "Short Description is required";
-    // Add more validation checks as needed
+    }
+    if (!libraryDetails.libraryApp.longDescription) {
+      newErrors.longDescription = "Long Description is required";
+    }
+
+    // Validate library address fields
+    if (!libraryDetails.libraryAddress.line1) {
+      newErrors.line1 = "Address Line 1 is required";
+    }
+    if (!libraryDetails.libraryAddress.city) {
+      newErrors.city = "City is required";
+    }
+    if (!libraryDetails.libraryAddress.state) {
+      newErrors.state = "State is required";
+    }
+    if (!libraryDetails.libraryAddress.pincode) {
+      newErrors.pincode = "Pincode is required";
+    } else if (!/^\d{6}$/.test(libraryDetails.libraryAddress.pincode)) {
+      newErrors.pincode = "Pincode must be a 6-digit number";
+    }
+
+    // Validate library legal fields
+    if (!libraryDetails.libraryLegal.registration) {
+      newErrors.registration = "Registration is required";
+    }
+
+    // Validate GST number if `showGst` is "yes"
+    if (libraryDetails.libraryLegal.showGst === null) {
+      newErrors.showGst = "Please select Yes or No for GST.";
+    }
+
+    if (
+      libraryDetails.libraryLegal.showGst === true &&
+      !libraryDetails.libraryLegal.gst
+    ) {
+      newErrors.gst = "GST number is required.";
+    }
+    if (
+      libraryDetails.libraryLegal.showGst &&
+      !libraryDetails.libraryLegal.uploadGst
+    ) {
+      newErrors.uploadGst = "GST document upload is required";
+    }
+    if (libraryDetails.libraryLegal.showCin === null) {
+      newErrors.showCin = "Please select Yes or No for Cin.";
+    }
+    if (
+      libraryDetails.libraryLegal.showCin &&
+      !libraryDetails.libraryLegal.cin
+    ) {
+      newErrors.cin = "CIN is required";
+    }
+    if (
+      libraryDetails.libraryLegal.showCin &&
+      !libraryDetails.libraryLegal.uploadCin
+    ) {
+      newErrors.uploadCin = "CIN document upload is required";
+    }
+    if (libraryDetails.libraryLegal.showTan === null) {
+      newErrors.showTan = "Please select Yes or No for Cin.";
+    }
+    if (
+      libraryDetails.libraryLegal.showTan &&
+      !libraryDetails.libraryLegal.tan
+    ) {
+      newErrors.tan = "TAN is required";
+    }
+    if (
+      libraryDetails.libraryLegal.showTan &&
+      !libraryDetails.libraryLegal.uploadTan
+    ) {
+      newErrors.uploadTan = "TAN document upload is required";
+    }
+    if (libraryDetails.libraryLegal.showmsme === null) {
+      newErrors.showmsme = "Please select Yes or No for Cin.";
+    }
+    if (
+      libraryDetails.libraryLegal.showmsme &&
+      !libraryDetails.libraryLegal.msme
+    ) {
+      newErrors.msme = "MSME is required";
+    }
+    if (
+      libraryDetails.libraryLegal.showmsme &&
+      !libraryDetails.libraryLegal.uploadmsme
+    ) {
+      newErrors.uploadmsme = "MSME document upload is required";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -294,7 +392,6 @@ export const StepFour = ({
               />
               <span>Owned</span>
             </label>
-
             {/* Rented Option */}
             <label
               htmlFor="propertyRented"
@@ -330,59 +427,150 @@ export const StepFour = ({
               <span>Rented</span>
             </label>
           </div>
+          {errors.propertyType && (
+            <p className="text-red-500 text-sm">{errors.propertyType}</p>
+          )}
         </div>
 
         {libraryDetails.libraryLegal.propertyType === "Owned" && (
           <div className="flex-col items-center justify-start mt-2">
+            {/* Label for Uploading Electricity Bill */}
             <label
               htmlFor="uploadElectricityBill"
               className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
             >
               Upload Electricity Bill
             </label>
-            <input
-              className="w-full mt-2 rounded-2xl px-6 py-4 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              type="file"
-              id="uploadElectricityBill"
-              name="uploadElectricityBill"
-              onChange={(e) => {
-                const file = e.target.files ? e.target.files[0] : null;
-                setLibraryDetails({
-                  ...libraryDetails,
-                  libraryLegal: {
-                    ...libraryDetails.libraryLegal,
-                    uploadElectricityBill: file,
-                  },
-                });
-              }}
-            />
+
+            {/* File Input Container */}
+            <div className="flex mt-2 justify-start items-center border-black">
+              {/* Label for Input */}
+              <label
+                htmlFor="uploadElectricityBill"
+                className="w-60 h-[50px] rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border"
+              >
+                Select File
+              </label>
+
+              {/* File Input Button */}
+              <label className="block w-32 bg-[#0077B6] rounded-r-xl py-2 text-white h-[50px] justify-center items-center text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
+                Choose File
+                <input
+                  type="file"
+                  id="uploadElectricityBill"
+                  onChange={(e) => {
+                    const file = e.target.files ? e.target.files[0] : null;
+                    if (file) {
+                      // Preview the image if it's an image file
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setLibraryDetails({
+                          ...libraryDetails,
+                          libraryLegal: {
+                            ...libraryDetails.libraryLegal,
+                            uploadElectricityBill: file,
+                            electricityBillPreview: reader.result, // Store image preview URL
+                          },
+                        });
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  style={{ display: "none" }} // Hide the actual input
+                />
+              </label>
+            </div>
+
+            {/* Image Preview */}
+            {libraryDetails.libraryLegal.electricityBillPreview && (
+              <div className="mt-2">
+                <img
+                  src={
+                    libraryDetails.libraryLegal.electricityBillPreview as string
+                  }
+                  alt="Electricity Bill Preview"
+                  className="w-full object-cover rounded-lg"
+                />
+              </div>
+            )}
+
+            {/* Error message for upload */}
+            {errors.uploadElectricityBill && (
+              <p className="text-red-500 text-sm">
+                {errors.uploadElectricityBill}
+              </p>
+            )}
           </div>
         )}
 
         {libraryDetails.libraryLegal.propertyType === "Rented" && (
-          <div className="flex-col items-center  justify-start mt-2">
+          <div className="flex-col items-center justify-start mt-2">
+            {/* Label for Uploading Lease Agreement */}
             <label
               htmlFor="uploadLeaseAgreement"
               className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
             >
               Upload Lease Agreement
             </label>
-            <input
-              className="w-full  mt-2 rounded-2xl px-6 py-4  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              type="file"
-              id="uploadLeaseAgreement"
-              name="uploadLeaseAgreement"
-              onChange={(e) => {
-                const file = e.target.files ? e.target.files[0] : null;
-                setLibraryDetails({
-                  ...libraryDetails,
-                  libraryLegal: {
-                    ...libraryDetails.libraryLegal,
-                    uploadLeaseAgreement: file,
-                  },
-                });
-              }}
-            />
+
+            {/* File Input Container */}
+            <div className="flex mt-2 justify-start items-center border-black">
+              {/* Label for Input */}
+              <label
+                htmlFor="uploadLeaseAgreement"
+                className="w-60 h-[50px] rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border"
+              >
+                Select File
+              </label>
+
+              {/* File Input Button */}
+              <label className="block w-32 bg-[#0077B6] rounded-r-xl py-2 text-white h-[50px] justify-center items-center text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
+                Choose File
+                <input
+                  type="file"
+                  id="uploadLeaseAgreement"
+                  onChange={(e) => {
+                    const file = e.target.files ? e.target.files[0] : null;
+                    if (file) {
+                      // Preview the image if it's an image file
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setLibraryDetails({
+                          ...libraryDetails,
+                          libraryLegal: {
+                            ...libraryDetails.libraryLegal,
+                            uploadLeaseAgreement: file,
+                            leaseAgreementPreview: reader.result, // Store image preview URL
+                          },
+                        });
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  style={{ display: "none" }} // Hide the actual input
+                />
+              </label>
+            </div>
+
+            {/* Image Preview */}
+            {libraryDetails.libraryLegal.leaseAgreementPreview && (
+              <div className="mt-2">
+                <img
+                  src={
+                    libraryDetails.libraryLegal.leaseAgreementPreview as string
+                  }
+                  alt="Lease Agreement Preview"
+                  className=" object-cover rounded-lg"
+                />
+              </div>
+            )}
+
+            {/* Error message for upload */}
+            {errors.uploadLeaseAgreement && (
+              <p className="text-red-500 text-sm">
+                {errors.uploadLeaseAgreement}
+              </p>
+            )}
           </div>
         )}
         {/* Long description */}
@@ -439,6 +627,10 @@ export const StepFour = ({
             }}
           />
 
+          {errors.line1 && (
+            <p className="text-red-500 text-sm">{errors.line1}</p>
+          )}
+
           {/* Line 2 */}
           <input
             className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -474,6 +666,9 @@ export const StepFour = ({
                 </option>
               ))}
             </select>
+            {errors.city && (
+              <p className="text-red-500 text-sm">{errors.city}</p>
+            )}
           </div>
           {/* State */}
           <div className="w-2/5">
@@ -489,6 +684,9 @@ export const StepFour = ({
                 });
               }}
             />
+            {errors.state && (
+              <p className="text-red-500 text-sm -mt-2">{errors.state}</p>
+            )}
             <input />
           </div>
         </div>
@@ -515,6 +713,10 @@ export const StepFour = ({
               });
             }}
           />
+
+          {errors.pincode && (
+            <p className="text-red-500 text-sm ">{errors.pincode}</p>
+          )}
         </div>
         <div className="flex justify-center items-start my-3 gap-3 flex-col">
           <label>Legal</label>
@@ -532,6 +734,9 @@ export const StepFour = ({
               });
             }}
           >
+            {errors.pincode && (
+              <p className="text-red-500 text-sm ">{errors.pincode}</p>
+            )}
             <option value="" disabled>
               Select Registration Type
             </option>
@@ -557,6 +762,9 @@ export const StepFour = ({
             </option>
             <option value="Cooperative Society">Cooperative Society</option>
           </select>
+          {errors.registration && (
+            <p className="text-red-500 text-sm">{errors.registration}</p>
+          )}
         </div>
         {/* GST */}
         <div className="flex flex-col gap-5  my-2">
@@ -582,6 +790,11 @@ export const StepFour = ({
                         showGst: true,
                       },
                     });
+                    setErrors((prev) => {
+                      const updatedErrors = { ...prev };
+                      delete updatedErrors.showGst;
+                      return updatedErrors;
+                    });
                   }}
                   className="hidden"
                 />
@@ -606,16 +819,20 @@ export const StepFour = ({
                   name="showGst"
                   value="false"
                   id="gst-false"
-                  onChange={() => {
+                  onChange={(e) => {
                     setLibraryDetails({
                       ...libraryDetails,
                       libraryLegal: {
                         ...libraryDetails.libraryLegal,
-                        showGst: false,
-                        gstNumber: "",
+                        showGst: false, // Set to true when Yes is selected
                       },
                     });
-                    setErrors({ ...errors, gstNumber: "" });
+                    // Remove error if present
+                    setErrors((prev) => {
+                      const updatedErrors = { ...prev };
+                      delete updatedErrors.showGst;
+                      return updatedErrors;
+                    });
                   }}
                   className="hidden"
                 />
@@ -634,6 +851,9 @@ export const StepFour = ({
                 </label>
               </div>
             </fieldset>
+            {errors.showGst && (
+              <p className="text-red-500 text-sm mt-1">{errors.showGst}</p>
+            )}
           </div>
 
           {libraryDetails.libraryLegal.showGst && (
@@ -645,6 +865,7 @@ export const StepFour = ({
                   placeholder="Gst Number"
                   id="adminLibraryLegalGst"
                   value={libraryDetails.libraryLegal.gst}
+                  maxLength={15}
                   onChange={(e) => {
                     setLibraryDetails({
                       ...libraryDetails,
@@ -661,19 +882,22 @@ export const StepFour = ({
                     {errors.gstNumber}
                   </p>
                 )}
+                {errors.gst && (
+                  <p className="text-red-500 text-sm">{errors.gst}</p>
+                )}
               </div>
               {/* UPLOAD GST  */}
-              <div className="flex justify-start mt-1 border-black items-center">
+              <div className="flex mt-2 justify-start  border-black items-center">
                 <label
                   htmlFor="uploadAadharCard"
-                  className="w-60 h-[50px] text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
+                  className="w-60 h-[50px] rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
                 >
                   Upload Gst Certificate
                 </label>
 
                 <label
-                  className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
-        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                  className="block w-32 bg-[#0077B6] rounded-r-xl  py-2  text-white  h-[50px] justify-center items-center
+                text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
                 >
                   Select file
                   <input
@@ -699,6 +923,9 @@ export const StepFour = ({
                   />
                 </label>
               </div>
+              {errors.uploadGst && (
+                <p className="text-red-500 text-sm">{errors.uploadGst}</p>
+              )}
             </div>
           )}
         </div>
@@ -773,7 +1000,12 @@ export const StepFour = ({
                   No
                 </label>
               </div>
+            
             </fieldset>
+
+            {errors.showCin && (
+              <p className="text-red-500 text-sm mt-1">{errors.showCin}</p>
+            )}
           </div>
 
           {/* conditional rendering */}
@@ -785,15 +1017,21 @@ export const StepFour = ({
                 <input
                   type="text"
                   id="adminLibraryLegalCin"
+                  maxLength={21}
                   value={libraryDetails.libraryLegal.cin}
                   onChange={(e) => {
-                    setLibraryDetails({
-                      ...libraryDetails,
-                      libraryLegal: {
-                        ...libraryDetails.libraryLegal,
-                        cin: e.target.value,
-                      },
-                    });
+                    const value = e.target.value.toUpperCase(); // Convert input to uppercase for consistency
+                    const alphanumericRegex = /^[A-Z0-9]*$/; // Alphanumeric validation (uppercase letters and numbers)
+
+                    if (alphanumericRegex.test(value) && value.length <= 15) {
+                      setLibraryDetails({
+                        ...libraryDetails,
+                        libraryLegal: {
+                          ...libraryDetails.libraryLegal,
+                          cin: e.target.value, // Update only if valid
+                        },
+                      });
+                    }
                   }}
                   onBlur={handleCINBlur}
                   placeholder="CIN"
@@ -805,15 +1043,15 @@ export const StepFour = ({
               </div>
 
               {/* Upload CIN */}
-              <div className="flex justify-start mt-1 border-black items-center">
+              <div className="flex justify-start mt-3 border-black items-center">
                 <label
                   htmlFor="uploadCinCard"
-                  className="w-60 h-[50px] text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
+                  className="w-60 h-[50px] rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
                 >
                   CIN Certificate
                 </label>
                 <label
-                  className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
+                  className="block w-32 bg-[#0077B6] rounded-r-xl py-2  text-white  h-[50px] justify-center items-center
               text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
                 >
                   Select file
@@ -841,6 +1079,9 @@ export const StepFour = ({
                   />
                 </label>
               </div>
+              {errors.uploadCin && (
+                <p className="text-red-500 text-sm mt-1">{errors.uploadCin}</p>
+              )}
             </div>
           )}
 
@@ -915,6 +1156,10 @@ export const StepFour = ({
                 </label>
               </div>
             </fieldset>
+            {errors.showTan && (
+              <p className="text-red-500 text-sm mt-1">{errors.showTan}</p>
+            )}
+          
           </div>
 
           {/* conditional rendering */}
@@ -926,6 +1171,7 @@ export const StepFour = ({
                   type="text"
                   placeholder="Tan Number"
                   id="adminLibraryLegalTan"
+                  maxLength={10}
                   value={libraryDetails.libraryLegal.tan}
                   onChange={(e) => {
                     setLibraryDetails({
@@ -944,16 +1190,16 @@ export const StepFour = ({
               </div>
 
               {/* Upload TAN */}
-              <div className="flex justify-start mt-1 border-black items-center">
+              <div className="flex justify-start mt-3 border-black items-center">
                 <label
                   htmlFor="uploadTAN"
-                  className="w-60 h-[50px] text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
+                  className="w-60 h-[50px] text-gray-700 rounded-l-xl pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
                 >
                   TAN Certificate
                 </label>
                 <label
                   className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
-              text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+              text-center border border-gray-800  rounded-r-xl focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
                 >
                   Select file
                   <input
@@ -979,6 +1225,9 @@ export const StepFour = ({
                   />
                 </label>
               </div>
+              {errors.uploadTan && (
+                <p className="text-red-500 text-sm mt-1">{errors.uploadTan}</p>
+              )}
             </div>
           )}
           {/* msme */}
@@ -1054,6 +1303,9 @@ export const StepFour = ({
                 </label>
               </div>
             </fieldset>
+            {errors.showmsme && (
+              <p className="text-red-500 text-sm mt-1">{errors.showmsme}</p>
+            )}
           </div>
 
           {/* conditional rendering */}
@@ -1083,15 +1335,15 @@ export const StepFour = ({
               </div>
 
               {/* Upload msme */}
-              <div className="flex justify-start mt-1 border-black items-center">
+              <div className="flex justify-start mt-3 border-black items-center">
                 <label
                   htmlFor="uploadCinCard"
-                  className="w-60 h-[50px] text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
+                  className="w-60 h-[50px] rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
                 >
                   msme Certificate
                 </label>
                 <label
-                  className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
+                  className="block w-32 bg-[#0077B6] py-2 rounded-r-xl  text-white  h-[50px] justify-center items-center
         text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
                 >
                   Select file
@@ -1118,6 +1370,9 @@ export const StepFour = ({
                   />
                 </label>
               </div>
+              {errors.uploadmsme && (
+                <p className="text-red-500 text-sm mt-1">{errors.uploadmsme}</p>
+              )}
             </div>
           )}
         </div>

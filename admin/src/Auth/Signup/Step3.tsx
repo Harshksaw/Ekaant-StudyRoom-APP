@@ -24,6 +24,11 @@ export const StepThree = ({
   const [preview, setPreview] = useState(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
   const [errors, setErrors] = useState<any>({});
+  const [imageErr, setImageErr] = useState<{ aadhar: string; pan: string }>({
+    aadhar: "",
+    pan: "",
+  });
+
   const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     type: "aadhar" | "pan"
@@ -34,11 +39,13 @@ export const StepThree = ({
       const reader = new FileReader();
       reader.onloadend = () => {
         if (type === "aadhar") {
+          setImageErr((prev) => ({ ...prev, aadhar: "" }));
           setAadharPreview(reader.result as string);
           setUserDetails({ ...userDetails, uploadAadharCard: file });
           toast.dismiss();
           toast.success("Aadhar card uploaded successfully");
         } else if (type === "pan") {
+          setImageErr((prev) => ({ ...prev, pan: "" }));
           setPanPreview(reader.result as string);
           setUserDetails({ ...userDetails, uploadPanCard: file });
           toast.dismiss();
@@ -128,6 +135,7 @@ export const StepThree = ({
   const validateForm = () => {
     const newErrors: any = {};
 
+    console.log("details", userDetails);
     // Validate full name
     if (!userDetails.fullName) {
       newErrors.fullName = "Full Name is required";
@@ -136,6 +144,10 @@ export const StepThree = ({
     // Validate date of birth
     if (!userDetails.dob) {
       newErrors.dob = "Date of birth is required";
+    }
+
+    if (!userDetails.passportPhoto) {
+      newErrors.passportPhoto = "Photo is required";
     }
 
     // Validate Aadhar card
@@ -147,12 +159,36 @@ export const StepThree = ({
     if (!userDetails.panCard) {
       newErrors.panCard = "PAN Card is required";
     }
-
+    if (!userDetails.address.line1) {
+      newErrors.addressLine1 = "Address Line 1 is required";
+    }
+    if(!userDetails.uploadAadharCard){
+      newErrors.uploadAadharCard = "Aadhar card picture is required";
+    }
+    if(!userDetails.uploadPanCard){
+      newErrors.uploadPanCard = "Pan card picture is required";
+    }
+    if (!userDetails.address.line1) {
+      newErrors.line1 = "Address is required";
+    }
+    if (!userDetails.address.city) {
+      newErrors.addressCity = "City is required";
+    }
+    if (!userDetails.address.city) {
+      newErrors.city = "City is required";
+    }
+    
+    if (!userDetails.address.pincode) {
+      newErrors.pincode = "Pincode is required";
+    } else if (!/^\d{6}$/.test(userDetails.address.pincode)) {
+      newErrors.pincode = "Pincode must be a 6-digit number";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleNextStep = () => {
+
     if (validateForm()) {
       nextStep();
     }
@@ -247,9 +283,13 @@ export const StepThree = ({
             <input
               type="file"
               accept="image/*"
+              required
               onChange={handlePhotoChange}
               style={{ display: "none" }}
             />
+            {errors.passportPhoto && (
+              <p className="text-red-500 ml-2">{errors.passportPhoto}</p>
+            )}
           </label>
 
           {preview && (
@@ -325,10 +365,14 @@ export const StepThree = ({
             </div>
             <input
               type="file"
+              required
               accept="image/*"
               onChange={(e) => handleFileChange(e, "aadhar")}
               style={{ display: "none" }}
             />
+            {errors.uploadAadharCard && (
+            <p className="text-red-500 ml-2">{errors.uploadAadharCard}</p>
+          )}
           </label>
         </div>
 
@@ -399,6 +443,9 @@ export const StepThree = ({
               onChange={(e) => handleFileChange(e, "pan")}
               style={{ display: "none" }}
             />
+             {errors.uploadPanCard && (
+            <p className="text-red-500 ml-2">{errors.uploadPanCard}</p>
+          )}
           </label>
         </div>
 
@@ -426,9 +473,12 @@ export const StepThree = ({
             }}
             placeholder="Address Line 1"
           />
+               {errors.line1 && <p className="text-red-500">{errors.line1}</p>}
           <div className="flex relative flex-col gap-2">
             <label className="font-medium text-gray-700">
-              <span className="text-red-500 ml-1 absolute left-10 top-1">*</span>
+              <span className="text-red-500 ml-1 absolute left-10 top-1">
+                *
+              </span>
             </label>
             <StateDropdown
               label={"Select State"}
@@ -443,6 +493,7 @@ export const StepThree = ({
                 })
               }
             />
+            
           </div>
 
           {/* line 2 */}
@@ -486,9 +537,7 @@ export const StepThree = ({
               }}
               placeholder="City"
             />
-            {errors.address?.city && (
-              <p className="text-red-500 ml-2">{errors.address.city}</p>
-            )}
+            {errors.city && <p className="text-red-500">{errors.city}</p>}
           </div>
           {/* pinCode */}
           <div className="w-1/2">
@@ -516,9 +565,7 @@ export const StepThree = ({
               }}
               placeholder="pincode"
             />
-            {errors.pincode?.city && (
-              <p className="text-red-500 ml-2">{errors.address.pincode}</p>
-            )}
+           {errors.pincode && <p className="text-red-500">{errors.pincode}</p>}
           </div>
         </div>
         {/* Buttons */}
