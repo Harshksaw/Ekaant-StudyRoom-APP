@@ -103,7 +103,7 @@ function Signup() {
       showmsme: null,
       msme: "",
       uploadmsme: null,
-      propertyType: ""
+      propertyType: "",
     },
     librayCardImage: null,
     librarySliders: [],
@@ -497,7 +497,16 @@ function Signup() {
       return response.status;
     } catch (error) {
       setLoading(false);
-      console.error("Error:");
+      toast.error("some thing wen wrong", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
