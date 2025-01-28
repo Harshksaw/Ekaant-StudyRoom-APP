@@ -403,7 +403,7 @@ function Signup() {
 
     // console.log(libraryDetails, "libraryDetails-----------------d------");
 
-    const amenitiesArray = Object.entries(libraryDetails.amentities)
+    const amenitiesArray = Object.entries(libraryDetails.amenities)
       .filter(([value]) => value)
       .map(([key]) => key);
 
