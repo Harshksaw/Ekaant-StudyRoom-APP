@@ -5,7 +5,9 @@ import { BASEURL } from "@/lib/utils";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useParams } from "react-router-dom";
 import { predefinedAmenities } from "@/utils/constants";
-import { FaCloudUploadAlt } from "react-icons/fa";
+
+
+
 interface Room {
   _id: string;
   roomNo: number;
@@ -47,6 +49,7 @@ const EditLibrary = () => {
   const [images, setImages] = useState<any>([]);
 
   const [library, setLibrary] = useState<Library | null>(null);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -143,32 +146,45 @@ const EditLibrary = () => {
   const updateLibraryImages = async () => {
     setLoading(true);
     const formData = new FormData();
-
+  
     if (cardImage) {
       formData.append("cardImage", cardImage);
     }
-
+  
     if (images.length > 0) {
       images.forEach((image: string | Blob) => {
         formData.append("images", image);
       });
     }
+  
     try {
       const response = await axios.post(
         `${BASEURL}/api/v1/library/updateLibraryImage/${LibraryId.id}`,
-        formData
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
+  
       if (response.status === 200) {
         toast.success("Images updated successfully");
+        // Update local state with the new image URLs
+      
+        setLibrary(response.data.data)
+        console.log("res" , response.data.data)
       }
-      setLibrary(response.data.data);
+      console.log("LIB" , library)
     } catch (error) {
       toast.error("Error updating images");
-      // console.error('Error updating images:', error);r
+      console.error('Error updating images:', error);
     } finally {
       setLoading(false);
     }
   };
+
+  console.log("LIB" , library?.images)
   const handleDeleteRoom = async (roomId: string) => {
     // console.log("🚀 ~ handleDeleteRoom ~ roomId:", roomId)
     setLoading(true);
@@ -229,23 +245,26 @@ const EditLibrary = () => {
     }
   };
   const handleRoomNameChange = async (room) => {
-    console.log("🚀 ~ handleRoomNameChange ~ roomId:", room);
-    toast.loading("Updating Room Name");
+    
+    console.log("🚀 ~ handleRoomNameChange ~ roomId:", room)
+    toast.loading("Updating Room Name")
     try {
-      const res = await axios.post(
-        `${BASEURL}/api/v1/library/editRoomName/${room.id}`,
-        {
-          newName: roomName,
-        }
-      );
+      const res = await axios.post(`${BASEURL}/api/v1/library/editRoomName/${room.id}`, {
+        newName: roomName
+      })
       if (res.status === 200) {
-        toast.dismiss();
-        toast.success("Room Name Updated Successfully");
+        toast.dismiss()
+        toast.success("Room Name Updated Successfully")
       }
+
+
     } catch (error) {
-      console.log("🚀 ~ handleRoomNameChange ~ error", error);
+      console.log("🚀 ~ handleRoomNameChange ~ error", error)
+
     }
-  };
+  }
+
+
 
   return (
     <div className="w-full h-full flex-1 p-6">
@@ -254,80 +273,54 @@ const EditLibrary = () => {
       <div>
         <div className="mb-6">
           <label
-            className="block text-gray-700  font-bold mb-2 text-3xl"
+            className="flex flex-row justify-center items-center text-gray-700 text-sm font-bold mb-2"
+            htmlFor="cardImage"
+          >
+            Card Image
+          </label>
+          {library.cardImage && (
+            <img
+              src={library.cardImage}
+              alt="Card"
+              className="mb-4 w-96 h-72"
+            />
+          )}
+          <input
+            id="cardImage"
+            type="file"
+            onChange={handleCardImageChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
             htmlFor="images"
           >
             Images
           </label>
-          <p className="font-bold ">Upto 5 Images only</p>
-          <div className="flex items-center justify-start flex-wrap px-4 py-10 gap-4 border border-1 border-gray-800 rounded-xl mt-2">
+          <p>Upto 5 Images only</p>
+          <div className="grid grid-cols-2 gap-4 border border-1 border-gray-800">
             {library.images.map((image, index) => (
               <img
                 key={index}
                 src={image}
                 alt={`Library ${index}`}
-                className="mb-4 w-96 h-72 rounded-xl"
+                className="mb-4 w-60 h-60"
               />
             ))}
           </div>
-          <div className="flex px-4 mt-4">
-            <label
-              htmlFor="cardImage"
-              className="cursor-pointer flex items-center gap-3 justify-center bg-gradient-to-r border border-black hover:text-white py-3 px-12 rounded-xl text-lg font-semibold transition duration-300 hover:bg-blue-500"
-            >
-              Upload Image
-              <FaCloudUploadAlt size={36} />
-            </label>
-            <input
-              id="images"
-              type="file"
-              multiple
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </div>
+          <input
+            id="images"
+            type="file"
+            multiple
+            onChange={handleImageChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
         </div>
-        <div>
-          <div className="mb-6">
-            <label
-              className="flex text-2xl flex-row  items-center text-gray-700 font-bold mb-2"
-              htmlFor="cardImage"
-            >
-              Card Image
-            </label>
-
-            {/* Image preview */}
-            {library.cardImage && (
-              <div className="flex  mb-4 px-6 border border-black w-96 rounded-xl py-10">
-                <img
-                  src={library.cardImage}
-                  alt="Card"
-                  className="w-96 h-72 object-cover rounded-xl shadow-lg"
-                />
-              </div>
-            )}
-
-            {/* File Upload Button */}
-            <div className="flex px-4">
-              <label
-                htmlFor="cardImage"
-                className="cursor-pointer flex justify-center items-center gap-3 border border-black hover:text-white py-3 px-12 rounded-xl text-lg font-semibold transition duration-300 hover:bg-blue-500"
-              >
-                Upload Image
-                <FaCloudUploadAlt size={36} />
-              </label>
-              <input
-                id="cardImage"
-                type="file"
-                onChange={handleCardImageChange}
-                className="hidden"
-              />
-            </div>
-          </div>
-        </div>
-
         <button
-          className="bg-blue-500 hover:bg-blue-700 rounded-xl  text-white font-bold py-3 px-6  focus:outline-none focus:shadow-outline mb-10"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-10"
           onClick={updateLibraryImages}
         >
           Update Images
@@ -342,7 +335,6 @@ const EditLibrary = () => {
           Name
         </label>
         <input
-              readOnly
           id="name"
           type="text"
           value={name}
@@ -358,7 +350,6 @@ const EditLibrary = () => {
           Short Description
         </label>
         <textarea
-              readOnly
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -373,7 +364,6 @@ const EditLibrary = () => {
           Long Description
         </label>
         <textarea
-              readOnly
           id="longdescription"
           value={longdescription}
           onChange={(e) => setLongDescription(e.target.value)}
@@ -389,7 +379,6 @@ const EditLibrary = () => {
           predefinedAmenities.map((amenity) => (
             <div key={amenity} className="flex items-center mb-2">
               <input
-                disabled  
                 id={amenity}
                 name={amenity}
                 type="checkbox"
@@ -412,7 +401,6 @@ const EditLibrary = () => {
           Address Line 1
         </label>
         <input
-          readOnly
           id="line1"
           name="line1"
           type="text"
@@ -429,7 +417,6 @@ const EditLibrary = () => {
           Address Line 2
         </label>
         <input
-          readOnly
           id="line2"
           name="line2"
           type="text"
@@ -446,7 +433,6 @@ const EditLibrary = () => {
           City
         </label>
         <input
-          readOnly
           id="city"
           name="city"
           type="text"
@@ -463,7 +449,6 @@ const EditLibrary = () => {
           State
         </label>
         <input
-          readOnly
           id="state"
           name="state"
           type="text"
@@ -480,7 +465,6 @@ const EditLibrary = () => {
           Pincode
         </label>
         <input
-          readOnly
           id="pincode"
           name="pincode"
           type="text"
@@ -489,7 +473,7 @@ const EditLibrary = () => {
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       </div>
-      <div className="mb-6 pb-8">
+      <div className="mb-6">
         <label
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="registration"
@@ -497,7 +481,6 @@ const EditLibrary = () => {
           Registration Fees
         </label>
         <input
-          readOnly
           id="registration"
           name="registration"
           type="number"
@@ -507,12 +490,12 @@ const EditLibrary = () => {
         />
       </div>
 
-      {/* <button
+      <button
         onClick={handleUpdateLibrary}
-        className="bg-blue-500 mb-10 rounded-xl hover:bg-blue-700 text-white font-bold py-2 px-4  focus:outline-none focus:shadow-outline "
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
       >
         Update Library
-      </button> */}
+      </button>
 
       <h3 className="text-xl font-bold mt-8 mb-4">Rooms</h3>
       <div className="grid grid-cols-1 gap-4">
@@ -521,21 +504,27 @@ const EditLibrary = () => {
             key={room?._id}
             className="flex  flex-row justify-between items-center p-4 border rounded"
           >
+
+
             <div className="w-32 flex flex-row gap-5">
-              <p>{room.roomNo}</p>
+
+
+              <p>
+                {room.roomNo}
+              </p>
               <input
                 type="number"
                 className="mr-2 w-8"
                 onChange={(e) => {
                   setRoomName(e.target.value);
+
                 }}
                 value={room?.roomName}
               />
             </div>
             <button
               onClick={() => handleRoomNameChange(room)}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline"
-            >
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline">
               Save
             </button>
 

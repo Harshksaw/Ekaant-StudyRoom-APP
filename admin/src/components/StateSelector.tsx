@@ -17,9 +17,10 @@ const StateDropdown = ({ value, onChange }:any) => {
         className="w-1/2 text-gray-700 text-left font-mulish font-bold text-md leading-tight  gap-4  space-y-4 rounded-md"
       >
         State
+        <span className="text-red-500 ml-1">*</span>
       </label>
       <select
-        className="w-full px-5 py-2 mt-2 border border-gray-500   rounded-xl "
+        className="w-full h-[50px] px-5 py-2 mt-2 border border-gray-500   rounded-xl "
         id="adminState"
         name="adminState"
         value={value}

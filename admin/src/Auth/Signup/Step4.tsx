@@ -12,7 +12,9 @@ export const StepFour = ({
   setLibraryDetails,
 }: any) => {
   const [errors, setErrors] = useState<any>({});
-
+  const [electricityBill , setElecityBil] = useState(false)
+  const [leaseAgrement, setLeaseAgreement] = useState(false)
+  const [gstUpload , setGstUpload] = useState(false)
   const [cities, setCities] = useState<
     {
       id: number;
@@ -87,7 +89,7 @@ export const StepFour = ({
 
     // Validate GST number if `showGst` is "yes"
     if (libraryDetails.libraryLegal.showGst === null) {
-      newErrors.showGst = "Please select Yes or No for GST.";
+      newErrors.showGst = "GST is required.";
     }
 
     if (
@@ -103,7 +105,7 @@ export const StepFour = ({
       newErrors.uploadGst = "GST document upload is required";
     }
     if (libraryDetails.libraryLegal.showCin === null) {
-      newErrors.showCin = "Please select Yes or No for Cin.";
+      newErrors.showCin = "Cin is required.";
     }
     if (
       libraryDetails.libraryLegal.showCin &&
@@ -118,7 +120,7 @@ export const StepFour = ({
       newErrors.uploadCin = "CIN document upload is required";
     }
     if (libraryDetails.libraryLegal.showTan === null) {
-      newErrors.showTan = "Please select Yes or No for Cin.";
+      newErrors.showTan = "TAN is required.";
     }
     if (
       libraryDetails.libraryLegal.showTan &&
@@ -133,7 +135,7 @@ export const StepFour = ({
       newErrors.uploadTan = "TAN document upload is required";
     }
     if (libraryDetails.libraryLegal.showmsme === null) {
-      newErrors.showmsme = "Please select Yes or No for Cin.";
+      newErrors.showmsme = "MSME is required.";
     }
     if (
       libraryDetails.libraryLegal.showmsme &&
@@ -297,9 +299,13 @@ export const StepFour = ({
       <div className=" flex-col w-full  mb-100 gap-20">
         <h1>Enter Below </h1>
         {/* Library name */}
-        <label>Library Name</label>
+
+        <label>Library Name  
+        <span className="text-red-500 ml-1">*</span>
+        </label>
+       
         <input
-          className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full px-3 h-[50px] rounded-xl py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
           id="adminLibraryName"
           placeholder="Library Name"
@@ -315,11 +321,13 @@ export const StepFour = ({
           <p className="text-red-500">{errors.libraryName}</p>
         )}
         {/* App name */}
-        <label>App</label>
+        <label>App
+        <span className="text-red-500 ml-1">*</span>
+        </label>
         {/* Short description */}
         <div className="relative ">
           <input
-            className="w-full pl-3 py-2 pr-40  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full pl-3 h-[50px] rounded-xl py-2 pr-40  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminAppShortDescription"
             placeholder="Short Description"
@@ -354,6 +362,7 @@ export const StepFour = ({
           {/* Title */}
           <p className="text-xl font-semibold text-gray-800">
             Select Property Type
+            <span className="text-red-500 ml-1">*</span>
           </p>
 
           {/* Options */}
@@ -361,7 +370,7 @@ export const StepFour = ({
             {/* Owned Option */}
             <label
               htmlFor="propertyOwned"
-              className={`flex items-center justify-center gap-2 px-6 py-3 cursor-pointer rounded-lg border transition-all duration-300 
+              className={`flex items-center rounded-xl justify-center gap-2 px-6 py-3 cursor-pointer  border transition-all duration-300 
       ${
         libraryDetails?.libraryLegal?.propertyType === "Owned"
           ? "bg-blue-600 text-white border-blue-600 shadow-md"
@@ -390,12 +399,12 @@ export const StepFour = ({
                   });
                 }}
               />
-              <span>Owned</span>
+              <span >Owned</span>
             </label>
             {/* Rented Option */}
             <label
               htmlFor="propertyRented"
-              className={`flex items-center justify-center gap-2 px-6 py-3 cursor-pointer rounded-lg border transition-all duration-300 
+              className={`flex items-center rounded-xl justify-center gap-2 px-6 py-3 cursor-pointer  border transition-all duration-300 
       ${
         libraryDetails?.libraryLegal?.propertyType === "Rented"
           ? "bg-blue-600 text-white border-blue-600 shadow-md"
@@ -447,38 +456,45 @@ export const StepFour = ({
               {/* Label for Input */}
               <label
                 htmlFor="uploadElectricityBill"
-                className="w-60 h-[50px] rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border"
+                className={` cursor-pointer  flex justify-center items-center h-[50px] ${electricityBill ? "w-96 rounded-xl  text-white bg-[#0077B6]" : "w-60"} rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border`}
               >
-                Select File
+                {electricityBill ? "Update " : "Select File"}   
               </label>
 
               {/* File Input Button */}
-              <label className="block w-32 bg-[#0077B6] rounded-r-xl py-2 text-white h-[50px] justify-center items-center text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
+            {
+              !electricityBill && (
+                <label className="block w-32 bg-[#0077B6] rounded-r-xl py-2 text-white h-[50px] justify-center items-center text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
                 Choose File
-                <input
-                  type="file"
-                  id="uploadElectricityBill"
-                  onChange={(e) => {
-                    const file = e.target.files ? e.target.files[0] : null;
-                    if (file) {
-                      // Preview the image if it's an image file
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setLibraryDetails({
-                          ...libraryDetails,
-                          libraryLegal: {
-                            ...libraryDetails.libraryLegal,
-                            uploadElectricityBill: file,
-                            electricityBillPreview: reader.result, // Store image preview URL
-                          },
-                        });
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }}
-                  style={{ display: "none" }} // Hide the actual input
-                />
-              </label>
+              <input
+                type="file"
+                id="uploadElectricityBill"
+                onChange={(e) => {
+                  const file = e.target.files ? e.target.files[0] : null;
+                  if (file) {
+                    // Preview the image if it's an image file
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setLibraryDetails({
+                        ...libraryDetails,
+                        libraryLegal: {
+                          ...libraryDetails.libraryLegal,
+                          uploadElectricityBill: file,
+                          electricityBillPreview: reader.result, // Store image preview URL
+                       
+                        },
+                    
+                      });
+                    };
+                    setElecityBil(true)
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                style={{ display: "none" }} // Hide the actual input
+              />
+            </label>
+              )
+            }
             </div>
 
             {/* Image Preview */}
@@ -505,6 +521,7 @@ export const StepFour = ({
         )}
 
         {libraryDetails.libraryLegal.propertyType === "Rented" && (
+        
           <div className="flex-col items-center justify-start mt-2">
             {/* Label for Uploading Lease Agreement */}
             <label
@@ -513,60 +530,63 @@ export const StepFour = ({
             >
               Upload Lease Agreement
             </label>
-
+        
             {/* File Input Container */}
             <div className="flex mt-2 justify-start items-center border-black">
               {/* Label for Input */}
               <label
                 htmlFor="uploadLeaseAgreement"
-                className="w-60 h-[50px] rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border"
+                className={`cursor-pointer flex justify-center items-center h-[50px] ${leaseAgrement ? "w-96 rounded-xl text-white bg-[#0077B6]" : "w-60"} rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border`}
               >
-                Select File
+                {leaseAgrement ? "Update " : "Select File"}
               </label>
-
+        
               {/* File Input Button */}
-              <label className="block w-32 bg-[#0077B6] rounded-r-xl py-2 text-white h-[50px] justify-center items-center text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
-                Choose File
-                <input
-                  type="file"
-                  id="uploadLeaseAgreement"
-                  onChange={(e) => {
-                    const file = e.target.files ? e.target.files[0] : null;
-                    if (file) {
-                      // Preview the image if it's an image file
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setLibraryDetails({
-                          ...libraryDetails,
-                          libraryLegal: {
-                            ...libraryDetails.libraryLegal,
-                            uploadLeaseAgreement: file,
-                            leaseAgreementPreview: reader.result, // Store image preview URL
-                          },
-                        });
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }}
-                  style={{ display: "none" }} // Hide the actual input
-                />
-              </label>
+              {
+                !leaseAgrement && (
+                  <label className="block w-32 bg-[#0077B6] rounded-r-xl py-2 text-white h-[50px] justify-center items-center text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
+                    Choose File
+                    <input
+                      type="file"
+                      id="uploadLeaseAgreement"
+                      onChange={(e) => {
+                        const file = e.target.files ? e.target.files[0] : null;
+                        if (file) {
+                          // Preview the image if it's an image file
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setLibraryDetails({
+                              ...libraryDetails,
+                              libraryLegal: {
+                                ...libraryDetails.libraryLegal,
+                                uploadLeaseAgreement: file,
+                                leaseAgreementPreview: reader.result, // Store image preview URL
+                              },
+                            });
+                          };
+                          setLeaseAgreement(true); // Set leaseAgrement to true after file upload
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      style={{ display: "none" }} // Hide the actual input
+                    />
+                  </label>
+                )
+              }
             </div>
-
+        
             {/* Image Preview */}
             {libraryDetails.libraryLegal.leaseAgreementPreview && (
-              <div className="mt-2">
-                  <p className="text-gray-600 text-sm mb-2">Preview:</p>
+              <div className="mt-3">
+                <p className="text-gray-600 text-sm mb-2">Preview:</p>
                 <img
-                  src={
-                    libraryDetails.libraryLegal.leaseAgreementPreview as string
-                  }
+                  src={libraryDetails.libraryLegal.leaseAgreementPreview}
                   alt="Lease Agreement Preview"
-                  className="mt-2 mx-auto h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105" 
+                  className="mt-2 mx-auto h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
                 />
               </div>
             )}
-
+        
             {/* Error message for upload */}
             {errors.uploadLeaseAgreement && (
               <p className="text-red-500 text-sm">
@@ -574,11 +594,13 @@ export const StepFour = ({
               </p>
             )}
           </div>
+      
+        
         )}
         {/* Long description */}
         <div className="relative  mt-5">
           <input
-            className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full h-[50px] rounded-xl px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminAppLongDescription"
             placeholder="Long Description"
@@ -610,10 +632,12 @@ export const StepFour = ({
         </div>
         {/* Library address */}
         <div className="mt-2 space-y-2">
-          <label className=" ml-1"> Address</label>
+          <label className=" ml-1"> Address
+          <span className="text-red-500 ml-1">*</span>
+          </label>
           {/* Line 1 */}
           <input
-            className="w-full px-3  py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full px-3 h-[50px] rounded-xl py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminLibraryAddressLine1"
             placeholder="Address Line 1"
@@ -635,7 +659,7 @@ export const StepFour = ({
 
           {/* Line 2 */}
           <input
-            className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full px-3 h-[50px] rounded-xl mt-1 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminLibraryAddressLine2"
             placeholder="Address Line 2"
@@ -654,12 +678,12 @@ export const StepFour = ({
         {/* City */}
         <div className="flex mt-2 w-full justify-between gap-2 rounded-2xl">
           <div className="w-2/4 flex flex-col gap-2 border-md rounded-2xl">
-            <label htmlFor="city">City:</label>
+            <label htmlFor="city">City:       <span className="text-red-500 ">*</span></label>
             <select
               id="city"
               value={selectedCity}
               onChange={(e) => handleCityChange(e)}
-              className="w-full px-3 py-2 border  border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-2xl"
+              className="w-full px-3 h-[50px] rounded-xl py-2 border  border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-2xl"
             >
               <option value="">Select a city</option>
               {cities.map((city) => (
@@ -673,7 +697,8 @@ export const StepFour = ({
             )}
           </div>
           {/* State */}
-          <div className="w-2/5">
+          <div className="w-2/5 ">
+          
             <StateDropdown
               value={libraryDetails.libraryAddress.state}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -695,9 +720,11 @@ export const StepFour = ({
         {/* Pincode */}
 
         <div className="w-1/3">
-          <label>Pincode:</label>
+          <label>Pincode:
+          <span className="text-red-500 ml-1">*</span>
+          </label>
           <input
-            className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full h-[50px] rounded-xl px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminLibraryAddressPincode"
             maxLength={6}
@@ -721,9 +748,11 @@ export const StepFour = ({
           )}
         </div>
         <div className="flex justify-center items-start my-3 gap-3 flex-col">
-          <label>Legal</label>
+          <label>Legal
+          <span className="text-red-500 ml-1">*</span>
+          </label>
           <select
-            className="w-full px-3 py-2 border border-gray-800  rounded-2xl focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full h-[50px] rounded-xl px-3 py-2 border border-gray-800  rounded-2xl focus:outline-none focus:ring-1 focus:ring-blue-500"
             id="adminLibraryLegalRegistration"
             value={libraryDetails.libraryLegal.registration}
             onChange={(e) => {
@@ -773,6 +802,7 @@ export const StepFour = ({
           <div className="flex flex-col gap-4 px-2 py-2">
             <label className="text-lg font-semibold">
               Do you have a GST Number?
+              <span className="text-red-500 ml-1">*</span>
             </label>
 
             <fieldset className="flex gap-4">
@@ -934,7 +964,9 @@ export const StepFour = ({
         <div>
           {/* CIN */}
           <div className="flex flex-col gap-4 px-2 py-2">
-            <label className="text-lg font-semibold">Do you have a CIN?</label>
+            <label className="text-lg font-semibold">Do you have a CIN? 
+            <span className="text-red-500 ml-1">*</span>
+            </label>
 
             <fieldset className="flex gap-4">
               <legend className="sr-only">CIN Information</legend>
@@ -1089,7 +1121,9 @@ export const StepFour = ({
 
           {/* TAN */}
           <div className="flex flex-col gap-4 px-2 py-2">
-            <label className="text-lg font-semibold">Do you have a TAN?</label>
+            <label className="text-lg font-semibold">Do you have a TAN?
+            <span className="text-red-500 ml-1">*</span>
+            </label>
 
             <fieldset className="flex gap-4">
               <legend className="sr-only">TAN Information</legend>
@@ -1234,8 +1268,8 @@ export const StepFour = ({
           )}
           {/* msme */}
           <div className="flex flex-col gap-4 px-2 py-4">
-            <label className="text-lg font-semibold">
-              Do you have an MSME?
+            <label className="text-lg font-semibold"> 
+              Do you have an MSME? <span className="text-red-500 ml-1">*</span>
             </label>
 
             <fieldset className="flex gap-4">
@@ -1381,13 +1415,13 @@ export const StepFour = ({
       </div>
       <div className="flex flex-row gap-40  mt-20   items-center justify-between">
         <button
-          className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
+          className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-xl"
           onClick={prevStep}
         >
           Back
         </button>
         <button
-          className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
+          className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-16 rounded-xl"
           onClick={() => {
             handleNextStep();
           }}

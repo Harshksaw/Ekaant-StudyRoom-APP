@@ -10,7 +10,6 @@ import dayjs from "dayjs"; // Import dayjs
 import { TextField } from "@mui/material";
 import StateDropdown from "@/components/StateSelector";
 
-
 export const StepThree = ({
   nextStep,
   prevStep,
@@ -28,6 +27,10 @@ export const StepThree = ({
     pan: "",
   });
 
+  const [uploadedPhoto, setUploadedPhoto] = useState(false);
+  const [uploadAadar, setUploadedAadhar] = useState(false);
+  const [UploadpanCard, setUploadPanCard] = useState(false);
+
   const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     type: "aadhar" | "pan"
@@ -43,17 +46,21 @@ export const StepThree = ({
           setUserDetails({ ...userDetails, uploadAadharCard: file });
           toast.dismiss();
           toast.success("Aadhar card uploaded successfully");
+          setUploadedAadhar(true);
         } else if (type === "pan") {
           setImageErr((prev) => ({ ...prev, pan: "" }));
           setPanPreview(reader.result as string);
           setUserDetails({ ...userDetails, uploadPanCard: file });
           toast.dismiss();
           toast.success("PAN card uploaded successfully");
+          setUploadPanCard(true);
         }
       };
       reader.onerror = () => {
         toast.dismiss();
         toast.error("Failed to upload image");
+        setUploadPanCard(false);
+        setUploadedAadhar(false);
       };
       reader.readAsDataURL(file);
     }
@@ -74,10 +81,12 @@ export const StepThree = ({
         ...prevDetails,
         passportPhoto: file,
       }));
+      setUploadedPhoto(true);
       setPreview(URL.createObjectURL(file));
       toast.success("Passport photo uploaded successfully!");
     } else {
       toast.error("Failed to upload passport photo. Please try again.");
+      setUploadedPhoto(false);
     }
   };
 
@@ -161,10 +170,10 @@ export const StepThree = ({
     if (!userDetails.address.line1) {
       newErrors.addressLine1 = "Address Line 1 is required";
     }
-    if(!userDetails.uploadAadharCard){
+    if (!userDetails.uploadAadharCard) {
       newErrors.uploadAadharCard = "Aadhar card picture is required";
     }
-    if(!userDetails.uploadPanCard){
+    if (!userDetails.uploadPanCard) {
       newErrors.uploadPanCard = "Pan card picture is required";
     }
     if (!userDetails.address.line1) {
@@ -176,7 +185,7 @@ export const StepThree = ({
     if (!userDetails.address.city) {
       newErrors.city = "City is required";
     }
-    
+
     if (!userDetails.address.pincode) {
       newErrors.pincode = "Pincode is required";
     } else if (!/^\d{6}$/.test(userDetails.address.pincode)) {
@@ -187,7 +196,6 @@ export const StepThree = ({
   };
 
   const handleNextStep = () => {
-
     if (validateForm()) {
       nextStep();
     }
@@ -205,7 +213,7 @@ export const StepThree = ({
             <span className="text-red-500 ml-1">*</span>
           </label>
           <input
-            className="w-full  px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full  px-3 py-2 h-[50px] rounded-xl  border border-black focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminFullName"
             name="adminFullName"
@@ -271,13 +279,23 @@ export const StepThree = ({
           </label>
 
           <label className="cursor-pointer">
-            <div className="bg-white py-2 h-[4rem]  text-black text-center flex justify-between items-center px-3">
-              <div className=" w-full md:w-72 rounded-l-xl  text-center flex justify-center items-center h-full border-2 border-solid border-black">
-                Upload Passport Photo
+            <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
+              <div
+                className={` ${
+                  uploadedPhoto
+                    ? " w-96 rounded-xl bg-[#0077B6] text-white "
+                    : "w-full md:w-72"
+                } rounded-l-xl h-[50px] text-center flex justify-center items-center border-2 border-solid border-black  `}
+              >
+                {uploadedPhoto
+                  ? "Update Passport Photo"
+                  : "Upload Passport Photo"}
               </div>
-              <div className="w-[40%] rounded-r-xl bg-[#0077B6] h-full flex justify-center items-center text-white">
-                Select File
-              </div>
+              {!uploadedPhoto && (
+                <div className="w-[40%] rounded-r-xl bg-[#0077B6] h-[50px] flex justify-center items-center text-white">
+                  Select File
+                </div>
+              )}
             </div>
             <input
               type="file"
@@ -292,19 +310,19 @@ export const StepThree = ({
           </label>
 
           {preview && (
-            <div className="mt-3 ">
+            <div className="mt-3 flex justify-center ">
               <p className="text-gray-600 text-sm mb-2">Preview:</p>
               <img
                 src={preview}
                 alt="Passport Preview"
-                className="mt-2 mx-20  h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
+           className="mt-10 mx-auto h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
               />
             </div>
           )}
         </div>
 
         {/* Aadhar Card */}
-        <div className="flex-col items-center justify-start">
+        <div className="flex-col items-center justify-start mt-5">
           <label
             htmlFor="adminAadharCard"
             className="w-1/3 text-gray-700 text-left font-mulish font-bold text-md leading-tight"
@@ -314,7 +332,7 @@ export const StepThree = ({
           </label>
           <input
             required
-            className="w-full md:w-10 px-3   border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full md:w-10 px-3 h-[50px]  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminAadharCard"
             name="adminAadharCard"
@@ -340,7 +358,7 @@ export const StepThree = ({
         </div>
 
         {/* Upload Aadhar */}
-        <div className="flex-col mb-4">
+        <div className="flex flex-col mb-4">
           {aadharPreview && (
             <div>
               <p className="text-gray-600 text-sm mb-2">Preview:</p>
@@ -351,18 +369,26 @@ export const StepThree = ({
               />
             </div>
           )}
+
           <label className="cursor-pointer">
-            <div className="bg-white py-2 h-[4rem]  text-black text-center flex justify-between items-center px-3">
-              <div className="mx-auto w-full  rounded-l-xl text-center flex justify-center items-center h-full border-2 border-solid border-black">
-                {userDetails.uploadAadharCard
-                  ? userDetails.uploadAadharCard.name
-                  : "Upload Aadhar Card"}
+            <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
+              <div
+                className={`${
+                  uploadAadar
+                    ? "w-96 rounded-xl bg-[#0077B6] text-white"
+                    : "w-full md:w-72"
+                } rounded-l-xl h-[50px] text-center flex justify-center items-center border-2 border-solid border-black`}
+              >
+                {uploadAadar ? "Update Aadhar Card" : "Upload Aadhar Card"}
               </div>
-              <div className="w-[40%] bg-[#0077B6] h-full flex justify-center items-center rounded-r-xl  text-white">
-                Select File
-              </div>
+              {!uploadAadar && (
+                <div className="w-[40%] rounded-r-xl bg-[#0077B6] h-[50px] flex justify-center items-center text-white">
+                  Select File
+                </div>
+              )}
             </div>
             <input
+              id="uploadAadharCard"
               type="file"
               required
               accept="image/*"
@@ -370,8 +396,8 @@ export const StepThree = ({
               style={{ display: "none" }}
             />
             {errors.uploadAadharCard && (
-            <p className="text-red-500 ml-2">{errors.uploadAadharCard}</p>
-          )}
+              <p className="text-red-500 ml-2">{errors.uploadAadharCard}</p>
+            )}
           </label>
         </div>
 
@@ -386,7 +412,7 @@ export const StepThree = ({
           </label>
           <input
             required
-            className="w-full rounded-full px-3  py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-xl h-[50px] px-3  py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             maxLength={10}
             minLength={10}
@@ -414,7 +440,7 @@ export const StepThree = ({
           )}
         </div>
 
-        <div className="flex-col mb-4">
+        <div className="flex flex-col mb-4 mt-2">
           {panPreview && (
             <div>
               <p className="text-gray-600 text-sm mb-2">Preview:</p>
@@ -425,26 +451,43 @@ export const StepThree = ({
               />
             </div>
           )}
+
+          <label
+            htmlFor="uploadPanCard"
+            className="w-full text-gray-700 font-mulish font-bold text-md mb-2"
+          >
+            PAN Card
+            <span className="text-red-500 ml-1">*</span>
+          </label>
+
           <label className="cursor-pointer">
             <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
-              <div className="mx-auto w-full rounded-l-xl text-center flex justify-center items-center h-full border-2 border-solid border-black">
-                {userDetails.uploadPanCard
-                  ? userDetails.uploadPanCard.name
-                  : "Upload PAN Card"}
+              <div
+                className={`${
+                  UploadpanCard
+                    ? "w-96 rounded-xl bg-[#0077B6] text-white"
+                    : "w-full md:w-72"
+                } rounded-l-xl h-[50px] text-center flex justify-center items-center border-2 border-solid border-black`}
+              >
+                {UploadpanCard ? "Update PAN Card" : "Upload PAN Card"}
               </div>
-              <div className="w-[40%] rounded-r-xl bg-[#0077B6] h-full flex justify-center items-center text-white">
-                Select File
-              </div>
+              {!UploadpanCard && (
+                <div className="w-[40%] rounded-r-xl bg-[#0077B6] h-[50px] flex justify-center items-center text-white">
+                  Select File
+                </div>
+              )}
             </div>
             <input
+              id="uploadPanCard"
               type="file"
+              required
               accept="image/*"
               onChange={(e) => handleFileChange(e, "pan")}
               style={{ display: "none" }}
             />
-             {errors.uploadPanCard && (
-            <p className="text-red-500 ml-2">{errors.uploadPanCard}</p>
-          )}
+            {errors.uploadPanCard && (
+              <p className="text-red-500 ml-2">{errors.uploadPanCard}</p>
+            )}
           </label>
         </div>
 
@@ -457,7 +500,7 @@ export const StepThree = ({
           {/* line 1 */}
           <input
             required
-            className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full h-[50px] px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
             id="adminAddressLine1"
             value={userDetails.address.line1}
@@ -472,7 +515,7 @@ export const StepThree = ({
             }}
             placeholder="Address Line 1"
           />
-               {errors.line1 && <p className="text-red-500">{errors.line1}</p>}
+          {errors.line1 && <p className="text-red-500">{errors.line1}</p>}
           <div className="flex relative flex-col gap-2">
             <label className="font-medium text-gray-700">
               <span className="text-red-500 ml-1 absolute left-10 top-1">
@@ -492,7 +535,6 @@ export const StepThree = ({
                 })
               }
             />
-            
           </div>
 
           {/* line 2 */}
@@ -521,7 +563,7 @@ export const StepThree = ({
             </label>
             <input
               required
-              className="w-full px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 h-[50px] py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
               type="text"
               id="adminAddressCity"
               value={userDetails.address.city}
@@ -548,7 +590,7 @@ export const StepThree = ({
               required
               maxLength={6}
               minLength={6}
-              className="w-32 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-32 px-3 py-2 h-[50px] border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
               type="text"
               id="adminAddressPinCode"
               value={userDetails.address.pincode}
@@ -564,19 +606,19 @@ export const StepThree = ({
               }}
               placeholder="pincode"
             />
-           {errors.pincode && <p className="text-red-500">{errors.pincode}</p>}
+            {errors.pincode && <p className="text-red-500">{errors.pincode}</p>}
           </div>
         </div>
         {/* Buttons */}
-        <div className="flex flex-row gap-30   -col items-center justify-between">
+        <div className="flex flex-row gap-30 mt-6  -col items-center justify-between">
           <button
-            className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
+            className=" mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-xl"
             onClick={prevStep}
           >
             Back
           </button>
           <button
-            className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
+            className=" center  mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-16 rounded-xl"
             onClick={() => {
               handleNextStep();
             }}

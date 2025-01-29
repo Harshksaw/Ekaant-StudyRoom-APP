@@ -139,7 +139,7 @@ const Auth = ({ type }: { type: "signin" }) => {
           {type === "signin" ? (
             <Link
               to="/signup"
-              className="absolute top-0 right-0 mt-10 mr-8 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-4 rounded-full"
+              className="absolute top-0 right-0 mt-10 mr-8 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-4 rounded-xl"
             >
               Register
             </Link>
@@ -161,7 +161,7 @@ const Auth = ({ type }: { type: "signin" }) => {
           </h6>
           <div className="px-20">
             {/* Email Input */}
-            <div className="mb-4">
+            <div className="mb-4 ">
               <LabelledInput
                 label="Enter Email Id"
                 placeholder="Email"
@@ -178,13 +178,15 @@ const Auth = ({ type }: { type: "signin" }) => {
             </div>
             {/* Password Input */}
             <div className="mb-4">
-              <label className="font-semibold text-[14px]">Enter Password</label>
+              <label className="font-semibold text-[14px]">
+                Enter Password
+              </label>
               <div className="relative">
                 <input
                   type={password ? "text" : "password"}
                   placeholder="Password"
                   value={userInfo.password}
-                  className="text-gray-900 text-sm block w-full p-2.5 pr-10"
+                  className="text-gray-900 h-[50px] border-black rounded-xl text-sm block w-full p-2.5 pr-10"
                   onChange={(e) =>
                     setUserInfo({ ...userInfo, password: e.target.value })
                   }
@@ -209,7 +211,7 @@ const Auth = ({ type }: { type: "signin" }) => {
                 </div>
               ) : (
                 <button
-                  className="w-full bg-gradient-to-r from-sky-500 to-blue-300 text-white py-2 px-4 rounded-full mt-1 hover:bg-blue-600"
+                  className="w-full h-[50px] border-black  bg-gradient-to-r from-sky-500 to-blue-300 text-white py-2 px-4 rounded-xl mt-1 hover:bg-blue-600"
                   type="button"
                   onClick={sendRequest}
                 >

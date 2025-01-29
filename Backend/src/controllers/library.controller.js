@@ -384,6 +384,7 @@ const addOrUpdateRoomDetails = async (req, res) => {
 
 const getLibrary = async (req, res) => {
   try {
+    console.log("Api w0rking")
     // const roomsData = await Library.find().populate("libraryOwner");
     const roomsData = await prisma.library.findMany({
       include:{
@@ -708,44 +709,42 @@ const EditAdminLibrary = async (req, res) => {
   }
 };
 
+
 const updateLibraryImages = async (req, res) => {
+  const libraryId = parseInt(req.params.libraryId);
+
   try {
-    const libraryId = req.params.id;
-
-    // console.log("---", req.files);
-
     const cardImage = req.files?.cardImage ? req.files.cardImage[0].path : null;
-    const images = req.files?.images
-      ? req.files.images.map((file) => file.path)
-      : [];
-    // const images = req.files?.images
-    console.log("🚀 ~ updateLibraryImages ~ images:", images);
+    const images = req.files?.images ? req.files.images.map((file) => file.path) : [];
 
-    const library = await prisma.library.findFirst({
-      where: { id: parseInt(libraryId) },
-    });
+    // Check if library exists
+    const library = await prisma.library.findFirst({ where: { id: libraryId } });
+
     if (!library) {
       return res.status(404).json({ message: "Library not found" });
     }
 
-    if (cardImage) {
-      library.cardImage = cardImage;
-    }
+    // Update the library in the database
+    const updatedLibrary = await prisma.library.update({
+      where: { id: libraryId },
+      data: {
+        ...(cardImage && { cardImage }), // Only update if cardImage is provided
+        ...(images.length > 0 && { images }), // Only update if images are provided
+      },
+    });
 
-    if (images.length > 0) {
-      library.images = images;
-    }
-
-    // await library.save();
-
-    res
-      .status(200)
-      .json({ message: "Library images updated successfully", data: library });
+    res.status(200).json({
+      message: "Library images updated successfully",
+      data: updatedLibrary,
+    });
   } catch (error) {
     console.error("Error updating library images:", error);
     res.status(500).json({ message: "Error updating library images", error });
   }
 };
+
+
+
 
 const deleteRoom = async (req, res) => {
   try {
@@ -1030,6 +1029,7 @@ module.exports = {
   getAllLibrary,
   EditAdminLibrary,
   updateLibraryImages,
+  
   deleteRoom,
   getLibraryRooms,
   createDummyLibrary,

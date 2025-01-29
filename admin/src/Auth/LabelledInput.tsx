@@ -22,7 +22,7 @@ export function LabelledInput({
       <input
         type={type || "text"}
         id="first_name"
-        className=" text-gray-900 text-sm  block w-full p-2.5"
+        className=" text-gray-900 text-sm h-[50px] border-black  block w-full p-2.5"
         placeholder={placeholder}
         onChange={onChange}
         required

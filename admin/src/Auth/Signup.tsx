@@ -821,7 +821,6 @@ function Signup() {
       case 7:
         return (
           <FinalStep
-
           // prevStep={prevStep}
           />
         );
@@ -890,7 +889,7 @@ function Signup() {
         <div className="self-end mb-5">
           <Link
             to="/signin"
-            className="absolute top-10 right-10 mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-8 rounded-full"
+            className="absolute top-10 right-10 mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-8 rounded-xl"
           >
             Login
           </Link>

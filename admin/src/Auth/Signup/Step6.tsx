@@ -29,20 +29,20 @@ const Step6 = ({ handleLocationSelect, nextStep, prevStep }: any) => {
 
       {/* Loader Display */}
       {isLoading ? (
-        <div className="loader"></div> // You can replace this with your custom loader component or spinner
+        <div className="loader"></div>
       ) : (
         <LocationSelector onLocationSelect={handleLocationSelect} />
       )}
 
-      <div className="flex flex-row gap-60 items-center justify-around">
+      <div className="flex flex-row gap-60 items-center justify-around mt-6">
         <button
-          className="mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-full"
+          className="mt-1 bg-gradient-to-r from-sky-300 to-sky-400 text-white py-2 px-10 rounded-xl"
           onClick={prevStep}
         >
           Back
         </button>
         <button
-          className="center mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-20 rounded-full"
+          className="center mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-16 rounded-xl"
           onClick={nextStep}
         >
           Submit

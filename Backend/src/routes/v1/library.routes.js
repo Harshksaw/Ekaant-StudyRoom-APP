@@ -40,7 +40,7 @@ Library.post(
 
 Library.post("/updateAdminLibrary", LibraryController.EditAdminLibrary);
 Library.post(
-  "/updateLibraryImage/:id",
+  "/updateLibraryImage/:libraryId",
   upload.fields([
     { name: "cardImage", maxCount: 1 },
     { name: "images", maxCount: 5 },
@@ -48,6 +48,7 @@ Library.post(
   ]),
   LibraryController.updateLibraryImages
 );
+
 //Create Room
 Library.post("/createRoom", LibraryController.createRoom);
 

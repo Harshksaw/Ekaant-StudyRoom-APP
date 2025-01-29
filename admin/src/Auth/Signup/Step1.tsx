@@ -53,14 +53,14 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }: any) => {
       <h2>Step 1</h2>
       <div className="flex flex-col justify-start gap-2 mb-4">
         <h3 className="font-bold">Enter Phone Number</h3>
-        <div className="flex justify-start border border-black bg-white">
-          <label className="w-24 py-2 text-black h-[50px] justify-center items-center text-center border-r border-gray-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
+        <div className="flex justify-start border border-black rounded-xl bg-[#e8f0fe]">
+          <label className="w-24  py-2 text-black h-[50px] justify-center items-center text-center border-r border-gray-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
             <span className="text-2xl">🇮🇳</span>
           </label>
           <input
             required
             type="number"
-            className="focus:ring-0 focus:ring-offset-0 focus:outline-0 focus:outline-offset-0"
+            className="focus:ring-0 focus:ring-offset-0 bg-[#e8f0fe] focus:outline-0 focus:outline-offset-0"
             value={userInfo?.phone.toString()}
             id="adminPhoneNumber"
             placeholder="Phone"
@@ -78,6 +78,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }: any) => {
             value={userInfo.email}
             id="AdminEmail"
             placeholder="Email"
+            className="h-[50px] rounded-xl border-black"
             onChange={(e) => {
               setUserInfo({ ...userInfo, email: e.target.value });
             }}
@@ -94,7 +95,8 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }: any) => {
               value={userInfo.password}
               placeholder="Password"
               id="adminPassword"
-              className="text-gray-900 text-sm block w-full p-2.5 pr-10"
+              className="text-gray-900 bg-[#e8f0fe]  h-[50px] rounded-xl border-black text-sm block w-full p-2.5 pr-10"
+              
               onChange={(e) => {
                 setUserInfo({ ...userInfo, password: e.target.value });
               }}
@@ -115,7 +117,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }: any) => {
       </div>
 
       <button
-        className="bottom-10 center mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-32 rounded-full"
+        className="bottom-10 h-[50px]  center mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-36 rounded-xl"
         onClick={handleNextClick}
         disabled={loading}
       >
@@ -124,6 +126,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }: any) => {
             Sending OTP
           </span>
         ) : (
+          
           "Next"
         )}
       </button>
