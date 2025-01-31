@@ -31,6 +31,9 @@ const CreateRoom: React.FC = () => {
     { from: null, to: null, price: "" },
     { from: null, to: null, price: "" },
     { from: null, to: null, price: "" },
+    { from: null, to: null, price: "" },
+    { from: null, to: null, price: "" },
+    { from: null, to: null, price: "" },
   ]);
 
   const [Ac, setAc] = useState(false);
