@@ -274,7 +274,7 @@ const CheckoutScreen: React.FC = () => {
       }}
     >
       <ScrollView>
-        <View>
+        <View style={{ paddingBottom: 300 }}>
           <Text
             style={{
               color: "#000",
