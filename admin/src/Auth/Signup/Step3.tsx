@@ -299,7 +299,7 @@ export const StepThree = ({
             </div>
             <input
               type="file"
-              accept="image/*"
+              accept=".png, .jpg, .jpeg"
               required
               onChange={handlePhotoChange}
               style={{ display: "none" }}
@@ -315,7 +315,7 @@ export const StepThree = ({
               <img
                 src={preview}
                 alt="Passport Preview"
-           className="mt-10 mx-auto h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
+                className="mt-10 mx-auto w- h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
               />
             </div>
           )}
@@ -334,6 +334,7 @@ export const StepThree = ({
             required
             className="w-full md:w-10 px-3 h-[50px]  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
+            accept=".png, .jpg, .jpeg"
             id="adminAadharCard"
             name="adminAadharCard"
             value={userDetails.aadharCard}
@@ -414,6 +415,7 @@ export const StepThree = ({
             required
             className="w-full rounded-xl h-[50px] px-3  py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             type="text"
+            accept=".png, .jpg, .jpeg"
             maxLength={10}
             minLength={10}
             id="adminPanCard"
@@ -452,13 +454,7 @@ export const StepThree = ({
             </div>
           )}
 
-          <label
-            htmlFor="uploadPanCard"
-            className="w-full text-gray-700 font-mulish font-bold text-md mb-2"
-          >
-            PAN Card
-            <span className="text-red-500 ml-1">*</span>
-          </label>
+         
 
           <label className="cursor-pointer">
             <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
@@ -518,9 +514,7 @@ export const StepThree = ({
           {errors.line1 && <p className="text-red-500">{errors.line1}</p>}
           <div className="flex relative flex-col gap-2">
             <label className="font-medium text-gray-700">
-              <span className="text-red-500 ml-1 absolute left-10 top-1">
-                *
-              </span>
+              <span className="text-red-500 ml-1 absolute left-10 top-1"></span>
             </label>
             <StateDropdown
               label={"Select State"}

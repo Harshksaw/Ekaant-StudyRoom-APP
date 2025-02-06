@@ -421,14 +421,11 @@ function Signup() {
       address: libraryDetails.libraryAddress,
       legal: libraryDetails.libraryLegal.registration,
       location: location,
-      coords: location,
-
+      coords: location && Array.isArray(location) ? location : [], 
+    
       gstNumber: libraryDetails.libraryLegal.gst,
-
       cinNumber: libraryDetails.libraryLegal.cin,
-
       tanNumber: libraryDetails.libraryLegal.tan,
-
       msmeNumber: libraryDetails.libraryLegal.msme,
     };
 
@@ -742,17 +739,13 @@ function Signup() {
         );
       case 2:
         return (
-          <StepTwo
-            userOTP={userOTP}
-            setOtpInputs={setOtpInputs}
-            userEmailOTP={emailOtpInputs}
-            setOtpEmailInputs={setEmailOtpInputs}
-            // handleInputChange={handleInputChange}
-            // handleEmailInputChange={handleEmailOtpInputChange}
-            verified={verfiedOtp}
-            nextStep={nextStep}
-            prevStep={prevStep}
-          />
+          <StepThree
+          nextStep={nextStep}
+          userDetails={userDetails}
+          setUserDetails={setUserDetails}
+          prevStep={prevStep}
+          // createUser={createUser}
+        />
         );
 
       case 3:

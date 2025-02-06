@@ -9,12 +9,8 @@ const AppRouter = require('./app.routes');
 
 
 const v1Router = express.Router();
-
+    
 // v1Router.use('/problems', ProblemRouter);
-
-
-
-
 v1Router.use('/auth', AuthRouter);
 v1Router.use('/admin', AdminRouter);
 v1Router.use('/library', LibraryRouter);

@@ -12,9 +12,12 @@ export const StepFour = ({
   setLibraryDetails,
 }: any) => {
   const [errors, setErrors] = useState<any>({});
-  const [electricityBill , setElecityBil] = useState(false)
-  const [leaseAgrement, setLeaseAgreement] = useState(false)
-  const [gstUpload , setGstUpload] = useState(false)
+  const [electricityBill, setElecityBil] = useState(false);
+  const [leaseAgrement, setLeaseAgreement] = useState(false);
+  const [isGstUploaded, setIsGstUploaded] = useState(false);
+  const [isCinUploaded, setIsCinUploaded] = useState(false);
+  const [isTanUploaded, setIsTanUploaded] = useState(false);
+  const [isMsmeUploaded, setIsMsmeUploaded] = useState(false);
   const [cities, setCities] = useState<
     {
       id: number;
@@ -300,10 +303,11 @@ export const StepFour = ({
         <h1>Enter Below </h1>
         {/* Library name */}
 
-        <label>Library Name  
-        <span className="text-red-500 ml-1">*</span>
+        <label>
+          Library Name
+          <span className="text-red-500 ml-1">*</span>
         </label>
-       
+
         <input
           className="w-full px-3 h-[50px] rounded-xl py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="text"
@@ -321,8 +325,9 @@ export const StepFour = ({
           <p className="text-red-500">{errors.libraryName}</p>
         )}
         {/* App name */}
-        <label>App
-        <span className="text-red-500 ml-1">*</span>
+        <label>
+          App
+          <span className="text-red-500 ml-1">*</span>
         </label>
         {/* Short description */}
         <div className="relative ">
@@ -399,7 +404,7 @@ export const StepFour = ({
                   });
                 }}
               />
-              <span >Owned</span>
+              <span>Owned</span>
             </label>
             {/* Rented Option */}
             <label
@@ -456,19 +461,26 @@ export const StepFour = ({
               {/* Label for Input */}
               <label
                 htmlFor="uploadElectricityBill"
-                className={` cursor-pointer  flex justify-center items-center h-[50px] ${electricityBill ? "w-96 rounded-xl  text-white bg-[#0077B6]" : "w-60"} rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border`}
+                className={` cursor-pointer  flex justify-center items-center h-[50px] ${
+                  electricityBill
+                    ? "w-96 rounded-xl  text-white bg-[#0077B6]"
+                    : "w-60"
+                } rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border`}
               >
-                {electricityBill ? "Update " : "Select File"}   
+                {electricityBill ? "Update " : "Select File"}
               </label>
 
               {/* File Input Button */}
-            {
-              !electricityBill && (
+
+              {!electricityBill && (
                 <label className="block w-32 bg-[#0077B6] rounded-r-xl py-2 text-white h-[50px] justify-center items-center text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
-                Choose File
+              Choose File
+                </label>
+              )}
               <input
                 type="file"
                 id="uploadElectricityBill"
+                accept=".png, .jpg, .jpeg"
                 onChange={(e) => {
                   const file = e.target.files ? e.target.files[0] : null;
                   if (file) {
@@ -481,32 +493,27 @@ export const StepFour = ({
                           ...libraryDetails.libraryLegal,
                           uploadElectricityBill: file,
                           electricityBillPreview: reader.result, // Store image preview URL
-                       
                         },
-                    
                       });
                     };
-                    setElecityBil(true)
+                    setElecityBil(true);
                     reader.readAsDataURL(file);
                   }
                 }}
                 style={{ display: "none" }} // Hide the actual input
               />
-            </label>
-              )
-            }
             </div>
 
             {/* Image Preview */}
             {libraryDetails.libraryLegal.electricityBillPreview && (
               <div className="mt-3">
-                  <p className="text-gray-600 text-sm mb-2">Preview:</p>
+                <p className="text-gray-600 text-sm mb-2">Preview:</p>
                 <img
                   src={
                     libraryDetails.libraryLegal.electricityBillPreview as string
                   }
                   alt="Electricity Bill Preview"
-                  className="mt-2 mx-auto h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"  
+                  className="mt-2 mx-auto h-32 object-cover shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
                 />
               </div>
             )}
@@ -521,7 +528,6 @@ export const StepFour = ({
         )}
 
         {libraryDetails.libraryLegal.propertyType === "Rented" && (
-        
           <div className="flex-col items-center justify-start mt-2">
             {/* Label for Uploading Lease Agreement */}
             <label
@@ -530,51 +536,54 @@ export const StepFour = ({
             >
               Upload Lease Agreement
             </label>
-        
+
             {/* File Input Container */}
             <div className="flex mt-2 justify-start items-center border-black">
               {/* Label for Input */}
               <label
                 htmlFor="uploadLeaseAgreement"
-                className={`cursor-pointer flex justify-center items-center h-[50px] ${leaseAgrement ? "w-96 rounded-xl text-white bg-[#0077B6]" : "w-60"} rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border`}
+                className={`cursor-pointer flex justify-center items-center h-[50px] ${
+                  leaseAgrement
+                    ? "w-96 rounded-xl text-white bg-[#0077B6]"
+                    : "w-60"
+                } rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border`}
               >
                 {leaseAgrement ? "Update " : "Select File"}
               </label>
-        
+
               {/* File Input Button */}
-              {
-                !leaseAgrement && (
-                  <label className="block w-32 bg-[#0077B6] rounded-r-xl py-2 text-white h-[50px] justify-center items-center text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
-                    Choose File
-                    <input
-                      type="file"
-                      id="uploadLeaseAgreement"
-                      onChange={(e) => {
-                        const file = e.target.files ? e.target.files[0] : null;
-                        if (file) {
-                          // Preview the image if it's an image file
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setLibraryDetails({
-                              ...libraryDetails,
-                              libraryLegal: {
-                                ...libraryDetails.libraryLegal,
-                                uploadLeaseAgreement: file,
-                                leaseAgreementPreview: reader.result, // Store image preview URL
-                              },
-                            });
-                          };
-                          setLeaseAgreement(true); // Set leaseAgrement to true after file upload
-                          reader.readAsDataURL(file);
-                        }
-                      }}
-                      style={{ display: "none" }} // Hide the actual input
-                    />
-                  </label>
-                )
-              }
+              {!leaseAgrement && (
+                <label className="block w-32 bg-[#0077B6] rounded-r-xl py-2 text-white h-[50px] justify-center items-center text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
+                  Choose File
+                </label>
+              )}
+              <input
+                type="file"
+                id="uploadLeaseAgreement"
+                accept=".png, .jpg, .jpeg"
+                onChange={(e) => {
+                  const file = e.target.files ? e.target.files[0] : null;
+                  if (file) {
+                    // Preview the image if it's an image file
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setLibraryDetails({
+                        ...libraryDetails,
+                        libraryLegal: {
+                          ...libraryDetails.libraryLegal,
+                          uploadLeaseAgreement: file,
+                          leaseAgreementPreview: reader.result, // Store image preview URL
+                        },
+                      });
+                    };
+                    setLeaseAgreement(true); // Set leaseAgrement to true after file upload
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                style={{ display: "none" }} // Hide the actual input
+              />
             </div>
-        
+
             {/* Image Preview */}
             {libraryDetails.libraryLegal.leaseAgreementPreview && (
               <div className="mt-3">
@@ -586,7 +595,7 @@ export const StepFour = ({
                 />
               </div>
             )}
-        
+
             {/* Error message for upload */}
             {errors.uploadLeaseAgreement && (
               <p className="text-red-500 text-sm">
@@ -594,8 +603,6 @@ export const StepFour = ({
               </p>
             )}
           </div>
-      
-        
         )}
         {/* Long description */}
         <div className="relative  mt-5">
@@ -632,8 +639,10 @@ export const StepFour = ({
         </div>
         {/* Library address */}
         <div className="mt-2 space-y-2">
-          <label className=" ml-1"> Address
-          <span className="text-red-500 ml-1">*</span>
+          <label className=" ml-1">
+            {" "}
+            Address
+            <span className="text-red-500 ml-1">*</span>
           </label>
           {/* Line 1 */}
           <input
@@ -678,7 +687,9 @@ export const StepFour = ({
         {/* City */}
         <div className="flex mt-2 w-full justify-between gap-2 rounded-2xl">
           <div className="w-2/4 flex flex-col gap-2 border-md rounded-2xl">
-            <label htmlFor="city">City:       <span className="text-red-500 ">*</span></label>
+            <label htmlFor="city">
+              City: <span className="text-red-500 ">*</span>
+            </label>
             <select
               id="city"
               value={selectedCity}
@@ -698,7 +709,6 @@ export const StepFour = ({
           </div>
           {/* State */}
           <div className="w-2/5 ">
-          
             <StateDropdown
               value={libraryDetails.libraryAddress.state}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -720,8 +730,9 @@ export const StepFour = ({
         {/* Pincode */}
 
         <div className="w-1/3">
-          <label>Pincode:
-          <span className="text-red-500 ml-1">*</span>
+          <label>
+            Pincode:
+            <span className="text-red-500 ml-1">*</span>
           </label>
           <input
             className="w-full h-[50px] rounded-xl px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -748,8 +759,9 @@ export const StepFour = ({
           )}
         </div>
         <div className="flex justify-center items-start my-3 gap-3 flex-col">
-          <label>Legal
-          <span className="text-red-500 ml-1">*</span>
+          <label>
+            Legal
+            <span className="text-red-500 ml-1">*</span>
           </label>
           <select
             className="w-full h-[50px] rounded-xl px-3 py-2 border border-gray-800  rounded-2xl focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -919,53 +931,63 @@ export const StepFour = ({
                 )}
               </div>
               {/* UPLOAD GST  */}
-              <div className="flex mt-2 justify-start  border-black items-center">
-                <label
-                  htmlFor="uploadAadharCard"
-                  className="w-60 h-[50px] rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
-                >
-                  Upload Gst Certificate
-                </label>
+              <label className="cursor-pointer">
+                <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
+                  <div
+                    className={` ${
+                      isGstUploaded
+                        ? " w-96 rounded-xl bg-[#0077B6] text-white "
+                        : "w-full md:w-72"
+                    } rounded-l-xl h-[50px] text-center flex justify-center items-center border-2 border-solid border-black  `}
+                  >
+                    {isGstUploaded
+                      ? "Update GST Certificate"
+                      : "Upload GST Certificate"}
+                  </div>
+                  {!isGstUploaded && (
+                    <div className="w-[40%] rounded-r-xl bg-[#0077B6] h-[50px] flex justify-center items-center text-white">
+                      Select File
+                    </div>
+                  )}
+                </div>
 
-                <label
-                  className="block w-32 bg-[#0077B6] rounded-r-xl  py-2  text-white  h-[50px] justify-center items-center
-                text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
-                >
-                  Select file
-                  <input
-                    type="file"
-                    placeholder="GST certificate"
-                    id="adminLegalUploadGst"
-                    onChange={(e) => {
-                      toast.loading("Uploading Image...");
-                      const file = e.target.files ? e.target.files[0] : null;
-                      if (file) {
-                        setLibraryDetails({
-                          ...libraryDetails,
-                          libraryLegal: {
-                            ...libraryDetails.libraryLegal,
-                            uploadGst: file,
-                          },
-                        });
-                      }
-                      toast.dismiss();
-                      toast.success("Image Uploaded Successfully!");
-                    }}
-                    style={{ display: "none", justifyContent: "center" }} // Hide the actual input
-                  />
-                </label>
-              </div>
-              {errors.uploadGst && (
-                <p className="text-red-500 text-sm">{errors.uploadGst}</p>
-              )}
+                <input
+                  type="file"
+                  placeholder="GST certificate"
+                  id="adminLegalUploadGst"
+                    accept=".png, .jpg, .jpeg"
+                  onChange={(e) => {
+                    toast.loading("Uploading Image...");
+                    const file = e.target.files ? e.target.files[0] : null;
+                    if (file) {
+                      setLibraryDetails({
+                        ...libraryDetails,
+                        libraryLegal: {
+                          ...libraryDetails.libraryLegal,
+                          uploadGst: file,
+                        },
+                      });
+                      setIsGstUploaded(true);
+                    }
+                    toast.dismiss();
+                    toast.success("Image Uploaded Successfully!");
+                  }}
+                  style={{ display: "none" }}
+                />
+
+                {errors.uploadGst && (
+                  <p className="text-red-500 text-sm">{errors.uploadGst}</p>
+                )}
+              </label>
             </div>
           )}
         </div>
         <div>
           {/* CIN */}
           <div className="flex flex-col gap-4 px-2 py-2">
-            <label className="text-lg font-semibold">Do you have a CIN? 
-            <span className="text-red-500 ml-1">*</span>
+            <label className="text-lg font-semibold">
+              Do you have a CIN?
+              <span className="text-red-500 ml-1">*</span>
             </label>
 
             <fieldset className="flex gap-4">
@@ -1034,7 +1056,6 @@ export const StepFour = ({
                   No
                 </label>
               </div>
-            
             </fieldset>
 
             {errors.showCin && (
@@ -1046,8 +1067,7 @@ export const StepFour = ({
           {libraryDetails.libraryLegal.showCin && (
             <div className="mx-4">
               <div>
-                {/* {cin oinput} */}
-
+                {/* {cin input} */}
                 <input
                   type="text"
                   id="adminLibraryLegalCin"
@@ -1077,52 +1097,59 @@ export const StepFour = ({
               </div>
 
               {/* Upload CIN */}
-              <div className="flex justify-start mt-3 border-black items-center">
-                <label
-                  htmlFor="uploadCinCard"
-                  className="w-60 h-[50px] rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
-                >
-                  CIN Certificate
-                </label>
-                <label
-                  className="block w-32 bg-[#0077B6] rounded-r-xl py-2  text-white  h-[50px] justify-center items-center
-              text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
-                >
-                  Select file
-                  <input
-                    type="file"
-                    placeholder="CIN certificate"
-                    id="adminLegalUploadCin"
-                    // name="uploadCinCard"
-                    onChange={(e) => {
-                      toast.loading("Uploading Images...");
-                      const file = e.target.files ? e.target.files[0] : null;
-                      if (file) {
-                        setLibraryDetails({
-                          ...libraryDetails,
-                          libraryLegal: {
-                            ...libraryDetails.libraryLegal,
-                            uploadCin: file,
-                          },
-                        });
-                      }
-                      toast.dismiss();
-                      toast.success("Image Uploaded Successfully!");
-                    }}
-                    style={{ display: "none", justifyContent: "center" }}
-                  />
-                </label>
-              </div>
+              <label className="cursor-pointer">
+                <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
+                  <div
+                    className={` ${
+                      isCinUploaded
+                        ? " w-96 rounded-xl bg-[#0077B6] text-white "
+                        : "w-full md:w-72"
+                    } rounded-l-xl h-[50px] text-center flex justify-center items-center border-2 border-solid border-black  `}
+                  >
+                    {isCinUploaded
+                      ? "Update CIN Certificate"
+                      : "Upload CIN Certificate"}
+                  </div>
+                  {!isCinUploaded && (
+                    <div className="w-[40%] rounded-r-xl bg-[#0077B6] h-[50px] flex justify-center items-center text-white">
+                      Select File
+                    </div>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  placeholder="CIN certificate"
+                  id="adminLegalUploadCin"
+                        accept=".png, .jpg, .jpeg"
+                  onChange={(e) => {
+                    toast.loading("Uploading Images...");
+                    const file = e.target.files ? e.target.files[0] : null;
+                    if (file) {
+                      setLibraryDetails({
+                        ...libraryDetails,
+                        libraryLegal: {
+                          ...libraryDetails.libraryLegal,
+                          uploadCin: file,
+                        },
+                      });
+                      setIsCinUploaded(true);
+                    }
+                    toast.dismiss();
+                    toast.success("Image Uploaded Successfully!");
+                  }}
+                  style={{ display: "none", justifyContent: "center" }}
+                />
+              </label>
               {errors.uploadCin && (
                 <p className="text-red-500 text-sm mt-1">{errors.uploadCin}</p>
               )}
             </div>
           )}
-
           {/* TAN */}
           <div className="flex flex-col gap-4 px-2 py-2">
-            <label className="text-lg font-semibold">Do you have a TAN?
-            <span className="text-red-500 ml-1">*</span>
+            <label className="text-lg font-semibold">
+              Do you have a TAN?
+              <span className="text-red-500 ml-1">*</span>
             </label>
 
             <fieldset className="flex gap-4">
@@ -1195,7 +1222,6 @@ export const StepFour = ({
             {errors.showTan && (
               <p className="text-red-500 text-sm mt-1">{errors.showTan}</p>
             )}
-          
           </div>
 
           {/* conditional rendering */}
@@ -1204,6 +1230,7 @@ export const StepFour = ({
               {/* TAN input */}
               <div className=" ">
                 <input
+                  className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   type="text"
                   placeholder="Tan Number"
                   id="adminLibraryLegalTan"
@@ -1226,41 +1253,50 @@ export const StepFour = ({
               </div>
 
               {/* Upload TAN */}
-              <div className="flex justify-start mt-3 border-black items-center">
-                <label
-                  htmlFor="uploadTAN"
-                  className="w-60 h-[50px] text-gray-700 rounded-l-xl pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
-                >
-                  TAN Certificate
-                </label>
-                <label
-                  className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
-              text-center border border-gray-800  rounded-r-xl focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
-                >
-                  Select file
-                  <input
-                    type="file"
-                    placeholder="Tan certificate"
-                    id="adminLegalUploadTan"
-                    onChange={(e) => {
-                      toast.loading("Uploading Image...");
-                      const file = e.target.files ? e.target.files[0] : null;
-                      if (file) {
-                        setLibraryDetails({
-                          ...libraryDetails,
-                          libraryLegal: {
-                            ...libraryDetails.libraryLegal,
-                            uploadTan: file,
-                          },
-                        });
-                      }
-                      toast.dismiss();
-                      toast.success("Image Uploaded Successfully!");
-                    }}
-                    style={{ display: "none", justifyContent: "center" }}
-                  />
-                </label>
-              </div>
+              <label className="cursor-pointer">
+                <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
+                  <div
+                    className={` ${
+                      isTanUploaded
+                        ? " w-96 rounded-xl bg-[#0077B6] text-white "
+                        : "w-full md:w-72"
+                    } rounded-l-xl h-[50px] text-center flex justify-center items-center border-2 border-solid border-black  `}
+                  >
+                    {isTanUploaded
+                      ? "Update TAN Certificate"
+                      : "Upload TAN Certificate"}
+                  </div>
+                  {!isTanUploaded && (
+                    <div className="w-[40%] rounded-r-xl bg-[#0077B6] h-[50px] flex justify-center items-center text-white">
+                      Select File
+                    </div>
+                  )}
+                </div>
+
+                <input
+                  type="file"
+                  placeholder="Tan certificate"
+                  id="adminLegalUploadTan"
+                        accept=".png, .jpg, .jpeg"
+                  onChange={(e) => {
+                    toast.loading("Uploading Image...");
+                    const file = e.target.files ? e.target.files[0] : null;
+                    if (file) {
+                      setLibraryDetails({
+                        ...libraryDetails,
+                        libraryLegal: {
+                          ...libraryDetails.libraryLegal,
+                          uploadTan: file,
+                        },
+                      });
+                      setIsTanUploaded(true);
+                    }
+                    toast.dismiss();
+                    toast.success("Image Uploaded Successfully!");
+                  }}
+                  style={{ display: "none", justifyContent: "center" }}
+                />
+              </label>
               {errors.uploadTan && (
                 <p className="text-red-500 text-sm mt-1">{errors.uploadTan}</p>
               )}
@@ -1268,7 +1304,7 @@ export const StepFour = ({
           )}
           {/* msme */}
           <div className="flex flex-col gap-4 px-2 py-4">
-            <label className="text-lg font-semibold"> 
+            <label className="text-lg font-semibold">
               Do you have an MSME? <span className="text-red-500 ml-1">*</span>
             </label>
 
@@ -1350,6 +1386,7 @@ export const StepFour = ({
               {/* msme input */}
               <div className=" ">
                 <input
+                  className="w-full px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   type="text"
                   id="adminLibraryLegalmsme"
                   placeholder="msme Number"
@@ -1371,22 +1408,32 @@ export const StepFour = ({
               </div>
 
               {/* Upload msme */}
-              <div className="flex justify-start mt-3 border-black items-center">
-                <label
-                  htmlFor="uploadCinCard"
-                  className="w-60 h-[50px] rounded-l-xl text-gray-700 pl-5 border-black flex items-center py-2 text-left font-normal text-md leading-tight border "
-                >
-                  msme Certificate
-                </label>
-                <label
-                  className="block w-32 bg-[#0077B6] py-2 rounded-r-xl  text-white  h-[50px] justify-center items-center
-        text-center border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
-                >
-                  Select file
+              <label className="cursor-pointer">
+                <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
+                  <div
+                    className={` ${
+                      isMsmeUploaded
+                        ? " w-96 rounded-xl bg-[#0077B6] text-white "
+                        : "w-full md:w-72"
+                    } rounded-l-xl h-[50px] text-center flex justify-center items-center border-2 border-solid border-black  `}
+                    onClick={() => setIsMsmeUploaded(false)}
+                  >
+                    {isMsmeUploaded
+                      ? "Update MSME Certificate"
+                      : "Upload MSME Certificate"}
+                  </div>
+                  {!isMsmeUploaded && (
+                    <div className="w-[40%] rounded-r-xl bg-[#0077B6] h-[50px] flex justify-center items-center text-white">
+                      Select File
+                    </div>
+                  )}
+                </div>
+                {!isMsmeUploaded && (
                   <input
                     type="file"
                     placeholder="msme certificate"
                     id="adminLegalUploadmsme"
+                          accept=".png, .jpg, .jpeg"
                     onChange={(e) => {
                       toast.loading("Uploading Image...");
                       const file = e.target.files ? e.target.files[0] : null;
@@ -1398,14 +1445,15 @@ export const StepFour = ({
                             uploadmsme: file,
                           },
                         });
+                        setIsMsmeUploaded(true);
                       }
                       toast.dismiss();
                       toast.success("Image Uploaded Successfully!");
                     }}
                     style={{ display: "none", justifyContent: "center" }}
                   />
-                </label>
-              </div>
+                )}
+              </label>
               {errors.uploadmsme && (
                 <p className="text-red-500 text-sm mt-1">{errors.uploadmsme}</p>
               )}

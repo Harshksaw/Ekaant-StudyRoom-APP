@@ -145,16 +145,16 @@ const createLibrary = async (req, res) => {
     console.log("Uploaded Files: ", req.files);
     console.log("Request Body: ", req.body);
 
-    const cardImage = req.files.card?.[0]?.path || null;
-    const images = req.files.images?.map((file) => file.path) || [];
-    const gst = req.files.gst?.[0].path || null;
-    const cin = req.files.cin?.[0].path || null;
-    const tan = req.files.tan?.[0].path || null;
-    const msme = req.files.msme?.[0].path || null;
-    const uploadElectricityBill = req.files.uploadElectricityBill?.[0].path || null;
-    const uploadLeaseAgreement = req.files.uploadLeaseAgreement?.[0].path || null;
+    const cardImage = req.files?.card?.[0]?.path || null;
+    const images = req.files?.images?.map((file) => file.path) || [];
+    const gst = req.files?.gst?.[0]?.path || null;
+    const cin = req.files?.cin?.[0]?.path || null;
+    const tan = req.files?.tan?.[0]?.path || null;
+    const msme = req.files?.msme?.[0]?.path || null;
+    const uploadElectricityBill = req.files?.uploadElectricityBill?.[0]?.path || null;
+    const uploadLeaseAgreement = req.files?.uploadLeaseAgreement?.[0]?.path || null;
 
-    const jsonData = JSON.parse(req.body.jsonData || "{}");
+    const jsonData = req.body.jsonData ? JSON.parse(req.body.jsonData) : {};
     const {
       libraryOwner,
       name,
@@ -181,7 +181,7 @@ const createLibrary = async (req, res) => {
       longDescription,
       shortDescription,
       address,
-      coords,
+      coords: coords && Array.isArray(coords) ? coords : undefined, // Ensure coords is an array
       amenities: { create: { amenities } },
       cardImage,
       images,
@@ -210,6 +210,7 @@ const createLibrary = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 
 // createRoom

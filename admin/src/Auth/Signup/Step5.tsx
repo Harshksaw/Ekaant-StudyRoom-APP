@@ -19,6 +19,7 @@ export const StepFive = ({
   //images  - Register 5
   const [errors, setErrors] = useState<any>({});
   const [preview, setPreview] = useState<string | null>(null);
+  const [isLibraryCardUploaded, setIsLibraryCardUploaded] = useState(false);
   const validate = () => {
     const newErrors: any = {};
 
@@ -93,40 +94,55 @@ export const StepFive = ({
         <span className="text-red-600 absolute -top-3 left-28">*</span>
         <h2 className="text-md font-bold">Library Details</h2>
 
-        <div className="flex  items-center justify-start">
-          <label
-            htmlFor="uploadLibraryCard"
-            className="w-60 h-[50px] pl-1 flex rounded-l-xl items-center text-gray-700  border-black  py-2 text-left font-mulish font-bold text-md leading-tight  border-2"
-          >
-            Upload Library Card Image
-          </label>
+        <div className="flex items-center justify-start">
+          <label className="cursor-pointer">
+            <div className="bg-white py-2 h-[4rem] text-black text-center flex justify-between items-center px-3">
+              <div
+                className={` ${
+                  isLibraryCardUploaded
+                    ? " w-96 rounded-xl bg-[#0077B6] text-white "
+                    : "w-full md:w-72"
+                } rounded-l-xl h-[50px] text-center flex justify-center items-center border-2 border-solid border-black  `}
+              >
+                {isLibraryCardUploaded
+                  ? "Update Library Card Image"
+                  : "Upload Library Card Image"}
+              </div>
+              {!isLibraryCardUploaded && (
+                <div className="w-[40%] rounded-r-xl bg-[#0077B6] h-[50px] flex justify-center items-center text-white">
+                  Select File
+                </div>
+              )}
+            </div>
 
-          <label
-            // htmlFor="uploadAadharCard"
-            className="block w-32 bg-[#0077B6] py-2  text-white  h-[50px] justify-center items-center
-            text-center border border-gray-800 rounded-r-xl focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
-          >
-            Select File
             <input
               type="file"
-              id="uploadLibraryCard" // ID to be renamed - tofix
-              accept="image/*"
+              id="uploadLibraryCard"
+              accept=".png, .jpg, .jpeg"
               multiple
-              onChange={handleImgChange}
-              style={{ display: "none", justifyContent: "center" }} // Hide the actual input
+              onChange={(e) => {
+                toast.loading("Uploading Image...");
+                const file = e.target.files ? e.target.files[0] : null;
+                if (file) {
+                  handleImgChange(e); // Assuming handleImgChange handles the file upload logic
+                  setIsLibraryCardUploaded(true);
+                }
+                toast.dismiss();
+                toast.success("Image Uploaded Successfully!");
+              }}
+              style={{ display: "none", justifyContent: "center" }}
             />
           </label>
-          {/* Preview Section */}
         </div>
         {preview && (
-          <div className="mt-4">
-            <p className="text-gray-700 font-mulish font-semibold text-md">
+          <div className="mt-2 ">
+            <p className="text-gray-700  font-mulish font-semibold text-md">
               Preview:
             </p>
             <img
               src={preview}
               alt="Library Card Preview"
-              className="mt-2  object-cover border-2 border-gray-300 rounded-md"
+              className="mt-2 h-32 hover:scale-105 transition-all delay-150 mx-auto cursor-pointer   object-cover border-2 border-gray-300 rounded-md"
             />
           </div>
         )}
@@ -158,9 +174,9 @@ export const StepFive = ({
               Select File
               <input
                 type="file"
+                accept=".png, .jpg, .jpeg"
                 multiple
                 id="uploadSliderImages"
-                accept="image/*"
                 onChange={handleFileChange}
                 style={{ display: "none", justifyContent: "center" }} // Hide the actual input
               />
@@ -181,10 +197,7 @@ export const StepFive = ({
         )}
       </div>
 
-      <div
-        className="flex flex-col gap-1 w-full
-        items-center justify-start relative"
-      >
+      <div className="flex flex-col gap-1 w-full items-center justify-start relative">
         <span className="text-red-600 absolute -top-3 left-32">*</span>
 
         <label
@@ -194,10 +207,10 @@ export const StepFive = ({
           Number. Of Halls
         </label>
         <input
-          className="w-3/4 px-3 py-2  border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-3/4 px-3 py-2 border border-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
           type="number"
           id="halls"
-          value={libraryDetails.halls}
+          value={libraryDetails.halls || ""}
           onChange={(e) =>
             setLibraryDetails({ ...libraryDetails, halls: e.target.value })
           }
