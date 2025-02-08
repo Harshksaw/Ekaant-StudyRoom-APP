@@ -18,7 +18,7 @@ export const BASEURL='https://api.studyekaant.com'
 
 const fetchCities = async () => {
   try { 
-    const response = await axios.get(`${BASEURL}/api/v1/app/getApp`); // Replace with your API endpoint
+    const response = await axios.get(`${BASEURL}/api/v1/app/getApp`); 
     // setCities(response.data);
     return response.data
   } catch (error) {

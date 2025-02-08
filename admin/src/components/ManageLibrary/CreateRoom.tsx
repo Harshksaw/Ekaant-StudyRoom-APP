@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { getLibraryDataById } from "@/hooks/libraryData";
 import { TbAirConditioning } from "react-icons/tb";
 import { IoBedOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const CreateRoom: React.FC = () => {
   const [libraryId, setLibraryId] = React.useState("");
@@ -134,6 +135,7 @@ const CreateRoom: React.FC = () => {
     }
   };
 
+  const navigate = useNavigate()
   const handleSubmit = async () => {
     console.log(price24Hr);
     try {
@@ -164,6 +166,7 @@ const CreateRoom: React.FC = () => {
 
       // await addDetails();
       toast.success("Room Created/updated Successfully");
+      navigate('/manage-library/create-room')
       // window.location.reload();
     } catch (error) {
       console.error("Error creating room:", error);

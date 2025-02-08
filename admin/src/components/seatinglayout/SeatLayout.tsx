@@ -186,6 +186,7 @@ const Seats = ({ onSeatSelect, seatLayout }: SeatsProps) => {
   const matrix = Array.from({ length: matrixSize }, () =>
     Array.from({ length: matrixSize }, () => null)
   );
+  
   return (
     <div className="w-full">
       <form onSubmit={handleSubmit} className="flex flex-col w-full mt-8">
@@ -202,7 +203,8 @@ const Seats = ({ onSeatSelect, seatLayout }: SeatsProps) => {
             <input
               type="number"
               value={rows}
-              onChange={(e) => setRows(e.target.value)}
+              min={1}
+              onChange={(e) => setRows(Math.max(1,(e.target.value)))} 
               placeholder="Rows"
               className="block !rounded w-full text-gray-700 border border-gray-500 py-3 px-4 leading-tight focus:outline-none focus:bg-white "
             />
@@ -217,7 +219,8 @@ const Seats = ({ onSeatSelect, seatLayout }: SeatsProps) => {
             <input
               type="number"
               value={columns}
-              onChange={(e) => setColumns(e.target.value)}
+              min={1}
+              onChange={(e) => setColumns(Math.max(1,(e.target.value)))}
               placeholder="Columns"
               className="block !rounded w-full text-gray-700 border border-gray-500 py-3 px-4 leading-tight focus:outline-none focus:bg-white "
             />
