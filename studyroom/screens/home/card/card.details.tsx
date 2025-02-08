@@ -174,7 +174,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
           style={{
             flex: 1,
             flexDirection: "column",
-            ...(Platform.OS === "ios" ? { marginTop: -200 } : { marginTop: 0 }),
+            ...(Platform.OS === "ios" ? { marginTop: 0 } : { marginTop: 0 }),
           }}
         >
           <View style={styles.cardDetails}>
