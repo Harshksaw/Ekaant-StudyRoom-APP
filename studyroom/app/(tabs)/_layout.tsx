@@ -26,7 +26,7 @@ const tabBarIcon = (
     <View
       style={{
         alignItems: "center",
-        marginTop: title ? 0 : h(-10),
+        marginTop: title ? 0 : h(-12),
         backgroundColor: !title ? "#0077B6" : "transparent",
         borderRadius: 999,
         padding: w(title ? 0 : 8),
@@ -39,7 +39,8 @@ const tabBarIcon = (
         <Icon
           name={IconName}
           color={title ? (focused ? "#0077B6" : "#263238") : "#fff"}
-          size={w(21)}
+        marginTop={h(-4)}
+          size={w(22)}
         />
       )}
       {title === "Job" && <JobSvg color={focused ? "#0077B6" : "#263238"} />}
