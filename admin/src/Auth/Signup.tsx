@@ -739,13 +739,17 @@ function Signup() {
         );
       case 2:
         return (
-          <StepThree
-          nextStep={nextStep}
-          userDetails={userDetails}
-          setUserDetails={setUserDetails}
-          prevStep={prevStep}
-          // createUser={createUser}
-        />
+           <StepTwo
+            userOTP={userOTP}
+            setOtpInputs={setOtpInputs}
+            userEmailOTP={emailOtpInputs}
+            setOtpEmailInputs={setEmailOtpInputs}
+            // handleInputChange={handleInputChange}
+            // handleEmailInputChange={handleEmailOtpInputChange}
+            verified={verfiedOtp}
+            nextStep={nextStep}
+            prevStep={prevStep}
+          />
         );
 
       case 3:

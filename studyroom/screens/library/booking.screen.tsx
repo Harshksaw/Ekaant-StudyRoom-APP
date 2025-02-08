@@ -439,7 +439,7 @@ const BookingScreen: React.FC = () => {
           }}
         >
           <Text style={{ fontSize: w(12), fontFamily: ff.deckMedium }}>
-            Room {currentRoomNo}
+            Hall {currentRoomNo}
           </Text>
         </TouchableOpacity>
         {showRooms && (
@@ -470,7 +470,7 @@ const BookingScreen: React.FC = () => {
                 }}
               >
                 <Text style={{ fontSize: w(12), fontFamily: ff.deckMedium }}>
-                  {` Room ${item.roomNo}`}
+                  {` Hall ${item.roomNo}`}
                 </Text>
               </TouchableOpacity>
             ))}
