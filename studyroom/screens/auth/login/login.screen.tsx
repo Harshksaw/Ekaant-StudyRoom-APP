@@ -16,10 +16,10 @@ import {
   View,
   Image,
   SafeAreaView,
-  ScrollView,
-  KeyboardAvoidingView,
+
   Keyboard,
-  Platform,
+
+  TouchableWithoutFeedback
 } from "react-native";
 import { Toast } from "react-native-toast-notifications";
 import { useDispatch } from "react-redux";
@@ -307,6 +307,7 @@ const LoginScreen: React.FC = () => {
   }, []);
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <SafeAreaView style={styles.container}>
       <View
         style={{
@@ -646,6 +647,7 @@ const LoginScreen: React.FC = () => {
         source={require("../../../assets/images/bubble 04.png")}
       />
     </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 
