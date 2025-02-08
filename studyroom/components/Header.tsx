@@ -74,9 +74,13 @@ const Header = ({ color }: any) => {
       </View>
 
       <View style={styles.logoContainer}>
-        {color === "white" && (
-          <View>
-            {assets && assets[1] && (
+
+          <View 
+          style={{
+            padding:2
+          }}
+          >
+            {assets && (
               <Image
                 source={assets[2]}
                 style={{
@@ -89,7 +93,7 @@ const Header = ({ color }: any) => {
 
             <Text
               style={{
-                fontSize: 10,
+                fontSize: 12,
                 fontWeight: "bold",
                 color: color,
               }}
@@ -97,18 +101,20 @@ const Header = ({ color }: any) => {
               EKAANT
             </Text>
           </View>
-        )}
 
-        {assets && assets[0] && (
+
+        {/* {assets && assets[0] && (
           <Image
             source={{ uri: assets[0].localUri || assets[0].uri }}
             style={{
+
+              marginRight: 10,
               width: 60,
-              height: 60,
+              height: 50,
               tintColor: color,
             }}
           />
-        )}
+        )} */}
       </View>
     </View>
   );
@@ -122,8 +128,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 10,
-    marginTop: 8,
+    marginBottom: 2,
+    marginTop: 2,
   },
   logoContainer: {
     alignItems: "center",

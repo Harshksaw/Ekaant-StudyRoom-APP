@@ -286,7 +286,7 @@ export default function Bookings() {
                               textAlign: "left",
                             }}
                           >
-                            {item.bookingFinalDate.slice(0, 10)}
+                            {item.bookingFinalDate?.slice(0, 10)}
                           </Text>
                         </View>
                       </View>
