@@ -80,7 +80,7 @@ const Header = ({ color }: any) => {
             padding:2
           }}
           >
-            {assets && (
+            {assets && assets[2] &&  (
               <Image
                 source={assets[2]}
                 style={{
