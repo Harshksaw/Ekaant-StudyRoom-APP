@@ -220,11 +220,11 @@ const Auth = ({ type }: { type: "signin" }) => {
               )}
             </div>
 
-            <div className="mt-2">
+            {/* <div className="mt-2">
               <Link to="/forgot-password">
                 <p className="ml-40 text-blue-500">Forgot Password</p>
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

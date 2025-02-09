@@ -78,7 +78,7 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }: any) => {
             value={userInfo.email}
             id="AdminEmail"
             placeholder="Email"
-            className="h-[50px] rounded-xl border-black"
+                 className="text-gray-900 bg-[#e8f0fe]  h-[50px] rounded-xl border-black text-sm block w-full p-2.5 pr-10"
             onChange={(e) => {
               setUserInfo({ ...userInfo, email: e.target.value });
             }}
