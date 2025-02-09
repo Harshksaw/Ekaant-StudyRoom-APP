@@ -566,7 +566,9 @@ export default function index() {
         }
       />
 
-      {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+      {isLoading && <ActivityIndicator 
+   
+      size="large" color="#0000ff" />}
     </SafeAreaView>
   );
 }

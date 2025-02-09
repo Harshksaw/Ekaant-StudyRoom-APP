@@ -26,10 +26,15 @@ const tabBarIcon = (
     <View
       style={{
         alignItems: "center",
-        marginTop: title ? 0 : h(-12),
+        marginTop: title ? 0 : h(-4),
         backgroundColor: !title ? "#0077B6" : "transparent",
         borderRadius: 999,
-        padding: w(title ? 0 : 8),
+        padding: w(title ? 0 : 6),
+        height: h(35),
+        width: w(35),
+
+        justifyContent: "center",
+
       }}
     >
       {title === "Profile" && (
@@ -37,22 +42,25 @@ const tabBarIcon = (
       )}
       {(title === "Home" || !title) && (
         <Icon
+
           name={IconName}
           color={title ? (focused ? "#0077B6" : "#263238") : "#fff"}
         marginTop={h(-4)}
-          size={w(22)}
+          size={w(24)}
         />
       )}
       {title === "Job" && <JobSvg color={focused ? "#0077B6" : "#263238"} />}
       {title === "Bookings" && (
-        <BookSvg color={focused ? "#0077B6" : "#263238"} />
+        <BookSvg color={focused ? "#0077B6" : "#263238"} 
+
+        />
       )}
       {title && (
         <Text
           style={{
             fontFamily: ff.deckRegular,
             color: focused ? "#0077B6" : "#263238",
-            fontSize: w(12),
+            fontSize: w(6),
             marginTop: h(2),
           }}
         >
@@ -80,9 +88,13 @@ export default function TabsLayout() {
       <Tabs
         screenOptions={({ route }) => ({
           headerShown: false,
+          
           tabBarLabel: () => null,
           tabBarStyle: {
-            height: h(50),
+
+            height: h(60),
+            paddingTop: h(10),
+
           },
         })}
       >
