@@ -8,7 +8,7 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jythu.ekaant",
+      "bundleIdentifier": "com.jythu.Ekaant",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
