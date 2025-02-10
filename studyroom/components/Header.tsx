@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
 import ff from "@/constants/fonts";
 import { Toast } from "react-native-toast-notifications";
+import { HeaderIcon } from "@/assets";
 
 const Header = ({ color }: any) => {
   const [selectedLocation, setSelectedLocation] = useState<string>("");
@@ -80,16 +81,9 @@ const Header = ({ color }: any) => {
             padding:2
           }}
           >
-            {assets && assets[2] &&  (
-              <Image
-                source={assets[2]}
-                style={{
-                  width: 50,
-                  height: 50,
-                  tintColor: color,
-                }}
-              />
-            )}
+
+            <HeaderIcon/>
+         
 
             <Text
               style={{

@@ -11,7 +11,8 @@
       "bundleIdentifier": "com.jythu.Ekaant",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+     "icon": "./assets/appicon.png"
     },
     "android": {
       "adaptiveIcon": {
