@@ -577,6 +577,80 @@ async function otpLogin(req, res) {
   });
 }
 
+async function deleteAccount(req, res) {
+
+try {
+  const { userId } = req.body;
+  const parsedUserId = parseInt(userId);
+
+    if (isNaN(parsedUserId)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    // Delete all related data in the correct order to respect foreign key constraints
+    await prisma.$transaction(async (prisma) => {
+      // Delete user's reviews
+      await prisma.review.deleteMany({
+        where: { userId: parsedUserId },
+      });
+
+      // Delete user's timeSlots
+      await prisma.timeSlot.deleteMany({
+        where: { bookedById: parsedUserId },
+      });
+
+      // Delete user's transactions
+      await prisma.transaction.deleteMany({
+        where: { userId: parsedUserId },
+      });
+
+      // Handle bookings and related data
+      const userBookings = await prisma.booking.findMany({
+        where: { userId: parsedUserId },
+      });
+
+      for (const booking of userBookings) {
+        // Delete related invoice
+        await prisma.invoice.deleteMany({
+          where: { bookingId: booking.id },
+        });
+
+        // Delete booking friends
+        await prisma.bookingFriend.deleteMany({
+          where: { bookingId: booking.id },
+        });
+      }
+
+      // Delete all bookings
+      await prisma.booking.deleteMany({
+        where: { userId: parsedUserId },
+      });
+
+      // Finally delete the user
+      await prisma.user.delete({
+        where: { id: parsedUserId },
+      });
+    });
+
+  return res.status(StatusCodes.OK).json({
+    success: true,
+    message: "User deleted successfully",
+    data: user,
+  });
+
+  
+} catch (error) {
+  console.log("error is ", error);
+  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    success: false,
+    message: "User already registered",
+    error: error.message,
+    data: {},
+  });
+  
+}
+}
+
 module.exports = {
   signUp,
   signIn,
@@ -593,4 +667,5 @@ module.exports = {
   sendOtp,
   addFriend,
   getFriends,
+  deleteAccount
 };

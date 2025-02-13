@@ -102,7 +102,7 @@ async function createBooking(req, res) {
     // console.log("🚀 ~ createBooking ~ req.body", req.body);
 
     const user = await prisma.user.findFirst({ where: { id: userId } });
-    console.log("🚀 ~ createBooking ~ user:", user);
+    // console.log("🚀 ~ createBooking ~ user:", user);
 
     const bookingFinalDate = new Date(bookingDate);
     bookingFinalDate.setMonth(bookingFinalDate.getMonth() + bookingPeriod);
@@ -115,7 +115,7 @@ async function createBooking(req, res) {
     }
 
     if (!libraryId || !finalPrice || timeSlot.length === 0 || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod ) {
-      console.log("-______-", libraryId, initialPrice, finalPrice, timeSlot.length, roomNo, bookedSeat, bookingDate, bookingPeriod, );
+      // console.log("-______-", libraryId, initialPrice, finalPrice, timeSlot.length, roomNo, bookedSeat, bookingDate, bookingPeriod, );
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "Please provide all the required fields" });
@@ -151,6 +151,10 @@ async function createBooking(req, res) {
     }
 
     // Create the booking
+    if(typeof(bookingPeriod) === 'string'){
+      bookingPeriod = parseInt(bookingPeriod);
+    }
+
     const booking = await prisma.booking.create({
       data: {
         userId,

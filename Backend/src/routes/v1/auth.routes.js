@@ -64,6 +64,8 @@ AuthRouter.get("/ping", AuthController.pingAuthController);
 AuthRouter.post("/signup", upload.single("image"), AuthController.signUp);
 AuthRouter.post("/signin", AuthController.signIn);
 
+AuthRouter.post("/delete-account",  AuthController.deleteAccount);
+
 AuthRouter.post("/addFriend/:userId", AuthController.addFriend);
 AuthRouter.post("/getFriends/:userId", AuthController.getFriends);
 
