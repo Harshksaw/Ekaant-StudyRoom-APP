@@ -43,7 +43,7 @@ export default function DeleteAccount() {
     const userData = await AsyncStorage.getItem("userData")
     // console.log("🚀 ~ handleDeleteAccount ~ userData.data.user.id:", JSON.parse(userData).data.user_id)
 
-    const res = await axios.post(`${BACKEND}/auth/delete-account`, {
+    const res = await axios.post(`${BACKEND}/api/v1/auth/delete-account`, {
         id : JSON.parse(userData).data.user_id || JSON.parse(userData).data.user_id ,
         
 
