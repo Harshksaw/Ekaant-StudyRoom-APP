@@ -6,6 +6,12 @@ import axios from 'axios';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BACKEND } from '@/utils/config';
+import { useDispatch } from 'react-redux';
+import { logout, resetUserState } from '@/redux/userSlice';
+import { resetAppState } from '@/redux/appSlice';
+import { resetBookingState } from '@/redux/bookingSlice';
+
+import { Toast } from 'react-native-toast-notifications';
 
 
 const { height } = Dimensions.get('window');
@@ -14,7 +20,7 @@ export default function DeleteAccount() {
   const [visible, setVisible] = useState(false);
   const slideAnim = React.useRef(new Animated.Value(height)).current;
   const router = useRouter();
-
+const dispatch = useDispatch();
 
   const showModal = () => {
     setVisible(true);
@@ -49,7 +55,21 @@ export default function DeleteAccount() {
 
 
     });
-          router.replace('/');
+    if(res.status === 200){
+      Toast.show('Account deleted successfully',{
+        type: 'success',
+        duration: 3000,
+      }
+    )
+    }
+
+    dispatch(logout());
+    dispatch(resetUserState());
+    dispatch(resetAppState());
+    dispatch(resetBookingState());
+
+    router.dismissAll();
+    router.replace("(routes)/welcome" as any);
     } catch (error) {
       Alert.alert('Error', 'Failed to delete account. Please try again.');
     }
