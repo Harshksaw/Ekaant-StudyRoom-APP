@@ -58,6 +58,9 @@ export default function profile() {
         style={{
           flex: 1,
           width: width,
+          flexDirection:'row',
+          justifyContent:'space-between'
+      
         }}
       >
         <Text
@@ -70,6 +73,37 @@ export default function profile() {
         >
           My Profile
         </Text>
+
+
+        <View
+          style={{
+            borderTopWidth: 1,
+            borderStyle: "dashed",
+            borderColor: "#000",
+            marginHorizontal: w(20),
+            marginTop: h(35),
+          }}>
+          <TouchableOpacity onPress={() =>router.push("/(routes)/delete-account")}>
+            <View
+              style={{
+                marginTop: 2,
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                marginLeft: w(15),
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: ff.deckBold,
+                  color: "#FF3B30",
+                  alignSelf: "flex-start",
+                }}>
+                Delete Account
+              </Text>
+            </View>
+            </TouchableOpacity>
+          </View>
       </LinearBackground>
 
       <View
@@ -293,6 +327,8 @@ export default function profile() {
             </Text>
             <Ionicons name="arrow-forward" size={20} color="black" />
           </TouchableOpacity>
+
+
           <TouchableOpacity
             onPress={() => {
               const url = `https://www.studyekaant.com/contact-us/`;
@@ -323,7 +359,15 @@ export default function profile() {
             </Text>
             <Ionicons name="arrow-forward" size={20} color="black" />
           </TouchableOpacity>
+
+         
         </View>
+
+
+        
+
+
+
         <View
           style={{
             borderTopWidth: 1,
@@ -357,6 +401,8 @@ export default function profile() {
           </TouchableOpacity>
         </View>
       </View>
+
+
     </SafeAreaView>
   );
 }
