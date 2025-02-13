@@ -7,7 +7,7 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.jythu.Ekaant",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
