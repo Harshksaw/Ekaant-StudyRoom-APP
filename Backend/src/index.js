@@ -14,7 +14,7 @@ const cron = require('node-cron');
 const { PrismaClient } = require('@prisma/client');
 const { createBackup } = require("./controllers/app.controller");
 const backupDatabase = require("./backup");
-const { requestCountMiddleware } = require("./metrics/requestCounts");
+// const { requestCountMiddleware } = require("./metrics/requestCounts");
 const prisma = new PrismaClient();
 
 
@@ -69,7 +69,7 @@ app.use(express.json({ limit: "50mb" }));
 //   next();
 // });
 
-app.use(requestCountMiddleware)
+// app.use(requestCountMiddleware)
 
 app.get('/me', (req, res)=>{
   res.status(200).json({message: "Hello from Problem Service"});

@@ -1,17 +1,16 @@
-FROM node:alpine
+FROM node:18
 
 WORKDIR /usr/src/app
 
-
-COPY ./package.json ./
-COPY ./package-lock.json ./
+COPY package*.json ./
 
 RUN npm install
 
-COPY ./src ./src
+COPY . .
 
-COPY ./.env ./
+# Run prisma generate to generate the Prisma client
+RUN npx prisma generate
 
-
+EXPOSE 3000
 
 CMD ["npm", "start"]
