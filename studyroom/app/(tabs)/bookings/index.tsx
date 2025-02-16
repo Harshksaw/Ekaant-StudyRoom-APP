@@ -19,9 +19,11 @@ import {
   Platform,
   RefreshControl,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+const { width: screenWidth } = Dimensions.get("window");
+const isTablet = screenWidth >= 768;
 interface ApprovalStatusProps {
   isApproved: String;
 }
@@ -221,7 +223,7 @@ export default function Bookings() {
                       >
                         <Text
                           style={{
-                            fontSize: 20,
+                            fontSize: w(isTablet ? 12 : 14),
                             lineHeight: 26.01,
                             textAlign: "left",
                             fontFamily: ff.deckMedium,
@@ -236,19 +238,19 @@ export default function Bookings() {
                       <View
                         style={{
                           flexDirection: "row",
-                          gap: 3,
+                          gap: 4,
                         }}
                       >
                         <Ionicons
                           name="accessibility-outline"
-                          size={16}
+                          size={isTablet ? 24 : 14}
                           color="black"
                         />
                         <Text
                           style={{
-                            fontSize: 12.14,
+                            fontSize: w(isTablet ? 16 : 12.14),
                             fontFamily: ff.deckRegular,
-                            lineHeight: 18.21,
+                            lineHeight: w(isTablet ? 14 : 14.21),
                             textAlign: "left",
                           }}
                         >
@@ -270,7 +272,7 @@ export default function Bookings() {
                         >
                           <Text
                             style={{
-                              fontSize: 12.14,
+                              fontSize: w(isTablet ? 8 : 10),
                               fontFamily: ff.deckRegular,
                               lineHeight: 18.21,
                               textAlign: "left",
@@ -280,7 +282,7 @@ export default function Bookings() {
                           </Text>
                           <Text
                             style={{
-                              fontSize: 12.14,
+                              fontSize:w(isTablet ? 8 : 10),
                               fontFamily: ff.deckRegular,
                               lineHeight: 18.21,
                               textAlign: "left",
@@ -312,7 +314,7 @@ export default function Bookings() {
                       >
                         <Ionicons
                           name="flower-outline"
-                          size={16}
+                          size={isTablet ? 24 : 12}
                           color="black"
                         />
                         <Text style={{ fontFamily: ff.deckMedium }}>AC</Text>

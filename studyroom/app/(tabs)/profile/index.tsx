@@ -23,6 +23,7 @@ import { resetBookingState } from "@/redux/bookingSlice";
 import { h, w } from "@/constants/size";
 import ff from "@/constants/fonts";
 
+
 export default function profile() {
   const dispatch = useDispatch();
 
@@ -51,6 +52,7 @@ export default function profile() {
 
   const { width } = Dimensions.get("window");
 
+  const isTablet = width >= 768;
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <LinearBackground
@@ -66,7 +68,7 @@ export default function profile() {
         <Text
           style={{
             color: "#fff",
-            fontSize: w(30),
+            fontSize: isTablet ? w(24) : w(30),
             fontFamily: ff.deckMedium,
             margin: w(30),
           }}
@@ -86,7 +88,7 @@ export default function profile() {
           <TouchableOpacity onPress={() =>router.push("/(routes)/delete-account")}>
             <View
               style={{
-                marginTop: 2,
+                marginTop: isTablet ? w(10) : w(6),
                 flexDirection: "row",
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
@@ -94,7 +96,7 @@ export default function profile() {
               }}>
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: isTablet ? w(14) : w(16),
                   fontFamily: ff.deckBold,
                   color: "#FF3B30",
                   alignSelf: "flex-start",
@@ -107,262 +109,221 @@ export default function profile() {
       </LinearBackground>
 
       <View
-        style={{
-          flex: 1,
-          zIndex: 3,
-          borderRadius: w(25),
-          borderBottomEndRadius: 0,
-          borderBottomStartRadius: 0,
-          backgroundColor: "white",
-          position: "absolute",
-          bottom: 0,
-          height: "75%",
-          width: "100%",
-          justifyContent: "flex-start",
+  style={{
+    flex: 1,
+    zIndex: 3,
+    borderRadius: w(25),
+    borderBottomEndRadius: 0,
+    borderBottomStartRadius: 0,
+    backgroundColor: "white",
+    position: "absolute",
+    bottom: 0,
+    height: "75%",
+    width: "100%",
+    justifyContent: "flex-start",
+  }}
+>
+  <View
+    style={{
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      position: "relative",
+      top: "-20%",
+    }}
+  >
+    <View
+      style={{
+        width: w(140),
+        height: w(140),
+        borderRadius: 400,
+        backgroundColor: "#007422",
+        justifyContent: "center",
+        alignItems: "center",
+        marginRight: 10,
+      }}
+    >
+      <Image
+        source={{
+          uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr_IULLOXJT80cLu-eRqkRGrHY23yLEx4p0w&s=10",
         }}
+        style={{
+          borderRadius: 400,
+          width: w(140),
+          height: w(140),
+        }}
+      />
+    </View>
+  </View>
+
+  <View
+    style={{
+      marginTop: "-15%",
+      flexDirection: "column",
+      gap: 10,
+      marginHorizontal: 20,
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <Text
+      style={{
+        fontSize: isTablet ? w(20) : 22,
+        fontFamily: ff.deckMedium,
+        alignSelf: "center",
+      }}
+    >
+      {userData?.username || "---"}
+    </Text>
+    <Text
+      style={{
+        fontSize: isTablet ? w(20) : 20,
+        fontFamily: ff.deckMedium,
+        alignSelf: "center",
+      }}
+    >
+      <Text>{userData?.email || "----"}</Text>
+    </Text>
+
+    <View
+      style={{
+        marginTop: 20,
+        flexDirection: "column",
+        gap: 0,
+        width: "90%",
+      }}
+    >
+      <TouchableOpacity
+        style={{
+          borderWidth: 1,
+          borderColor: "#818181",
+          height: 45,
+          gap: 0,
+          borderRadius: 10,
+          padding: 5,
+        }}
+        onPress={() => router.push("/(tabs)/bookings")}
       >
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "center",
+            height: 30,
             alignItems: "center",
-            position: "relative",
-            top: "-20%",
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            marginHorizontal: 20,
+            gap: 20,
           }}
         >
-          <View
+          <Ionicons name="bookmarks-outline" color={"#263238"} size={isTablet ? w(12) : 20} />
+          <Text
             style={{
-              width: w(140),
-              height: w(140),
-              borderRadius: 400,
-              backgroundColor: "#007422", // Example background color
-              justifyContent: "center",
-              alignItems: "center",
-              marginRight: 10,
+              fontSize: isTablet ? w(12) : 17,
+              fontFamily: ff.deckMedium,
+              color: "black",
             }}
           >
-            <Image
-              source={{
-                uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr_IULLOXJT80cLu-eRqkRGrHY23yLEx4p0w&s=10",
-              }}
-              style={{
-                borderRadius: 400,
-                width: w(140),
-                height: w(140),
-              }}
-            />
-          </View>
+            My Bookings
+          </Text>
         </View>
+      </TouchableOpacity>
 
+      <TouchableOpacity
+        style={{
+          borderWidth: 1,
+          borderColor: "#818181",
+          marginTop: 10,
+          height: 45,
+          gap: 10,
+          width: "auto",
+          borderRadius: 10,
+          padding: 5,
+        }}
+        onPress={() => router.push("/(routes)/forgot-password")}
+      >
         <View
           style={{
-            marginTop: "-15%",
-            flexDirection: "column",
-            gap: 10,
-            marginHorizontal: 20,
-            justifyContent: "center",
+            height: 30,
             alignItems: "center",
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            marginHorizontal: 20,
+            gap: 20,
           }}
         >
+          <Fontisto name="locked" size={isTablet ? w(12) : 20} color="#4f4f4f" />
           <Text
             style={{
-              fontSize: 22,
+              fontSize: isTablet ? w(12) : 17,
               fontFamily: ff.deckMedium,
-              alignSelf: "center",
+              color: "black",
             }}
           >
-            {userData?.username || "---"}
+            Change Password
           </Text>
-          <Text
-            style={{
-              fontSize: 20,
-              fontFamily: ff.deckMedium,
-              alignSelf: "center",
-            }}
-          >
-            <Text> {userData?.email || "----"}</Text>
-          </Text>
-
-          {/* <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              gap: 10,
-              marginTop: 20,
-              borderWidth: 1,
-              width: "60%",
-              height: 50,
-              alignItems: "center",
-              borderRadius: w(6),
-              borderColor: "lightblue",
-            }}
-          >
-            <Feather name="edit" size={20} />
-            <Text
-              style={{
-                fontSize: 18,
-                fontFamily: ff.deckMedium,
-                color: "black",
-              }}
-            >
-              Edit Profile
-            </Text>
-          </View> */}
-
-          <View
-            style={{
-              marginTop: 20,
-              flexDirection: "column",
-              gap: 0,
-              width: "90%",
-              // marginHorizontal: 20,
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                borderWidth: 1,
-                borderColor: "#818181",
-
-                height: 45,
-                gap: 0,
-
-                borderRadius: 10,
-                padding: 5,
-              }}
-              onPress={() => router.push("/(tabs)/bookings")}
-            >
-              <View
-                style={{
-                  height: 30,
-                  alignItems: "center",
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  marginHorizontal: 20,
-                  gap: 20,
-                }}
-              >
-                <Ionicons
-                  name="bookmarks-outline"
-                  color={"#263238"}
-                  size={20}
-                />
-                <Text
-                  style={{
-                    fontSize: 17,
-                    fontFamily: ff.deckMedium,
-                    color: "black",
-                  }}
-                >
-                  My Bookings
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={{
-                borderWidth: 1,
-                borderColor: "#818181",
-
-                marginTop: 10,
-                height: 45,
-                gap: 10,
-
-                width: "auto",
-                borderRadius: 10,
-                padding: 5,
-              }}
-              onPress={() => router.push("/(routes)/forgot-password")}
-            >
-              <View
-                style={{
-                  height: 30,
-
-                  alignItems: "center",
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  marginHorizontal: 20,
-
-                  gap: 20,
-                }}
-              >
-                <Fontisto name="locked" size={20} color="#4f4f4f" />
-                <Text
-                  style={{
-                    fontSize: 17,
-                    fontFamily: ff.deckMedium,
-                    color: "black",
-                  }}
-                >
-                  Change Password
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              const url = `https://www.studyekaant.com/terms-and-conditions/`;
-              Linking.openURL(url);
-            }}
-            style={{
-              marginTop: 10,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginHorizontal: 20,
-              borderWidth: 0.3,
-              padding: w(10),
-              borderRadius: 3,
-              borderColor: "#949494",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                fontFamily: ff.deckMedium,
-                color: "black",
-                marginRight: 10,
-              }}
-            >
-              Terms & Conditions
-            </Text>
-            <Ionicons name="arrow-forward" size={20} color="black" />
-          </TouchableOpacity>
-
-
-          <TouchableOpacity
-            onPress={() => {
-              const url = `https://www.studyekaant.com/contact-us/`;
-              Linking.openURL(url);
-            }}
-            style={{
-              marginTop: 10,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginHorizontal: 20,
-              borderWidth: 0.3,
-              padding: w(10),
-              borderRadius: 3,
-              borderColor: "#949494",
-            }}
-          >
-            <Ionicons name="call-outline" color={"black"} size={w(18)} />
-            <Text
-              style={{
-                fontSize: 20,
-                fontFamily: ff.deckMedium,
-                color: "black",
-                marginHorizontal: 10,
-              }}
-            >
-              Contact Us
-            </Text>
-            <Ionicons name="arrow-forward" size={20} color="black" />
-          </TouchableOpacity>
-
-         
         </View>
+      </TouchableOpacity>
+    </View>
+    <TouchableOpacity
+      onPress={() => {
+        const url = `https://www.studyekaant.com/terms-and-conditions/`;
+        Linking.openURL(url);
+      }}
+      style={{
+        marginTop: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginHorizontal: 20,
+        borderWidth: 0.3,
+        padding: w(10),
+        borderRadius: 3,
+        borderColor: "#949494",
+      }}
+    >
+      <Text
+        style={{
+          fontSize: isTablet ? w(12) : 20,
+          fontFamily: ff.deckMedium,
+          color: "black",
+          marginRight: 10,
+        }}
+      >
+        Terms & Conditions
+      </Text>
+      <Ionicons name="arrow-forward" size={isTablet ? w(12) : 20} color="black" />
+    </TouchableOpacity>
 
+    <TouchableOpacity
+      onPress={() => {
+        const url = `https://www.studyekaant.com/contact-us/`;
+        Linking.openURL(url);
+      }}
+      style={{
+        marginTop: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginHorizontal: 20,
+        borderWidth: 0.3,
+        padding: w(10),
+        borderRadius: 3,
+        borderColor: "#949494",
+      }}
+    >
+      <Ionicons name="call-outline" color={"black"} size={isTablet ? w(14) : w(18)} />
+      <Text
+        style={{
+          fontSize: isTablet ? w(12) : 20,
+          fontFamily: ff.deckMedium,
+          color: "black",
+          marginHorizontal: 10,
+        }}
+      >
+        Contact Us
+      </Text>
+      <Ionicons name="arrow-forward" size={isTablet ? w(12) : 20} color="black" />
+    </TouchableOpacity>
+  </View>
 
         
 
@@ -389,7 +350,7 @@ export default function profile() {
             >
               <Text
                 style={{
-                  fontSize: 20,
+                  fontSize: isTablet ? w(14) : w(16),
                   fontFamily: ff.deckBold,
                   color: "#000",
                   alignSelf: "flex-start",
