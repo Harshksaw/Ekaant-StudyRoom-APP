@@ -340,7 +340,7 @@ export default function profile() {
           <TouchableOpacity onPress={() => logoutHandler()}>
             <View
               style={{
-                marginTop: 10,
+                marginTop: w(2),
                 flexDirection: "row",
                 justifyContent: "flex-start",
                 alignItems: "flex-start",

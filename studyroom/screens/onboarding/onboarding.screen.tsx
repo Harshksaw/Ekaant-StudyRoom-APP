@@ -20,7 +20,7 @@ import {
 import Button from "@/components/Button";
 import { ImageBackground } from "expo-image";
 import ff from "@/constants/fonts";
-import { h, vh, vw } from "@/constants/size";
+import { h, vh, vw, w } from "@/constants/size";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -135,7 +135,7 @@ export default function OnBoardingScreen() {
           return (
             <ImageBackground
               style={{
-                width: isTablet ? width : vw,
+                width: isTablet ? width : vw ,
                 height: isTablet ? height : vh,
               }}
               source={item?.image}
@@ -150,8 +150,8 @@ export default function OnBoardingScreen() {
                   source={{ uri: item?.mainImg }}
                   style={[
                     {
-                      width: isTablet ? width * 0.6 : width * 0.8,
-                      height: isTablet ? width * 0.6 : width * 0.8,
+                      width: isTablet ? width * 0.6 : width * 0.7,
+                      height: isTablet ? width * 0.6 : width * 0.7,
                       alignSelf: "center",
                     },
                     animatedStyle,
@@ -168,7 +168,7 @@ export default function OnBoardingScreen() {
                 >
                   <Text
                     style={{
-                      fontSize: isTablet ? 40 : 35,
+                      fontSize: isTablet ? 40 : w(24),
                       textAlign: "center",
                       width: width * (isTablet ? 0.6 : 0.7),
                       fontFamily: ff.deckBold,
@@ -178,7 +178,7 @@ export default function OnBoardingScreen() {
                   </Text>
                   <Text
                     style={{
-                      fontSize: isTablet ? 30 : 25,
+                      fontSize: isTablet ? 30 : w(20),
                       color: "rgba(0, 0, 0, 1)",
                       fontStyle: "normal",
                       lineHeight: isTablet ? 32 : 28,
