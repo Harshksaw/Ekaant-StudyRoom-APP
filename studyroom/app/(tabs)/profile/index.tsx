@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Linking,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -20,9 +21,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout, resetUserState } from "@/redux/userSlice";
 import { resetAppState } from "@/redux/appSlice";
 import { resetBookingState } from "@/redux/bookingSlice";
-import { h, w } from "@/constants/size";
+import { h, w, width } from "@/constants/size";
 import ff from "@/constants/fonts";
-
+const isTablet = Platform.OS === 'ios' && (width >= 768 );
 
 export default function profile() {
   const dispatch = useDispatch();
@@ -50,9 +51,9 @@ export default function profile() {
     getUserData();
   }, [userDetails]);
 
-  const { width } = Dimensions.get("window");
+  const { width , height} = Dimensions.get("window");
 
-  const isTablet = width >= 768;
+  const isTablet = width >= 768  ;
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <LinearBackground
@@ -186,83 +187,80 @@ export default function profile() {
     </Text>
 
     <View
+  style={{
+    marginTop: 20,
+    width: "90%",
+    alignItems: "center",
+  }}
+>
+  <TouchableOpacity
+    style={{
+      borderWidth: 1,
+      borderColor: "#818181",
+      borderRadius: 10,
+      paddingVertical: isTablet ? w(6) : 10,
+      paddingHorizontal: isTablet ? w(12) : 20,
+      minWidth: isTablet ? w(180) : "auto",
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: "row",
+    }}
+    onPress={() => router.push("/(tabs)/bookings")}
+  >
+    <Ionicons name="bookmarks-outline" color={"#263238"} size={isTablet ? w(12) : 20} />
+    <Text
       style={{
-        marginTop: 20,
-        flexDirection: "column",
-        gap: 0,
-        width: "90%",
+        fontSize: isTablet ? w(12) : 17,
+        fontFamily: ff.deckMedium,
+        color: "black",
+        marginLeft: 10, // Space between icon and text
+        flexShrink: 1, // Prevent text from getting cut
       }}
+      numberOfLines={1}
     >
-      <TouchableOpacity
-        style={{
-          borderWidth: 1,
-          borderColor: "#818181",
-          height: 45,
-          gap: 0,
-          borderRadius: 10,
-          padding: 5,
-        }}
-        onPress={() => router.push("/(tabs)/bookings")}
-      >
-        <View
-          style={{
-            height: 30,
-            alignItems: "center",
-            flexDirection: "row",
-            justifyContent: "flex-start",
-            marginHorizontal: 20,
-            gap: 20,
-          }}
-        >
-          <Ionicons name="bookmarks-outline" color={"#263238"} size={isTablet ? w(12) : 20} />
-          <Text
-            style={{
-              fontSize: isTablet ? w(12) : 17,
-              fontFamily: ff.deckMedium,
-              color: "black",
-            }}
-          >
-            My Bookings
-          </Text>
-        </View>
-      </TouchableOpacity>
+      My Bookings
+    </Text>
+  </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{
-          borderWidth: 1,
-          borderColor: "#818181",
-          marginTop: 10,
-          height: 45,
-          gap: 10,
-          width: "auto",
-          borderRadius: 10,
-          padding: 5,
-        }}
-        onPress={() => router.push("/(routes)/forgot-password")}
-      >
-        <View
-          style={{
-            height: 30,
-            alignItems: "center",
-            flexDirection: "row",
-            justifyContent: "flex-start",
-            marginHorizontal: 20,
-            gap: 20,
-          }}
-        >
-          <Fontisto name="locked" size={isTablet ? w(12) : 20} color="#4f4f4f" />
-          <Text
-            style={{
-              fontSize: isTablet ? w(12) : 17,
-              fontFamily: ff.deckMedium,
-              color: "black",
-            }}
-          >
-            Change Password
-          </Text>
-        </View>
-      </TouchableOpacity>
+
+  <TouchableOpacity
+  style={{
+    borderWidth: 1,
+    marginTop: 10,
+      borderColor: "#818181",
+      borderRadius: 10,
+      paddingVertical: isTablet ? w(6) : 10,
+      paddingHorizontal: isTablet ? w(12) : 20,
+      minWidth: isTablet ? w(180) : "auto",
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: "row",
+  }}
+  onPress={() => router.push("/(routes)/forgot-password")}
+>
+  <Fontisto name="locked" size={isTablet ? w(12) : 20} color="#4f4f4f" />
+  <Text
+    style={{
+      fontSize: isTablet ? w(12) : 17,
+      fontFamily: ff.deckMedium,
+      color: "black",
+      marginLeft: 10, // Adds spacing instead of gap
+      flexShrink: 1, // Prevents text cutoff
+    }}
+    numberOfLines={1}
+  >
+    Change Password
+  </Text>
+</TouchableOpacity>
+
+
     </View>
+
+    <View style={{
+      flexDirection:  isTablet ? "row" : "column"
+    }}>
+
+    
     <TouchableOpacity
       onPress={() => {
         const url = `https://www.studyekaant.com/terms-and-conditions/`;
@@ -323,6 +321,7 @@ export default function profile() {
       </Text>
       <Ionicons name="arrow-forward" size={isTablet ? w(12) : 20} color="black" />
     </TouchableOpacity>
+    </View>
   </View>
 
         
