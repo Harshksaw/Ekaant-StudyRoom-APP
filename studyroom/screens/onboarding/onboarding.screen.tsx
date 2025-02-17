@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Dimensions,
   StyleSheet,
+  Platform,
 } from "react-native";
 import { router } from "expo-router";
 import {
@@ -29,7 +30,7 @@ import Slider from "@/components/Slider";
 import { TextOptions } from '../../node_modules/@types/istanbul-reports/index.d';
 
 const { width, height } = Dimensions.get("screen");
-const isTablet = width >= 768; // Detect iPad/tablet
+const isTablet = Platform.OS === 'ios' && (width >= 768 );
 
 export default function OnBoardingScreen() {
   const scale = useSharedValue(0);
@@ -159,7 +160,7 @@ export default function OnBoardingScreen() {
 
                 <View
                   style={{
-                    marginTop: height * (isTablet ? 0.05 : 0.1),
+                    marginTop: height * (isTablet ? 0.08 : 0.1),
                     alignSelf: "center",
                     width: "100%",
                     alignItems: "center",
@@ -220,7 +221,8 @@ export default function OnBoardingScreen() {
                   )}
 
                   <TouchableOpacity
-                    style={{ alignSelf: "center" }}
+
+                    style={{ alignSelf: "center", overflow: "hidden" }}
                     onPress={() => {
                       if (index === 3) {
                         router.push("/(routes)/welcome");
@@ -239,7 +241,7 @@ export default function OnBoardingScreen() {
                           : responsiveWidth(30)
                       }
                       radius={index === 3 ? 80 : index === 0 ? 10 : 80}
-                      height={isTablet ? 75 : 60}
+                      height={isTablet ? 100 : 60}
                     />
                   </TouchableOpacity>
                 </View>
@@ -292,13 +294,14 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     width: wp("32%"),
-    paddingVertical: 18,
+    paddingVertical: 16,
     borderRadius: 20,
     marginTop: 40,
   },
   buttonText: {
     color: "white",
     textAlign: "center",
+
   },
   welcomeButtonStyle: {
     backgroundColor: "#2467EC",

@@ -14,6 +14,7 @@ import {
   SafeAreaView,
   BackHandler,
   Dimensions,
+  Platform,
 } from "react-native";
 import { useEffect } from "react";
 
@@ -23,8 +24,8 @@ import { Image, ImageBackground } from "expo-image";
 
 import ff from "@/constants/fonts";
 import { vw } from "@/constants/size";
-const { width } = Dimensions.get("window");
-const isTablet = width >= 768;
+const { width  , height} = Dimensions.get("window");
+const isTablet = Platform.OS === 'ios' && (width >= 768 );
 
 export default function Home() {
   const navigation = useNavigation();
