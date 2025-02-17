@@ -31,45 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.json({ limit: "50mb" }));
 
-// const metrics = {
-//   totalCalls: 0,
-//   failures: 0,
-//   success: 0,
-//   endpointUsage: {},
-//   startTime: Date.now(),
-// };
 
-// // Middleware to count API calls and track metrics
-// app.use((req, res, next) => {
-//   metrics.totalCalls++;
-//   const start = process.hrtime();
-
-//   res.on('finish', () => {
-//     const duration = process.hrtime(start);
-//     const responseTime = duration[0] * 1e3 + duration[1] * 1e-6; // Convert to milliseconds
-//     const endpoint = `${req.method} ${req.path}`;
-
-//     // Initialize endpoint usage counter
-//     if (!metrics.endpointUsage[endpoint]) {
-//       metrics.endpointUsage[endpoint] = { calls: 0, failures: 0, success: 0, totalTime: 0 };
-//     }
-
-//     metrics.endpointUsage[endpoint].calls++;
-//     metrics.endpointUsage[endpoint].totalTime += responseTime;
-
-//     if (res.statusCode >= 200 && res.statusCode < 400) {
-//       metrics.success++;
-//       metrics.endpointUsage[endpoint].success++;
-//     } else {
-//       metrics.failures++;
-//       metrics.endpointUsage[endpoint].failures++;
-//     }
-//   });
-
-//   next();
-// });
-
-// app.use(requestCountMiddleware)
 
 app.get('/me', (req, res)=>{
   res.status(200).json({message: "Hello from Problem Service"});

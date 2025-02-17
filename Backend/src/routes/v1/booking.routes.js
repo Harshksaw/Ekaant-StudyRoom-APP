@@ -21,6 +21,11 @@ BookingRouter.post('/hasBoughtEarlier', BookingController.hasBoughtEarlier);
 BookingRouter.post('/adminBooking', BookingController.adminBooking);
 
 
+
+//offline Booking
+BookingRouter.post('/getBookings', BookingController.getBookings);
+
+
 // BookingRouter.post('/getLibrary', BookingController.generateOtp);
 // BookingRouter.post('/verifyOtp', BookingController.verifyOtp);
 

@@ -534,6 +534,148 @@ async function adminBooking(req, res) {
   }
 }
 
+
+
+
+async function offlineBooking(req, res){
+
+  try {
+    //create booking via admin ,and bloakc the seat
+
+    const { libraryId, userId , bookingId , amount , BookedData} = req.body;
+
+
+    // ✅ Check daily limit (Max 5 offline requests per day)
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    
+    const dailyPayments = await prisma.transaction.count({
+      where: {
+        userId,
+        isOfflinePayment: true,
+        createdAt: { gte: todayStart }
+      }
+    });
+
+    if(dailyPayments >= 5){
+      return res.status(400).json({
+        success: false,
+        message: "Daily limit reached. Please try again tomorrow."
+      });
+    }
+
+
+      // ✅ Create new offline payment request
+      const expiresAt = new Date(Date.now() + 3 * 60 * 1000); 
+
+
+      const bookingTable = await prisma.booking.findUnique({
+        where: { id: bookingId }
+      });
+      
+      if (!bookingTable) {
+        return res.status(404).json({ error: "Booking not found" });
+      }
+      
+      const { roomNo, bookedSeat } = bookingTable;
+      //block the seat
+
+    
+    const { room, seat } = await findRoomAndSeat(libraryId, roomNo, bookedSeat.seatId);
+    
+    console.log(`Found room: ${room.id}, seat: ${seat}`);
+
+    const timeSlotId = BookedData.timeSlot[0].slotId;
+    console.log(`Finding time slot with id: ${timeSlotId}`);
+    const timeSlot = BookedData.timeSlot[0];
+    console.log("🚀 ~ confirmBooking ~ timeSlot:", timeSlot);
+    
+    if (!timeSlot) {
+      return res.status(404).json({ error: "Time slot not found" });
+    }
+    
+    if (timeSlot.booked) {
+      return res.status(400).json({ error: "Time slot already booked" });
+    }
+
+    console.log(`Marking time slot as booked`);
+    timeSlot.booked = true;
+
+    console.log(`Updating library with id: ${libraryId}`);
+    await prisma.library.update({
+      where: { id: libraryId },
+      data: {
+        rooms: {
+          update: {
+            where: { id: room.id },
+            data: {
+              seats: {
+                update: {
+                  where: { id: seat.id },
+                  data: {
+                    timeSlots: {
+                      update: {
+                        where: { id: timeSlot.id },
+                        data: { booked: true },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    console.log(`Updating booking with id: ${bookingId}`);
+    const booking = await prisma.booking.update({
+      where: { id: bookingId },
+      data: { approved: true, bookingStatus: 'CONFIRMED' },
+    });
+
+    //create Transaction
+
+    const transaction = await prisma.transaction.create({
+      data: {
+        userId,
+
+        libraryId,
+        bookingId,
+
+        amount,
+        description: `Offline payment request for booking ${bookingId} at library ${libraryId} by user ${userId} at ${new Date().toISOString()}`,
+        type: "OFFLINE_BOOKING",
+        isOfflinePayment: true,
+        offlinePaymentStatus: "PENDING",
+        expiresAt
+      }
+    });
+
+
+
+
+
+
+
+
+    console.log("🚀 ~ adminBooking ~ req.body", req.body)
+
+
+    
+  }
+  catch(error){
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to create booking",
+      message: error.message,
+    });
+  }
+
+
+}
+
 module.exports = {
   createBooking,
   pingBookingController,
