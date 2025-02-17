@@ -64,8 +64,8 @@ export default function index() {
 
   const [selectedLocation, setSelectedLocation] = useState("");
   const [allfetched, setAllfetched] = useState(false);
-  const { width: screenWidth } = Dimensions.get("window");
-  const isTablet = screenWidth >= 768;
+  const { width: screenWidth, height: screenHeight, } = Dimensions.get("window");
+  const isTablet = screenWidth >= 768 || screenHeight >= 768;
 
   const [page, setPage] = useState(1);
   const [limit] = useState(3);
@@ -256,15 +256,19 @@ export default function index() {
                 flex: 1,
                 flexDirection: "column",
                 overflow: "hidden",
+
+                 justifyContent:isTablet?'center':'flex-start',
               }}
             >
               <Text
                 style={{
-                  fontSize: w(isTablet ? 16 : 18),
-                  lineHeight: isTablet ? 32 : 26.01,
+                  fontSize: w(isTablet ? 14 : 18),
+                  lineHeight: isTablet ? 36 : 26.01,
                   textAlign: "left",
                   fontFamily: ff.deckMedium,
                   letterSpacing: 1,
+                  flexShrink: 1,
+                  flexWrap: "wrap",
                 }}
               >
                 {item?.name.split(" ").slice(0, 3).join(" ")}
