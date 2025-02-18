@@ -28,7 +28,8 @@ import { BACKEND } from "@/utils/config";
 import ReviewList from "@/components/Review";
 import ff from "@/constants/fonts";
 import { h, vw, w } from "@/constants/size";
-
+const { width: screenWidth } = Dimensions.get("window");
+const isTablet = screenWidth >= 768;
 interface CardDetailScreenProps {
   // Define your params here
 }
@@ -174,7 +175,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
           style={{
             flex: 1,
             flexDirection: "column",
-            ...(Platform.OS === "ios" ? { marginTop: -200 } : { marginTop: 0 }),
+            ...(Platform.OS === "ios" ? { marginTop: 0 } : { marginTop: 0 }),
           }}
         >
           <View style={styles.cardDetails}>
@@ -193,7 +194,8 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
               </Text>
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: w(isTablet ? 14 : 14),
+
                   color: "#0077B6",
                   fontFamily: ff.deckMedium,
                   width: "28%",
@@ -240,7 +242,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             <Text
               style={{
                 marginTop: 2,
-                fontSize: w(14),
+                fontSize: w(isTablet ? 12 : 14),
                 lineHeight: h(17),
                 color: "#A8A8A8",
                 borderRadius: 10,
@@ -348,7 +350,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             <Text
               style={{
                 marginVertical: 20,
-                fontSize: 14,
+                fontSize: w(isTablet ? 12 : 14),
                 fontFamily: ff.deckMedium,
               }}
             >
@@ -446,7 +448,7 @@ const styles = StyleSheet.create({
     color: "black",
   },
   amenityItem: {
-    fontSize: 14,
+    fontSize: w(isTablet ? 12 : 14),
     fontFamily: ff.deckRegular,
     color: "#5a5959",
   },

@@ -7,7 +7,7 @@ import { ToastProvider } from "react-native-toast-notifications";
 import { Provider } from "react-redux";
 
 import store from "@/redux/store";
-import { useColorScheme } from "react-native";
+
 import NetInfo from "@react-native-community/netinfo";
 import NoConnection from "./(routes)/NoConnection";
 
@@ -140,6 +140,12 @@ function RootLayoutNav() {
           />
           <Stack.Screen
             name="(routes)/invoice/index"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="(routes)/delete-account/index"
             options={{
               headerShown: false,
             }}

@@ -6,12 +6,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  useFonts,
-  Nunito_600SemiBold,
-  Nunito_700Bold,
-  Nunito_400Regular,
-} from "@expo-google-fonts/nunito";
+
 import { router } from "expo-router";
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
@@ -19,20 +14,21 @@ import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { Toast } from "react-native-toast-notifications";
+import ff from "@/constants/fonts";
 export default function ForgotPassword() {
-  let [fontsLoaded, fontError] = useFonts({
-    Nunito_600SemiBold,
-    Nunito_700Bold,
-    Nunito_400Regular,
-  });
+  // let [fontsLoaded, fontError] = useFonts({
+  //  ff.deckRegular
+  //   Nunito_700Bold,
+  //  ff.deckRegular
+  // });
   const [userId, setUserId] = useState(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }
+  // if (!fontsLoaded && !fontError) {
+  //   return null;
+  // }
   const getUserId = async () => {
     const res = await AsyncStorage.getItem("userData");
     const dataa = JSON.parse(res);
@@ -95,38 +91,38 @@ export default function ForgotPassword() {
 
   return (
     <LinearGradient colors={["#E5ECF9", "#F6F7F9"]} style={styles.container}>
-      <Text style={[styles.headerText, { fontFamily: "Nunito_600SemiBold" }]}>
+      <Text style={[styles.headerText, { fontFamily: ff.deckRegular }]}>
         Password
       </Text>
       <TextInput
-        style={[styles.input, { fontFamily: "Nunito_400Regular" }]}
+        style={[styles.input, { fontFamily: ff.deckRegular }]}
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
       />
-      <Text style={[styles.headerText, { fontFamily: "Nunito_600SemiBold" }]}>
+      <Text style={[styles.headerText, { fontFamily: ff.deckRegular }]}>
         Confirm Password
       </Text>
       <TextInput
-        style={[styles.input, { fontFamily: "Nunito_400Regular" }]}
+        style={[styles.input, { fontFamily: ff.deckRegular }]}
         placeholder="Confirm Password"
         secureTextEntry
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
 
-      <Text style={[styles.headerText, { fontFamily: "Nunito_600SemiBold" }]}>
+      <Text style={[styles.headerText, { fontFamily: ff.deckRegular }]}>
         New Password
       </Text>
       <TextInput
-        style={[styles.input, { fontFamily: "Nunito_400Regular" }]}
+        style={[styles.input, { fontFamily: ff.deckRegular }]}
         secureTextEntry
         placeholder="new Password"
         value={newPassword}
         onChangeText={setNewPassword}
       />
       <TouchableOpacity style={styles.button} onPress={() => forgetPassword()}>
-        <Text style={[styles.buttonText, { fontFamily: "Nunito_600SemiBold" }]}>
+        <Text style={[styles.buttonText, { fontFamily: ff.deckRegular }]}>
           Send
         </Text>
       </TouchableOpacity>
