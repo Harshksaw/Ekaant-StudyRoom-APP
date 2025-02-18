@@ -1,13 +1,14 @@
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   SafeAreaView,
   Dimensions,
+  StyleSheet,
+  Platform,
 } from "react-native";
-
 import { router } from "expo-router";
-import { StyleSheet } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -17,33 +18,21 @@ import {
   responsiveWidth,
 } from "react-native-responsive-dimensions";
 import Button from "@/components/Button";
-
-// import Carousel from "react-native-intro-carousel";
 import { ImageBackground } from "expo-image";
 import ff from "@/constants/fonts";
-import { h, vh, vw } from "@/constants/size";
+import { h, vh, vw, w } from "@/constants/size";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { useEffect, useState } from "react";
 import Slider from "@/components/Slider";
+import { TextOptions } from '../../node_modules/@types/istanbul-reports/index.d';
 
 const { width, height } = Dimensions.get("screen");
+const isTablet = Platform.OS === 'ios' && (width >= 768 );
 
 export default function OnBoardingScreen() {
-  // useEffect(() => {
-  //   console.log(user, error, loading);
-  // }, []);
-
-  // const [assets] = useAssets([
-  //   require("../../assets/icons/Slide1.svg"),
-  //   require("../../assets/icons/Slide2.svg"),
-  //   require("../../assets/icons/Slide3.svg"),
-  //   require("../../assets/icons/Slide4.svg"),
-  // ]);
-
   const scale = useSharedValue(0);
   const offset: any = useSharedValue({ x: 0, y: 0 });
   const [active, setActive] = useState(false);
@@ -57,16 +46,13 @@ export default function OnBoardingScreen() {
     }, 200);
   }, [active]);
 
-  // Create an animated style using the shared values
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { scale: scale.value },
-        { translateX: offset.value.x },
-        { translateY: offset.value.y },
-      ],
-    };
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: scale.value },
+      { translateX: offset.value.x },
+      { translateY: offset.value.y },
+    ],
+  }));
 
   const arr = [
     "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722596840/assets/z98t3eznkwvgenvmpoxy.png",
@@ -75,6 +61,7 @@ export default function OnBoardingScreen() {
     "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597055/assets/zkh6zr51x1fmgrwai59i.png",
     "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1722597083/assets/cwdjhddyzahxbbp0vaqf.png",
   ];
+
   const data = [
     {
       key: "1",
@@ -121,12 +108,9 @@ export default function OnBoardingScreen() {
       },
     },
   ];
+
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-      }}
-    >
+    <SafeAreaView style={{ flex: 1 }}>
       <Slider
         paginationConfig={{
           dotSize: 8.86,
@@ -138,7 +122,6 @@ export default function OnBoardingScreen() {
             height: 8.86,
             left: -7,
           },
-
           dotSpacing: 20,
           animated: true,
           dotIncreaseSize: 1.2,
@@ -152,23 +135,23 @@ export default function OnBoardingScreen() {
           return (
             <ImageBackground
               style={{
-                width: vw,
-                height: vh,
+                width: isTablet ? width : vw ,
+                height: isTablet ? height : vh,
               }}
               source={item?.image}
             >
               <View
                 style={{
                   flex: 1,
-                  paddingVertical: height * 0.15,
+                  paddingVertical: height * (isTablet ? 0.1 : 0.15),
                 }}
               >
                 <Animated.Image
                   source={{ uri: item?.mainImg }}
                   style={[
                     {
-                      width: width * 0.8,
-                      height: width * 0.8,
+                      width: isTablet ? width * 0.6 : width * 0.7,
+                      height: isTablet ? width * 0.6 : width * 0.7,
                       alignSelf: "center",
                     },
                     animatedStyle,
@@ -177,7 +160,7 @@ export default function OnBoardingScreen() {
 
                 <View
                   style={{
-                    marginTop: height * 0.1,
+                    marginTop: height * (isTablet ? 0.08 : 0.1),
                     alignSelf: "center",
                     width: "100%",
                     alignItems: "center",
@@ -185,9 +168,9 @@ export default function OnBoardingScreen() {
                 >
                   <Text
                     style={{
-                      fontSize: 35,
+                      fontSize: isTablet ? 40 : w(24),
                       textAlign: "center",
-                      width: width * 0.7,
+                      width: width * (isTablet ? 0.6 : 0.7),
                       fontFamily: ff.deckBold,
                     }}
                   >
@@ -195,14 +178,14 @@ export default function OnBoardingScreen() {
                   </Text>
                   <Text
                     style={{
-                      fontSize: 25,
-                      color: "background: rgba(0, 0, 0, 1)",
+                      fontSize: isTablet ? 30 : w(20),
+                      color: "rgba(0, 0, 0, 1)",
                       fontStyle: "normal",
-                      lineHeight: 28,
+                      lineHeight: isTablet ? 32 : 28,
                       textAlign: "center",
-                      fontWeight: 400,
+                      fontWeight: "400",
                       marginVertical: 8,
-                      width: width * 0.7,
+                      width: width * (isTablet ? 0.6 : 0.7),
                       fontFamily: ff.textMedium,
                     }}
                   >
@@ -212,12 +195,12 @@ export default function OnBoardingScreen() {
 
                 <View
                   style={{
-                    flexDirection:
-                      index !== 0 && index !== 3 ? "row" : "column",
+                    flexDirection: index !== 0 && index !== 3 ? "row" : "column",
                     justifyContent: "space-between",
                     width: "90%",
-                    marginTop: height * 0.04,
+                    marginTop: height * (isTablet ? 0.08 : 0.04),
                     alignSelf: "center",
+
                   }}
                 >
                   {index !== 0 && index !== 3 && (
@@ -228,7 +211,7 @@ export default function OnBoardingScreen() {
                       <Text
                         style={{
                           color: "#000000",
-                          fontSize: 20,
+                          fontSize: isTablet ? 24 : 20,
                           fontFamily: ff.deckBold,
                         }}
                       >
@@ -238,7 +221,8 @@ export default function OnBoardingScreen() {
                   )}
 
                   <TouchableOpacity
-                    style={{ alignSelf: "center" }}
+
+                    style={{ alignSelf: "center", overflow: "hidden" }}
                     onPress={() => {
                       if (index === 3) {
                         router.push("/(routes)/welcome");
@@ -248,16 +232,16 @@ export default function OnBoardingScreen() {
                     }}
                   >
                     <Button
-                      text={
-                        index === 3 ? "Continue" : index === 1 ? "Next" : "Next"
-                      }
+
+                      text={index === 3 ? "Continue" : "Next"}
+                
                       width={
                         index === 0 || index === 3
-                          ? width * 0.75
+                          ? width * (isTablet ? 0.6 : 0.75)
                           : responsiveWidth(30)
                       }
                       radius={index === 3 ? 80 : index === 0 ? 10 : 80}
-                      height={55}
+                      height={isTablet ? 100 : 60}
                     />
                   </TouchableOpacity>
                 </View>
@@ -269,6 +253,7 @@ export default function OnBoardingScreen() {
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   firstContainer: {
     alignItems: "center",
@@ -302,28 +287,27 @@ const styles = StyleSheet.create({
   dscpWrapper: {
     marginTop: 30,
   },
-
   dscpText: {
     textAlign: "center",
     color: "#575757",
     fontSize: hp("2%"),
   },
   buttonWrapper: {
-    //   backgroundColor: "#2467EC",
     width: wp("32%"),
-
-    paddingVertical: 18,
+    paddingVertical: 16,
     borderRadius: 20,
     marginTop: 40,
   },
   buttonText: {
     color: "white",
     textAlign: "center",
+
   },
   welcomeButtonStyle: {
     backgroundColor: "#2467EC",
     width: responsiveWidth(88),
     height: responsiveHeight(5.5),
+    
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
