@@ -8,10 +8,20 @@ Clone this repo to follow along with me. Or you can create your own project too.
 
    ````bash
    docker compose up --build
+   ````
 
 
+   ````docker exec -it 508d3e89abdd psql -U testing -d notonProduction -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;
+   ````
 
-    docker cp db_backup/backup.sql <container_id>:/backup.sql
+2. Copy the backup file into the container:
 
-    docker exec -i <container_id> psql -U testing -d notonProduction -f /backup.sql ```
+   ````bash
+   docker cp db_backup/backup.sql 508d3e89abdd:/backup.sql
+   ````
+
+3. Restore the backup inside the container:
+
+   ````bash
+   docker exec -i 508d3e89abdd psql -U testing -d notonProduction -f /backup.sql
    ````

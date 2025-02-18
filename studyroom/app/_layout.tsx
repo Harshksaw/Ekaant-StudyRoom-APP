@@ -145,6 +145,15 @@ function RootLayoutNav() {
             }}
           />
 
+
+          <Stack.Screen
+            name="(routes)/payment/index"
+            options={{
+              headerShown: false,
+            }}
+          />
+
+
           <Stack.Screen
             name="(tabs)"
             options={{

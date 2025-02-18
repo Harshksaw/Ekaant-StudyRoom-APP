@@ -23,7 +23,12 @@ BookingRouter.post('/adminBooking', BookingController.adminBooking);
 
 
 //offline Booking
-BookingRouter.post('/getBookings', BookingController.getBookings);
+
+// POST /api/v1/booking/CreateOfflineBooking	Create a new offline payment request (User)
+
+
+
+BookingRouter.post('/createOffline', BookingController.offlineBooking);
 
 
 // BookingRouter.post('/getLibrary', BookingController.generateOtp);

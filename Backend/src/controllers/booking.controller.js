@@ -685,5 +685,6 @@ module.exports = {
   confirmBooking,
   generateInvoice,
   hasBoughtEarlier,
-  adminBooking
+  adminBooking,
+  offlineBooking
 };
