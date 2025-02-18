@@ -38,7 +38,8 @@ app.use(express.json({ limit: "50mb" }));
 const histogram = new Histogram({
   name : "http_request_duration_seconds",
   help: "Duration of HTTP requests in seconds",
-  labelNames: ["method", "route", "code"],
+  labelNames: ['method', 'route', 'code'],
+
   buckets: [0.1, 0.5, 1, 2, 5, 10]
 })
 
@@ -48,9 +49,9 @@ function middleware(req, res , next){
   res.on('finish', () => {
     const responseTime = Date.now() - startTIme;
 
-    histogram.observe({
-      value: responseTime / 1000,
-    })
+    histogram.observe({},
+       responseTime,
+    )
     // histogram.labels(req.method, req.route.path, res.statusCode).observe(responseTime / 1000);
   })
   next();
@@ -66,7 +67,11 @@ app.use(middleware);
 
 
 
+app.use('/metrics', (req, res) => {
 
+  res.status(200).set('Content-Type', client.register.contentType).send(client.register.metrics());
+
+});
 
 
 
