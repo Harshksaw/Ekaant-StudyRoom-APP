@@ -18,56 +18,60 @@ const backupDatabase = require("./backup");
 const prisma = new PrismaClient();
 
 
+const { Histogram } = require('prom-client');
+const client = require('prom-client');
 
 // const PORT
 const app = express();
 
 
-app.use(cors(
+// app.use(cors(
   
-));
+// ));
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.text());
 
 app.use(express.json({ limit: "50mb" }));
 
-// const metrics = {
-//   totalCalls: 0,
-//   failures: 0,
-//   success: 0,
-//   endpointUsage: {},
-//   startTime: Date.now(),
-// };
 
-// // Middleware to count API calls and track metrics
-// app.use((req, res, next) => {
-//   metrics.totalCalls++;
-//   const start = process.hrtime();
 
-//   res.on('finish', () => {
-//     const duration = process.hrtime(start);
-//     const responseTime = duration[0] * 1e3 + duration[1] * 1e-6; // Convert to milliseconds
-//     const endpoint = `${req.method} ${req.path}`;
+const histogram = new Histogram({
+  name : "http_request_duration_seconds",
+  help: "Duration of HTTP requests in seconds",
+  labelNames: ["method", "route", "code"],
+  buckets: [0.1, 0.5, 1, 2, 5, 10]
+})
 
-//     // Initialize endpoint usage counter
-//     if (!metrics.endpointUsage[endpoint]) {
-//       metrics.endpointUsage[endpoint] = { calls: 0, failures: 0, success: 0, totalTime: 0 };
-//     }
 
-//     metrics.endpointUsage[endpoint].calls++;
-//     metrics.endpointUsage[endpoint].totalTime += responseTime;
+function middleware(req, res , next){
+  const startTIme = Date.now();
+  res.on('finish', () => {
+    const responseTime = Date.now() - startTIme;
 
-//     if (res.statusCode >= 200 && res.statusCode < 400) {
-//       metrics.success++;
-//       metrics.endpointUsage[endpoint].success++;
-//     } else {
-//       metrics.failures++;
-//       metrics.endpointUsage[endpoint].failures++;
-//     }
-//   });
+    histogram.observe({
+      value: responseTime / 1000,
+    })
+    // histogram.labels(req.method, req.route.path, res.statusCode).observe(responseTime / 1000);
+  })
+  next();
+}
 
-//   next();
-// });
+
+
+
+
+
+app.use(middleware);
+
+
+
+
+
+
+
+
+
+
 
 // app.use(requestCountMiddleware)
 
