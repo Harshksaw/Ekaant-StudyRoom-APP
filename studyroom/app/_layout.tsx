@@ -120,6 +120,12 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="(routes)/library/offline.payment"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
             name="(routes)/library/invoice.screen"
             options={{
               headerShown: false,
@@ -150,15 +156,6 @@ function RootLayoutNav() {
               headerShown: false,
             }}
           />
-
-
-          <Stack.Screen
-            name="(routes)/payment/index"
-            options={{
-              headerShown: false,
-            }}
-          />
-
 
           <Stack.Screen
             name="(tabs)"
