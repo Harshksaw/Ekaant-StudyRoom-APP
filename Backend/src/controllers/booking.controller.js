@@ -171,7 +171,7 @@ async function createBooking(req, res) {
     });
 
     // Create a transaction for the booking payment
-    await prisma.transaction.create({
+    const transactionData = await prisma.transaction.create({
       data: {
         amount: finalPrice,
         type: 'BOOKING_PAYMENT',
@@ -185,7 +185,8 @@ async function createBooking(req, res) {
     res.status(StatusCodes.CREATED).json({
       success: true,
       message: "Booking created successfully",
-      data: booking,
+      data: {booking , ...transactionData},
+
     });
   } catch (error) {
     console.error("Error creating booking:", error);
@@ -676,6 +677,30 @@ async function offlineBooking(req, res){
 
 }
 
+async function offlineStatus(req, res) {
+  try {
+    // Use query parameters instead of route params for flexibility
+    const { transactionId } = req.query;
+    if (!transactionId) {
+      return res.status(400).json({ error: "transactionId is required" });
+    }
+
+    const transaction = await prisma.transaction.findUnique({
+      where: { transactionId }
+    });
+
+    if (!transaction) {
+      return res.status(404).json({ error: "Transaction not found" });
+    }
+
+    return res.status(200).json({ status: transaction.offlinePaymentStatus });
+  } catch (error) {
+    console.error("Error in offlineStatus:", error);
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+
 module.exports = {
   createBooking,
   pingBookingController,
@@ -686,5 +711,6 @@ module.exports = {
   generateInvoice,
   hasBoughtEarlier,
   adminBooking,
-  offlineBooking
+  offlineBooking,
+  offlineStatus
 };

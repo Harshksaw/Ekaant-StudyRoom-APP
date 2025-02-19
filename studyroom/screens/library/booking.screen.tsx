@@ -36,6 +36,7 @@ import Header from "@/components/Header";
 import { h, vw, w } from "@/constants/size";
 import ff from "@/constants/fonts";
 import { checkPreviousBookings } from "@/utils/bookingapi";
+import { setTransaction } from "@/redux/transaction";
 
 const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
@@ -210,8 +211,11 @@ const BookingScreen: React.FC = () => {
 
         console.log("🚀 ~ PreBook ~ bookingId:", response.data);
         const bookingId = response.data.data.id;
-        // // // console.log("🚀 ~ PreBook ~ bookingId11:", bookingId)
+
         setBookingId(bookingId);
+         
+        dispatch(setTransaction({ transactionId: response.data.data.transactionId }));
+
 
         if (response.status === 200 || response.status === 201) {
           Toast.show("Booking Successful", {
