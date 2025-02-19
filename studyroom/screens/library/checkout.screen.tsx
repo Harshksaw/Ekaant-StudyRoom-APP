@@ -154,7 +154,13 @@ const CheckoutScreen: React.FC = () => {
 
 
   const handleOfflinePayment = () => {
-    router.push("/library/offline.payment");
+    router.push({
+              pathname: "/library/offline.payment",
+              params: {
+                item: JSON.stringify(BookedData),
+              },
+            });
+ 
   };
 
 

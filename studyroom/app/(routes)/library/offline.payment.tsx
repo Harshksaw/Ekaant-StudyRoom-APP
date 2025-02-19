@@ -1,11 +1,17 @@
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { router } from 'expo-router'
+import { useRoute } from '@react-navigation/native'
 
 export default function Index() {
   const { width } = useWindowDimensions()
   const [timeLeft, setTimeLeft] = useState(180) // 3 minutes (180 seconds)
   const [status, setStatus] = useState("PENDING")
+  const params: any = useRoute();
+  console.log("🚀 ~ Index ~ params:", params)
+
+  
+
   
   useEffect(() => {
     const interval = setInterval(() => {
@@ -22,21 +28,21 @@ export default function Index() {
   }, [])
 
 
-  useEffect(() => {
-    const statusInterval = setInterval(() => {
-      fetch(`/api/payment/status?transactionId=123`) // Replace with actual API endpoint and transactionId
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === "APPROVED") {
-            setStatus("APPROVED");
-            clearInterval(statusInterval);
-          }
-        })
-        .catch(console.error);
-    }, 5000); // Check every 5 seconds
+  // useEffect(() => {
+  //   const statusInterval = setInterval(() => {
+  //     fetch(`/api/payment/status?transactionId=123`) // Replace with actual API endpoint and transactionId
+  //       .then(res => res.json())
+  //       .then(data => {
+  //         if (data.status === "APPROVED") {
+  //           setStatus("APPROVED");
+  //           clearInterval(statusInterval);
+  //         }
+  //       })
+  //       .catch(console.error);
+  //   }, 5000); // Check every 5 seconds
 
-    return () => clearInterval(statusInterval);
-  }, []);
+  //   return () => clearInterval(statusInterval);
+  // }, []);
   
   return (
   <SafeAreaView style={styles.container}>
