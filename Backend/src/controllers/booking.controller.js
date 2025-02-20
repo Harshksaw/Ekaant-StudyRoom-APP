@@ -561,7 +561,7 @@ async function offlineBooking(req, res) {
     });
     console.debug("DEBUG: Daily offline payments count:", dailyPayments);
 
-    if (dailyPayments >= 5) {
+    if (dailyPayments >= 50) {
       console.debug("DEBUG: Daily limit reached, returning error");
       return res.status(400).json({
         success: false,
@@ -586,57 +586,57 @@ async function offlineBooking(req, res) {
     const { roomNo, bookedSeat } = bookingTable;
     console.debug("DEBUG: Extracted roomNo and bookedSeat from bookingTable:", roomNo, bookedSeat);
 
-    // Block the seat
-    const { room, seat } = await findRoomAndSeat(libraryId, roomNo, bookedSeat.seatId);
-    // const { room, seat} = await findRoomAndSeat(2, 1, "0-3");
-    console.log("🚀 ~ offlineBooking ~ room:", seat)
-    console.debug(`DEBUG: Found room with id ${room.id} and seat with id ${seat.id}`);
+    // // Block the seat
+    // const { room, seat } = await findRoomAndSeat(libraryId, roomNo, bookedSeat.seatId);
+    // // const { room, seat} = await findRoomAndSeat(2, 1, "0-3");
+    // console.log("🚀 ~ offlineBooking ~ room:", seat)
+    // console.debug(`DEBUG: Found room with id ${room.id} and seat with id ${seat.id}`);
 
-    const timeSlotId = BookedData.timeSlot[0].slotId;
-    console.debug("DEBUG: Received timeSlotId from BookedData:", timeSlotId);
-    const timeSlot = BookedData.timeSlot[0];
-    console.debug("DEBUG: Extracted timeSlot:", timeSlot);
+    // const timeSlotId = BookedData.timeSlot[0].slotId;
+    // console.debug("DEBUG: Received timeSlotId from BookedData:", timeSlotId);
+    // const timeSlot = BookedData.timeSlot[0];
+    // console.debug("DEBUG: Extracted timeSlot:", timeSlot);
 
-    if (!timeSlot) {
-      console.debug("DEBUG: Time slot not found, returning error");
-      return res.status(404).json({ error: "Time slot not found" });
-    }
+    // if (!timeSlot) {
+    //   console.debug("DEBUG: Time slot not found, returning error");
+    //   return res.status(404).json({ error: "Time slot not found" });
+    // }
 
-    if (timeSlot.booked) {
-      console.debug("DEBUG: Time slot is already booked, returning error");
-      return res.status(400).json({ error: "Time slot already booked" });
-    }
+    // if (timeSlot.booked) {
+    //   console.debug("DEBUG: Time slot is already booked, returning error");
+    //   return res.status(400).json({ error: "Time slot already booked" });
+    // }
 
-    console.debug("DEBUG: Marking time slot as booked");
-    timeSlot.booked = true;
+    // console.debug("DEBUG: Marking time slot as booked");
+    // timeSlot.booked = true;
 
-    console.debug("DEBUG: Updating library with id:", libraryId);
-    await prisma.library.update({
-      where: { id: libraryId },
-      data: {
-        rooms: {
-          update: {
-            where: { id: room.id },
-            data: {
-              seats: {
-                update: {
-                  where: { id: seat.id },
-                  data: {
-                    timeSlots: {
-                      updateMany: {
-                        where: { id: timeSlot.id },
-                        data: { booked: true },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-    console.debug("DEBUG: Library update complete");
+    // console.debug("DEBUG: Updating library with id:", libraryId);
+    // await prisma.library.update({
+    //   where: { id: libraryId },
+    //   data: {
+    //     rooms: {
+    //       update: {
+    //         where: { id: room.id },
+    //         data: {
+    //           seats: {
+    //             update: {
+    //               where: { id: seat.id },
+    //               data: {
+    //                 timeSlots: {
+    //                   updateMany: {
+    //                     where: { id: timeSlot.id },
+    //                     data: { booked: true },
+    //                   },
+    //                 },
+    //               },
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
+    // console.debug("DEBUG: Library update complete");
 
     console.debug("DEBUG: Updating booking with id:", bookingId);
     const booking = await prisma.booking.update({
@@ -704,6 +704,92 @@ async function offlineStatus(req, res) {
 }
 
 
+const approveOfflinePayment = async (req, res) => {
+  const { transactionId } = req.body; // Admin only provides transactionId
+
+  try {
+    console.debug(`DEBUG: Received transactionId: ${transactionId}`);
+
+    // 1️⃣ Find the transaction and its related booking
+    const transaction = await prisma.transaction.findUnique({
+      where: { transactionId },
+      include: { booking: true }
+    });
+
+    if (!transaction) {
+      console.debug(`DEBUG: Transaction not found: ${transactionId}`);
+      return res.status(404).json({ error: "Transaction not found" });
+    }
+
+    if (transaction.offlinePaymentStatus !== "PENDING") {
+      console.debug(`DEBUG: Transaction already processed: ${transactionId}`);
+      return res.status(400).json({ error: "Payment already processed" });
+    }
+
+    console.debug(`DEBUG: Found transaction: ${transactionId}, processing approval...`);
+
+    // 2️⃣ Ensure the booking exists and has seat/timeSlot info
+    const booking = transaction.booking;
+    if (!booking || !booking.bookedSeat || !booking.timeSlotDetails) {
+      console.debug(`DEBUG: Missing booking data for transaction: ${transactionId}`);
+      return res.status(404).json({ error: "Booking data missing" });
+    }
+
+    const seatId = booking.bookedSeat.id;
+    console.log("🚀 ~ approveOfflinePayment ~ seatId:", seatId)
+    const timeSlotId = booking.timeSlotDetails.slotId;
+    console.log("🚀 ~ approveOfflinePayment ~ timeSlotId:", timeSlotId)
+
+    console.debug(`DEBUG: Booking found for seatId: ${seatId}, timeSlotId: ${timeSlotId}`);
+
+    // 3️⃣ Prevent double booking
+    const existingTimeSlot = await prisma.timeSlot.findUnique({
+      where: { id: timeSlotId.slotId, seatId:seatId }
+    });
+
+    if (!existingTimeSlot) {
+      console.debug(`DEBUG: Time slot not found: ${timeSlotId}`);
+      return res.status(404).json({ error: "Time slot not found" });
+    }
+
+    if (existingTimeSlot.booked) {
+      console.debug(`DEBUG: Time slot already booked: ${timeSlotId}`);
+      return res.status(400).json({ error: "Time slot already booked" });
+    }
+
+    // 4️⃣ Update transaction to APPROVED
+    await prisma.transaction.update({
+      where: { transactionId },
+      data: {
+        offlinePaymentStatus: "APPROVED",
+        isOfflinePayment: true,
+        description: "Offline payment approved by admin"
+      }
+    });
+
+    console.debug(`DEBUG: Transaction marked as APPROVED: ${seatId}`);
+
+    // 5️⃣ Block the seat by updating TimeSlot
+    await prisma.timeSlot.update({
+      where: {  seatId  },
+      data: {
+        booked: true,
+        bookedById: booking.userId,
+        bookingEndDate: new Date(Date.now() + 3 * 60 * 60 * 1000) // Blocks for 3 hours
+      }
+    });
+
+    console.debug(`DEBUG: Seat successfully booked: seatId ${seatId}, timeSlotId ${timeSlotId}`);
+
+    return res.json({ success: true, message: "Offline payment approved & seat blocked" });
+
+  } catch (error) {
+    console.error(`ERROR: Approving offline payment failed: ${error.message}`);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
 module.exports = {
   createBooking,
   pingBookingController,
@@ -715,5 +801,6 @@ module.exports = {
   hasBoughtEarlier,
   adminBooking,
   offlineBooking,
-  offlineStatus
+  offlineStatus,
+  approveOfflinePayment
 };
