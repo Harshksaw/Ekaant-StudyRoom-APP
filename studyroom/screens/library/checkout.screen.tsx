@@ -36,6 +36,7 @@ const CheckoutScreen: React.FC = () => {
   const userDetails = useSelector((state: any) => state.user);
   const [bookingId, setBookingId] = useState(null);
   const [userData, setUserData] = useState<any>(null);
+  console.log("🚀 ~ userData:", userData)
   const [libraryData, setLibraryData] = useState(null);
   const [location, setLocation] = useState<String | null>(null);
   // console.log("🚀 ~ location:", location)
@@ -45,7 +46,7 @@ const CheckoutScreen: React.FC = () => {
   const params = useRoute();
 
   const BookedData = JSON.parse(params?.params?.item);
-  console.log("🚀 ~ BookedData:", BookedData);
+ 
 
   if (!BookedData) {
     return (
@@ -55,7 +56,8 @@ const CheckoutScreen: React.FC = () => {
     );
   }
 
-  const bookingid = BookedData.bookingId;
+  const BookingDataId = BookedData.bookingId.data.bookingId
+  console.log("🚀 ~ BookingDataId:", BookingDataId)
 
   // const BookingDate = BookedData?.bookingDate
   const BookingMonths = BookedData?.bookingPeriod;
@@ -136,7 +138,7 @@ const CheckoutScreen: React.FC = () => {
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
 
   const PaymentPrice = finalAmount;
-
+  console.log(BookedData, "------")
   useEffect(() => {
     if (isinvoiceComplete) {
       router.push({
@@ -152,8 +154,18 @@ const CheckoutScreen: React.FC = () => {
   }, [isPaymentComplete]);
 
 
+  const userId = userData?.data?.user_id?.id;
+  const handleOfflinePayment = async() => {
 
-  const handleOfflinePayment = () => {
+    const res = await axios.post(`${BACKEND}/api/v1/booking/createOffline`, {
+      libraryId : BookedData.libraryId.id
+      
+      , userId :userId , bookingId: BookingDataId , amount :BookedData.totalAmount  , BookedData
+    })
+    console.log("🚀 ~ handleOfflinePayment ~ res", res)
+
+
+
     router.push({
               pathname: "/library/offline.payment",
               params: {

@@ -223,7 +223,7 @@ const BookingScreen: React.FC = () => {
           });
         }
 
-        return bookingId;
+        return response.data;
       } catch (error) {
         // console.error("Error:", error.message);
         handleBookingError(error);
@@ -271,7 +271,7 @@ const BookingScreen: React.FC = () => {
     fetchRooms().then((data) => {
       setData(data.rooms);
       setLoading(false);
-      // // // console.log("🚀 ~ fetchRooms ~ data.rooms:", data.rooms);
+
     });
   }, []);
 
@@ -369,7 +369,7 @@ const BookingScreen: React.FC = () => {
           bookingId: res,
           hasBoughtEarlier: Bought,
         };
-        // console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata);
+        console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata);
         router.push({
           pathname: "/library/checkout.screen",
           params: {
