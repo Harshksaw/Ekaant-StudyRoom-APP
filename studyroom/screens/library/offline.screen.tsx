@@ -5,6 +5,7 @@ import { useRoute } from '@react-navigation/native'
 import { BACKEND } from '@/utils/config'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
+import { Toast } from 'react-native-toast-notifications'
 
 
 
@@ -33,6 +34,7 @@ export default function OfflineScreen() {
   }, [])
 
   const transactionId = useSelector((state: any) => state.transaction.transactionId);
+  console.log("🚀 ~ OfflineScreen ~ transactionId:", transactionId)
 
 // Poll payment status using axios every 5 seconds
 useEffect(() => {
@@ -45,9 +47,13 @@ useEffect(() => {
         })
         .then(response => {
           const data = response.data
+          console.log("🚀 ~ statusInterval ~ data:", data)
           if (data.status === "APPROVED") {
             setStatus("APPROVED")
             clearInterval(statusInterval)
+            Toast.show("Payment Approved", { type: 'success'  , duration: 3000})
+
+            router.back()
           }
         })
         .catch(error => console.error("Axios error:", error))
