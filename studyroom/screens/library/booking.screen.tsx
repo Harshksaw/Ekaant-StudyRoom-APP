@@ -36,7 +36,7 @@ import Header from "@/components/Header";
 import { h, vw, w } from "@/constants/size";
 import ff from "@/constants/fonts";
 import { checkPreviousBookings } from "@/utils/bookingapi";
-import { setTransaction } from "@/redux/transaction";
+import { resetTransaction, setTransaction } from "@/redux/transaction";
 
 const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
@@ -213,7 +213,10 @@ const BookingScreen: React.FC = () => {
         const bookingId = response.data.data.id;
 
         setBookingId(bookingId);
+
+        dispatch(resetTransaction());
          
+        console.log("🚀 ~ PreBook ~ response.data.data.transactionId:1", response.data.data.transactionId)
         dispatch(setTransaction({ transactionId: response.data.data.transactionId }));
 
 

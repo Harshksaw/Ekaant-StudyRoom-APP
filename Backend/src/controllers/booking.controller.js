@@ -570,8 +570,8 @@ async function offlineBooking(req, res) {
     }
 
     // ✅ Create new offline payment request
-    const expiresAt = new Date(Date.now() + 3 * 60 * 1000); 
-    console.debug("DEBUG: Offline payment expires at:", expiresAt);
+
+
 
     const bookingTable = await prisma.booking.findUnique({
       where: { id: bookingId }
@@ -586,57 +586,6 @@ async function offlineBooking(req, res) {
     const { roomNo, bookedSeat } = bookingTable;
     console.debug("DEBUG: Extracted roomNo and bookedSeat from bookingTable:", roomNo, bookedSeat);
 
-    // // Block the seat
-    // const { room, seat } = await findRoomAndSeat(libraryId, roomNo, bookedSeat.seatId);
-    // // const { room, seat} = await findRoomAndSeat(2, 1, "0-3");
-    // console.log("🚀 ~ offlineBooking ~ room:", seat)
-    // console.debug(`DEBUG: Found room with id ${room.id} and seat with id ${seat.id}`);
-
-    // const timeSlotId = BookedData.timeSlot[0].slotId;
-    // console.debug("DEBUG: Received timeSlotId from BookedData:", timeSlotId);
-    // const timeSlot = BookedData.timeSlot[0];
-    // console.debug("DEBUG: Extracted timeSlot:", timeSlot);
-
-    // if (!timeSlot) {
-    //   console.debug("DEBUG: Time slot not found, returning error");
-    //   return res.status(404).json({ error: "Time slot not found" });
-    // }
-
-    // if (timeSlot.booked) {
-    //   console.debug("DEBUG: Time slot is already booked, returning error");
-    //   return res.status(400).json({ error: "Time slot already booked" });
-    // }
-
-    // console.debug("DEBUG: Marking time slot as booked");
-    // timeSlot.booked = true;
-
-    // console.debug("DEBUG: Updating library with id:", libraryId);
-    // await prisma.library.update({
-    //   where: { id: libraryId },
-    //   data: {
-    //     rooms: {
-    //       update: {
-    //         where: { id: room.id },
-    //         data: {
-    //           seats: {
-    //             update: {
-    //               where: { id: seat.id },
-    //               data: {
-    //                 timeSlots: {
-    //                   updateMany: {
-    //                     where: { id: timeSlot.id },
-    //                     data: { booked: true },
-    //                   },
-    //                 },
-    //               },
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   },
-    // });
-    // console.debug("DEBUG: Library update complete");
 
     console.debug("DEBUG: Updating booking with id:", bookingId);
     const booking = await prisma.booking.update({
@@ -645,21 +594,49 @@ async function offlineBooking(req, res) {
     });
     console.debug("DEBUG: Booking updated:", booking);
 
-    // Create the transaction
-    console.debug("DEBUG: Creating transaction for offline booking");
-    const transaction = await prisma.transaction.create({
-      data: {
+    let transaction = await prisma.transaction.findFirst({
+      where: {
+        bookingId: bookingId,
         userId,
         libraryId,
-        bookingId,
-        amount,
-        description: `Offline payment request for booking ${bookingId} at library ${libraryId} by user ${userId} at ${new Date().toISOString()}`,
-        type: "OFFLINE_BOOKING",
-        isOfflinePayment: true,
-        offlinePaymentStatus: "PENDING",
-        expiresAt
+        amount
       }
     });
+
+    const expiresAt = new Date(Date.now() + 3 * 60 * 1000);
+    // Create the transaction
+    console.debug("DEBUG: Creating transaction for offline booking");
+    if (transaction) {
+      console.debug("DEBUG: Offline transaction already exists, updating expiry...");
+      transaction = await prisma.transaction.update({
+        where: { transactionId: transaction.transactionId },
+        data: {
+          expiresAt,
+          isOfflinePayment: true,
+          offlinePaymentStatus: "PENDING",
+          description: `Offline payment request for booking ${bookingId} at library ${libraryId} by user ${userId} at ${new Date().toISOString()}`
+        }
+
+
+      });
+    } else {
+      throw new Error("Transaction not found");
+      console.debug("DEBUG: No existing offline transaction found");
+      // If not, create a new transaction
+      transaction = await prisma.transaction.create({
+        data: {
+          userId,
+          libraryId,
+          bookingId,
+          amount,
+          description: `Offline payment request for booking ${bookingId} at library ${libraryId} by user ${userId} at ${new Date().toISOString()}`,
+          type: "OFFLINE_BOOKING",
+          isOfflinePayment: true,
+          offlinePaymentStatus: "PENDING",
+          expiresAt
+        }
+      });
+    }
    
     console.debug("DEBUG: Transaction created:", transaction);
 
@@ -737,14 +714,14 @@ const approveOfflinePayment = async (req, res) => {
 
     const seatId = booking.bookedSeat.id;
     console.log("🚀 ~ approveOfflinePayment ~ seatId:", seatId)
-    const timeSlotId = booking.timeSlotDetails.slotId;
+    const timeSlotId = booking.timeSlotDetails[0].slotId;
     console.log("🚀 ~ approveOfflinePayment ~ timeSlotId:", timeSlotId)
 
     console.debug(`DEBUG: Booking found for seatId: ${seatId}, timeSlotId: ${timeSlotId}`);
 
     // 3️⃣ Prevent double booking
-    const existingTimeSlot = await prisma.timeSlot.findUnique({
-      where: { id: timeSlotId.slotId, seatId:seatId }
+    const existingTimeSlot = await prisma.timeSlot.findFirst({
+      where: { slotId : timeSlotId, seatId:seatId }
     });
 
     if (!existingTimeSlot) {
@@ -770,8 +747,8 @@ const approveOfflinePayment = async (req, res) => {
     console.debug(`DEBUG: Transaction marked as APPROVED: ${seatId}`);
 
     // 5️⃣ Block the seat by updating TimeSlot
-    await prisma.timeSlot.update({
-      where: {  seatId  },
+    await prisma.timeSlot.updateMany({
+      where: { slotId: timeSlotId, seatId: seatId },
       data: {
         booked: true,
         bookedById: booking.userId,

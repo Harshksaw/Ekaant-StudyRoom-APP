@@ -46,7 +46,7 @@ const CheckoutScreen: React.FC = () => {
   const params = useRoute();
 
   const BookedData = JSON.parse(params?.params?.item);
- 
+
 
   if (!BookedData) {
     return (
@@ -155,24 +155,24 @@ const CheckoutScreen: React.FC = () => {
 
 
   const userId = userData?.data?.user_id?.id;
-  const handleOfflinePayment = async() => {
+  const handleOfflinePayment = async () => {
 
     const res = await axios.post(`${BACKEND}/api/v1/booking/createOffline`, {
-      libraryId : BookedData.libraryId.id
-      
-      , userId :userId , bookingId: BookingDataId , amount :BookedData.totalAmount  , BookedData
+      libraryId: BookedData.libraryId.id
+
+      , userId: userId, bookingId: BookingDataId, amount: BookedData.totalAmount, BookedData
     })
     console.log("🚀 ~ handleOfflinePayment ~ res", res)
 
 
 
     router.push({
-              pathname: "/library/offline.payment",
-              params: {
-                item: JSON.stringify(BookedData),
-              },
-            });
- 
+      pathname: "/library/offline.payment",
+      params: {
+        item: JSON.stringify(BookedData),
+      },
+    });
+
   };
 
 
@@ -295,28 +295,28 @@ const CheckoutScreen: React.FC = () => {
 
   const PaymentModal = () => (
     <Modal transparent animationType="slide" visible={showPaymentModal} onRequestClose={() => setShowPaymentModal(false)}
->
+    >
       <View style={modalStyles.container}>
         <View style={modalStyles.modalContent}>
           <Text style={modalStyles.title}>Choose Payment Method</Text>
           <TouchableOpacity
-  style={[modalStyles.button, modalStyles.onlineButton]}
-  onPress={() => {
-    setShowPaymentModal(false);
-    handlePayment();
-  }}
->
-  <Text style={modalStyles.buttonText}>Online Payment</Text>
-</TouchableOpacity>
-<TouchableOpacity
-  style={[modalStyles.button, modalStyles.offlineButton]}
-  onPress={() => {
-    setShowPaymentModal(false);
-    handleOfflinePayment();
-  }}
->
-  <Text style={modalStyles.buttonText}>Offline Payment</Text>
-</TouchableOpacity>
+            style={[modalStyles.button, modalStyles.onlineButton]}
+            onPress={() => {
+              setShowPaymentModal(false);
+              handlePayment();
+            }}
+          >
+            <Text style={modalStyles.buttonText}>Online Payment</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[modalStyles.button, modalStyles.offlineButton]}
+            onPress={() => {
+              setShowPaymentModal(false);
+              handleOfflinePayment();
+            }}
+          >
+            <Text style={modalStyles.buttonText}>Offline Payment</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setShowPaymentModal(false)}
             style={modalStyles.closeButton}
@@ -782,7 +782,7 @@ const CheckoutScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      <PaymentModal/>
+      <PaymentModal />
     </SafeAreaView>
   );
 };
