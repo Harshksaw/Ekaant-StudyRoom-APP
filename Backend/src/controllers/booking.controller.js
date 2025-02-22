@@ -561,7 +561,7 @@ async function offlineBooking(req, res) {
     });
     console.debug("DEBUG: Daily offline payments count:", dailyPayments);
 
-    if (dailyPayments >= 50) {
+    if (dailyPayments >= 5) {
       console.debug("DEBUG: Daily limit reached, returning error");
       return res.status(400).json({
         success: false,
@@ -603,7 +603,8 @@ async function offlineBooking(req, res) {
       }
     });
 
-    const expiresAt = new Date(Date.now() + 3 * 60 * 1000);
+    const gracePeriod = 10 * 1000; // 10 seconds
+    const expiresAt = new Date(Date.now() + 3 * 60 * 1000 + gracePeriod);
     // Create the transaction
     console.debug("DEBUG: Creating transaction for offline booking");
     if (transaction) {
