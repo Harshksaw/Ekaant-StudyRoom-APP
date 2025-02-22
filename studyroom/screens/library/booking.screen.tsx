@@ -223,6 +223,9 @@ const BookingScreen: React.FC = () => {
         if (response.status === 200 || response.status === 201) {
           Toast.show("Booking Successful", {
             type: "success",
+
+              placement:"top",
+              duration: 3000,
           });
         }
 
