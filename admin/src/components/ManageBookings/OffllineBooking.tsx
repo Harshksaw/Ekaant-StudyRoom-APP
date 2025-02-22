@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { BACKEND } from "../../../../studyroom/utils/config";
-import { Toast } from "../ui/toast";
+
 import { toast } from "react-toastify";
 
 const AdminOfflinePayments = () => {
@@ -25,7 +25,10 @@ const AdminOfflinePayments = () => {
       }
     } catch (error) {
       console.error("Error fetching offline payments:", error);
-      toast.error("Error fetching offline payments", { duration: 3000 });
+      toast.error("Error fetching offline payments", { 
+        duration: 3000,
+        position: "top-right",
+       });
     }
   };
 
