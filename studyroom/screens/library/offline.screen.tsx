@@ -11,7 +11,7 @@ import { Toast } from 'react-native-toast-notifications'
 
 export default function OfflineScreen() {
   const { width } = useWindowDimensions()
-  const [timeLeft, setTimeLeft] = useState(1800) // 3 minutes (180 seconds)
+  const [timeLeft, setTimeLeft] = useState(180) // 3 minutes (180 seconds)
   const [status, setStatus] = useState("PENDING")
   const params: any = useRoute();
 
