@@ -30,7 +30,7 @@ BookingRouter.post('/adminBooking', BookingController.adminBooking);
 
 BookingRouter.post('/createOffline', BookingController.offlineBooking);
 BookingRouter.get('/offlineStatus', BookingController.offlineStatus);
-BookingRouter.post('/approveOffline', BookingController.approveOfflinePayment);
+BookingRouter.post('/approveOffline/:transactionId', BookingController.approveOfflinePayment);
 BookingRouter.get('/libraryOfflinePayments/:adminId', BookingController.listOfflinePaymentRequests);
 
 

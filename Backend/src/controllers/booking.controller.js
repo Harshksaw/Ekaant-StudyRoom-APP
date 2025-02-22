@@ -660,7 +660,7 @@ async function offlineStatus(req, res) {
   try {
     // Use query parameters instead of route params for flexibility
     const { transactionId } = req.query;
-    console.log("🚀 ~ offlineStatus ~ transactionId:", transactionId)
+    // console.log("🚀 ~ offlineStatus ~ transactionId:", transactionId)
     if (!transactionId) {
       return res.status(400).json({ error: "transactionId is required" });
     }
@@ -682,7 +682,7 @@ async function offlineStatus(req, res) {
 
 
 const approveOfflinePayment = async (req, res) => {
-  const { transactionId } = req.body; // Admin only provides transactionId
+  const { transactionId } = req.params; // Admin only provides transactionId
 
   try {
     console.debug(`DEBUG: Received transactionId: ${transactionId}`);

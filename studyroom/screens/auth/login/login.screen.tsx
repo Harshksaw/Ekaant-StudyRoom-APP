@@ -98,6 +98,7 @@ const LoginScreen: React.FC = () => {
         router.dismissAll();
         router.replace("/(routes)/location");
       } else {
+        console.log("🚀 ~ loginWithOtp ~ response.data.message:", response.data.message)
         Toast.show(response.data.message, {
           type: "danger",
           placement: "top",
