@@ -1,1 +1,2 @@
-echo "studyroom/** merge=ours" >> .gitattributes
+studyroom/* merge=ours
+
