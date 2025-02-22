@@ -302,6 +302,22 @@ model Distance {
   distance  Float
 }
 
+
+enum TransactionType {
+  REGISTRATION_FEE
+  BOOKING_PAYMENT
+  COMMISSION
+  REFUND 
+  OFFLINE_BOOKING
+  // Add other types as needed
+}
+ 
+
+enum OfflinePaymentStatus {
+  PENDING
+  APPROVED
+  CANCELED
+}
 model Transaction {
   id             Int         @id @default(autoincrement())
   transactionId  String      @unique @default(uuid())
@@ -318,13 +334,9 @@ model Transaction {
   library        Library?     @relation(fields: [libraryId], references: [id])
   bookingId      Int?
   booking        Booking?    @relation(fields: [bookingId], references: [id], name: "BookingTransactions")
+
+   isOfflinePayment      Boolean? @default(false)  // True if offline payment
+  offlinePaymentStatus  OfflinePaymentStatus?   // Pending, Approved, or Canceled
+  expiresAt             DateTime?               // Auto-cancel time (for offline payments)
 }
 
-enum TransactionType {
-  REGISTRATION_FEE
-  BOOKING_PAYMENT
-  COMMISSION
-  REFUND 
-  OFFLINE_BOOKING
-  // Add other types as needed
-}

@@ -171,7 +171,7 @@ async function createBooking(req, res) {
     });
 
     // Create a transaction for the booking payment
-    await prisma.transaction.create({
+    const transactionData = await prisma.transaction.create({
       data: {
         amount: finalPrice,
         type: 'BOOKING_PAYMENT',
@@ -185,7 +185,8 @@ async function createBooking(req, res) {
     res.status(StatusCodes.CREATED).json({
       success: true,
       message: "Booking created successfully",
-      data: booking,
+      data: {booking , ...transactionData},
+
     });
   } catch (error) {
     console.error("Error creating booking:", error);
@@ -278,27 +279,30 @@ async function getBookingByLibId(req, res) {
 
 async function findRoomAndSeat(libraryId, roomNo, seatId) {
   try {
-    console.log(`Finding library with id: ${libraryId}`);
-    const library = await prisma.library.findUnique({
-      where: { id: libraryId },
-      include: { rooms: { include: { seats: { include: { timeSlots: true } } } } },
+    console.log(`Finding room ${roomNo} and seat ${seatId} in library ${libraryId}`);
+
+    // 🔹 Find the specific room with the given libraryId and roomNo
+    const room = await prisma.room.findFirst({
+      where: {
+        libraryId: libraryId,
+        roomNo: roomNo,
+      },
+      include: {
+        seats: {
+          where: { seatId: seatId }, // 🔹 Fetch only the required seat
+          include: { timeSlots: true } // 🔹 Include time slots for the seat
+        }
+      }
     });
 
-    if (!library) {
-      throw new Error('Library not found');
-    }
+    // 🔹 If room is not found, return an error
+    if (!room) throw new Error('Room not found');
 
-    console.log(`Finding room with roomNo: ${roomNo}`);
-    const room = library.rooms.find(room => room.roomNo === roomNo);
-    if (!room) {
-      throw new Error('Room not found');
-    }
+    // 🔹 Get the first matching seat (if found)
+    const seat = room.seats.length > 0 ? room.seats[0] : null;
 
-    console.log(`Finding seat with id: ${seatId}`);
-    const seat = room.seats.find(seat => seat.id === seatId);
-    if (!seat) {
-      throw new Error('Seat not found');
-    }
+    // 🔹 If seat is not found, return an error
+    if (!seat) throw new Error('Seat not found');
 
     return { room, seat };
   } catch (error) {
@@ -306,6 +310,7 @@ async function findRoomAndSeat(libraryId, roomNo, seatId) {
     throw error;
   }
 }
+
 
 async function confirmBooking(req, res) {
   try {
@@ -534,6 +539,300 @@ async function adminBooking(req, res) {
   }
 }
 
+
+
+async function offlineBooking(req, res) {
+  try {
+    console.debug("DEBUG: Received offlineBooking request");
+    const { libraryId, userId, bookingId, amount, BookedData } = req.body;
+    console.debug("DEBUG: Request body:", req.body);
+
+    // ✅ Check daily limit (Max 5 offline requests per day)
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    console.debug("DEBUG: Today's start time:", todayStart);
+
+    const dailyPayments = await prisma.transaction.count({
+      where: {
+        userId,
+        isOfflinePayment: true,
+        createdAt: { gte: todayStart },
+      },
+    });
+    console.debug("DEBUG: Daily offline payments count:", dailyPayments);
+
+    if (dailyPayments >= 5) {
+      console.debug("DEBUG: Daily limit reached, returning error");
+      return res.status(400).json({
+        success: false,
+        message: "Daily limit reached. Please try again tomorrow."
+      });
+    }
+
+    // ✅ Create new offline payment request
+
+
+
+    const bookingTable = await prisma.booking.findUnique({
+      where: { id: bookingId }
+    });
+    console.debug("DEBUG: Booking table retrieved:", bookingTable);
+
+    if (!bookingTable) {
+      console.debug("DEBUG: Booking not found, returning error");
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    const { roomNo, bookedSeat } = bookingTable;
+    console.debug("DEBUG: Extracted roomNo and bookedSeat from bookingTable:", roomNo, bookedSeat);
+
+
+    console.debug("DEBUG: Updating booking with id:", bookingId);
+    const booking = await prisma.booking.update({
+      where: { id: bookingId },
+      data: { approved: true, bookingStatus: 'CONFIRMED' },
+    });
+    console.debug("DEBUG: Booking updated:", booking);
+
+    let transaction = await prisma.transaction.findFirst({
+      where: {
+        bookingId: bookingId,
+        userId,
+        libraryId,
+        amount
+      }
+    });
+
+    const gracePeriod = 10 * 1000; // 10 seconds
+    const expiresAt = new Date(Date.now() + 3 * 60 * 1000 + gracePeriod);
+    // Create the transaction
+    console.debug("DEBUG: Creating transaction for offline booking");
+    if (transaction) {
+      console.debug("DEBUG: Offline transaction already exists, updating expiry...");
+      transaction = await prisma.transaction.update({
+        where: { transactionId: transaction.transactionId },
+        data: {
+          expiresAt,
+          isOfflinePayment: true,
+          offlinePaymentStatus: "PENDING",
+          description: `Offline payment request for booking ${bookingId} at library ${libraryId} by user ${userId} at ${new Date().toISOString()}`
+        }
+
+
+      });
+    } else {
+      throw new Error("Transaction not found");
+      console.debug("DEBUG: No existing offline transaction found");
+      // If not, create a new transaction
+      transaction = await prisma.transaction.create({
+        data: {
+          userId,
+          libraryId,
+          bookingId,
+          amount,
+          description: `Offline payment request for booking ${bookingId} at library ${libraryId} by user ${userId} at ${new Date().toISOString()}`,
+          type: "OFFLINE_BOOKING",
+          isOfflinePayment: true,
+          offlinePaymentStatus: "PENDING",
+          expiresAt
+        }
+      });
+    }
+   
+    console.debug("DEBUG: Transaction created:", transaction);
+
+    console.debug("DEBUG: Creating invoice for bookingId:", bookingId);
+    res.status(200).json({
+      success: true,
+      message: "Offline payment request created successfully",
+      data: transaction,
+    });
+    console.debug("DEBUG: offlineBooking response sent");
+  } catch (error) {
+    console.error("DEBUG: Error in offlineBooking:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to create booking",
+      message: error.message,
+    });
+  }
+}
+async function offlineStatus(req, res) {
+  try {
+    // Use query parameters instead of route params for flexibility
+    const { transactionId } = req.query;
+    // console.log("🚀 ~ offlineStatus ~ transactionId:", transactionId)
+    if (!transactionId) {
+      return res.status(400).json({ error: "transactionId is required" });
+    }
+
+    const transaction = await prisma.transaction.findUnique({
+      where: { transactionId }
+    });
+
+    if (!transaction) {
+      return res.status(404).json({ error: "Transaction not found" });
+    }
+
+    return res.status(200).json({ status: transaction.offlinePaymentStatus });
+  } catch (error) {
+    console.error("Error in offlineStatus:", error);
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+
+const approveOfflinePayment = async (req, res) => {
+  const { transactionId } = req.params; // Admin only provides transactionId
+
+  try {
+    console.debug(`DEBUG: Received transactionId: ${transactionId}`);
+
+    // 1️⃣ Find the transaction and its related booking
+    const transaction = await prisma.transaction.findUnique({
+      where: { transactionId },
+      include: { booking: true }
+    });
+
+    if (!transaction) {
+      console.debug(`DEBUG: Transaction not found: ${transactionId}`);
+      return res.status(404).json({ error: "Transaction not found" });
+    }
+
+    if (transaction.offlinePaymentStatus !== "PENDING") {
+      console.debug(`DEBUG: Transaction already processed: ${transactionId}`);
+      return res.status(400).json({ error: "Payment already processed" });
+    }
+
+    console.debug(`DEBUG: Found transaction: ${transactionId}, processing approval...`);
+
+    // 2️⃣ Ensure the booking exists and has seat/timeSlot info
+    const booking = transaction.booking;
+    if (!booking || !booking.bookedSeat || !booking.timeSlotDetails) {
+      console.debug(`DEBUG: Missing booking data for transaction: ${transactionId}`);
+      return res.status(404).json({ error: "Booking data missing" });
+    }
+
+    const seatId = booking.bookedSeat.id;
+    console.log("🚀 ~ approveOfflinePayment ~ seatId:", seatId)
+    const timeSlotId = booking.timeSlotDetails[0].slotId;
+    console.log("🚀 ~ approveOfflinePayment ~ timeSlotId:", timeSlotId)
+
+    console.debug(`DEBUG: Booking found for seatId: ${seatId}, timeSlotId: ${timeSlotId}`);
+
+    // 3️⃣ Prevent double booking
+    const existingTimeSlot = await prisma.timeSlot.findFirst({
+      where: { slotId : timeSlotId, seatId:seatId }
+    });
+
+    if (!existingTimeSlot) {
+      console.debug(`DEBUG: Time slot not found: ${timeSlotId}`);
+      return res.status(404).json({ error: "Time slot not found" });
+    }
+
+    if (existingTimeSlot.booked) {
+      console.debug(`DEBUG: Time slot already booked: ${timeSlotId}`);
+      return res.status(400).json({ error: "Time slot already booked" });
+    }
+
+    // 4️⃣ Update transaction to APPROVED
+    await prisma.transaction.update({
+      where: { transactionId },
+      data: {
+        offlinePaymentStatus: "APPROVED",
+        isOfflinePayment: true,
+        description: "Offline payment approved by admin"
+      }
+    });
+
+    console.debug(`DEBUG: Transaction marked as APPROVED: ${seatId}`);
+
+    // 5️⃣ Block the seat by updating TimeSlot
+    await prisma.timeSlot.updateMany({
+      where: { slotId: timeSlotId, seatId: seatId },
+      data: {
+        booked: true,
+        bookedById: booking.userId,
+        bookingEndDate: new Date(Date.now() + 3 * 60 * 60 * 1000) // Blocks for 3 hours
+      }
+    });
+
+    console.debug(`DEBUG: Seat successfully booked: seatId ${seatId}, timeSlotId ${timeSlotId}`);
+
+    return res.json({ success: true, message: "Offline payment approved & seat blocked" });
+
+  } catch (error) {
+    console.error(`ERROR: Approving offline payment failed: ${error.message}`);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+const listOfflinePaymentRequests = async (req, res) => {
+  const { adminId } = req.params; // Assuming admin authentication is in place
+
+  try {
+    console.debug(`DEBUG: Fetching offline payment requests for adminId: ${adminId}`);
+
+    // 1️⃣ Find all libraries owned by this admin
+    const ownedLibraries = await prisma.library.findMany({
+      where: { libraryOwnerId: parseInt(adminId) },
+      select: { id: true }
+    });
+
+    if (ownedLibraries.length === 0) {
+      console.debug(`DEBUG: Admin ${adminId} owns no libraries.`);
+      return res.json({ success: true, offlinePayments: [] });
+    }
+
+    const libraryIds = ownedLibraries.map(lib => lib.id);
+    console.debug(`DEBUG: Admin owns libraries with IDs: ${libraryIds}`);
+
+    // 2️⃣ Fetch pending transactions only for these libraries
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        offlinePaymentStatus: "PENDING",
+        expiresAt: { gt: new Date() }, // Only show requests that haven't expired
+        libraryId: { in: libraryIds } // Only fetch requests for admin's libraries
+      },
+      include: {
+        user: {
+          select: { id: true, username: true, email: true, phoneNumber: true }
+        },
+        booking: {
+          select: {
+            id: true,
+            library: { select: { id: true, name: true } },
+            bookedSeat: true,
+            timeSlotDetails: true,
+            bookingDate: true
+          }
+        }
+      },
+      orderBy: { expiresAt: "asc" } // Sort by earliest expiration
+    });
+
+    console.debug(`DEBUG: Found ${transactions.length} pending transactions for admin ${adminId}`);
+
+    // 3️⃣ Format data to include a countdown timer
+    const formattedTransactions = transactions.map(transaction => ({
+      transactionId: transaction.transactionId,
+      user: transaction.user,
+      library: transaction.booking?.library,
+      bookedSeat: transaction.booking?.bookedSeat,
+      timeSlotDetails: transaction.booking?.timeSlotDetails,
+      expiresAt: transaction.expiresAt,
+      remainingTime: Math.max(0, Math.floor((new Date(transaction.expiresAt) - new Date()) / 1000)) // Convert to seconds
+    }));
+
+    return res.json({ success: true, offlinePayments: formattedTransactions });
+
+  } catch (error) {
+    console.error(`ERROR: Fetching offline payment requests failed: ${error.message}`);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
 module.exports = {
   createBooking,
   pingBookingController,
@@ -543,5 +842,9 @@ module.exports = {
   confirmBooking,
   generateInvoice,
   hasBoughtEarlier,
-  adminBooking
+  adminBooking,
+  offlineBooking,
+  offlineStatus,
+  approveOfflinePayment,
+  listOfflinePaymentRequests
 };

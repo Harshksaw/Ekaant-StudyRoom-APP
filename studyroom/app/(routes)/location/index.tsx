@@ -154,10 +154,12 @@ const LocationsScreen = () => {
         contentContainerStyle={{ width: "100%" }}
         keyExtractor={(_, index) => index.toString()} // Ensure each item has a unique key
         renderItem={({ item }: { item: any }) => (
+        
           <TouchableOpacity
             style={styles.gridItem}
             onPress={() => handleLocationSelect(item)}
           >
+         
             <View
               style={{
                 backgroundColor: "#000",
@@ -179,12 +181,13 @@ const LocationsScreen = () => {
               <Image
                 source={{
                   uri:
-                    item?.locationImage ||
+                    item.locationImage ||
                     "https://th.bing.com/th/id/OIP.m78y_Nupeq-RtHFEeNk5PwHaH5?rs=1&pid=ImgDetMain",
                 }}
-                style={[styles.image, !imageLoaded && { display: "none" }]}
+                style={styles.image}
                 resizeMode="cover"
                 onLoad={() => setImageLoaded(true)}
+                onError={() => console.error("Image load error:", item.locationImage)}
               />
             </View>
             <Text style={styles.locationItem}>{item?.location}</Text>

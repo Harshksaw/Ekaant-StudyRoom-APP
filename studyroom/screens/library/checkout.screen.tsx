@@ -17,6 +17,7 @@ import {
   Animated,
   Easing,
   ScrollView,
+  Modal,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -35,6 +36,7 @@ const CheckoutScreen: React.FC = () => {
   const userDetails = useSelector((state: any) => state.user);
   const [bookingId, setBookingId] = useState(null);
   const [userData, setUserData] = useState<any>(null);
+  console.log("🚀 ~ userData:", userData)
   const [libraryData, setLibraryData] = useState(null);
   const [location, setLocation] = useState<String | null>(null);
   // console.log("🚀 ~ location:", location)
@@ -44,7 +46,7 @@ const CheckoutScreen: React.FC = () => {
   const params = useRoute();
 
   const BookedData = JSON.parse(params?.params?.item);
-  console.log("🚀 ~ BookedData:", BookedData);
+
 
   if (!BookedData) {
     return (
@@ -54,7 +56,8 @@ const CheckoutScreen: React.FC = () => {
     );
   }
 
-  const bookingid = BookedData.bookingId;
+  const BookingDataId = BookedData.bookingId.data.bookingId
+  console.log("🚀 ~ BookingDataId:", BookingDataId)
 
   // const BookingDate = BookedData?.bookingDate
   const BookingMonths = BookedData?.bookingPeriod;
@@ -76,6 +79,8 @@ const CheckoutScreen: React.FC = () => {
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const translateX = useRef(new Animated.Value(-vw + vw * 0.6)).current;
 
@@ -133,7 +138,7 @@ const CheckoutScreen: React.FC = () => {
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
 
   const PaymentPrice = finalAmount;
-
+  console.log(BookedData, "------")
   useEffect(() => {
     if (isinvoiceComplete) {
       router.push({
@@ -147,6 +152,30 @@ const CheckoutScreen: React.FC = () => {
       });
     }
   }, [isPaymentComplete]);
+
+
+  const userId = userData?.data?.user_id?.id;
+  const handleOfflinePayment = async () => {
+
+    const res = await axios.post(`${BACKEND}/api/v1/booking/createOffline`, {
+      libraryId: BookedData.libraryId.id
+
+      , userId: userId, bookingId: BookingDataId, amount: BookedData.totalAmount, BookedData
+    })
+    console.log("🚀 ~ handleOfflinePayment ~ res", res)
+
+
+
+    router.push({
+      pathname: "/library/offline.payment",
+      params: {
+        item: JSON.stringify(BookedData),
+      },
+    });
+
+  };
+
+
   const handlePayment = async () => {
     setIsPaymentProcessing(true);
     var options = {
@@ -263,6 +292,41 @@ const CheckoutScreen: React.FC = () => {
     );
   }
 
+
+  const PaymentModal = () => (
+    <Modal transparent animationType="slide" visible={showPaymentModal} onRequestClose={() => setShowPaymentModal(false)}
+    >
+      <View style={modalStyles.container}>
+        <View style={modalStyles.modalContent}>
+          <Text style={modalStyles.title}>Choose Payment Method</Text>
+          <TouchableOpacity
+            style={[modalStyles.button, modalStyles.onlineButton]}
+            onPress={() => {
+              setShowPaymentModal(false);
+              handlePayment();
+            }}
+          >
+            <Text style={modalStyles.buttonText}>Online Payment</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[modalStyles.button, modalStyles.offlineButton]}
+            onPress={() => {
+              setShowPaymentModal(false);
+              handleOfflinePayment();
+            }}
+          >
+            <Text style={modalStyles.buttonText}>Offline Payment</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setShowPaymentModal(false)}
+            style={modalStyles.closeButton}
+          >
+            <Text style={modalStyles.closeText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
   return (
     <SafeAreaView
       style={{
@@ -672,7 +736,7 @@ const CheckoutScreen: React.FC = () => {
           Ekaant does not handle refund requests. For assistance, please reach
           out directly to the respective library.
         </Text>
-        <TouchableOpacity onPress={handlePayment}>
+        <TouchableOpacity onPress={() => setShowPaymentModal(true)}>
           <View
             style={{
               flexDirection: "row",
@@ -717,6 +781,8 @@ const CheckoutScreen: React.FC = () => {
           </View>
         </TouchableOpacity>
       </View>
+
+      <PaymentModal />
     </SafeAreaView>
   );
 };
@@ -749,5 +815,43 @@ const styles = StyleSheet.create({
   },
   paymentButtonText: { color: "#FFFFFF", fontSize: 18, fontWeight: "700" },
 });
-
+const modalStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    width: "80%",
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 20,
+    alignItems: "center",
+  },
+  title: { fontSize: 20, marginBottom: 20 },
+  button: {
+    width: "100%",
+    padding: 15,
+    borderRadius: 4,
+    marginVertical: 10,
+    alignItems: "center",
+  },
+  buttonText: { color: "#fff", fontSize: 16 },
+  onlineButton: {
+    backgroundColor: "#0077B6", // Vibrant blue for online payment
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  offlineButton: {
+    backgroundColor: "#4CAF50", // Green for offline payment
+    borderWidth: 1,
+    borderColor: "#388E3C",
+  },
+  closeButton: { marginTop: 10 },
+  closeText: { color: "red", fontSize: 16, fontWeight: "bold" },
+});
 export default CheckoutScreen;

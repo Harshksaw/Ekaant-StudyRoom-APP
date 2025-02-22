@@ -2,9 +2,9 @@ import Button from "@/components/Button";
 import moment from "moment";
 import Seats from "@/components/Seats";
 
-import Calendar from "@/components/calendar/calendar";
-import { Feather, Ionicons } from "@expo/vector-icons";
 
+import { Feather, Ionicons } from "@expo/vector-icons";
+import { Platform } from "react-native";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,6 +36,7 @@ import Header from "@/components/Header";
 import { h, vw, w } from "@/constants/size";
 import ff from "@/constants/fonts";
 import { checkPreviousBookings } from "@/utils/bookingapi";
+import { resetTransaction, setTransaction } from "@/redux/transaction";
 
 const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
@@ -206,22 +207,31 @@ const BookingScreen: React.FC = () => {
             forFriend: userDetails.friendDetails,
           }
         );
-        // // console.log("🚀 ~ PreBook ~ response:", response.status)
 
-        console.log("🚀 ~ PreBook ~ bookingId:", response.data.data.id);
+
+        console.log("🚀 ~ PreBook ~ bookingId:", response.data);
         const bookingId = response.data.data.id;
-        // // // console.log("🚀 ~ PreBook ~ bookingId11:", bookingId)
+
         setBookingId(bookingId);
+
+        dispatch(resetTransaction());
+         
+        console.log("🚀 ~ PreBook ~ response.data.data.transactionId:1", response.data.data.transactionId)
+        dispatch(setTransaction({ transactionId: response.data.data.transactionId }));
+
 
         if (response.status === 200 || response.status === 201) {
           Toast.show("Booking Successful", {
             type: "success",
+
+              placement:"top",
+              duration: 3000,
           });
         }
 
-        return bookingId;
+        return response.data;
       } catch (error) {
-        console.error("Error:", error);
+        // console.error("Error:", error.message);
         handleBookingError(error);
         return null;
       }
@@ -267,7 +277,7 @@ const BookingScreen: React.FC = () => {
     fetchRooms().then((data) => {
       setData(data.rooms);
       setLoading(false);
-      // // // console.log("🚀 ~ fetchRooms ~ data.rooms:", data.rooms);
+
     });
   }, []);
 
@@ -305,6 +315,8 @@ const BookingScreen: React.FC = () => {
   const confirmBooking = async () => {
     try {
       setBookingLoader(true);
+
+      console.log(selectedMonth,"----")
 
       // Check if userDetails.user is defined
       if (!userDetails || !userDetails.user) {
@@ -426,6 +438,7 @@ const BookingScreen: React.FC = () => {
           position: "relative",
           marginHorizontal: w(20),
           marginBottom: h(10),
+          zIndex:999
         }}
       >
         <TouchableOpacity
@@ -642,36 +655,43 @@ const BookingScreen: React.FC = () => {
               </Text>
 
               <View
-                style={{
-                  position: "relative",
-                  left: w(28),
-                  marginTop: 10,
-                  width: "50%",
-                  alignSelf: "center",
-                }}
-              >
-                <View
-                  style={{ position: "absolute", left: w(-12), top: w(12) }}
-                >
-                  <Feather name="calendar" size={w(20)} />
-                </View>
-                <Picker
-                  style={{ width: "80%", marginLeft: w(15) }}
-                  selectedValue={selectedMonth}
-                  onValueChange={(itemValue, itemIndex) => {
-                    setSelectedMonth(itemValue);
-                  }}
-                >
-                  {Array.from({ length: 12 }, (_, i) => (
-                    <Picker.Item
-                      key={i}
-                      label={`${i + 1} month${i === 0 ? "" : "s"}`}
-                      value={`${i + 1}`}
-                    />
-                  ))}
-                </Picker>
-              </View>
-            </View>
+  style={{
+    position: "relative",
+    left: w(28),
+    marginTop: 10,
+    width: "70%",
+    alignSelf: "center",
+    ...(Platform.OS === "ios" ? { marginTop: 20 } : {}), // Adjust marginTop for iOS
+  }}
+>
+  <View
+    style={{
+      position: "absolute",
+      left: w(-12),
+      top: w(12),
+      ...(Platform.OS === "ios" ? { top: w(90) } : {}), // Adjust top for iOS
+    }}
+  >
+    <Feather name="calendar" size={w(25)} />
+  </View>
+  <Picker
+    style={{ width: "80%", marginLeft: w(15) }}
+    selectedValue={selectedMonth}
+    onValueChange={(itemValue, itemIndex) => {
+      console.log("🚀 ~ itemValue:", itemValue)
+      setSelectedMonth(parseInt(itemValue));
+    }}
+  >
+    {Array.from({ length: 12 }, (_, i) => (
+      <Picker.Item
+        key={i}
+        label={`${i + 1} month${i === 0 ? "" : "s"}`}
+        value={`${i + 1}`}
+      />
+    ))}
+  </Picker>
+</View>
+</View>
 
             <View
               style={{

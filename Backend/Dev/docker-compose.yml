@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: myuser         # Customize username
+      POSTGRES_PASSWORD: mypassword # Replace with a strong password
+      POSTGRES_DB: mydatabase       # Customize DB name
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d  # Contains backup.sql or restore scripts
+    ports:
+      - "5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+
+volumes:
+  postgres_data:

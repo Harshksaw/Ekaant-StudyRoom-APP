@@ -13,6 +13,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   BackHandler,
+  Dimensions,
+  Platform,
 } from "react-native";
 import { useEffect } from "react";
 
@@ -20,54 +22,33 @@ import { useAssets } from "expo-asset";
 import Button from "@/components/Button";
 import { Image, ImageBackground } from "expo-image";
 
-import {
-  useFonts,
-  Poppins_100Thin,
-  Poppins_100Thin_Italic,
-  Poppins_200ExtraLight,
-  Poppins_200ExtraLight_Italic,
-  Poppins_300Light,
-  Poppins_300Light_Italic,
-  Poppins_400Regular,
-  Poppins_400Regular_Italic,
-  Poppins_500Medium,
-  Poppins_500Medium_Italic,
-  Poppins_600SemiBold,
-  Poppins_600SemiBold_Italic,
-  Poppins_700Bold,
-  Poppins_700Bold_Italic,
-  Poppins_800ExtraBold,
-  Poppins_800ExtraBold_Italic,
-  Poppins_900Black,
-  Poppins_900Black_Italic,
-} from "@expo-google-fonts/poppins";
 import ff from "@/constants/fonts";
 import { vw } from "@/constants/size";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+const { width  , height} = Dimensions.get("window");
+const isTablet = Platform.OS === 'ios' && (width >= 768 );
 
 export default function Home() {
   const navigation = useNavigation();
-  let [fontsLoaded] = useFonts({
-    Poppins_100Thin,
-    Poppins_100Thin_Italic,
-    Poppins_200ExtraLight,
-    Poppins_200ExtraLight_Italic,
-    Poppins_300Light,
-    Poppins_300Light_Italic,
-    Poppins_400Regular,
-    Poppins_400Regular_Italic,
-    Poppins_500Medium,
-    Poppins_500Medium_Italic,
-    Poppins_600SemiBold,
-    Poppins_600SemiBold_Italic,
-    Poppins_700Bold,
-    Poppins_700Bold_Italic,
-    Poppins_800ExtraBold,
-    Poppins_800ExtraBold_Italic,
-    Poppins_900Black,
-    Poppins_900Black_Italic,
-  });
+
+  //   Poppins_100Thin,
+  //   Poppins_100Thin_Italic,
+  //   Poppins_200ExtraLight,
+  //   Poppins_200ExtraLight_Italic,
+  //   Poppins_300Light,
+  //   Poppins_300Light_Italic,
+  //   Poppins_400Regular,
+  //   Poppins_400Regular_Italic,
+  //   Poppins_500Medium,
+  //   Poppins_500Medium_Italic,
+  //   Poppins_600SemiBold,
+  //   Poppins_600SemiBold_Italic,
+  //   Poppins_700Bold,
+  //   Poppins_700Bold_Italic,
+  //   Poppins_800ExtraBold,
+  //   Poppins_800ExtraBold_Italic,
+  //   Poppins_900Black,
+  //   Poppins_900Black_Italic,
+  // });
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -131,7 +112,7 @@ export default function Home() {
             }}
             style={{
               width: vw * 0.8,
-              height: 60,
+              height:isTablet? 120: 60,
               marginTop: 10,
             }}
           />
@@ -183,7 +164,7 @@ const styles = StyleSheet.create({
     width: vw * 0.8,
   },
   text2: {
-    fontSize: 20,
+    fontSize:isTablet ? 24:  20,
     lineHeight: 24,
     fontWeight: "400",
     textAlign: "center",

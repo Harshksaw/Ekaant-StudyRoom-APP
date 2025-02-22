@@ -6,10 +6,13 @@
     "orientation": "portrait",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.jythu.Ekaant"
+      "supportsTablet": false,
+      "bundleIdentifier": "com.jythu.Ekaant",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      },
+     "icon": "./assets/appicon.png"
     },
     "android": {
       "adaptiveIcon": {
@@ -44,7 +47,10 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ],
-      ["expo-font", {}],
+      [
+        "expo-font",
+        {}
+      ],
       [
         "expo-image-picker",
         {

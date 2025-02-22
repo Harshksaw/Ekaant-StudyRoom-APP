@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
 import ff from "@/constants/fonts";
 import { Toast } from "react-native-toast-notifications";
+import { HeaderIcon } from "@/assets";
 
 const Header = ({ color }: any) => {
   const [selectedLocation, setSelectedLocation] = useState<string>("");
@@ -74,22 +75,19 @@ const Header = ({ color }: any) => {
       </View>
 
       <View style={styles.logoContainer}>
-        {color === "white" && (
-          <View>
-            {assets && assets[1] && (
-              <Image
-                source={assets[2]}
-                style={{
-                  width: 50,
-                  height: 50,
-                  tintColor: color,
-                }}
-              />
-            )}
+
+          <View 
+          style={{
+            padding:2
+          }}
+          >
+
+            <HeaderIcon/>
+         
 
             <Text
               style={{
-                fontSize: 10,
+                fontSize: 12,
                 fontWeight: "bold",
                 color: color,
               }}
@@ -97,18 +95,20 @@ const Header = ({ color }: any) => {
               EKAANT
             </Text>
           </View>
-        )}
 
-        {assets && assets[0] && (
+
+        {/* {assets && assets[0] && (
           <Image
             source={{ uri: assets[0].localUri || assets[0].uri }}
             style={{
+
+              marginRight: 10,
               width: 60,
-              height: 60,
+              height: 50,
               tintColor: color,
             }}
           />
-        )}
+        )} */}
       </View>
     </View>
   );
@@ -122,8 +122,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 10,
-    marginTop: 8,
+    marginBottom: 2,
+    marginTop: 2,
   },
   logoContainer: {
     alignItems: "center",

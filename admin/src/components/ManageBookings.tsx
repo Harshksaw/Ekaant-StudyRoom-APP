@@ -41,33 +41,18 @@ const ManageBookings = () => {
                Book Seat
               </Link>
             </AccordionContent>
+    
+            <AccordionContent>
+              <Link
+                to="/manage-booking/OfflineBooking"
+                className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
+              >
+              Offline Booking
+              </Link>
+            </AccordionContent>
           </AccordionItem>
         </Accordion>
-        {/* <button
-          type="button"
-          className="inline-flex justify-center w-full rounded-md  shadow-sm px-4 py-2  text-sm font-medium text-gray-700  focus:outline-none"
-          id="menu-button"
-          aria-expanded="true"
-          aria-haspopup="true"
-          onClick={toggleDropdown}
-        >
-          Manage Users
-          <svg
-            className="w-2.5 h-2.5 ms-3"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 10 6"
-          >
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="m1 1 4 4 4-4"
-            />
-          </svg>
-        </button> */}
+        
       </div>
       {/* 
       {isOpen && (

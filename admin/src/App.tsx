@@ -27,6 +27,7 @@ import PhoneOtpForm from "./components/forgot-password";
 import LibraryBookings from "./components/ManageBookings/ViewLibraryBookings";
 import Report from "./pages/Report";
 import { useEffect, useState } from "react";
+import AdminOfflinePayments from "./components/ManageBookings/OffllineBooking";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -66,66 +67,82 @@ function App() {
   }
   return (
     <BrowserRouter basename="/">
-    <Routes>
-      <Route path="/" element={<Auth type="signin" />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/signin" element={<Auth type="signin" />} />
-      <Route path="/forgot-password" element={<PhoneOtpForm />} />
-      {role === "Admin" && (
-        <Route element={<ProtectedRoute />}>
-          <Route
-            path="/manage-library/create-room"
-            element={<CreateRoom />}
-          />
-          <Route
-            path="/manage-library/create-library"
-            element={<CreateLibrary />}
-          />
-          <Route path="/dashboard" element={<Dashboard />} />
+      <Routes>
+    {/* ----------------- Public Routes ----------------- */}
+    <Route path="/" element={<Auth type="signin" />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/signin" element={<Auth type="signin" />} />
+        <Route path="/forgot-password" element={<PhoneOtpForm />} />
 
-          <Route path="/manage-booking/view" element={<ViewBookings />} />
-          {/* <Route path="/manage-library/view-library/:id" element={<LibraryBookings />} /> */}
+        {/* ----------------- Protected Routes for Admin ----------------- */}
+        {role === "Admin" && (
+          <Route element={<ProtectedRoute />}>
+            {/* Create Operations */}
+            <Route
+              path="/manage-library/create-room"
+              element={<CreateRoom />}
+            />
+            <Route
+              path="/manage-library/create-library"
+              element={<CreateLibrary />}
+            />
+            {/* Dashboard */}
+            <Route path="/dashboard" element={<Dashboard />} />
+            {/* Bookings */}
+            <Route path="/manage-booking/view" element={<ViewBookings />} />
+            <Route
+              path="/manage-booking/adminbookings"
+              element={<LibraryBookings />}
+            />
+            <Route
+              path="/manage-booking/OfflineBooking"
+              element={<AdminOfflinePayments />}
+            />
 
-          <Route path="/manage-booking/adminbookings" element={<LibraryBookings />} />
+            {/* Library Details */}
+            <Route
+              path="/manage-library/view-library/:library_id"
+              element={<ViewLibrary />}
+            />
+            <Route
+              path="/manage-library/my-library"
+              element={<MyLibrary />}
+            />
+            <Route
+              path="/manage-library/edit-library/:id"
+              element={<EditLibrary />}
+            />
+            {/* Manage Seats & Reports */}
+            <Route path="/manage-seats" element={<ManageSeats />} />
+            <Route path="/report" element={<Report />} />
+          </Route>
+        )}
 
-          <Route
-            path="/manage-library/view-library/:library_id"
-            element={<ViewLibrary />}
-          />
-          <Route path="/manage-library/my-library" element={<MyLibrary />} />
-          <Route path="/manage-library/edit-library/:id" element={<EditLibrary />} />
+        {/* ----------------- Protected Routes for Owner ----------------- */}
+        {role === "Owner" && (
+          <Route element={<OwnerRoute />}>
+            <Route path="/admin" element={<OwnerHome />} />
+            <Route
+              path="/admin/manage-rooms/:lib_id"
+              element={<ManageRooms />}
+            />
+            <Route path="/admin/manage-admin" element={<ManageAdmin />} />
+            <Route path="/admin/app-config" element={<LocationForm />} />
+            <Route path="/admin/dummy" element={<LibraryPage />} />
+          </Route>
+        )}
 
-          <Route path="/manage-seats" element={<ManageSeats />} />
-          <Route path="/report" element={<Report />} />
-
-
-        </Route>
-      )}
-      {role === "Owner" && (
-        <Route element={<OwnerRoute />}>
-          <Route path="/admin" element={<OwnerHome />} />
-          <Route
-            path="/admin/manage-rooms/:lib_id"
-            element={<ManageRooms />}
-          />
-          <Route path="/admin/manage-admin" element={<ManageAdmin />} />
-          <Route path="/admin/app-config" element={<LocationForm />} />
-          <Route path="/admin/dummy" element={<LibraryPage />} />
-    
-          
-        </Route>
-      )}
-      <Route
-        path="*"
-        element={
-          <div className=" bg-black text-white flex items-center justify-center">
-            <h1 className="text-3xl">404</h1>
-          </div>
-        }
-      />
-    </Routes>
-    {/* Fallback route */}
-  </BrowserRouter>
+        {/* ----------------- Fallback Route ----------------- */}
+        <Route
+          path="*"
+          element={
+            <div className="bg-black text-white flex items-center justify-center">
+              <h1 className="text-3xl">404</h1>
+            </div>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

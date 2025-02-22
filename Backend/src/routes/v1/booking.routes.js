@@ -21,6 +21,19 @@ BookingRouter.post('/hasBoughtEarlier', BookingController.hasBoughtEarlier);
 BookingRouter.post('/adminBooking', BookingController.adminBooking);
 
 
+
+//offline Booking
+
+// POST /api/v1/booking/CreateOfflineBooking	Create a new offline payment request (User)
+
+
+
+BookingRouter.post('/createOffline', BookingController.offlineBooking);
+BookingRouter.get('/offlineStatus', BookingController.offlineStatus);
+BookingRouter.post('/approveOffline/:transactionId', BookingController.approveOfflinePayment);
+BookingRouter.get('/libraryOfflinePayments/:adminId', BookingController.listOfflinePaymentRequests);
+
+
 // BookingRouter.post('/getLibrary', BookingController.generateOtp);
 // BookingRouter.post('/verifyOtp', BookingController.verifyOtp);
 
