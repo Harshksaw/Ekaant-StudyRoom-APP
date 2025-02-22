@@ -76,12 +76,10 @@ export default function Bookings() {
     };
     getBookingData();
   }, []);
-
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
+    await getBookings();
+    setRefreshing(false);
   }, []);
 
   if (loading) {
