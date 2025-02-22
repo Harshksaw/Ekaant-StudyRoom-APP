@@ -53,7 +53,7 @@ useEffect(() => {
             clearInterval(statusInterval)
             Toast.show("Payment Approved", { type: 'success'  , duration: 3000})
 
-            router.back()
+            router.push('/(tabs)/bookings')
           }
         })
         .catch(error => console.error("Axios error:", error))

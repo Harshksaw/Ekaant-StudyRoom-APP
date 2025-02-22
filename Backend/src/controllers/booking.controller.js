@@ -765,6 +765,71 @@ const approveOfflinePayment = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+const listOfflinePaymentRequests = async (req, res) => {
+  const { adminId } = req.params; // Assuming admin authentication is in place
+
+  try {
+    console.debug(`DEBUG: Fetching offline payment requests for adminId: ${adminId}`);
+
+    // 1️⃣ Find all libraries owned by this admin
+    const ownedLibraries = await prisma.library.findMany({
+      where: { libraryOwnerId: parseInt(adminId) },
+      select: { id: true }
+    });
+
+    if (ownedLibraries.length === 0) {
+      console.debug(`DEBUG: Admin ${adminId} owns no libraries.`);
+      return res.json({ success: true, offlinePayments: [] });
+    }
+
+    const libraryIds = ownedLibraries.map(lib => lib.id);
+    console.debug(`DEBUG: Admin owns libraries with IDs: ${libraryIds}`);
+
+    // 2️⃣ Fetch pending transactions only for these libraries
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        offlinePaymentStatus: "PENDING",
+        expiresAt: { gt: new Date() }, // Only show requests that haven't expired
+        libraryId: { in: libraryIds } // Only fetch requests for admin's libraries
+      },
+      include: {
+        user: {
+          select: { id: true, username: true, email: true, phoneNumber: true }
+        },
+        booking: {
+          select: {
+            id: true,
+            library: { select: { id: true, name: true } },
+            bookedSeat: true,
+            timeSlotDetails: true,
+            bookingDate: true
+          }
+        }
+      },
+      orderBy: { expiresAt: "asc" } // Sort by earliest expiration
+    });
+
+    console.debug(`DEBUG: Found ${transactions.length} pending transactions for admin ${adminId}`);
+
+    // 3️⃣ Format data to include a countdown timer
+    const formattedTransactions = transactions.map(transaction => ({
+      transactionId: transaction.transactionId,
+      user: transaction.user,
+      library: transaction.booking?.library,
+      bookedSeat: transaction.booking?.bookedSeat,
+      timeSlotDetails: transaction.booking?.timeSlotDetails,
+      expiresAt: transaction.expiresAt,
+      remainingTime: Math.max(0, Math.floor((new Date(transaction.expiresAt) - new Date()) / 1000)) // Convert to seconds
+    }));
+
+    return res.json({ success: true, offlinePayments: formattedTransactions });
+
+  } catch (error) {
+    console.error(`ERROR: Fetching offline payment requests failed: ${error.message}`);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 
 
 module.exports = {
@@ -779,5 +844,6 @@ module.exports = {
   adminBooking,
   offlineBooking,
   offlineStatus,
-  approveOfflinePayment
+  approveOfflinePayment,
+  listOfflinePaymentRequests
 };
