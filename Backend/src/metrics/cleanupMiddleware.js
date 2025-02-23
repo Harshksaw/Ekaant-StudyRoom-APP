@@ -11,11 +11,12 @@ export const cleanupMiddleware = (req, res, next) => {
   res.on('finish', () => {
     const duration = Date.now() - startTime;
     console.log(`Request to ${req.method} ${req.path} took ${duration}ms`);
-    
+  
     // You can call your other metrics here as needed.
     // For example, you might do:
     // requestCountMiddleware(req, res, () => {});
     // requestDurationMiddleware(req, res, () => {});
+    
     
     // Decrease active requests gauge when the request finishes
     activeRequestsGauge.dec();
