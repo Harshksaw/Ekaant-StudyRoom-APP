@@ -1,69 +1,42 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require("cors");
+
 const { PORT } = require("./config/server.config");
 const apiRouter = require("./routes");
-const errorHandler = require("./utils/errorHandler");
+
 
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 require("dotenv").config();
 const cron = require("node-cron");
-// const StatsD = require('hot-shots');
-// const dogstatsd = new StatsD();
+
 const { PrismaClient } = require("@prisma/client");
-const { createBackup } = require("./controllers/app.controller");
+// const { createBackup } = require("./controllers/app.controller");
 const backupDatabase = require("./backup");
-// const { requestCountMiddleware } = require("./metrics/requestCounts");
+
 const prisma = new PrismaClient();
 
 
-const { Histogram } = require('prom-client');
+
 const client = require('prom-client');
+const { metricsMiddleware } = require("./metrics");
 
 // const PORT
 const app = express();
 
 
-// app.use(cors(
-  
-// ));
+
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.text());
+
 
 app.use(express.json({ limit: "50mb" }));
 
 
-
-const histogram = new Histogram({
-  name : "http_request_duration_seconds",
-  help: "Duration of HTTP requests in seconds",
-  labelNames: ['method', 'route', 'code'],
-
-  buckets: [0.1, 0.5, 1, 2, 5, 10]
+app.get('/me', (req, res)=>{
+  res.status(200).json({message: "Hello from Problem Service"});
 })
 
-
-function middleware(req, res , next){
-  const startTIme = Date.now();
-  res.on('finish', () => {
-    const responseTime = Date.now() - startTIme;
-
-    histogram.observe({},
-       responseTime,
-    )
-    // histogram.labels(req.method, req.route.path, res.statusCode).observe(responseTime / 1000);
-  })
-  next();
-}
-
-
-
-
-
-
-app.use(middleware);
-
+app.use(metricsMiddleware);
 
 
 
@@ -80,9 +53,6 @@ app.use('/metrics', (req, res) => {
 
 // app.use(requestCountMiddleware)
 
-app.get('/me', (req, res)=>{
-  res.status(200).json({message: "Hello from Problem Service"});
-})
 
 // If any request comes and route starts with /api, we map it to apiRouter
 app.use("/api", apiRouter);
