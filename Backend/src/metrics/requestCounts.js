@@ -1,13 +1,16 @@
-const  { NextFunction, Request, Response } = require('express');
+
 const client = require('prom-client');
 // Create a counter metric
+
+
+
 const requestCounter = new client.Counter({
     name: 'http_requests_total',
     help: 'Total number of HTTP requests',
     labelNames: ['method', 'route', 'status_code']
 });
 
-export const requestCountMiddleware = (req: Request, res: Response, next: NextFunction) => {
+ const requestCountMiddleware = (req, res, next) => {
     const startTime = Date.now();
 
     res.on('finish', () => {
@@ -24,3 +27,4 @@ export const requestCountMiddleware = (req: Request, res: Response, next: NextFu
 
     next();
 };
+module.exports = { requestCountMiddleware };

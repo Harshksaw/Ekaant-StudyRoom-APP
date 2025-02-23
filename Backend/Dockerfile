@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:22-alpine
 
 WORKDIR /usr/src/app
 
@@ -11,6 +11,6 @@ COPY . .
 # Run prisma generate to generate the Prisma client
 RUN npx prisma generate
 
-EXPOSE 3000
+EXPOSE 3009
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

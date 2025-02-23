@@ -1,0 +1,4 @@
+scrape_configs:
+  - job_name: 'ekaant-app'
+    static_configs:
+      - targets: ['ekaant-app:3009']

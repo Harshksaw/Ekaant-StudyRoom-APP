@@ -26,7 +26,7 @@ Library.get("/ping", LibraryController.pingAdmin);
 Library.post(
   "/createLibrary",
   upload.fields([
-    {name: "passportPhoto", maxCount: 1},
+    { name: "passportPhoto", maxCount: 1 },
     { name: "card", maxCount: 1 },
     { name: "images", maxCount: 10 },
     { name: "gst", maxCount: 1 },
@@ -44,7 +44,6 @@ Library.post(
   upload.fields([
     { name: "cardImage", maxCount: 1 },
     { name: "images", maxCount: 5 },
-
   ]),
   LibraryController.updateLibraryImages
 );
@@ -73,10 +72,8 @@ Library.post(
 Library.delete("/deleteDummyLibrary/:id", LibraryController.deleteDummy);
 Library.get("/getDummyLibrary", LibraryController.getDummy);
 
-
 Library.post("/createReview/:libraryId", LibraryController.createReview);
 Library.post("/getReviews/:libraryId", LibraryController.getReviews);
-
 
 Library.get("/calculateDistance", LibraryController.calculateDistances);
 Library.post("/editRoomName/:roomId", LibraryController.editRoomName);

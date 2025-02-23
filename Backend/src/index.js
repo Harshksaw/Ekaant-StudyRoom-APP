@@ -1,48 +1,41 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require("cors");
+
 const { PORT } = require("./config/server.config");
 const apiRouter = require("./routes");
-const errorHandler = require("./utils/errorHandler");
 
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 require("dotenv").config();
 const cron = require("node-cron");
-// const StatsD = require('hot-shots');
-// const dogstatsd = new StatsD();
+
 const { PrismaClient } = require("@prisma/client");
-const { createBackup } = require("./controllers/app.controller");
+// const { createBackup } = require("./controllers/app.controller");
 const backupDatabase = require("./backup");
-// const { requestCountMiddleware } = require("./metrics/requestCounts");
+
 const prisma = new PrismaClient();
+
+const client = require('prom-client');
+const { metricsMiddleware } = require("./metrics");
+const { cleanupMiddleware } = require("./metrics/cleanupMiddleware");
 
 // const PORT
 const app = express();
 
-app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.text());
 
 app.use(express.json({ limit: "50mb" }));
-app.use(errorHandler);
+app.use(cleanupMiddleware)
+app.use(metricsMiddleware);
+
 app.get("/me", (req, res) => {
   res.status(200).json({ message: "Hello from Problem Service" });
 });
 
-// If any request comes and route starts with /api, we map it to apiRouter
+
+
 app.use("/api", apiRouter);
-
-
-// app.get("/health", (req, res) => {
-//   const uptime = Date.now() - metrics.startTime;
-//   dogstatsd.gauge("system.uptime", uptime / 1000); // Example g
-//   res.send({
-//     status: "up",
-//     uptime: `${uptime / 1000}s`,
-//     metrics,
-//   });
-// });
 
 
 // Schedule a task to run every minute
@@ -73,8 +66,6 @@ cron.schedule("0 */3 * * *", async () => {
 
 app.get("/createBackup", backupDatabase);
 
-
-
 async function deleteAllResources(req, res) {
   try {
     const resources = await cloudinary.api.resources();
@@ -96,6 +87,13 @@ async function deleteAllResources(req, res) {
 }
 
 app.get("/deleteImages", deleteAllResources);
+
+
+app.get("/metrics", async (req, res) => {
+  const metrics = await client.register.metrics();
+  res.set('Content-Type', client.register.contentType);
+  res.end(metrics);
+})
 
 app.listen(PORT, async () => {
   console.log(`Server started at PORT: ${PORT}`);
