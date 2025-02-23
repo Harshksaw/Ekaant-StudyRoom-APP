@@ -25,9 +25,3 @@ Clone this repo to follow along with me. Or you can create your own project too.
    ````bash
    docker exec -i f2d1fefc532e psql -U testing -d notonProduction -f /backup.sql
    ````
-
-
-
-2.
-
- docker run -p 9090:9090 -v ./prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus

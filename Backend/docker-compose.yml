@@ -5,6 +5,8 @@ services:
     build: ./
     ports:
       - "3009:3009"
+    volumes:
+      - ./:/usr/src/app  # Mounts your whole project folder into the container.
     networks:
       - monitoring
 

@@ -1,4 +1,4 @@
-const  { NextFunction, Request, Response } = require('express');
+
 const client = require('prom-client');
 // Create a counter metric
 
@@ -10,15 +10,21 @@ const requestCounter = new client.Counter({
     labelNames: ['method', 'route', 'status_code']
 });
 
-export const requestCountMiddleware = (req, res, next) => {
+ const requestCountMiddleware = (req, res, next) => {
+    const startTime = Date.now();
+
     res.on('finish', () => {
+        const endTime = Date.now();
+        console.log(`Request took ${endTime - startTime}ms`);
+
         // Increment request counter
         requestCounter.inc({
             method: req.method,
-            route: req.originalUrl,
-            status_code: res.statusCode.toString()
+            route: req.route ? req.route.path : req.path,
+            status_code: res.statusCode
         });
     });
 
     next();
 };
+module.exports = { requestCountMiddleware };

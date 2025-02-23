@@ -8,11 +8,13 @@ const histogram = new client.Histogram({
   buckets: [0.1, 0.5, 1, 2, 5, 10]
 });
 
-export const requestDurationMiddleware = (req, res, next) => {
+const requestDurationMiddleware = (req, res, next) => {
   const startTime = Date.now();
   res.on('finish', () => {
     const responseTime = Date.now() - startTime;
-    histogram.labels({ method: req.method, route: req.originalUrl, code: res.statusCode }).observe(responseTime / 1000);
+    // Pass the values as separate arguments in the same order as labelNames
+    histogram.labels(req.method, req.originalUrl, res.statusCode.toString()).observe(responseTime / 1000);
   });
   next();
 };
+module.exports = { requestDurationMiddleware };

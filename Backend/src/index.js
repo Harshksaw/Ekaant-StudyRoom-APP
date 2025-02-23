@@ -4,7 +4,6 @@ const bodyParser = require("body-parser");
 const { PORT } = require("./config/server.config");
 const apiRouter = require("./routes");
 
-
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 require("dotenv").config();
@@ -16,57 +15,27 @@ const backupDatabase = require("./backup");
 
 const prisma = new PrismaClient();
 
-
-
 const client = require('prom-client');
 const { metricsMiddleware } = require("./metrics");
+const { cleanupMiddleware } = require("./metrics/cleanupMiddleware");
 
 // const PORT
 const app = express();
 
-
-
 app.use(bodyParser.urlencoded({ extended: true }));
-
+// app.use(bodyParser.text());
 
 app.use(express.json({ limit: "50mb" }));
-
-
-app.get('/me', (req, res)=>{
-  res.status(200).json({message: "Hello from Problem Service"});
-})
-
+app.use(cleanupMiddleware)
 app.use(metricsMiddleware);
 
-
-
-app.use('/metrics', (req, res) => {
-
-  res.status(200).set('Content-Type', client.register.contentType).send(client.register.metrics());
-
+app.get("/me", (req, res) => {
+  res.status(200).json({ message: "Hello from Problem Service" });
 });
 
 
 
-
-
-
-// app.use(requestCountMiddleware)
-
-
-// If any request comes and route starts with /api, we map it to apiRouter
 app.use("/api", apiRouter);
-
-
-// app.get("/health", (req, res) => {
-//   const uptime = Date.now() - metrics.startTime;
-//   dogstatsd.gauge("system.uptime", uptime / 1000); // Example g
-//   res.send({
-//     status: "up",
-//     uptime: `${uptime / 1000}s`,
-//     metrics,
-//   });
-// });
 
 
 // Schedule a task to run every minute
@@ -97,8 +66,6 @@ cron.schedule("0 */3 * * *", async () => {
 
 app.get("/createBackup", backupDatabase);
 
-
-
 async function deleteAllResources(req, res) {
   try {
     const resources = await cloudinary.api.resources();
@@ -120,6 +87,13 @@ async function deleteAllResources(req, res) {
 }
 
 app.get("/deleteImages", deleteAllResources);
+
+
+app.get("/metrics", async (req, res) => {
+  const metrics = await client.register.metrics();
+  res.set('Content-Type', client.register.contentType);
+  res.end(metrics);
+})
 
 app.listen(PORT, async () => {
   console.log(`Server started at PORT: ${PORT}`);

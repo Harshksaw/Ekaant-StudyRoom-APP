@@ -1,9 +1,13 @@
-// filepath: /Volumes/macdrive/harshx/Documents/GitHub/Ekaant/Backend/src/metrics/index.ts
-import { requestCountMiddleware } from './requestCounts';
-import { requestDurationMiddleware } from './requestDuration';
-
+import { activeRequestsGauge } from './activeRequests.js';
+import { requestCountMiddleware } from './requestCounts.js';
+import { requestDurationMiddleware } from './requestDuration.js';
 
 export const metricsMiddleware = (req, res, next) => {
-    requestCountMiddleware(req, res, next);
-    requestDurationMiddleware(req, res, next);
+
+
+  requestCountMiddleware(req, res, () => {});
+  requestDurationMiddleware(req, res, () => {});
+  
+
+  next();
 };
