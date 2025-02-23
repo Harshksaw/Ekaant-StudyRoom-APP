@@ -348,15 +348,15 @@ export default function index() {
   const username =
     parsedUser?.user?.username.split(" ")[0] ||
     parsedUser?.data.user?.username.split(" ")[0];
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async() => {
     setRefreshing(true);
-    getAppData();
-    fetchSelectedLocation();
+    await getAppData();
+    await fetchSelectedLocation();
     if (!selectedLocation) {
       AsyncStorage.getItem("selectedLocation");
     }
     // selectedLocation &&
-    fetchLibraryDate();
+    await fetchLibraryDate();
 
     setTimeout(() => {
       setRefreshing(false);

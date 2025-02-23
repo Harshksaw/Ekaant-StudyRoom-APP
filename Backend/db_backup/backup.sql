@@ -1,3 +1,4 @@
+
 --
 -- PostgreSQL database dump
 --
@@ -29,6 +30,19 @@ CREATE TYPE public."BookingStatus" AS ENUM (
 
 
 ALTER TYPE public."BookingStatus" OWNER TO postgres;
+
+--
+-- Name: OfflinePaymentStatus; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public."OfflinePaymentStatus" AS ENUM (
+    'PENDING',
+    'APPROVED',
+    'CANCELED'
+);
+
+
+ALTER TYPE public."OfflinePaymentStatus" OWNER TO postgres;
 
 --
 -- Name: TransactionType; Type: TYPE; Schema: public; Owner: postgres
@@ -788,7 +802,10 @@ CREATE TABLE public."Transaction" (
     "userId" integer,
     "adminId" integer,
     "libraryId" integer,
-    "bookingId" integer
+    "bookingId" integer,
+    "expiresAt" timestamp(3) without time zone,
+    "isOfflinePayment" boolean DEFAULT false,
+    "offlinePaymentStatus" public."OfflinePaymentStatus"
 );
 
 
@@ -1355,6 +1372,8 @@ COPY public."Booking" (id, "libraryId", "userId", approved, "bookedSeat", "booki
 244	2	7	f	{"id": 526, "roomId": 27, "seatId": "9-2", "rotation": 450, "seatName": "20", "seatLabel": "20", "timeSlots": [{"id": 2274, "to": "10:00 AM", "from": "06:00 AM", "price": 200, "booked": false, "seatId": 526, "slotId": "47d8cdbe-b6ec-44dc-b3b8-316452abb969", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2275, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": true, "seatId": 526, "slotId": "696974c9-f236-453a-b395-bca9c539f43c", "bookedById": 3, "bookingSource": "admin", "bookingEndDate": "2025-03-01T00:00:00.000Z"}, {"id": 2277, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 526, "slotId": "613440b5-f813-482f-9d05-44146e8e9a2a", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2276, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": true, "seatId": 526, "slotId": "476bbf20-8ef1-49a7-8941-6942ef9cb3a2", "bookedById": 3, "bookingSource": "admin", "bookingEndDate": "2025-03-01T00:00:00.000Z"}, {"id": 2278, "to": "11:59 PM", "from": "12:00 AM", "price": 900, "booked": true, "seatId": 526, "slotId": "2ba1037c-c2d9-4538-8c58-c914ab37d26f", "bookedById": 3, "bookingSource": "admin", "bookingEndDate": "2025-03-01T00:00:00.000Z"}]}	2025-02-19 14:56:31.647	2025-03-19 14:56:31.647	1	PENDING	200	0	f	1	[{"id": 2277, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 526, "slotId": "613440b5-f813-482f-9d05-44146e8e9a2a", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-19 14:57:41.273	\N
 245	2	7	f	{"id": 525, "roomId": 27, "seatId": "9-3", "rotation": 270, "seatName": "21", "seatLabel": "21", "timeSlots": [{"id": 2269, "to": "10:00 AM", "from": "06:00 AM", "price": 200, "booked": false, "seatId": 525, "slotId": "f8d639af-d4d3-455f-9b4b-f1a4fd32c456", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2270, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": false, "seatId": 525, "slotId": "4116b699-d461-416d-a2d0-b2c6add74678", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2271, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": false, "seatId": 525, "slotId": "623f6f81-f93b-4620-9abc-e472bd7fe3c8", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2272, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 525, "slotId": "584c5ff9-4f67-4713-bced-2583aa6deffa", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2273, "to": "11:59 PM", "from": "12:00 AM", "price": 900, "booked": false, "seatId": 525, "slotId": "5e7d800a-bd85-444b-a534-43020a2d134b", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]}	2025-02-19 14:56:31.647	2025-03-19 14:56:31.647	1	PENDING	700	200	f	1	[{"id": 2270, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": false, "seatId": 525, "slotId": "4116b699-d461-416d-a2d0-b2c6add74678", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2271, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": false, "seatId": 525, "slotId": "623f6f81-f93b-4620-9abc-e472bd7fe3c8", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-19 14:58:00.817	\N
 246	2	7	f	{"id": 511, "roomId": 27, "seatId": "1-2", "rotation": 90, "seatName": "12", "seatLabel": "12", "timeSlots": [{"id": 2199, "to": "10:00 AM", "from": "06:00 AM", "price": 200, "booked": false, "seatId": 511, "slotId": "29f224cb-b47d-4c8c-b771-3547a934c620", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2200, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": false, "seatId": 511, "slotId": "27f85b57-d7ce-4179-82c8-97d05692f121", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2201, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": false, "seatId": 511, "slotId": "b53b4189-ca46-4e72-ab6f-a4c52da4b5cc", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2202, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 511, "slotId": "3aa4eb52-f6b1-45b5-a8bb-b552c2d60b0e", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2203, "to": "11:59 PM", "from": "12:00 AM", "price": 900, "booked": false, "seatId": 511, "slotId": "18e74af4-0f67-43f2-b37d-9adb3ada0553", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]}	2025-02-21 12:20:54.187	2025-03-21 12:20:54.187	1	PENDING	350	0	f	1	[{"id": 2200, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": false, "seatId": 511, "slotId": "27f85b57-d7ce-4179-82c8-97d05692f121", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-21 12:20:58.597	\N
+247	2	6	t	{"id": 520, "roomId": 27, "seatId": "6-2", "rotation": 90, "seatName": "17", "seatLabel": "17", "timeSlots": [{"id": 2244, "to": "10:00 AM", "from": "06:00 AM", "price": 200, "booked": false, "seatId": 520, "slotId": "336accf8-809b-4765-9d11-3e46b5b4d6c9", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2245, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": false, "seatId": 520, "slotId": "5549b1bb-a068-41ea-8546-2787ece0a640", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2246, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": false, "seatId": 520, "slotId": "853f477c-7801-4923-a213-6a30bdc5bfd6", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2247, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 520, "slotId": "8ed7ae23-4b16-4a9a-9be9-b23ffe3375f4", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2248, "to": "11:59 PM", "from": "12:00 AM", "price": 900, "booked": false, "seatId": 520, "slotId": "695a8372-e514-4207-a9c3-25a72b54d021", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]}	2025-02-22 07:12:25.438	2025-03-22 07:12:25.438	1	CONFIRMED	200	0	f	1	[{"id": 2247, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 520, "slotId": "8ed7ae23-4b16-4a9a-9be9-b23ffe3375f4", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-22 07:12:54.761	\N
+248	1	6	t	{"id": 739, "roomId": 33, "seatId": "2-1", "rotation": 0, "seatName": "25", "seatLabel": "25", "timeSlots": [{"id": 3399, "to": "10:00 AM", "from": "06:00 AM", "price": 200, "booked": false, "seatId": 739, "slotId": "e4aaa23f-0304-410d-b6b7-1ec85ed53133", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 3400, "to": "02:00 PM", "from": "10:00 AM", "price": 250, "booked": false, "seatId": 739, "slotId": "2413c7fa-9f83-464f-bc57-2e2594df63a3", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 3401, "to": "06:00 PM", "from": "02:00 PM", "price": 250, "booked": false, "seatId": 739, "slotId": "efc4ff97-872b-4eea-98ae-6ef378267cac", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 3402, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 739, "slotId": "171fb498-d4e6-4de5-9a39-feeb1d213914", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 3403, "to": "05:00 AM", "from": "10:00 PM", "price": 200, "booked": false, "seatId": 739, "slotId": "d74be815-27d8-47c6-9ce6-69fae3cef0b1", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]}	2025-02-22 07:13:21.413	2025-03-22 07:13:21.413	1	CONFIRMED	250	200	f	1	[{"id": 3401, "to": "06:00 PM", "from": "02:00 PM", "price": 250, "booked": false, "seatId": 739, "slotId": "efc4ff97-872b-4eea-98ae-6ef378267cac", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-22 07:13:30.409	\N
 \.
 
 
@@ -4989,22 +5008,25 @@ COPY public."TimeSlot" (id, "slotId", "from", "to", booked, "bookedById", "booki
 -- Data for Name: Transaction; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Transaction" (id, "transactionId", amount, type, description, "createdAt", "userId", "adminId", "libraryId", "bookingId") FROM stdin;
-286	cd169d31-49a0-4b21-97b3-fad4ee7d8a08	500	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-14 18:58:00.144	9	\N	13	\N
-287	d8dd15bb-0073-47b7-b841-bee8b34706e2	300	BOOKING_PAYMENT	Payment for booking	2025-02-14 18:58:00.148	9	\N	13	237
-288	48c1599f-50ae-4456-8944-3f8386c10a50	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-15 18:56:56.422	6	\N	1	\N
-289	be7bded1-18e0-4715-8375-ed46f154ac05	1	BOOKING_PAYMENT	Payment for booking	2025-02-15 18:56:56.426	6	\N	1	238
-290	c226d3ea-d623-42a3-9c94-098a8b42c490	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-16 08:08:23.588	9	\N	2	\N
-291	b10c6762-2cfe-4d63-a152-cc8579641718	400	BOOKING_PAYMENT	Payment for booking	2025-02-16 08:08:23.592	9	\N	2	239
-292	a7315b77-c3db-4561-b4f8-b4632fa3055d	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-17 01:32:20.158	9	\N	5	\N
-293	a5831dbc-c86c-4937-94ce-998abe90e7eb	750	BOOKING_PAYMENT	Payment for booking	2025-02-17 01:32:20.162	9	\N	5	240
-294	5a54c1f5-d3d1-490a-8d07-192debf1beb6	600	BOOKING_PAYMENT	Payment for booking	2025-02-17 01:32:25.071	9	\N	2	241
-295	82aad536-7881-4a05-ac40-a325f1b130db	250	BOOKING_PAYMENT	Payment for booking	2025-02-18 04:06:49.081	6	\N	1	242
-296	d108d43f-d58c-453e-aabe-324c498abbcd	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-18 15:50:03.323	7	\N	2	\N
-297	8d068ed3-f861-408d-b635-e220ae6f9bc2	200	BOOKING_PAYMENT	Payment for booking	2025-02-18 15:50:03.327	7	\N	2	243
-298	3aab3667-938f-4ad3-9e74-c4171af6592c	200	BOOKING_PAYMENT	Payment for booking	2025-02-19 14:57:41.276	7	\N	2	244
-299	bb5ab53e-35f7-4b6c-8ac6-eb9a85477101	700	BOOKING_PAYMENT	Payment for booking	2025-02-19 14:58:00.819	7	\N	2	245
-300	5a941d13-f9e3-4250-8784-5a6654638293	350	BOOKING_PAYMENT	Payment for booking	2025-02-21 12:20:58.599	7	\N	2	246
+COPY public."Transaction" (id, "transactionId", amount, type, description, "createdAt", "userId", "adminId", "libraryId", "bookingId", "expiresAt", "isOfflinePayment", "offlinePaymentStatus") FROM stdin;
+286	cd169d31-49a0-4b21-97b3-fad4ee7d8a08	500	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-14 18:58:00.144	9	\N	13	\N	\N	f	\N
+287	d8dd15bb-0073-47b7-b841-bee8b34706e2	300	BOOKING_PAYMENT	Payment for booking	2025-02-14 18:58:00.148	9	\N	13	237	\N	f	\N
+288	48c1599f-50ae-4456-8944-3f8386c10a50	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-15 18:56:56.422	6	\N	1	\N	\N	f	\N
+289	be7bded1-18e0-4715-8375-ed46f154ac05	1	BOOKING_PAYMENT	Payment for booking	2025-02-15 18:56:56.426	6	\N	1	238	\N	f	\N
+290	c226d3ea-d623-42a3-9c94-098a8b42c490	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-16 08:08:23.588	9	\N	2	\N	\N	f	\N
+291	b10c6762-2cfe-4d63-a152-cc8579641718	400	BOOKING_PAYMENT	Payment for booking	2025-02-16 08:08:23.592	9	\N	2	239	\N	f	\N
+292	a7315b77-c3db-4561-b4f8-b4632fa3055d	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-17 01:32:20.158	9	\N	5	\N	\N	f	\N
+293	a5831dbc-c86c-4937-94ce-998abe90e7eb	750	BOOKING_PAYMENT	Payment for booking	2025-02-17 01:32:20.162	9	\N	5	240	\N	f	\N
+294	5a54c1f5-d3d1-490a-8d07-192debf1beb6	600	BOOKING_PAYMENT	Payment for booking	2025-02-17 01:32:25.071	9	\N	2	241	\N	f	\N
+295	82aad536-7881-4a05-ac40-a325f1b130db	250	BOOKING_PAYMENT	Payment for booking	2025-02-18 04:06:49.081	6	\N	1	242	\N	f	\N
+296	d108d43f-d58c-453e-aabe-324c498abbcd	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-18 15:50:03.323	7	\N	2	\N	\N	f	\N
+297	8d068ed3-f861-408d-b635-e220ae6f9bc2	200	BOOKING_PAYMENT	Payment for booking	2025-02-18 15:50:03.327	7	\N	2	243	\N	f	\N
+298	3aab3667-938f-4ad3-9e74-c4171af6592c	200	BOOKING_PAYMENT	Payment for booking	2025-02-19 14:57:41.276	7	\N	2	244	\N	f	\N
+299	bb5ab53e-35f7-4b6c-8ac6-eb9a85477101	700	BOOKING_PAYMENT	Payment for booking	2025-02-19 14:58:00.819	7	\N	2	245	\N	f	\N
+300	5a941d13-f9e3-4250-8784-5a6654638293	350	BOOKING_PAYMENT	Payment for booking	2025-02-21 12:20:58.599	7	\N	2	246	\N	f	\N
+301	f7d31749-7e77-4e69-8f4a-7c93b18dfb29	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-22 07:12:54.758	6	\N	2	\N	\N	f	\N
+302	a0d2bfb6-6321-476e-9bff-a91061940bc3	200	BOOKING_PAYMENT	Offline payment request for booking 247 at library 2 by user undefined at 2025-02-22T07:13:03.387Z	2025-02-22 07:12:54.762	6	\N	2	247	2025-02-22 07:16:03.387	t	PENDING
+303	7ba0eb26-b713-446e-a5e8-c0a4fcbc04f1	250	BOOKING_PAYMENT	Offline payment request for booking 248 at library 1 by user undefined at 2025-02-22T07:13:35.043Z	2025-02-22 07:13:30.411	6	\N	1	248	2025-02-22 07:16:35.043	t	PENDING
 \.
 
 
@@ -5076,6 +5098,7 @@ COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs,
 643625dc-0582-4699-826c-5afe174a1a54	d12c73cf49de4c8134034ff3b1eab80bd15671ef25da850ebe29a68fd91e831c	2025-01-14 08:37:48.362754+00	20241216064245_float	\N	\N	2025-01-14 08:37:48.356771+00	1
 47af3f17-f204-4031-9321-d841a52c9113	cdbe11919e6c602a0162be8029da58c6c7b14539bcb9a02d28d5ef9098eb512b	2025-01-14 08:37:48.328537+00	20241213223622_change_phone_number_to_string	\N	\N	2025-01-14 08:37:48.319942+00	1
 e6b6b0b5-1a92-4a2e-8b0a-61136087008c	088f1a443c49ee9dbcf80e9981c1cf599b458adf3227892eef0d5903dd44589c	2025-01-14 08:37:48.330967+00	20241214042400_admin	\N	\N	2025-01-14 08:37:48.329051+00	1
+98465e98-3449-440c-b557-04b7e64216e0	9249c00c3299e2968f2458882f36380ae3d91823b42f5a5cc790bc8f1fa8ceb9	2025-02-22 06:39:38.781061+00	20250222063938_add_offline_payment_transactions	\N	\N	2025-02-22 06:39:38.775786+00	1
 b3aa2597-8361-4924-859a-b6f2604d766c	2c767d28e540b799c456d13bff1b5ba60417549765475af8a0f139cb2331b662	2025-01-14 08:37:48.33359+00	20241215040827_room	\N	\N	2025-01-14 08:37:48.331458+00	1
 ee454435-20f9-4bef-b5a7-4fcb31c471be	ae20aa81557db9f82a49121a9c05be39bfb61a1be06fc93032797d2ae6f60ce4	2025-01-14 08:37:48.364817+00	20241216104916_init	\N	\N	2025-01-14 08:37:48.363258+00	1
 0061dc96-578a-4794-a6bd-6191065ae6ec	485fd48a5d7585634a418382f814de4d24c36465d8ec218531560b35954c4891	2025-01-14 08:37:48.335991+00	20241215041935_init	\N	\N	2025-01-14 08:37:48.334118+00	1
@@ -5140,7 +5163,7 @@ SELECT pg_catalog.setval('public."BookingFriend_id_seq"', 1, false);
 -- Name: Booking_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Booking_id_seq"', 246, true);
+SELECT pg_catalog.setval('public."Booking_id_seq"', 248, true);
 
 
 --
@@ -5231,7 +5254,7 @@ SELECT pg_catalog.setval('public."TimeSlot_id_seq"', 3559, true);
 -- Name: Transaction_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Transaction_id_seq"', 300, true);
+SELECT pg_catalog.setval('public."Transaction_id_seq"', 303, true);
 
 
 --

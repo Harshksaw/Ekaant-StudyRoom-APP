@@ -18,9 +18,12 @@ const prisma = new PrismaClient();
 const client = require('prom-client');
 const { metricsMiddleware } = require("./metrics");
 const { cleanupMiddleware } = require("./metrics/cleanupMiddleware");
+const cors = require("cors");
 
 // const PORT
 const app = express();
+
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.text());
