@@ -438,8 +438,8 @@ export default function index() {
         style={{ paddingHorizontal: w(10) }}
         onEndReached={reCallLibrary}
         ListHeaderComponent={
-          <>
-            <View style={{ height: h(270) }}>
+          <View key={index}>
+            <View style={{ height: h(270) }} >
               <Text
                 style={{
                   fontSize: 30,
@@ -513,7 +513,7 @@ export default function index() {
                 />
               </View>
             </TouchableOpacity>
-          </>
+          </View>
         }
         ListEmptyComponent={
           <TouchableOpacity onPress={() => setReload(true)}>

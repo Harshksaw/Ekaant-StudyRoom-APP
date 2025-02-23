@@ -3,6 +3,7 @@
     "name": "Ekaant",
     "slug": "studyroom",
     "version": "13.0.1",
+    "jsEngine": "hermes",
     "orientation": "portrait",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
