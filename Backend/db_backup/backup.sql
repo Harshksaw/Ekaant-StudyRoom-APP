@@ -31,6 +31,19 @@ CREATE TYPE public."BookingStatus" AS ENUM (
 ALTER TYPE public."BookingStatus" OWNER TO postgres;
 
 --
+-- Name: OfflinePaymentStatus; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public."OfflinePaymentStatus" AS ENUM (
+    'PENDING',
+    'APPROVED',
+    'CANCELED'
+);
+
+
+ALTER TYPE public."OfflinePaymentStatus" OWNER TO postgres;
+
+--
 -- Name: TransactionType; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -788,7 +801,10 @@ CREATE TABLE public."Transaction" (
     "userId" integer,
     "adminId" integer,
     "libraryId" integer,
-    "bookingId" integer
+    "bookingId" integer,
+    "expiresAt" timestamp(3) without time zone,
+    "isOfflinePayment" boolean DEFAULT false,
+    "offlinePaymentStatus" public."OfflinePaymentStatus"
 );
 
 
@@ -1355,6 +1371,11 @@ COPY public."Booking" (id, "libraryId", "userId", approved, "bookedSeat", "booki
 244	2	7	f	{"id": 526, "roomId": 27, "seatId": "9-2", "rotation": 450, "seatName": "20", "seatLabel": "20", "timeSlots": [{"id": 2274, "to": "10:00 AM", "from": "06:00 AM", "price": 200, "booked": false, "seatId": 526, "slotId": "47d8cdbe-b6ec-44dc-b3b8-316452abb969", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2275, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": true, "seatId": 526, "slotId": "696974c9-f236-453a-b395-bca9c539f43c", "bookedById": 3, "bookingSource": "admin", "bookingEndDate": "2025-03-01T00:00:00.000Z"}, {"id": 2277, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 526, "slotId": "613440b5-f813-482f-9d05-44146e8e9a2a", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2276, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": true, "seatId": 526, "slotId": "476bbf20-8ef1-49a7-8941-6942ef9cb3a2", "bookedById": 3, "bookingSource": "admin", "bookingEndDate": "2025-03-01T00:00:00.000Z"}, {"id": 2278, "to": "11:59 PM", "from": "12:00 AM", "price": 900, "booked": true, "seatId": 526, "slotId": "2ba1037c-c2d9-4538-8c58-c914ab37d26f", "bookedById": 3, "bookingSource": "admin", "bookingEndDate": "2025-03-01T00:00:00.000Z"}]}	2025-02-19 14:56:31.647	2025-03-19 14:56:31.647	1	PENDING	200	0	f	1	[{"id": 2277, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 526, "slotId": "613440b5-f813-482f-9d05-44146e8e9a2a", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-19 14:57:41.273	\N
 245	2	7	f	{"id": 525, "roomId": 27, "seatId": "9-3", "rotation": 270, "seatName": "21", "seatLabel": "21", "timeSlots": [{"id": 2269, "to": "10:00 AM", "from": "06:00 AM", "price": 200, "booked": false, "seatId": 525, "slotId": "f8d639af-d4d3-455f-9b4b-f1a4fd32c456", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2270, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": false, "seatId": 525, "slotId": "4116b699-d461-416d-a2d0-b2c6add74678", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2271, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": false, "seatId": 525, "slotId": "623f6f81-f93b-4620-9abc-e472bd7fe3c8", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2272, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 525, "slotId": "584c5ff9-4f67-4713-bced-2583aa6deffa", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2273, "to": "11:59 PM", "from": "12:00 AM", "price": 900, "booked": false, "seatId": 525, "slotId": "5e7d800a-bd85-444b-a534-43020a2d134b", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]}	2025-02-19 14:56:31.647	2025-03-19 14:56:31.647	1	PENDING	700	200	f	1	[{"id": 2270, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": false, "seatId": 525, "slotId": "4116b699-d461-416d-a2d0-b2c6add74678", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2271, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": false, "seatId": 525, "slotId": "623f6f81-f93b-4620-9abc-e472bd7fe3c8", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-19 14:58:00.817	\N
 246	2	7	f	{"id": 511, "roomId": 27, "seatId": "1-2", "rotation": 90, "seatName": "12", "seatLabel": "12", "timeSlots": [{"id": 2199, "to": "10:00 AM", "from": "06:00 AM", "price": 200, "booked": false, "seatId": 511, "slotId": "29f224cb-b47d-4c8c-b771-3547a934c620", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2200, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": false, "seatId": 511, "slotId": "27f85b57-d7ce-4179-82c8-97d05692f121", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2201, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": false, "seatId": 511, "slotId": "b53b4189-ca46-4e72-ab6f-a4c52da4b5cc", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2202, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 511, "slotId": "3aa4eb52-f6b1-45b5-a8bb-b552c2d60b0e", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2203, "to": "11:59 PM", "from": "12:00 AM", "price": 900, "booked": false, "seatId": 511, "slotId": "18e74af4-0f67-43f2-b37d-9adb3ada0553", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]}	2025-02-21 12:20:54.187	2025-03-21 12:20:54.187	1	PENDING	350	0	f	1	[{"id": 2200, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": false, "seatId": 511, "slotId": "27f85b57-d7ce-4179-82c8-97d05692f121", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-21 12:20:58.597	\N
+247	2	6	t	{"id": 520, "roomId": 27, "seatId": "6-2", "rotation": 90, "seatName": "17", "seatLabel": "17", "timeSlots": [{"id": 2244, "to": "10:00 AM", "from": "06:00 AM", "price": 200, "booked": false, "seatId": 520, "slotId": "336accf8-809b-4765-9d11-3e46b5b4d6c9", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2245, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": false, "seatId": 520, "slotId": "5549b1bb-a068-41ea-8546-2787ece0a640", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2246, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": false, "seatId": 520, "slotId": "853f477c-7801-4923-a213-6a30bdc5bfd6", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2247, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 520, "slotId": "8ed7ae23-4b16-4a9a-9be9-b23ffe3375f4", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2248, "to": "11:59 PM", "from": "12:00 AM", "price": 900, "booked": false, "seatId": 520, "slotId": "695a8372-e514-4207-a9c3-25a72b54d021", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]}	2025-02-22 07:12:25.438	2025-03-22 07:12:25.438	1	CONFIRMED	200	0	f	1	[{"id": 2247, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 520, "slotId": "8ed7ae23-4b16-4a9a-9be9-b23ffe3375f4", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-22 07:12:54.761	\N
+248	1	6	t	{"id": 739, "roomId": 33, "seatId": "2-1", "rotation": 0, "seatName": "25", "seatLabel": "25", "timeSlots": [{"id": 3399, "to": "10:00 AM", "from": "06:00 AM", "price": 200, "booked": false, "seatId": 739, "slotId": "e4aaa23f-0304-410d-b6b7-1ec85ed53133", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 3400, "to": "02:00 PM", "from": "10:00 AM", "price": 250, "booked": false, "seatId": 739, "slotId": "2413c7fa-9f83-464f-bc57-2e2594df63a3", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 3401, "to": "06:00 PM", "from": "02:00 PM", "price": 250, "booked": false, "seatId": 739, "slotId": "efc4ff97-872b-4eea-98ae-6ef378267cac", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 3402, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 739, "slotId": "171fb498-d4e6-4de5-9a39-feeb1d213914", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 3403, "to": "05:00 AM", "from": "10:00 PM", "price": 200, "booked": false, "seatId": 739, "slotId": "d74be815-27d8-47c6-9ce6-69fae3cef0b1", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]}	2025-02-22 07:13:21.413	2025-03-22 07:13:21.413	1	CONFIRMED	250	200	f	1	[{"id": 3401, "to": "06:00 PM", "from": "02:00 PM", "price": 250, "booked": false, "seatId": 739, "slotId": "efc4ff97-872b-4eea-98ae-6ef378267cac", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-22 07:13:30.409	\N
+249	7	6	t	{"id": 88, "roomId": 13, "seatId": "2-2", "rotation": 0, "seatName": "11", "seatLabel": "11", "timeSlots": [{"id": 215, "to": "11:59 PM", "from": "12:00 AM", "price": 232, "booked": false, "seatId": 88, "slotId": "471978b9-0c42-4df0-ac15-92f4bb78349f", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]}	2025-02-23 08:05:35.377	2025-03-23 08:05:35.377	1	CONFIRMED	232	0	f	1	[{"id": 215, "to": "11:59 PM", "from": "12:00 AM", "price": 232, "booked": false, "seatId": 88, "slotId": "471978b9-0c42-4df0-ac15-92f4bb78349f", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-23 08:05:43.516	\N
+250	2	33	f	{"id": 528, "roomId": 27, "seatId": "8-0", "rotation": 270, "seatName": "2", "seatLabel": "2", "timeSlots": [{"id": 2284, "to": "10:00 AM", "from": "06:00 AM", "price": 200, "booked": false, "seatId": 528, "slotId": "a4cffd76-28c4-477a-9b8c-d53c42e37418", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2285, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": false, "seatId": 528, "slotId": "bec27b90-25a3-48bf-834c-919df93e62fa", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2286, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": false, "seatId": 528, "slotId": "8b0a215b-1416-4ff0-8669-3f8526ed9e48", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2287, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 528, "slotId": "44d2e515-35d6-45af-ad50-ff2f5865f353", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2288, "to": "11:59 PM", "from": "12:00 AM", "price": 900, "booked": false, "seatId": 528, "slotId": "6b8aa4a2-a198-4a0a-967c-fd41f1546006", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]}	2025-02-23 10:37:49.061	2025-03-23 10:37:49.061	1	PENDING	350	0	f	1	[{"id": 2286, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": false, "seatId": 528, "slotId": "8b0a215b-1416-4ff0-8669-3f8526ed9e48", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-23 10:38:03.784	\N
+251	2	33	f	{"id": 528, "roomId": 27, "seatId": "8-0", "rotation": 270, "seatName": "2", "seatLabel": "2", "timeSlots": [{"id": 2284, "to": "10:00 AM", "from": "06:00 AM", "price": 200, "booked": false, "seatId": 528, "slotId": "a4cffd76-28c4-477a-9b8c-d53c42e37418", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2285, "to": "02:00 PM", "from": "10:00 AM", "price": 350, "booked": false, "seatId": 528, "slotId": "bec27b90-25a3-48bf-834c-919df93e62fa", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2286, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": false, "seatId": 528, "slotId": "8b0a215b-1416-4ff0-8669-3f8526ed9e48", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2287, "to": "10:00 PM", "from": "06:00 PM", "price": 200, "booked": false, "seatId": 528, "slotId": "44d2e515-35d6-45af-ad50-ff2f5865f353", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}, {"id": 2288, "to": "11:59 PM", "from": "12:00 AM", "price": 900, "booked": false, "seatId": 528, "slotId": "6b8aa4a2-a198-4a0a-967c-fd41f1546006", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]}	2025-02-23 10:37:49.061	2025-03-23 10:37:49.061	1	PENDING	350	350	f	1	[{"id": 2286, "to": "06:00 PM", "from": "02:00 PM", "price": 350, "booked": false, "seatId": 528, "slotId": "8b0a215b-1416-4ff0-8669-3f8526ed9e48", "bookedById": null, "bookingSource": "app", "bookingEndDate": null}]	2025-02-23 10:39:39.145	\N
 \.
 
 
@@ -1731,7 +1752,7 @@ COPY public."Library" (id, "libraryOwnerId", name, "longDescription", "shortDesc
 10	12	Pustakalaya	Pustakalaya 	Library in north delhi	https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736938429/library-images/tlmeggofla6miqtirahx.jpg	{https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736938429/library-images/wtxwymw1xcgcujtxnqdm.jpg}	{"city": "North Delhi", "line1": "Shop no 17, EDWARD lane, Block O,", "line2": "Kingsway Camp, GTB Nagar,", "state": "Tripura", "pincode": "110009"}	false	f	f	f	Sole Proprietorship	500	\N		\N		\N		\N		{24.78922806890734,84.98851574490133}	500	\N	\N	\N	\N
 6	8	Capital Library	Capital Library is the best place to study in Patna. It is a serene and beautiful place which is perfect for students who want to study in a peaceful environment. The place is well-equipped with all the facilities that a student needs like private seating, book renting and buying services, stationeries, 100% power backup with Air Conditioner, Cold RO Water, CCTV Camera, High Speed WiFi, Noiseless Environment and Locker Facilities	Capital Library is the best place to study in Patna. It is a serene and beautiful place which is perfect for students who want to study in a peaceful environment	https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875438/library-images/rg0ec4kp879eyoavv0lb.jpg	{https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875438/library-images/shs0wbqcflduzkorbm8g.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875438/library-images/ekzzbowaauxgfuxll3h3.jpg}	{"city": "Patna", "line1": "S.S capital market, Ashok Rajpath Rd", "line2": "Muradpur", "state": "Bihar", "pincode": "800004"}	false	f	f	f	Sole Proprietorship	500	\N		\N		\N		\N		{24.7855059,84.9832845}	500	\N	\N	\N	\N
 15	18	 RUDRA LIBRARY	dddddddddddd	ggggg	https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736948624/library-images/zgapjkgle2cpeehrue9s.jpg	{https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736948624/library-images/bnk7vw6owyvjs4ct8oo7.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736948624/library-images/rzzekyepeaukqncay2wj.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736948624/library-images/wdtcodtgaga2gifz1qb9.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736948624/library-images/jiwah50esj71dflgychv.jpg}	{"city": "Gaya", "line1": "Patna - Gaya Rd, opp. S.P Kothi, Kautilyapuri, Gewalbigha, Gaya, Bihar 823002", "line2": " Kautilyapuri, Gewalbigha, Gaya, Bihar 823002", "state": "Bihar", "pincode": "823002"}	false	f	f	f	Sole Proprietorship	500	\N		\N		\N		\N		{24.7851048,84.9901948}	\N	\N	\N	\N	\N
-7	9	Vivekananda Library	 Smart Self Study Centre on Atal Path by dotP with two 4×4 high speed Wifi , Hot & Cold RO water, English & Hindi News papers, Sobject Assistance, Students Counselling , One to One Tuition & Coaching facilities, attractive rates , easy access location , seats available hurry up	A Smart Self Study Centre on Atal Path by dotP with two 4×4 high speed Wifi , Hot & Cold RO water	https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875664/library-images/jfnwkr7tqieswdlhbfzw.jpg	{https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875661/library-images/u1vrwnw5ktcm77aa1cbi.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875662/library-images/euyagcjbwi0qdygewvig.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875662/library-images/knsmzqocohh6dlvfbq37.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875664/library-images/awidgwhazpaotgiwnisc.png}	{"city": "Patna", "line1": "3C , 3rd FlOOR , MAHESH NAGAR ROAD NO 4 SUMITRA PALACE,", "line2": "Atal Path, near SUMITRA MARRIAGE HALL", "state": "Bihar", "pincode": "800024"}	false	f	f	f	Sole Proprietorship	0	\N		\N		\N		\N		{24.7854306,84.983293}	232	\N	\N	\N	\N
+7	9	Vivekananda Library	 Smart Self Study Centre on Atal Path by dotP with two 4×4 high speed Wifi , Hot & Cold RO water, English & Hindi News papers, Sobject Assistance, Students Counselling , One to One Tuition & Coaching facilities, attractive rates , easy access location , seats available hurry up	A Smart Self Study Centre on Atal Path by dotP with two 4×4 high speed Wifi , Hot & Cold RO water	https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875664/library-images/jfnwkr7tqieswdlhbfzw.jpg	{https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875661/library-images/u1vrwnw5ktcm77aa1cbi.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875662/library-images/euyagcjbwi0qdygewvig.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875662/library-images/knsmzqocohh6dlvfbq37.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736875664/library-images/awidgwhazpaotgiwnisc.png}	{"city": "Patna", "line1": "3C , 3rd FlOOR , MAHESH NAGAR ROAD NO 4 SUMITRA PALACE,", "line2": "Atal Path, near SUMITRA MARRIAGE HALL", "state": "Bihar", "pincode": "800024"}	false	f	f	t	Sole Proprietorship	0	\N		\N		\N		\N		{24.7854306,84.983293}	232	\N	\N	\N	\N
 13	15	Success Library	Welcome to our beautiful library, a vibrant hub of learning, exploration, and inspiration. Our library is a welcoming space where students, faculty, and community members come together to read, learn, and grow. With a wide range of resources, including books, newspaper, magzine and high speed wifi internet. We provide separate space for everyone and very peaceful environment for studying. Whether you are looking for academic resources, leisure reading materials, or simply a quiet space to study, our library has you covered. We take great pride in providing a comfortable and welcoming environment that fosters creativity, innovation, and collaboration. Come and explore our library today, and discover all that we have to offer	Library in Gaya	https://res.cloudinary.com/dbnnlqq5v/image/upload/v1738268382/c4igyls8nyboibcevho5.jpg	{https://res.cloudinary.com/dbnnlqq5v/image/upload/v1738268382/qwcgl0ydylvd0cfebwue.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1738268382/qyetlw11djslior4xofl.jpg}	{"city": "Gaya", "line1": "near LIC Office, New Area, Gaya, Bihar 823001", "line2": " Hanuman Nagar", "state": "Bihar", "pincode": "823001"}	false	f	f	t	Sole Proprietorship	500	\N		\N		\N		\N		{24.7851048,84.9901948}	200	4	\N	\N	\N
 4	6	Takshila Library	Takshila Library is located near AP COlony	Library In gaya	https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736871210/library-images/j0ssb4bztgxypwyf0pqm.jpg	{https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736871210/library-images/j0ssb4bztgxypwyf0pqm.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736871210/library-images/susduny0kvdsxn4kukwm.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736871210/library-images/wwdajjrestbivajr6teq.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736871210/library-images/gkfxkswpu9jpjqcbjuyj.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736871210/library-images/lrbjl8u285vhfgljhbog.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736871210/library-images/iq2sebbvinhrjgmbeav2.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736871210/library-images/krcq5cj0ftttrb61kw9z.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736871210/library-images/vajx0qnmkyltochfwypw.jpg,https://res.cloudinary.com/dbnnlqq5v/image/upload/v1736871210/library-images/e3xzjquk1zdclgsojob3.jpg}	{"city": "Gaya", "line1": "Near Maa Shanti HP GAS AGENCY", "line2": "Mustafabad, ", "state": "Bihar", "pincode": "823001"}	false	f	f	t	Sole Proprietorship	500	\N		\N		\N		\N		{24.78546451400695,84.983369272396}	300	4	\N	\N	\N
 16	62	sgdhsgdhsgddhagdhasgddhasgdhasghdgashd	wewewwewew	dhsgdhgahdghasgd	\N	{https://res.cloudinary.com/dbnnlqq5v/image/upload/v1738002800/library-images/v5kvgvvylsfe7wutt53u.png}	{"city": "Banka", "line1": "family Mart kernal sher killi shewa adda (swabi)", "line2": "", "state": "Bihar", "pincode": "234302"}	false	f	f	f	Partnership Firm	500	\N		\N		\N		https://res.cloudinary.com/dbnnlqq5v/image/upload/v1738002804/library-images/tll1qpk9pqlnmpveuaa3.png	1w12121222	{33.6297984,73.0759168}	\N	\N	\N	\N	\N
@@ -2649,6 +2670,7 @@ COPY public."TimeSlot" (id, "slotId", "from", "to", booked, "bookedById", "booki
 2684	4e5423c9-bae8-473b-abaf-820e03fc47e1	02:00 PM	06:00 PM	f	\N	app	\N	603	300
 2685	ba34e31b-030c-4b89-b9a9-b05a4dc30537	06:00 PM	10:00 PM	f	\N	app	\N	603	200
 2686	0385a7b9-10ac-4e28-9c1f-0d7fc9aa5fe4	12:00 AM	11:59 PM	f	\N	app	\N	603	1000
+215	471978b9-0c42-4df0-ac15-92f4bb78349f	12:00 AM	11:59 PM	t	6	app	2025-02-23 11:06:03.298	88	232
 202	6264c11e-eb07-441e-9e76-8136dfa0a143	12:00 AM	11:59 PM	f	\N	app	\N	75	100
 203	7ff166f4-7ea6-4be1-ac86-7754656cd621	12:00 AM	11:59 PM	f	\N	app	\N	76	100
 204	93e0d058-6805-4985-8a46-e8ff16291603	12:00 AM	11:59 PM	f	\N	app	\N	77	500
@@ -2661,7 +2683,6 @@ COPY public."TimeSlot" (id, "slotId", "from", "to", booked, "bookedById", "booki
 212	ed555953-ab8f-44e8-acb9-afb9feaf9bd7	12:00 AM	11:59 PM	f	\N	app	\N	85	232
 213	15c7d245-c684-4ece-aadb-1bc844cc7b9c	12:00 AM	11:59 PM	f	\N	app	\N	86	232
 214	94823de8-bd07-4d46-b4f8-e464bada3ff3	12:00 AM	11:59 PM	f	\N	app	\N	87	232
-215	471978b9-0c42-4df0-ac15-92f4bb78349f	12:00 AM	11:59 PM	f	\N	app	\N	88	232
 216	a1269f23-f953-477a-87f9-1e2c2171845e	12:00 AM	11:59 PM	f	\N	app	\N	89	232
 217	4cc18d2a-f40e-4842-8e8c-952849a53e6e	12:00 AM	11:59 PM	f	\N	app	\N	90	232
 209	ef04e0e4-9550-4a1b-877f-21523db19ed0	12:00 AM	11:59 PM	t	9	app	2025-02-20 01:12:32.647	82	232
@@ -4989,22 +5010,30 @@ COPY public."TimeSlot" (id, "slotId", "from", "to", booked, "bookedById", "booki
 -- Data for Name: Transaction; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Transaction" (id, "transactionId", amount, type, description, "createdAt", "userId", "adminId", "libraryId", "bookingId") FROM stdin;
-286	cd169d31-49a0-4b21-97b3-fad4ee7d8a08	500	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-14 18:58:00.144	9	\N	13	\N
-287	d8dd15bb-0073-47b7-b841-bee8b34706e2	300	BOOKING_PAYMENT	Payment for booking	2025-02-14 18:58:00.148	9	\N	13	237
-288	48c1599f-50ae-4456-8944-3f8386c10a50	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-15 18:56:56.422	6	\N	1	\N
-289	be7bded1-18e0-4715-8375-ed46f154ac05	1	BOOKING_PAYMENT	Payment for booking	2025-02-15 18:56:56.426	6	\N	1	238
-290	c226d3ea-d623-42a3-9c94-098a8b42c490	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-16 08:08:23.588	9	\N	2	\N
-291	b10c6762-2cfe-4d63-a152-cc8579641718	400	BOOKING_PAYMENT	Payment for booking	2025-02-16 08:08:23.592	9	\N	2	239
-292	a7315b77-c3db-4561-b4f8-b4632fa3055d	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-17 01:32:20.158	9	\N	5	\N
-293	a5831dbc-c86c-4937-94ce-998abe90e7eb	750	BOOKING_PAYMENT	Payment for booking	2025-02-17 01:32:20.162	9	\N	5	240
-294	5a54c1f5-d3d1-490a-8d07-192debf1beb6	600	BOOKING_PAYMENT	Payment for booking	2025-02-17 01:32:25.071	9	\N	2	241
-295	82aad536-7881-4a05-ac40-a325f1b130db	250	BOOKING_PAYMENT	Payment for booking	2025-02-18 04:06:49.081	6	\N	1	242
-296	d108d43f-d58c-453e-aabe-324c498abbcd	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-18 15:50:03.323	7	\N	2	\N
-297	8d068ed3-f861-408d-b635-e220ae6f9bc2	200	BOOKING_PAYMENT	Payment for booking	2025-02-18 15:50:03.327	7	\N	2	243
-298	3aab3667-938f-4ad3-9e74-c4171af6592c	200	BOOKING_PAYMENT	Payment for booking	2025-02-19 14:57:41.276	7	\N	2	244
-299	bb5ab53e-35f7-4b6c-8ac6-eb9a85477101	700	BOOKING_PAYMENT	Payment for booking	2025-02-19 14:58:00.819	7	\N	2	245
-300	5a941d13-f9e3-4250-8784-5a6654638293	350	BOOKING_PAYMENT	Payment for booking	2025-02-21 12:20:58.599	7	\N	2	246
+COPY public."Transaction" (id, "transactionId", amount, type, description, "createdAt", "userId", "adminId", "libraryId", "bookingId", "expiresAt", "isOfflinePayment", "offlinePaymentStatus") FROM stdin;
+286	cd169d31-49a0-4b21-97b3-fad4ee7d8a08	500	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-14 18:58:00.144	9	\N	13	\N	\N	f	\N
+287	d8dd15bb-0073-47b7-b841-bee8b34706e2	300	BOOKING_PAYMENT	Payment for booking	2025-02-14 18:58:00.148	9	\N	13	237	\N	f	\N
+288	48c1599f-50ae-4456-8944-3f8386c10a50	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-15 18:56:56.422	6	\N	1	\N	\N	f	\N
+289	be7bded1-18e0-4715-8375-ed46f154ac05	1	BOOKING_PAYMENT	Payment for booking	2025-02-15 18:56:56.426	6	\N	1	238	\N	f	\N
+290	c226d3ea-d623-42a3-9c94-098a8b42c490	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-16 08:08:23.588	9	\N	2	\N	\N	f	\N
+291	b10c6762-2cfe-4d63-a152-cc8579641718	400	BOOKING_PAYMENT	Payment for booking	2025-02-16 08:08:23.592	9	\N	2	239	\N	f	\N
+292	a7315b77-c3db-4561-b4f8-b4632fa3055d	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-17 01:32:20.158	9	\N	5	\N	\N	f	\N
+293	a5831dbc-c86c-4937-94ce-998abe90e7eb	750	BOOKING_PAYMENT	Payment for booking	2025-02-17 01:32:20.162	9	\N	5	240	\N	f	\N
+294	5a54c1f5-d3d1-490a-8d07-192debf1beb6	600	BOOKING_PAYMENT	Payment for booking	2025-02-17 01:32:25.071	9	\N	2	241	\N	f	\N
+295	82aad536-7881-4a05-ac40-a325f1b130db	250	BOOKING_PAYMENT	Payment for booking	2025-02-18 04:06:49.081	6	\N	1	242	\N	f	\N
+296	d108d43f-d58c-453e-aabe-324c498abbcd	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-18 15:50:03.323	7	\N	2	\N	\N	f	\N
+297	8d068ed3-f861-408d-b635-e220ae6f9bc2	200	BOOKING_PAYMENT	Payment for booking	2025-02-18 15:50:03.327	7	\N	2	243	\N	f	\N
+298	3aab3667-938f-4ad3-9e74-c4171af6592c	200	BOOKING_PAYMENT	Payment for booking	2025-02-19 14:57:41.276	7	\N	2	244	\N	f	\N
+299	bb5ab53e-35f7-4b6c-8ac6-eb9a85477101	700	BOOKING_PAYMENT	Payment for booking	2025-02-19 14:58:00.819	7	\N	2	245	\N	f	\N
+300	5a941d13-f9e3-4250-8784-5a6654638293	350	BOOKING_PAYMENT	Payment for booking	2025-02-21 12:20:58.599	7	\N	2	246	\N	f	\N
+301	f7d31749-7e77-4e69-8f4a-7c93b18dfb29	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-22 07:12:54.758	6	\N	2	\N	\N	f	\N
+302	a0d2bfb6-6321-476e-9bff-a91061940bc3	200	BOOKING_PAYMENT	Offline payment request for booking 247 at library 2 by user undefined at 2025-02-22T07:13:03.387Z	2025-02-22 07:12:54.762	6	\N	2	247	2025-02-22 07:16:03.387	t	PENDING
+303	7ba0eb26-b713-446e-a5e8-c0a4fcbc04f1	250	BOOKING_PAYMENT	Offline payment request for booking 248 at library 1 by user undefined at 2025-02-22T07:13:35.043Z	2025-02-22 07:13:30.411	6	\N	1	248	2025-02-22 07:16:35.043	t	PENDING
+304	9e0ef91f-c460-4254-b5b4-e951daff212b	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-23 08:05:43.514	6	\N	7	\N	\N	f	\N
+305	4d392556-bcba-410c-92c5-d2be78f94b9f	232	BOOKING_PAYMENT	Offline payment approved by admin	2025-02-23 08:05:43.518	6	\N	7	249	2025-02-23 08:08:57.041	t	APPROVED
+306	82e3ea59-e20d-4e54-948e-f74946ef36dd	0	REGISTRATION_FEE	Registration fee for first-time booking	2025-02-23 10:38:03.782	33	\N	2	\N	\N	f	\N
+307	8f922e97-58f9-4bdf-a2c6-6977c170a055	350	BOOKING_PAYMENT	Payment for booking	2025-02-23 10:38:03.785	33	\N	2	250	\N	f	\N
+308	87262654-0a4e-4523-a328-e3c11cd60733	350	BOOKING_PAYMENT	Payment for booking	2025-02-23 10:39:39.147	33	\N	2	251	\N	f	\N
 \.
 
 
@@ -5017,6 +5046,7 @@ COPY public."User" (id, username, email, password, "accountType", "additionalDet
 3	Amit	amitnirala14@gmail.com	$2b$10$zRULucbL51SkQR92hc0qn.V.8Kjg8DTqKdoDgXWHxgot.W2W/E7vO	User	\N	https://avatars.dicebear.com/api/initials/Amit.svg	\N	9471803877
 4	Deepak Kumar	deepakmaurya8396@gmail.com	$2b$10$dPgGC2Tqng2r5xYDBTiy2eyRfo5KHQJSZGfHkTwVKICkcCgz4yDGe	User	\N	https://avatars.dicebear.com/api/initials/Deepak Kumar.svg	\N	9919168088
 6	Harsh kumar saw	mister.harshkumar@gmail.com	$2b$10$0.3AUYe.WJ0klduD8CoS.esqMl7TIXQ/LnhQt1mkpgqprZhdgor1m	User	\N	https://avatars.dicebear.com/api/initials/Harsh kumar saw.svg	\N	7991168445
+33	Vikas Kumar	vikaskumar785695@gmail.com	$2b$10$2slV9y6SRLdPSL5DINQtaulrru4D8j4gD9wVY69c0s1EOHwFLYFlq	User	\N	https://eu.ui-avatars.com/api/?name=Vi&size=250	\N	9229879270
 8	Kumar Neeraj	yadavkumar26022003@gmail.com	$2b$10$n44SVq7IIkgqS4g.whiv5uMxBdhNuR439d20I5.PMUGtSrhXC.vY6	User	\N	https://avatars.dicebear.com/api/initials/Harsh kumar saw.svg	\N	9234345896
 9	Ashu	ashwin@jythu.com	$2b$10$HADDVgs/3SxZKWx.UAcWlOC0kmwF20sz44F6EUvtUcjCXufta0MgS	User	\N	https://eu.ui-avatars.com/api/?name=As&size=250	\N	9992304660
 10	Kritika	Kritikabharti01@gmail.com	$2b$10$ARfhew6MOR5rbuKFVMpcq..hcQoBHBeisxXBq1A99cskrPKPlFJu.	User	\N	https://eu.ui-avatars.com/api/?name=Kr&size=250	\N	9827595804
@@ -5076,6 +5106,7 @@ COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs,
 643625dc-0582-4699-826c-5afe174a1a54	d12c73cf49de4c8134034ff3b1eab80bd15671ef25da850ebe29a68fd91e831c	2025-01-14 08:37:48.362754+00	20241216064245_float	\N	\N	2025-01-14 08:37:48.356771+00	1
 47af3f17-f204-4031-9321-d841a52c9113	cdbe11919e6c602a0162be8029da58c6c7b14539bcb9a02d28d5ef9098eb512b	2025-01-14 08:37:48.328537+00	20241213223622_change_phone_number_to_string	\N	\N	2025-01-14 08:37:48.319942+00	1
 e6b6b0b5-1a92-4a2e-8b0a-61136087008c	088f1a443c49ee9dbcf80e9981c1cf599b458adf3227892eef0d5903dd44589c	2025-01-14 08:37:48.330967+00	20241214042400_admin	\N	\N	2025-01-14 08:37:48.329051+00	1
+98465e98-3449-440c-b557-04b7e64216e0	9249c00c3299e2968f2458882f36380ae3d91823b42f5a5cc790bc8f1fa8ceb9	2025-02-22 06:39:38.781061+00	20250222063938_add_offline_payment_transactions	\N	\N	2025-02-22 06:39:38.775786+00	1
 b3aa2597-8361-4924-859a-b6f2604d766c	2c767d28e540b799c456d13bff1b5ba60417549765475af8a0f139cb2331b662	2025-01-14 08:37:48.33359+00	20241215040827_room	\N	\N	2025-01-14 08:37:48.331458+00	1
 ee454435-20f9-4bef-b5a7-4fcb31c471be	ae20aa81557db9f82a49121a9c05be39bfb61a1be06fc93032797d2ae6f60ce4	2025-01-14 08:37:48.364817+00	20241216104916_init	\N	\N	2025-01-14 08:37:48.363258+00	1
 0061dc96-578a-4794-a6bd-6191065ae6ec	485fd48a5d7585634a418382f814de4d24c36465d8ec218531560b35954c4891	2025-01-14 08:37:48.335991+00	20241215041935_init	\N	\N	2025-01-14 08:37:48.334118+00	1
@@ -5140,7 +5171,7 @@ SELECT pg_catalog.setval('public."BookingFriend_id_seq"', 1, false);
 -- Name: Booking_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Booking_id_seq"', 246, true);
+SELECT pg_catalog.setval('public."Booking_id_seq"', 251, true);
 
 
 --
@@ -5196,7 +5227,7 @@ SELECT pg_catalog.setval('public."PanCardDetails_id_seq"', 109, true);
 -- Name: PhoneOtp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."PhoneOtp_id_seq"', 439, true);
+SELECT pg_catalog.setval('public."PhoneOtp_id_seq"', 441, true);
 
 
 --
@@ -5231,14 +5262,14 @@ SELECT pg_catalog.setval('public."TimeSlot_id_seq"', 3559, true);
 -- Name: Transaction_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Transaction_id_seq"', 300, true);
+SELECT pg_catalog.setval('public."Transaction_id_seq"', 308, true);
 
 
 --
 -- Name: User_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."User_id_seq"', 32, true);
+SELECT pg_catalog.setval('public."User_id_seq"', 33, true);
 
 
 --

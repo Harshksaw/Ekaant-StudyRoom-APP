@@ -1,8 +1,8 @@
-import { activeRequestsGauge } from './activeRequests.js';
-import { requestCountMiddleware } from './requestCounts.js';
-import { requestDurationMiddleware } from './requestDuration.js';
 
-export const metricsMiddleware = (req, res, next) => {
+const { requestCountMiddleware } = require('./requestCounts');
+const { requestDurationMiddleware } = require('./requestDuration');
+
+const metricsMiddleware = (req, res, next) => {
 
 
   requestCountMiddleware(req, res, () => {});
@@ -11,3 +11,4 @@ export const metricsMiddleware = (req, res, next) => {
 
   next();
 };
+module.exports = { metricsMiddleware };

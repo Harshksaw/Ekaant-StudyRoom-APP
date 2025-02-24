@@ -48,7 +48,7 @@ export default function Bookings() {
   const [loading, setLoading] = useState(true);
   const getBookings = async () => {
     const userId = await getUserId(); // Wait for getUserId to complete
-    console.log("🚀 ~ getBookings ~ userId:", userId);
+    // console.log("🚀 ~ getBookings ~ userId:", userId);
 
     if (userId) {
       try {

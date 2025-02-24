@@ -11,17 +11,17 @@ Clone this repo to follow along with me. Or you can create your own project too.
    ````
 
 
-   ````docker exec -it f2d1fefc532e psql -U testing -d notonProduction -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;
+   ````docker exec -it 81612b1bd1d8 psql -U testing -d notonProduction -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;
    ````
 
 2. Copy the backup file into the container:
 
    ````bash
-   docker cp db_backup/backup.sql f2d1fefc532e:/backup.sql
+   docker cp db_backup/backup.sql 81612b1bd1d8:/backup.sql
    ````
 
 3. Restore the backup inside the container:
 
    ````bash
-   docker exec -i f2d1fefc532e psql -U testing -d notonProduction -f /backup.sql
+   docker exec -i 81612b1bd1d8 psql -U postgres -d postgres -f /backup.sql
    ````

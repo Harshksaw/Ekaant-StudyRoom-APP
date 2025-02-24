@@ -8,108 +8,106 @@ datasource db {
 }
 
 model App {
-  id             Int      @id @default(autoincrement())
-  Banner         String[]
-  locations     Location[]
-
+  id        Int        @id @default(autoincrement())
+  Banner    String[]
+  locations Location[]
 }
 
 model Location {
   id            Int     @id @default(autoincrement())
-  location      String  
+  location      String
   locationImage String?
   coords        Float[]
-  appId         Int   @default(autoincrement())
+  appId         Int
   app           App     @relation(fields: [appId], references: [id])
 }
 
 //Admin
 model Admin {
-  id                  Int                @id @default(autoincrement())
-  username              String    @unique
-  email                 String    @unique
-  phoneNumber           String    @db.VarChar(10)
-  Dob                   DateTime?
-  password              String
-  accountType           String    @default("Admin")
-  fullName              String
-  AddharNumber          String
-  PanNumber             String
-  address               Json
-  adhaarCardDetails     AdhaarCardDetails? 
-  panCardDetails        PanCardDetails?
-  passportPhoto             String?
-  profileImage          String?
-  resetPasswordExpires  DateTime?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-ownedProperties     Library[] @relation("OwnedProperties")
-libraryBookings       Library[] @relation("LibraryBookings")
-  transaction Transaction[]
-  
+  id                   Int                @id @default(autoincrement())
+  username             String             @unique
+  email                String             @unique
+  phoneNumber          String             @db.VarChar(10)
+  Dob                  DateTime?
+  password             String
+  accountType          String             @default("Admin")
+  fullName             String
+  AddharNumber         String
+  PanNumber            String
+  address              Json
+  adhaarCardDetails    AdhaarCardDetails?
+  panCardDetails       PanCardDetails?
+  passportPhoto        String?
+  profileImage         String?
+  resetPasswordExpires DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  ownedLibraries       Library[]          @relation("AdminOwnedLibraries")
+
+  libraryBookings Library[]     @relation("LibraryBookings")
+  transaction     Transaction[]
 }
 
-
 model AdhaarCardDetails {
-  id             Int     @id @default(autoincrement())
-  adhaarNumber   String  
-  adhaarCardFile String  
-  adminId        Int     @unique
-  admin          Admin   @relation(fields: [adminId], references: [id])
+  id             Int    @id @default(autoincrement())
+  adhaarNumber   String
+  adhaarCardFile String
+  adminId        Int    @unique
+  admin          Admin  @relation(fields: [adminId], references: [id])
 }
 
 model PanCardDetails {
-  id           Int     @id @default(autoincrement())
-  panNumber     String  
-  panCardFile   String  
-  adminId      Int     @unique
-admin        Admin   @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  id          Int    @id @default(autoincrement())
+  panNumber   String
+  panCardFile String
+  adminId     Int    @unique
+  admin       Admin  @relation(fields: [adminId], references: [id], onDelete: Cascade)
 }
 
 //Users
 model User {
-  id                  Int             @id @default(autoincrement())
-  username            String          
-  email               String          @unique
-  phoneNumber         String          @db.VarChar(10)
-  password            String          
-  accountType         String          
-  additionalDetails   String[]
-  ownedProperties     Library[]       @relation("OwnedProperties")
-  bookings            Booking[] @relation("UserBookings")
-  image               String?
+  id                   Int           @id @default(autoincrement())
+  username             String
+  email                String        @unique
+  phoneNumber          String        @db.VarChar(10)
+  password             String
+  accountType          String
+  additionalDetails    String[]
+  ownedProperties      Library[]     @relation("OwnedProperties")
+  bookings             Booking[]     @relation("UserBookings")
+  image                String?
   resetPasswordExpires DateTime?
-  friends             Friend[]
-  timeSlots           TimeSlot[]
-  transactions        Transaction[]
-  reviews             Review[]
+  friends              Friend[]
+  timeSlots            TimeSlot[]
+  transactions         Transaction[]
+  reviews              Review[]
 }
 
-
 model Library {
-  id                  Int       @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  libraryOwnerId      Int?
-    libraryOwner        Admin?    @relation(fields: [libraryOwnerId], references: [id], name: "OwnedProperties", onDelete: Cascade)
-  name                String    
-  
-  longDescription     String?
-  shortDescription    String    
+  libraryOwnerId Int?
+  libraryOwner   Admin? @relation(fields: [libraryOwnerId], references: [id], name: "AdminOwnedLibraries", onDelete: Cascade)
 
-  cardImage           String?
-  images              String[]
-  Price               Int?
-  address             Json?      
-  commingSoonMessage  String?   @default("false") // Note: This is a String with default "false" since you have type: String in Mongoose
- rooms           Room[]   @relation("LibraryRooms")
-  coords              Float[]
-  distances Distance[]
+  name String
 
-  reviews             Review[]  @relation("Reviews")
-  deleted             Boolean   @default(false)
-  amenities           Amenities? 
-  comingSoon          Boolean   @default(false)
-  approved            Boolean   @default(false)
+  longDescription  String?
+  shortDescription String
+
+  cardImage          String?
+  images             String[]
+  Price              Int?
+  address            Json?
+  commingSoonMessage String?    @default("false") // Note: This is a String with default "false" since you have type: String in Mongoose
+  rooms              Room[]     @relation("LibraryRooms")
+  coords             Float[]
+  distances          Distance[]
+
+  reviews             Review[]   @relation("Reviews")
+  deleted             Boolean    @default(false)
+  amenities           Amenities?
+  comingSoon          Boolean    @default(false)
+  approved            Boolean    @default(false)
   legal               String?
   gstNumber           String?
   gstCertificateFile  String?
@@ -120,83 +118,81 @@ model Library {
   msmeNumber          String?
   msmeCertificateFile String?
 
-
-  propertyType        String?
+  propertyType          String?
   uploadElectricityBill String?
-  uploadLeaseAgreement String?
+  uploadLeaseAgreement  String?
 
-  registrationFees    Int    @default(500)
-  avgRating      Float?   // Add this line to define avgRating
-  users               User[]    @relation("OwnedProperties")
-  admins              Admin[]   @relation("LibraryBookings")
-  bookings            Booking[] @relation("LibraryBookings")
-  invoices            Invoice[] @relation("LibraryInvoices")
-  transaction Transaction[]
+  registrationFees Int           @default(500)
+  avgRating        Float? // Add this line to define avgRating
+  users            User[]        @relation("OwnedProperties")
+  admins           Admin[]       @relation("LibraryBookings")
+  bookings         Booking[]     @relation("LibraryBookings")
+  invoices         Invoice[]     @relation("LibraryInvoices")
+  transaction      Transaction[]
 }
 
 model Room {
-  id        Int      @id @default(autoincrement())
-  libraryId Int
-  roomName  String?
- library     Library  @relation(fields: [libraryId], references: [id], onDelete: Cascade, name: "LibraryRooms")
-  roomNo    Int      
-  Ac        Boolean  @default(false)
-  seats     Seat[]  @relation("RoomSeats")
-  doorPosition Int[] @default(dbgenerated("ARRAY[0, 0, 0, 0, 0]::Int[]"))
+  id           Int     @id @default(autoincrement())
+  libraryId    Int
+  roomName     String?
+  library      Library @relation(fields: [libraryId], references: [id], onDelete: Cascade, name: "LibraryRooms")
+  roomNo       Int
+  Ac           Boolean @default(false)
+  seats        Seat[]  @relation("RoomSeats")
+  doorPosition Int[]   @default(dbgenerated("ARRAY[0, 0, 0, 0, 0]::Int[]"))
 }
+
 model Seat {
-  id        Int     @id @default(autoincrement())
-  seatId    String  
+  id        Int        @id @default(autoincrement())
+  seatId    String
   seatName  String?
-  seatLabel String  
-  rotation Int  @default(0)
+  seatLabel String
+  rotation  Int        @default(0)
   roomId    Int
-  room      Room   @relation(fields: [roomId], references: [id], onDelete: Cascade, name: "RoomSeats")
+  room      Room       @relation(fields: [roomId], references: [id], onDelete: Cascade, name: "RoomSeats")
   timeSlots TimeSlot[]
 }
 
 model TimeSlot {
-  id            Int       @id @default(autoincrement())
-  slotId        String    @default(uuid())
-  from          String    
-  to            String    
-  booked        Boolean   @default(false)
-  bookedById    Int?
-  bookedBy      User?     @relation(fields: [bookedById], references: [id])
-  bookingSource String    @default("app")
-  price         Int       @default(0)   
+  id             Int       @id @default(autoincrement())
+  slotId         String    @default(uuid())
+  from           String
+  to             String
+  booked         Boolean   @default(false)
+  bookedById     Int?
+  bookedBy       User?     @relation(fields: [bookedById], references: [id])
+  bookingSource  String    @default("app")
+  price          Int       @default(0)
   bookingEndDate DateTime?
-  seatId        Int
-  seat          Seat      @relation(fields: [seatId], references: [id], onDelete: Cascade)
+  seatId         Int
+  seat           Seat      @relation(fields: [seatId], references: [id], onDelete: Cascade)
 }
-
 
 model Booking {
-  id                Int       @id @default(autoincrement())
-  userId            Int
-  user              User      @relation(fields: [userId], references: [id], name: "UserBookings")
-  libraryId         Int
-  library           Library   @relation(fields: [libraryId], references: [id], name: "LibraryBookings")
-  initialPrice      Float
-  finalPrice        Float
-  paid              Boolean   @default(false)
-  timeSlotDetails   Json?      // Details of the booked time slot
-  roomNo            Int
-  bookedSeat        Json      // Details of the booked seat
-  bookingDate       DateTime
-  bookingFinalDate  DateTime?
+  id               Int       @id @default(autoincrement())
+  userId           Int
+  user             User      @relation(fields: [userId], references: [id], name: "UserBookings")
+  libraryId        Int
+  library          Library   @relation(fields: [libraryId], references: [id], name: "LibraryBookings")
+  initialPrice     Float
+  finalPrice       Float
+  paid             Boolean   @default(false)
+  timeSlotDetails  Json? // Details of the booked time slot
+  roomNo           Int
+  bookedSeat       Json // Details of the booked seat
+  bookingDate      DateTime
+  bookingFinalDate DateTime?
   // Remove friendId and friend relation
-  bookingPeriod     Int       @default(1)
+  bookingPeriod    Int       @default(1)
 
-  transactionDetails Json?    // Details of the transaction
-  bookingStatus     BookingStatus @default(PENDING)
-  approved          Boolean   @default(false)
-  timeStamp         DateTime  @default(now())
-  invoice           Invoice?
-  friends           BookingFriend[] @relation("BookingFriends")
-  transactions Transaction[]   @relation("BookingTransactions")
+  transactionDetails Json? // Details of the transaction
+  bookingStatus      BookingStatus   @default(PENDING)
+  approved           Boolean         @default(false)
+  timeStamp          DateTime        @default(now())
+  invoice            Invoice?
+  friends            BookingFriend[] @relation("BookingFriends")
+  transactions       Transaction[]   @relation("BookingTransactions")
 }
-
 
 enum BookingStatus {
   PENDING
@@ -205,13 +201,13 @@ enum BookingStatus {
 }
 
 model Friend {
-  id          Int     @id @default(autoincrement())
-  name        String  
-  email       String?
-  phoneNumber  String? 
-  relationship String?
-  userId      Int?    
-  user        User?   @relation(fields: [userId], references: [id])
+  id             Int             @id @default(autoincrement())
+  name           String
+  email          String?
+  phoneNumber    String?
+  relationship   String?
+  userId         Int?
+  user           User?           @relation(fields: [userId], references: [id])
   bookingFriends BookingFriend[] @relation("BookingFriends")
 }
 
@@ -223,45 +219,34 @@ model BookingFriend {
   friend    Friend  @relation(fields: [friendId], references: [id], name: "BookingFriends")
 }
 
-
-
-
-
-
 model Review {
   id        Int      @id @default(autoincrement())
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
-  review    String   
-  stars     Int      
+  review    String
+  stars     Int
   createdAt DateTime @default(now())
   libraryId Int
   library   Library  @relation(fields: [libraryId], references: [id], name: "Reviews")
 }
 
 model Amenities {
-  id        Int      @id @default(autoincrement())
-  amenities Json     @default("[]")
-  libraryId Int      @unique
-  library   Library  @relation(fields: [libraryId], references: [id])
+  id        Int     @id @default(autoincrement())
+  amenities Json    @default("[]")
+  libraryId Int     @unique
+  library   Library @relation(fields: [libraryId], references: [id])
 }
-
-
-
-
-
-
 
 model PhoneOtp {
   id          Int      @id @default(autoincrement())
-  phoneNumber String  
+  phoneNumber String
   phoneOtp    String?  @map("phoneotp")
   createdAt   DateTime @default(now()) @db.Timestamp(6)
 }
 
 model Otp {
   id        Int      @id @default(autoincrement())
-  email     String   
+  email     String
   emailOtp  String?  @map("emailotp")
   createdAt DateTime @default(now()) @db.Timestamp(6)
 }
@@ -288,55 +273,53 @@ model Invoice {
   bookingStatus       String
   approved            Boolean
   timeStamp           DateTime? @db.Timestamp()
-    createdAt           DateTime  @default(now())
+  createdAt           DateTime  @default(now())
   bookingFinalDate    DateTime
   seatLabel           String
   timeSlotDetails     Json?
 }
 
 model Distance {
-  id        Int      @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   libraryId Int
-  library   Library  @relation(fields: [libraryId], references: [id])
+  library   Library @relation(fields: [libraryId], references: [id])
   city      String
   distance  Float
 }
-
 
 enum TransactionType {
   REGISTRATION_FEE
   BOOKING_PAYMENT
   COMMISSION
-  REFUND 
+  REFUND
   OFFLINE_BOOKING
   // Add other types as needed
 }
- 
 
 enum OfflinePaymentStatus {
   PENDING
   APPROVED
   CANCELED
 }
+
 model Transaction {
-  id             Int         @id @default(autoincrement())
-  transactionId  String      @unique @default(uuid())
-  amount         Float
-  type           TransactionType 
-  description    String      
-  createdAt      DateTime    @default(now())
+  id            Int             @id @default(autoincrement())
+  transactionId String          @unique @default(uuid())
+  amount        Float
+  type          TransactionType
+  description   String
+  createdAt     DateTime        @default(now())
 
-  userId        Int?
-  user          User?       @relation(fields: [userId], references: [id])
-  adminId        Int?
-  admin          Admin?       @relation(fields: [adminId], references: [id])
-  libraryId      Int?
-  library        Library?     @relation(fields: [libraryId], references: [id])
-  bookingId      Int?
-  booking        Booking?    @relation(fields: [bookingId], references: [id], name: "BookingTransactions")
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  adminId   Int?
+  admin     Admin?   @relation(fields: [adminId], references: [id])
+  libraryId Int?
+  library   Library? @relation(fields: [libraryId], references: [id])
+  bookingId Int?
+  booking   Booking? @relation(fields: [bookingId], references: [id], name: "BookingTransactions")
 
-   isOfflinePayment      Boolean? @default(false)  // True if offline payment
-  offlinePaymentStatus  OfflinePaymentStatus?   // Pending, Approved, or Canceled
-  expiresAt             DateTime?               // Auto-cancel time (for offline payments)
+  isOfflinePayment     Boolean?              @default(false) // True if offline payment
+  offlinePaymentStatus OfflinePaymentStatus? // Pending, Approved, or Canceled
+  expiresAt            DateTime? // Auto-cancel time (for offline payments)
 }
-
