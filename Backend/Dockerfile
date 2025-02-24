@@ -1,4 +1,4 @@
-FROM node:22-alpine
+FROM node:18
 
 WORKDIR /usr/src/app
 
@@ -14,4 +14,4 @@ RUN npx prisma generate
 
 EXPOSE 3009
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run" , "dev"]

@@ -1,8 +1,7 @@
-import { activeRequestsGauge } from './activeRequests.js';
-import { requestCountMiddleware } from './requestCounts.js';
-import { requestDurationMiddleware } from './requestDuration.js';
+const { activeRequestsGauge } = require('./activeRequests');
 
-export const cleanupMiddleware = (req, res, next) => {
+
+const cleanupMiddleware = (req, res, next) => {
   // Increase active requests gauge when a request starts
   activeRequestsGauge.inc();
   const startTime = Date.now();
@@ -24,3 +23,4 @@ export const cleanupMiddleware = (req, res, next) => {
   
   next();
 };
+module.exports = { cleanupMiddleware };
