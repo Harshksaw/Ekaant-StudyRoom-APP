@@ -8,6 +8,7 @@ RUN npm install
 
 COPY . .
 
+RUN npm rebuild bcrypt
 # Run prisma generate to generate the Prisma client
 RUN npx prisma generate
 
