@@ -759,7 +759,7 @@ const approveOfflinePayment = async (req, res) => {
     });
 
     const transactionWithInvoice = await prisma.transaction.findUnique({
-      where: { transactionId: receivedTransactionId },
+      where: { transactionId: transactionId },
       include: {
         booking: {
           include: {
