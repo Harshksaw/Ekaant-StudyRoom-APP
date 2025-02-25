@@ -13,7 +13,10 @@ export default function OfflineScreen() {
   const { width } = useWindowDimensions()
   const [timeLeft, setTimeLeft] = useState(180) // 3 minutes (180 seconds)
   const [status, setStatus] = useState("PENDING")
-  const params: any = useRoute();
+  const route  = useRoute();
+  const bookingData = route?.params?.item ? JSON.parse(route.params.item) : null;
+  console.log("🚀 ~ OfflineScreen ~ bookingData:", bookingData)
+
 
 
   
@@ -28,7 +31,7 @@ export default function OfflineScreen() {
         }
         return prev - 1
       })
-    }, 3000)
+    }, 1000)
   
     return () => clearInterval(interval)
   }, [])
@@ -53,7 +56,9 @@ useEffect(() => {
             clearInterval(statusInterval)
             Toast.show("Payment Approved", { type: 'success'  , duration: 3000})
 
-            router.push('/(tabs)/bookings')
+            // router.push('/(tabs)/bookings')
+            router.replace('/(tabs)/bookings')
+
           }
         })
         .catch(error => console.error("Axios error:", error))
@@ -67,18 +72,25 @@ useEffect(() => {
   <SafeAreaView style={styles.container}>
       <Text style={[styles.title, { fontSize: width * 0.07 }]}>Offline Payment</Text>
   
-      <View style={[styles.infoBox, { width: width * 0.85 }]}>
-        <Text style={[styles.info, { fontSize: width * 0.045 }]}>🏛 Library: XYZ Library</Text>
 
-        <Text style={[styles.info, { fontSize: width * 0.045 }]}>🆔 Payment ID: 123456</Text>
-        <Text style={[styles.info, { fontSize: width * 0.045 }]}>💰 Amount: ₹500</Text>
+      <View style={[styles.infoBox, { width: width * 0.85 }]}>
+        <Text style={[styles.info, { fontSize: width * 0.045 }]}>
+          🏛 Library: {bookingData?.libraryId?.name || "Not Available"}
+        </Text>
+        <Text style={[styles.info, { fontSize: width * 0.045 }]}>
+          🆔 Payment ID: {bookingData?.bookingId?.data?.bookingId || "Not Available"}
+        </Text>
+        <Text style={[styles.info, { fontSize: width * 0.045 }]}>
+          💰 Amount: ₹{bookingData?.totalAmount || "0"}
+        </Text>
         <Text style={[styles.info, styles.bigInfo, { fontSize: width * 0.06 }]}>
           ⏳ Time Left: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
         </Text>
       </View>
   
-      <Text style={[styles.status, status === "PENDING" ? styles.pending : styles.canceled]}>
-        {status === "PENDING" ? "Waiting for Approval..." : "❌ Payment Canceled"}
+      <Text style={[styles.status, 
+        status === "PENDING" ? styles.pending : status === "CANCELED" ? styles.canceled : {}]}>
+        {status === "PENDING" ? "Waiting for Approval..." : status === "CANCELED" ? "❌ Payment Canceled" : "Approved"}
       </Text>
   
       {status === "CANCELED" && (
