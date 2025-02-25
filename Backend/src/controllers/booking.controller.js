@@ -1,4 +1,4 @@
- const { StatusCodes } = require("http-status-codes");
+const { StatusCodes } = require("http-status-codes");
 
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
@@ -114,7 +114,7 @@ async function createBooking(req, res) {
         .json({ message: "User not found" });
     }
 
-    if (!libraryId || !finalPrice || timeSlot.length === 0 || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod ) {
+    if (!libraryId || !finalPrice || timeSlot.length === 0 || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod) {
       // console.log("-______-", libraryId, initialPrice, finalPrice, timeSlot.length, roomNo, bookedSeat, bookingDate, bookingPeriod, );
       return res
         .status(StatusCodes.BAD_REQUEST)
@@ -151,7 +151,7 @@ async function createBooking(req, res) {
     }
 
     // Create the booking
-    if(typeof(bookingPeriod) === 'string'){
+    if (typeof (bookingPeriod) === 'string') {
       bookingPeriod = parseInt(bookingPeriod);
     }
 
@@ -161,7 +161,7 @@ async function createBooking(req, res) {
         libraryId,
         initialPrice,
         finalPrice: totalAmount,
-        timeSlotDetails : timeSlot, // Include this field in the data object
+        timeSlotDetails: timeSlot, // Include this field in the data object
         roomNo,
         bookedSeat,
         bookingDate,
@@ -185,7 +185,7 @@ async function createBooking(req, res) {
     res.status(StatusCodes.CREATED).json({
       success: true,
       message: "Booking created successfully",
-      data: {booking , ...transactionData},
+      data: { booking, ...transactionData },
 
     });
   } catch (error) {
@@ -259,9 +259,9 @@ async function getBookingByLibId(req, res) {
         user: true, // Include the related User model
       },
 
-    
+
       orderBy: {
-        bookingDate : 'desc',
+        bookingDate: 'desc',
       }
     });
 
@@ -324,11 +324,11 @@ async function confirmBooking(req, res) {
     console.log(`Finding time slot with id: ${timeSlotId}`);
     const timeSlot = BookedData.timeSlot[0];
     console.log("🚀 ~ confirmBooking ~ timeSlot:", timeSlot);
-    
+
     if (!timeSlot) {
       return res.status(404).json({ error: "Time slot not found" });
     }
-    
+
     if (timeSlot.booked) {
       return res.status(400).json({ error: "Time slot already booked" });
     }
@@ -376,7 +376,7 @@ async function confirmBooking(req, res) {
       data: {
         bookingId: BookedData.bookingId,
         invoiceNumber: `INV-${BookedData.bookingId}`,
-        libraryAddress:libraryAddress,
+        libraryAddress: libraryAddress,
         libraryName: BookedData.libraryId.name,
         customerName: BookedData.libraryId.libraryOwner.fullName,
         customerEmail: BookedData.libraryId.libraryOwner.email,
@@ -408,7 +408,7 @@ async function generateInvoice(req, res) {
     const { bookingId } = req.params;
 
     const invoice = await prisma.invoice.findFirst({
-     where : { bookingId: parseInt(bookingId) },
+      where: { bookingId: parseInt(bookingId) },
     });
 
     if (!invoice) {
@@ -435,9 +435,9 @@ async function adminBooking(req, res) {
   try {
     //create booking via admin ,and bloakc the seat
 
-    const { libraryId, roomNo,seatId , timeSlot, name , email , phoneNumber , adminId} = req.body;
+    const { libraryId, roomNo, seatId, timeSlot, name, email, phoneNumber, adminId } = req.body;
     console.log("🚀 ~ adminBooking ~ req.body", req.body)
-    
+
     const room = await prisma.room.findFirst({
       where: { libraryId, id: roomNo },
     });
@@ -454,19 +454,19 @@ async function adminBooking(req, res) {
     if (!seat) {
       return res.status(404).json({ error: "Seat not found" });
     }
-   // Find the time slot
-   const timeSlotData = await prisma.timeSlot.findFirst({
-    where: { seatId: seatId, id: timeSlot },
-  });
-   console.log("🚀 ~ adminBooking ~ timeSlotData:", timeSlotData)
+    // Find the time slot
+    const timeSlotData = await prisma.timeSlot.findFirst({
+      where: { seatId: seatId, id: timeSlot },
+    });
+    console.log("🚀 ~ adminBooking ~ timeSlotData:", timeSlotData)
 
-  if (!timeSlotData) {
-    return res.status(404).json({ error: "Time slot not found" });
-  }
+    if (!timeSlotData) {
+      return res.status(404).json({ error: "Time slot not found" });
+    }
 
-  if (timeSlotData.booked) {
-    return res.status(400).json({ error: "Time slot already booked" });
-  }
+    if (timeSlotData.booked) {
+      return res.status(400).json({ error: "Time slot already booked" });
+    }
 
 
     // Create the transaction
@@ -492,13 +492,13 @@ async function adminBooking(req, res) {
         timeSlotDetails: JSON.stringify(timeSlotData),
         roomNo,
 
-  transactionDetails:{
-    transactionId: transaction.id,
-    transactionDate: new Date(),
-    bookedFor : name,
-    email,
-    phoneNumber
-  },
+        transactionDetails: {
+          transactionId: transaction.id,
+          transactionDate: new Date(),
+          bookedFor: name,
+          email,
+          phoneNumber
+        },
         bookedSeat: JSON.stringify(seat),
         bookingDate: new Date(),
         bookingPeriod: 1, // Assuming 1 month booking period
@@ -638,7 +638,7 @@ async function offlineBooking(req, res) {
         }
       });
     }
-   
+
     console.debug("DEBUG: Transaction created:", transaction);
 
     console.debug("DEBUG: Creating invoice for bookingId:", bookingId);
@@ -722,7 +722,7 @@ const approveOfflinePayment = async (req, res) => {
 
     // 3️⃣ Prevent double booking
     const existingTimeSlot = await prisma.timeSlot.findFirst({
-      where: { slotId : timeSlotId, seatId:seatId }
+      where: { slotId: timeSlotId, seatId: seatId }
     });
 
     if (!existingTimeSlot) {
@@ -745,6 +745,7 @@ const approveOfflinePayment = async (req, res) => {
       }
     });
 
+
     console.debug(`DEBUG: Transaction marked as APPROVED: ${seatId}`);
 
     // 5️⃣ Block the seat by updating TimeSlot
@@ -756,6 +757,79 @@ const approveOfflinePayment = async (req, res) => {
         bookingEndDate: new Date(Date.now() + 3 * 60 * 60 * 1000) // Blocks for 3 hours
       }
     });
+
+    const transactionWithInvoice = await prisma.transaction.findUnique({
+      where: { transactionId: receivedTransactionId },
+      include: {
+        booking: {
+          include: {
+            user: true, // Get user details
+            library: {
+              include: {
+                libraryOwner: true, // Get library admin details
+              },
+            },
+            bookedSeat: true, // Ensure this exists in the schema
+            timeSlots: true, // Ensure this exists in the schema
+          },
+        },
+      },
+    });
+    console.log("🚀 ~ approveOfflinePayment ~ transactionWithInvoice:", transactionWithInvoice)
+
+    if (!transactionWithInvoice || !transactionWithInvoice.booking) {
+      return res.status(404).json({ error: "Transaction or booking not found" });
+    }
+
+    const bookingFromInvoice = transactionWithInvoice.booking;
+    const library = bookingFromInvoice.library || {};
+    const libraryOwner = library.libraryOwner || {};
+    const user = bookingFromInvoice.user || {};
+
+    // Construct the library address
+    const libraryAddress = library.address
+      ? `${library.address.line1 || ''}, ${library.address.line2 || ''}, ${library.address.city || ''}, ${library.address.state || ''}, ${library.address.pincode || ''}`
+      : "Address Not Available";
+
+    // Handle missing seat and time slot details
+    const seatLabel = bookingFromInvoice.bookedSeat ? bookingFromInvoice.bookedSeat.seatLabel : "N/A";
+    const timeSlotDetails = bookingFromInvoice.timeSlots ? JSON.stringify(bookingFromInvoice.timeSlots) : "[]";
+
+
+   
+// ✅ Create the Invoice
+const invoice = await prisma.invoice.create({
+  data: {
+    bookingId: bookingFromInvoice.id,
+    invoiceNumber: `INV-${bookingFromInvoice.id}`,
+    libraryAddress: libraryAddress,
+    libraryName: library.name || "Unknown Library",
+    customerName: user.fullName || "N/A",
+    customerEmail: user.email || "N/A",
+    customerPhoneNumber: user.phoneNumber || "N/A",
+    libraryId: library.id || null,
+    initialPrice: bookingFromInvoice.initialPrice || 0,
+    finalPrice: bookingFromInvoice.finalPrice || 0,
+    paid: transactionWithInvoice.isOfflinePayment
+      ? transactionWithInvoice.offlinePaymentStatus === "APPROVED"
+      : true,
+    bookingDate: bookingFromInvoice.bookingDate ? new Date(bookingFromInvoice.bookingDate) : new Date(),
+    bookingPeriod: bookingFromInvoice.bookingPeriod || 1,
+    bookingStatus: transactionWithInvoice.offlinePaymentStatus || 'Paid',
+    approved: library.approved || false,
+    bookingFinalDate: new Date(
+      new Date(bookingFromInvoice.bookingDate || new Date()).setMonth(
+        new Date(bookingFromInvoice.bookingDate || new Date()).getMonth() + (bookingFromInvoice.bookingPeriod || 1)
+      )
+    ),
+    seatLabel: seatLabel,
+    timeSlotDetails: timeSlotDetails,
+  },
+});
+
+
+console.log("🚀 ~ approveOfflinePayment ~ invoice:", invoice)
+
 
     console.debug(`DEBUG: Seat successfully booked: seatId ${seatId}, timeSlotId ${timeSlotId}`);
 
