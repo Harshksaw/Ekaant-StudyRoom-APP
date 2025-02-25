@@ -7,6 +7,7 @@ import { getUserId } from "@/utils/keys";
 import { Ionicons } from "@expo/vector-icons";
 
 import axios from "axios";
+import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -66,6 +67,10 @@ export default function Bookings() {
       }
     }
   };
+
+
+  const assets = useAssets([
+    require("../../../assets/booking.png")])
 
   useEffect(() => {
     const getBookingData = async () => {
@@ -146,12 +151,12 @@ export default function Bookings() {
                 marginTop: 100,
               }}
             >
-              <Image
-                style={{ width: 200, height: 200 }}
-                source={{
-                  uri: "https://img.icons8.com/?size=100&id=iUVwyb80vyVW&format=png&color=000000",
-                }}
-              />
+
+              {assets && assets[0] && <Image
+                style={{ width: 300, height: 250 }}
+                source={ assets[0]}
+              />}
+         
               <Text
                 style={{
                   fontSize: 30,
