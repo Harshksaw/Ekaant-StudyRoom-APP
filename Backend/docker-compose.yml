@@ -38,6 +38,8 @@ services:
     image: grafana/grafana:latest
     ports:
       - "3011:3000"
+    volumes:
+      - ./grafana:/var/lib/grafana
     networks:
       - monitoring
     environment:
@@ -45,6 +47,7 @@ services:
 
 volumes:
   postgres_data:
+  grafana_data:
 
 networks:
   monitoring:
