@@ -561,7 +561,7 @@ async function offlineBooking(req, res) {
     });
     console.debug("DEBUG: Daily offline payments count:", dailyPayments);
 
-    if (dailyPayments >= 50) {
+    if (dailyPayments >= 5) {
       console.debug("DEBUG: Daily limit reached, returning error");
       return res.status(StatusCodes.TOO_MANY_REQUESTS).json({
         success: false,
