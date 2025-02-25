@@ -561,9 +561,9 @@ async function offlineBooking(req, res) {
     });
     console.debug("DEBUG: Daily offline payments count:", dailyPayments);
 
-    if (dailyPayments >= 5) {
+    if (dailyPayments >= 50) {
       console.debug("DEBUG: Daily limit reached, returning error");
-      return res.status(400).json({
+      return res.status(StatusCodes.TOO_MANY_REQUESTS).json({
         success: false,
         message: "Daily limit reached. Please try again tomorrow."
       });
@@ -769,8 +769,8 @@ const approveOfflinePayment = async (req, res) => {
                 libraryOwner: true, // Get library admin details
               },
             },
-            bookedSeat: true, // Ensure this exists in the schema
-            timeSlots: true, // Ensure this exists in the schema
+            transactions: true, // Ensure this exists in the schema
+         
           },
         },
       },
@@ -785,6 +785,7 @@ const approveOfflinePayment = async (req, res) => {
     const library = bookingFromInvoice.library || {};
     const libraryOwner = library.libraryOwner || {};
     const user = bookingFromInvoice.user || {};
+    const bookedSeat = transactionWithInvoice.booking.bookedSeat;
 
     // Construct the library address
     const libraryAddress = library.address
@@ -796,44 +797,48 @@ const approveOfflinePayment = async (req, res) => {
     const timeSlotDetails = bookingFromInvoice.timeSlots ? JSON.stringify(bookingFromInvoice.timeSlots) : "[]";
 
 
-   
-// ✅ Create the Invoice
-const invoice = await prisma.invoice.create({
-  data: {
-    bookingId: bookingFromInvoice.id,
-    invoiceNumber: `INV-${bookingFromInvoice.id}`,
-    libraryAddress: libraryAddress,
-    libraryName: library.name || "Unknown Library",
-    customerName: user.fullName || "N/A",
-    customerEmail: user.email || "N/A",
-    customerPhoneNumber: user.phoneNumber || "N/A",
-    libraryId: library.id || null,
-    initialPrice: bookingFromInvoice.initialPrice || 0,
-    finalPrice: bookingFromInvoice.finalPrice || 0,
-    paid: transactionWithInvoice.isOfflinePayment
-      ? transactionWithInvoice.offlinePaymentStatus === "APPROVED"
-      : true,
-    bookingDate: bookingFromInvoice.bookingDate ? new Date(bookingFromInvoice.bookingDate) : new Date(),
-    bookingPeriod: bookingFromInvoice.bookingPeriod || 1,
-    bookingStatus: transactionWithInvoice.offlinePaymentStatus || 'Paid',
-    approved: library.approved || false,
-    bookingFinalDate: new Date(
-      new Date(bookingFromInvoice.bookingDate || new Date()).setMonth(
-        new Date(bookingFromInvoice.bookingDate || new Date()).getMonth() + (bookingFromInvoice.bookingPeriod || 1)
-      )
-    ),
-    seatLabel: seatLabel,
-    timeSlotDetails: timeSlotDetails,
-  },
-});
+
+    // ✅ Create the Invoice
+    const invoice = await prisma.invoice.create({
+      data: {
+        bookingId: bookingFromInvoice.id,
+        invoiceNumber: `INV-${bookingFromInvoice.id}`,
+        libraryAddress: libraryAddress,
+        libraryName: library.name || "Unknown Library",
+        customerName: user.fullName || "N/A",
+        customerEmail: user.email || "N/A",
+        customerPhoneNumber: user.phoneNumber || "N/A",
+        libraryId: library.id || null,
+        initialPrice: bookingFromInvoice.initialPrice || 0,
+        finalPrice: bookingFromInvoice.finalPrice || 0,
+        paid: transactionWithInvoice.isOfflinePayment
+          ? transactionWithInvoice.offlinePaymentStatus === "APPROVED"
+          : true,
+        bookingDate: bookingFromInvoice.bookingDate ? new Date(bookingFromInvoice.bookingDate) : new Date(),
+        bookingPeriod: bookingFromInvoice.bookingPeriod || 1,
+        bookingStatus: transactionWithInvoice.offlinePaymentStatus || 'Paid',
+        approved: library.approved || false,
+        bookingFinalDate: new Date(
+          new Date(bookingFromInvoice.bookingDate || new Date()).setMonth(
+            new Date(bookingFromInvoice.bookingDate || new Date()).getMonth() + (bookingFromInvoice.bookingPeriod || 1)
+          )
+        ),
+        seatLabel: seatLabel,
+        timeSlotDetails: timeSlotDetails,
+      },
+    });
 
 
-console.log("🚀 ~ approveOfflinePayment ~ invoice:", invoice)
+    console.log("🚀 ~ approveOfflinePayment ~ invoice:", invoice)
 
 
     console.debug(`DEBUG: Seat successfully booked: seatId ${seatId}, timeSlotId ${timeSlotId}`);
 
-    return res.json({ success: true, message: "Offline payment approved & seat blocked" });
+    return res.json({
+      success: true, message: "Offline payment approved & seat blocked",
+      invoice, // Include invoice details here
+      transaction: transactionWithInvoice
+    });
 
   } catch (error) {
     console.error(`ERROR: Approving offline payment failed: ${error.message}`);

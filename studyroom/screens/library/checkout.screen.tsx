@@ -157,21 +157,40 @@ const CheckoutScreen: React.FC = () => {
   const userId = userData?.data?.user_id?.id;
   const handleOfflinePayment = async () => {
 
-    const res = await axios.post(`${BACKEND}/api/v1/booking/createOffline`, {
-      libraryId: BookedData.libraryId.id
+    try {
+      const res = await axios.post(`${BACKEND}/api/v1/booking/createOffline`, {
+        libraryId: BookedData.libraryId.id,
+        userId: userId,
+        bookingId: BookingDataId,
+        amount: BookedData.totalAmount,
+        BookedData,
+      });
+      console.log("🚀 ~ handleOfflinePayment ~ res", res);
+  
+      if (res.status === 429) {
+        Toast.show("Error", {
+          dangerColor: "red",
+          duration: 2000,
+          icon: <Ionicons name="alert-circle" size={24} color="red" />,
+        });
+        return;
+      }
+      
+      router.push({
+        pathname: "/library/offline.payment",
+        params: {
+          item: JSON.stringify(BookedData),
+        },
+      });
+    } catch (error) {
 
-      , userId: userId, bookingId: BookingDataId, amount: BookedData.totalAmount, BookedData
-    })
-    console.log("🚀 ~ handleOfflinePayment ~ res", res)
-
-
-
-    router.push({
-      pathname: "/library/offline.payment",
-      params: {
-        item: JSON.stringify(BookedData),
-      },
-    });
+      Toast.show("Daily limit reached." , {
+        dangerColor: "red",
+        placement: "top",
+        duration: 4000,
+        icon: <Ionicons name="alert-circle" size={24} color="red" />,
+      });
+    }
 
   };
 
@@ -311,8 +330,8 @@ const CheckoutScreen: React.FC = () => {
           <TouchableOpacity
             style={[modalStyles.button, modalStyles.offlineButton]}
             onPress={() => {
-              setShowPaymentModal(false);
               handleOfflinePayment();
+              setShowPaymentModal(false);
             }}
           >
             <Text style={modalStyles.buttonText}>Offline Payment</Text>

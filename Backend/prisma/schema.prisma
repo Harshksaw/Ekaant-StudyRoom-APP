@@ -180,6 +180,7 @@ model Booking {
   timeSlotDetails  Json? // Details of the booked time slot
   roomNo           Int
   bookedSeat       Json // Details of the booked seat
+
   bookingDate      DateTime
   bookingFinalDate DateTime?
   // Remove friendId and friend relation
