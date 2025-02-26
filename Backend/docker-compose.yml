@@ -2,28 +2,13 @@ services:
   psql:
     image: postgres:latest
     environment:
-      POSTGRES_PASSWORD: ekaant  # Replace with your actual password
+      POSTGRES_PASSWORD: ekaant
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - "5432:5432"
     networks:
       - monitoring
-
-  ekaant-app:
-    build: ./
-    ports:
-      - "3009:3009"
-    volumes:
-      - ./:/usr/src/app
-      - /usr/src/app/node_modules
-    environment:
-      - DATABASE_URL=postgresql://postgres:ekaant@psql:5432/postgres
-    networks:
-      - monitoring
-    depends_on:
-      - psql
-    command: sh -c "npx prisma migrate deploy && npm run start"
 
   prometheus:
     image: prom/prometheus:latest
@@ -34,6 +19,8 @@ services:
       - "9091:9090"
     networks:
       - monitoring
+    depends_on:
+      - psql
 
   grafana:
     image: grafana/grafana:latest
@@ -45,6 +32,8 @@ services:
       - monitoring
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
 
 volumes:
   postgres_data:

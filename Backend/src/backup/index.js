@@ -8,7 +8,7 @@ const backupDatabase = (req, res) => {
     const backupFilename = `/home/ubuntu/Backup/backup_${timestamp}.sql`;
 
     // Construct the pg_dump command
-    const pgDumpCommand = `docker exec -i ekaant-studyroom-app-db-1 pg_dump -U postgres postgres > ${backupFilename}`;
+    const pgDumpCommand = `docker-compose exec -T psql pg_dump -U postgres postgres > ${backupFilename}`; 
 
     // Execute the command
     exec(pgDumpCommand, (error, stdout, stderr) => {
