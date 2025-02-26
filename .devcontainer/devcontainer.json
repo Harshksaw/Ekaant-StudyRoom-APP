@@ -1,0 +1,19 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {},
+
+
+  "forwardPorts": [3009, 5173, 5174],
+  "portsAttributes": {
+    "3009": { "label": "Backend API", "onAutoForward": "openBrowser" },
+    "5173": { "label": "React Frontend", "onAutoForward": "openBrowser" },
+    "3000": { "label": "React Frontend (Alt)", "onAutoForward": "openBrowser" },
+    "5432": { "label": "PostgreSQL DB", "onAutoForward": "notify" }
+  },
+  "containerEnv": {
+    "PORT": "3009",
+    "DATABASE_URL": "postgres://postgres:ekaant@localhost:5432/postgres"
+  }
+
+
+}
