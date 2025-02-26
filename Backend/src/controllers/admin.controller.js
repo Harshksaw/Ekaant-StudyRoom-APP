@@ -21,6 +21,8 @@ const ping = (req, res) => {
 // singup
 // Function to encrypt file data
 // Function to encrypt data using AES-256
+
+
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_KEY,
   secretAccessKey: process.env.AWS_SECRET_KEY,

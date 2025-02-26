@@ -16,7 +16,7 @@ import { BASEURL } from "@/lib/utils";
 import axios from "axios";
 // @ts-ignore
 import { ToastContainer, toast } from "react-toastify";
-import Loader from "@/components/Loader";
+
 import tick from "@/assets/images/tick.png";
 import Step6 from "./Signup/Step6";
 interface LibraryDetails {

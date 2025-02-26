@@ -17,7 +17,7 @@ const ManageRooms = () => {
   const [loading, setLoading] = useState<any>(false);
   const [roomData, setRoomData] = useState<any>([]);
   const [expandedRoom, setExpandedRoom] = useState<any>(null); // Track expanded room
-  console.log("🚀 ~ ManageRooms ~ expandedRoom:", expandedRoom)
+  // console.log("🚀 ~ ManageRooms ~ expandedRoom:", expandedRoom)
   // const [position, setPosition] = useState<[number, number] | null>(null);
   React.useEffect(() => {
     const fetchLibrary = async () => {
@@ -62,7 +62,7 @@ const ManageRooms = () => {
   // console.log(room.libraryOwner?.adhaarCardDetails.adhaarCardFile)
   const renderUserDetails = () => {
     const CLOUDINARY = import.meta.env.VITE_URL;
-    console.log("🚀 ~ renderUserDetails ~ CLOUDINARY:", CLOUDINARY);
+    // console.log("🚀 ~ renderUserDetails ~ CLOUDINARY:", CLOUDINARY);
     const transformUrl = (url: string) => {
       const newPrefix = CLOUDINARY;
       const urlParts = url.split("/admin");
