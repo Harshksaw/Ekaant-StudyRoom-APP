@@ -13,7 +13,7 @@
   "containerEnv": {
     "PORT": "3009",
 
-  }
-
+  },
+  "postStartCommand": "./start-backend.sh"
 
 }
