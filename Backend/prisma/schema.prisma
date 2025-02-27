@@ -1,0 +1,308 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model App {
+  id        Int        @id @default(autoincrement())
+  Banner    String[]
+  locations Location[]
+}
+
+model Location {
+  id            Int     @id @default(autoincrement())
+  location      String
+  locationImage String?
+  coords        Float[]
+  appId         Int     @default(autoincrement())
+  app           App     @relation(fields: [appId], references: [id])
+}
+
+model Admin {
+  id                   Int                @id @default(autoincrement())
+  username             String             @unique
+  email                String             @unique
+  Dob                  DateTime?
+  password             String
+  accountType          String             @default("Admin")
+  address              Json
+  profileImage         String?
+  resetPasswordExpires DateTime?
+  phoneNumber          String             @db.VarChar(10)
+  createdAt            DateTime           @default(now())
+  fullName             String
+  updatedAt            DateTime           @updatedAt
+  passportPhoto        String?
+  adhaarCardDetails    AdhaarCardDetails?
+  ownedLibraries       Library[]          @relation("AdminOwnedLibraries")
+  panCardDetails       PanCardDetails?
+  transaction          Transaction[]
+  libraryBookings      Library[]          @relation("LibraryBookings")
+}
+
+model AdhaarCardDetails {
+  id             Int    @id @default(autoincrement())
+  adhaarNumber   String
+  adhaarCardFile String
+  adminId        Int    @unique
+  admin          Admin  @relation(fields: [adminId], references: [id])
+}
+
+model PanCardDetails {
+  id          Int    @id @default(autoincrement())
+  panNumber   String
+  panCardFile String
+  adminId     Int    @unique
+  admin       Admin  @relation(fields: [adminId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                   Int           @id @default(autoincrement())
+  username             String
+  email                String        @unique
+  password             String
+  accountType          String
+  additionalDetails    String[]
+  image                String?
+  resetPasswordExpires DateTime?
+  phoneNumber          String        @db.VarChar(10)
+  bookings             Booking[]     @relation("UserBookings")
+  friends              Friend[]
+  reviews              Review[]
+  timeSlots            TimeSlot[]
+  transactions         Transaction[]
+  ownedProperties      Library[]     @relation("OwnedProperties")
+}
+
+model Library {
+  id                    Int           @id @default(autoincrement())
+  libraryOwnerId        Int?
+  name                  String
+  longDescription       String?
+  shortDescription      String
+  cardImage             String?
+  images                String[]
+  address               Json?
+  commingSoonMessage    String?       @default("false")
+  deleted               Boolean       @default(false)
+  comingSoon            Boolean       @default(false)
+  approved              Boolean       @default(false)
+  legal                 String?
+  registrationFees      Int           @default(500)
+  cinCertificateFile    String?
+  cinNumber             String?
+  gstCertificateFile    String?
+  gstNumber             String?
+  msmeCertificateFile   String?
+  msmeNumber            String?
+  tanCertificateFile    String?
+  tanNumber             String?
+  coords                Float[]
+  Price                 Int?
+  avgRating             Float?
+  propertyType          String?
+  uploadElectricityBill String?
+  uploadLeaseAgreement  String?
+  offlineBookingAllowed Boolean       @default(false)
+  amenities             Amenities?
+  bookings              Booking[]     @relation("LibraryBookings")
+  distances             Distance[]
+  invoices              Invoice[]     @relation("LibraryInvoices")
+  libraryOwner          Admin?        @relation("AdminOwnedLibraries", fields: [libraryOwnerId], references: [id], onDelete: Cascade)
+  reviews               Review[]      @relation("Reviews")
+  rooms                 Room[]        @relation("LibraryRooms")
+  transaction           Transaction[]
+  admins                Admin[]       @relation("LibraryBookings")
+  users                 User[]        @relation("OwnedProperties")
+}
+
+model Room {
+  id           Int     @id @default(autoincrement())
+  libraryId    Int
+  roomNo       Int
+  Ac           Boolean @default(false)
+  doorPosition Int[]   @default([0, 0, 0, 0, 0])
+  roomName     String?
+  library      Library @relation("LibraryRooms", fields: [libraryId], references: [id], onDelete: Cascade)
+  seats        Seat[]  @relation("RoomSeats")
+}
+
+model Seat {
+  id        Int        @id @default(autoincrement())
+  seatId    String
+  seatLabel String
+  roomId    Int
+  rotation  Int        @default(0)
+  seatName  String?
+  room      Room       @relation("RoomSeats", fields: [roomId], references: [id], onDelete: Cascade)
+  timeSlots TimeSlot[]
+}
+
+model TimeSlot {
+  id             Int       @id @default(autoincrement())
+  slotId         String    @default(uuid())
+  from           String
+  to             String
+  booked         Boolean   @default(false)
+  bookedById     Int?
+  bookingSource  String    @default("app")
+  bookingEndDate DateTime?
+  seatId         Int
+  price          Int       @default(0)
+  bookedBy       User?     @relation(fields: [bookedById], references: [id])
+  seat           Seat      @relation(fields: [seatId], references: [id], onDelete: Cascade)
+}
+
+model Booking {
+  id                 Int             @id @default(autoincrement())
+  libraryId          Int
+  userId             Int
+  approved           Boolean         @default(false)
+  bookedSeat         Json
+  bookingDate        DateTime
+  bookingFinalDate   DateTime?
+  bookingPeriod      Int             @default(1)
+  bookingStatus      BookingStatus   @default(PENDING)
+  finalPrice         Float
+  initialPrice       Float
+  paid               Boolean         @default(false)
+  roomNo             Int
+  timeSlotDetails    Json?
+  timeStamp          DateTime        @default(now())
+  transactionDetails Json?
+  library            Library         @relation("LibraryBookings", fields: [libraryId], references: [id])
+  user               User            @relation("UserBookings", fields: [userId], references: [id])
+  friends            BookingFriend[] @relation("BookingFriends")
+  invoice            Invoice?
+  transactions       Transaction[]   @relation("BookingTransactions")
+}
+
+model Friend {
+  id             Int             @id @default(autoincrement())
+  name           String
+  email          String?
+  relationship   String?
+  userId         Int?
+  phoneNumber    String?
+  bookingFriends BookingFriend[] @relation("BookingFriends")
+  user           User?           @relation(fields: [userId], references: [id])
+}
+
+model BookingFriend {
+  id        Int     @id @default(autoincrement())
+  bookingId Int
+  friendId  Int
+  booking   Booking @relation("BookingFriends", fields: [bookingId], references: [id])
+  friend    Friend  @relation("BookingFriends", fields: [friendId], references: [id])
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  review    String
+  stars     Int
+  createdAt DateTime @default(now())
+  libraryId Int
+  library   Library  @relation("Reviews", fields: [libraryId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Amenities {
+  id        Int     @id @default(autoincrement())
+  libraryId Int     @unique
+  amenities Json    @default("[]")
+  library   Library @relation(fields: [libraryId], references: [id])
+}
+
+model PhoneOtp {
+  id          Int      @id @default(autoincrement())
+  phoneOtp    String?  @map("phoneotp")
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  phoneNumber String
+}
+
+model Otp {
+  id        Int      @id @default(autoincrement())
+  email     String
+  emailOtp  String?  @map("emailotp")
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+}
+
+model Invoice {
+  id                  Int       @id @default(autoincrement())
+  bookingId           Int       @unique
+  invoiceNumber       String    @default("INV-0")
+  libraryAddress      String    @map("libraryaddress")
+  libraryName         String
+  invoiceDate         DateTime  @default(now())
+  customerName        String
+  customerEmail       String
+  customerPhoneNumber String
+  libraryId           Int
+  initialPrice        Int
+  finalPrice          Int
+  paid                Boolean
+  bookingDate         DateTime
+  bookingPeriod       Int
+  bookingStatus       String
+  approved            Boolean
+  timeStamp           DateTime? @db.Timestamp(6)
+  bookingFinalDate    DateTime
+  seatLabel           String
+  timeSlotDetails     Json?
+  createdAt           DateTime  @default(now())
+  booking             Booking   @relation(fields: [bookingId], references: [id])
+  library             Library   @relation("LibraryInvoices", fields: [libraryId], references: [id])
+}
+
+model Distance {
+  id        Int     @id @default(autoincrement())
+  libraryId Int
+  city      String
+  distance  Float
+  library   Library @relation(fields: [libraryId], references: [id])
+}
+
+model Transaction {
+  id                   Int                   @id @default(autoincrement())
+  transactionId        String                @unique @default(uuid())
+  amount               Float
+  type                 TransactionType
+  description          String
+  createdAt            DateTime              @default(now())
+  userId               Int?
+  adminId              Int?
+  libraryId            Int?
+  bookingId            Int?
+  expiresAt            DateTime?
+  isOfflinePayment     Boolean?              @default(false)
+  offlinePaymentStatus OfflinePaymentStatus?
+  admin                Admin?                @relation(fields: [adminId], references: [id])
+  booking              Booking?              @relation("BookingTransactions", fields: [bookingId], references: [id])
+  library              Library?              @relation(fields: [libraryId], references: [id])
+  user                 User?                 @relation(fields: [userId], references: [id])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum TransactionType {
+  REGISTRATION_FEE
+  BOOKING_PAYMENT
+  COMMISSION
+  REFUND
+  OFFLINE_BOOKING
+}
+
+enum OfflinePaymentStatus {
+  PENDING
+  APPROVED
+  CANCELED
+}
