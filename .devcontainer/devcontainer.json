@@ -11,7 +11,7 @@
     "5432": { "label": "PostgreSQL DB", "onAutoForward": "notify" }
   },
   "containerEnv": {
-    "PORT": "3009",
+    "PORT": "3009"
 
   },
   "postStartCommand": "./start-backend.sh"
