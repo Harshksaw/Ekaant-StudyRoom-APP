@@ -1068,14 +1068,20 @@ const LibraryOfflineAllowance = async (req, res) => {
   try {
 
 
-    const library = await prisma.library.findFirst({
-      where: {
-        id: parseInt(libraryId),
-      },
-      update: {
-        offlineAllowance: offlineAllowance,
-      },
-    });
+    const library = await prisma.library.update({
+        where: {
+          id: parseInt(libraryId),
+        },
+        data: {
+          offlineBookingAllowed: offlineAllowance,
+        },
+      });
+    return res.status(200).json({ 
+
+      success: true,
+      message: "Library offline allowance updated successfully",
+      data: library,
+    })
     
   } catch (error) {
     

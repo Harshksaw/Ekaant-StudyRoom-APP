@@ -4,7 +4,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { BASEURL } from "../../lib/utils";
 import RoomDetails from "./RoomDetails";
-import Loader from "@/components/Loader";
 
 const CLOUDINARY = import.meta.env.VITE_CLOUDINARY as string;
 
@@ -54,6 +53,30 @@ const ManageRooms: React.FC = () => {
     }
   };
 
+  // New function for toggling offline payment
+  const toggleOfflinePayment = async () => {
+    try {
+      //allowLibraryOfflinePayment
+      setLoading(true);
+      const res = await axios.post(`${BASEURL}/api/v1/library/allowLibraryOfflinePayment`, {
+
+        libraryId : room.id, offlineAllowance:  !room.offlineBookingAllowed,
+      });
+
+
+      if (res.data.success) {
+        toast.success(`Offline payment ${!room.allowOfflinePayment ? "enabled" : "disabled"} successfully.`);
+        // refresh the library data after updating
+        fetchLibrary();
+
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error updating offline payment:", error);
+    }
+  };
+
   const transformUrl = useCallback(
     (url: string): string => {
       const [prefix, ...rest] = url.split("/admin");
@@ -61,6 +84,7 @@ const ManageRooms: React.FC = () => {
     },
     []
   );
+
   const UserDetails: React.FC = () => {
     const address = room ? JSON.parse(room.libraryOwner.address) : null;
     const aadhaarCard = room?.libraryOwner?.adhaarCardDetails?.aadharCardFile;
@@ -69,7 +93,7 @@ const ManageRooms: React.FC = () => {
     const panUrl = panCard ? transformUrl(panCard) : "";
     console.log("Aadhaar URL:", aadhaarUrl);
     console.log("PAN URL:", panUrl);
-  
+
     return (
       <div>
         <h2 className="text-xl font-bold text-gray-800">User Details</h2>
@@ -145,7 +169,6 @@ const ManageRooms: React.FC = () => {
         ) : (
           <div>
             <p className="text-gray-600">No user details available.</p>
-
           </div>
         )}
       </div>
@@ -269,6 +292,15 @@ const ManageRooms: React.FC = () => {
           >
             {room.approved ? "Disapprove" : "Approve"}
           </button>
+          {/* Show the offline payment toggle button only if the library is approved */}
+          {room.approved && (
+            <button
+              onClick={toggleOfflinePayment}
+              className="px-4 py-2 rounded-lg bg-gray-400 text-white rounded-md hover:bg-gray-700"
+            >
+              {room.offlineBookingAllowed ? "Disable Offline Payment" : "Enable Offline Payment"}
+            </button>
+          )}
         </div>
       )}
       <div className="bg-white p-6 rounded-lg shadow-md">
