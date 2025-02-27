@@ -12,7 +12,7 @@
   },
   "containerEnv": {
     "PORT": "3009",
-    "DATABASE_URL": "postgres://postgres:ekaant@localhost:5432/postgres"
+
   }
 
 

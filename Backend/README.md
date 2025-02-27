@@ -17,11 +17,11 @@ Clone this repo to follow along with me. Or you can create your own project too.
 2. Copy the backup file into the container:
 
    ````bash
-   docker cp db_backup/backup.sql 1929c6feee64:/backup.sql
+   docker cp db_backup/backup.sql ef45de9caecc:/backup.sql
    ````
 
 3. Restore the backup inside the container:
 
    ````bash
-      docker exec -i 1929c6feee64 psql -U postgres -d postgres -f /backup.sql
+      docker exec -i ef45de9caecc psql -U postgres -d postgres -f /backup.sql
    ````
