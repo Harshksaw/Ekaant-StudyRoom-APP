@@ -330,7 +330,7 @@ const CheckoutScreen: React.FC = () => {
 
 
           {
-            libraryData?.offlineBookingAllowed && (
+            libraryData?.offlineBookingPermission && (
               <TouchableOpacity
             style={[modalStyles.button, modalStyles.offlineButton]}
             onPress={() => {

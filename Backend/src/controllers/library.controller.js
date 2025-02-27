@@ -1073,7 +1073,7 @@ const LibraryOfflineAllowance = async (req, res) => {
           id: parseInt(libraryId),
         },
         data: {
-          offlineBookingAllowed: offlineAllowance,
+          offlineBookingPermission: offlineAllowance,
         },
       });
     return res.status(200).json({ 
