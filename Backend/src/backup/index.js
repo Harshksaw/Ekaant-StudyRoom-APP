@@ -8,8 +8,8 @@ const path = require('path');
 const backupDatabase = (req, res) => {
   try {
     const timestamp = new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "_");
-    // const backupFilename = `/home/ubuntu/Backup/backup_${timestamp}.sql`;
-    const backupFilename = `/tmp/db_backup_${timestamp}.sql`;
+    const backupFilename = `/home/ubuntu/Backup/backup_${timestamp}.sql`;
+    // const backupFilename = `/tmp/db_backup_${timestamp}.sql`;
     // Construct the pg_dump command
     const pgDumpCommand = `docker exec backend-psql-1 pg_dump -U postgres postgres > ${backupFilename}`;
 
