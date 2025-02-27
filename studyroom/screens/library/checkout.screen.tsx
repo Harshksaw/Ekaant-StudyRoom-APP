@@ -327,7 +327,11 @@ const CheckoutScreen: React.FC = () => {
           >
             <Text style={modalStyles.buttonText}>Online Payment</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+
+
+          {
+            libraryData?.offlineBookingAllowed && (
+              <TouchableOpacity
             style={[modalStyles.button, modalStyles.offlineButton]}
             onPress={() => {
               handleOfflinePayment();
@@ -336,6 +340,10 @@ const CheckoutScreen: React.FC = () => {
           >
             <Text style={modalStyles.buttonText}>Offline Payment</Text>
           </TouchableOpacity>
+
+            )
+          }
+          
           <TouchableOpacity
             onPress={() => setShowPaymentModal(false)}
             style={modalStyles.closeButton}

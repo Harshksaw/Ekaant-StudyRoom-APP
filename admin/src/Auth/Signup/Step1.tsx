@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+
 import "react-toastify/dist/ReactToastify.css";
-import Loader from "@/components/Loader";
+
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 export const StepOne = ({ nextStep, userInfo, setUserInfo }: any) => {
   const [loading, setLoading] = useState(false); // Add loading state
@@ -117,7 +117,8 @@ export const StepOne = ({ nextStep, userInfo, setUserInfo }: any) => {
       </div>
 
       <button
-        className="bottom-10 h-[50px]  center mt-1 bg-gradient-to-r from-sky-500 to-sky-300 text-white py-2 px-36 rounded-xl"
+        className="bottom-10 h-[50px]  center mt-1 bg-gradient-to-r
+         from-sky-500 to-sky-300 text-white py-2 px-36 rounded-xl"
         onClick={handleNextClick}
         disabled={loading}
       >

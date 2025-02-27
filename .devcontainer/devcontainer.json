@@ -11,9 +11,9 @@
     "5432": { "label": "PostgreSQL DB", "onAutoForward": "notify" }
   },
   "containerEnv": {
-    "PORT": "3009",
-    "DATABASE_URL": "postgres://postgres:ekaant@localhost:5432/postgres"
-  }
+    "PORT": "3009"
 
+  },
+  "postStartCommand": "./start-backend.sh"
 
 }

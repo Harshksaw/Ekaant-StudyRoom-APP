@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { BASEURL } from "../../lib/utils";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 type LibraryOwner = {
   username: string;
   email: string;
@@ -14,7 +15,7 @@ type Address = {
 };
 
 type Lib = {
-  _id: string;
+  id: string;
   name: string;
   cardimage?: string;
   images?: string[];
@@ -25,52 +26,58 @@ type Lib = {
 
 const ManageAdmin = () => {
   const navigate = useNavigate();
-  const [library, setLibrary] = useState<Lib[]>([]);
+  const [libraries, setLibraries] = useState<Lib[]>([]);
+
   useEffect(() => {
-    const func = async () => {
-      const res = await axios.get(`${BASEURL}/api/v1/library/getLibrary`);
-      if (res.data.success) {
-        setLibrary(res?.data?.data);
+    const fetchLibraries = async () => {
+      try {
+        const res = await axios.get(`${BASEURL}/api/v1/library/getLibrary`);
+        if (res.data.success) {
+          setLibraries(res.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching libraries:", error);
       }
     };
-    func();
+    fetchLibraries();
   }, []);
-  // console.log(library, "------------------");
+
   return (
-    <div className="p-3 bg-slate-300 h-full ">
+
+    <div className="p-3 bg-slate-300 min-h-screen">
       <div className="overflow-auto max-h-[calc(100vh-100px)]">
-        <table className="min-w-full bg-white">
+        <table className="min-w-full bg-white border border-gray-300">
           <thead>
-            <tr className="bg-gray-800 text-white">
-              <th className="py-2 px-4 border-b">Library Card Image</th>
-              <th className="py-2 px-4 border-b">Library Name</th>
-              <th className="py-2 px-4 border-b">Owner Name</th>
-              <th className="py-2 px-4 border-b">Location</th>
-              <th className="py-2 px-4 border-b">Approved Status</th>
+            <tr className="bg-gray-800 text-white text-sm md:text-base w-full">
+                <th className="py-3 px-6 border w-5/12">Library Card Image</th>
+                <th className="py-3 px-6 border w-2/12">Library Name</th>
+                <th className="py-3 px-6 border w-1/12">Owner Name</th>
+                <th className="py-3 px-6 border w-2/12">Location</th>
+                <th className="py-3 px-6 border w-2/12">Approved Status</th>
             </tr>
           </thead>
 
-          <tbody className=" bg-gray-100">
-            {library?.map((lib: Lib) => (
+          <tbody className="bg-gray-100 text-sm md:text-base">
+            {libraries.map((lib) => (
               <tr
-                key={lib?.id}
-                className="cursor-pointer hover:bg-gray-100 transition duration-300 justify-center text-center"
+                key={lib._id}
+                className="cursor-pointer hover:bg-gray-200 transition duration-300 text-center"
                 onClick={() => navigate(`/admin/manage-rooms/${lib.id}`)}
               >
-                <td className="py-2 px-4 border-b align-center ">
+                <td className="py-3 px-2 border flex justify-center items-center">
                   <img
-                    src={lib.cardimage ? lib.cardimage : lib?.images?.[0]}
-                    // alt={lib?.name}
-                    className="h-36 w-52 object-cover rounded-md"
+                    src={lib.cardimage || lib.images?.[0] || "https://via.placeholder.com/300"}
+                    alt={lib.name}
+                    className="h-32 w-full object-cover rounded-md"
                   />
                 </td>
-                <td className="py-2 px-4 border-b">{lib?.name.split(" ")[0]}</td>
-                <td className="py-2 px-4 border-b">
-                  {lib?.libraryOwner?.username.split(" ")[0]}
-                </td>
-                <td className="py-2 px-4 border-b text-wrap">{`${lib?.address?.city}, ${lib.address?.state}`}</td>
-                <td className="py-2 px-4 border-b">
-                  {lib?.approved ? "Approved" : "Pending"}
+                <td className="py-3 px-6 border">{lib.name}</td>
+                <td className="py-3 px-6 border">{lib.libraryOwner.username.split(" ")[0]}</td>
+                <td className="py-3 px-6 border text-wrap">{`${lib.address.city}, ${lib.address.state}`}</td>
+                <td className="py-3 px-6 border">
+                  <span className={`px-3 py-1 rounded-md text-white text-sm ${lib.approved ? "bg-green-500" : "bg-red-500"}`}>
+                    {lib.approved ? "Approved" : "Pending"}
+                  </span>
                 </td>
               </tr>
             ))}
