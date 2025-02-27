@@ -69,6 +69,19 @@ cron.schedule("0 */3 * * *", async () => {
 
 app.get("/createBackup", backupDatabase);
 
+
+// Schedule backup every day at 12:00 PM IST (6:30 AM UTC)
+cron.schedule("0 1 * * *", async () => {
+  try {
+    console.log("Running nightly database backup at 1:00 AM...");
+    await backupDatabase();
+    console.log("Nightly backup completed successfully");
+  } catch (error) {
+    console.error("Error during nightly backup:", error);
+  }
+});
+
+
 async function deleteAllResources(req, res) {
   try {
     const resources = await cloudinary.api.resources();
