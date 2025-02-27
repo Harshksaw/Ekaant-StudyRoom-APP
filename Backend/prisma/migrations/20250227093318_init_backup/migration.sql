@@ -111,7 +111,7 @@ CREATE TABLE "Library" (
     "propertyType" TEXT,
     "uploadElectricityBill" TEXT,
     "uploadLeaseAgreement" TEXT,
-    "offlineBookingPermission" BOOLEAN NOT NULL DEFAULT false,
+
 
     CONSTRAINT "Library_pkey" PRIMARY KEY ("id")
 );

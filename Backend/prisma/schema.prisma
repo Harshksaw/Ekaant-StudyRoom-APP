@@ -107,8 +107,8 @@ model Library {
   propertyType          String?
   uploadElectricityBill String?
   uploadLeaseAgreement  String?
+  offlinePaymentPermission Boolean   @default(false)
 
-  offlineBookingPermission Boolean       @default(false)
   amenities             Amenities?
   bookings              Booking[]     @relation("LibraryBookings")
   distances             Distance[]

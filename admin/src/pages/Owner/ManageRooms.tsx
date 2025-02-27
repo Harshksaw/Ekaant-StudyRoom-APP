@@ -60,7 +60,7 @@ const ManageRooms: React.FC = () => {
       setLoading(true);
       const res = await axios.post(`${BASEURL}/api/v1/library/allowLibraryOfflinePayment`, {
 
-        libraryId : room.id, offlineAllowance:  !room.offlineBookingPermission,
+        libraryId : room.id, offlineAllowance:  !room.offlinePaymentPermission,
       });
 
 
@@ -298,7 +298,7 @@ const ManageRooms: React.FC = () => {
               onClick={toggleOfflinePayment}
               className="px-4 py-2 rounded-lg bg-gray-400 text-white rounded-md hover:bg-gray-700"
             >
-              {room.offlineBookingPermission ? "Disable Offline Payment" : "Enable Offline Payment"}
+              {room.offlinePaymentPermission ? "Disable Offline Payment" : "Enable Offline Payment"}
             </button>
           )}
         </div>
