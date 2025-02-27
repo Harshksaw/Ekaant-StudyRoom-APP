@@ -15,7 +15,7 @@ type Address = {
 };
 
 type Lib = {
-  _id: string;
+  id: string;
   name: string;
   cardimage?: string;
   images?: string[];
@@ -43,16 +43,17 @@ const ManageAdmin = () => {
   }, []);
 
   return (
+
     <div className="p-3 bg-slate-300 min-h-screen">
       <div className="overflow-auto max-h-[calc(100vh-100px)]">
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
-            <tr className="bg-gray-800 text-white text-sm md:text-base">
-              <th className="py-3 px-6 border w-1/4">Library Card Image</th>
-              <th className="py-3 px-6 border w-1/5">Library Name</th>
-              <th className="py-3 px-6 border w-1/5">Owner Name</th>
-              <th className="py-3 px-6 border w-1/5">Location</th>
-              <th className="py-3 px-6 border w-1/5">Approved Status</th>
+            <tr className="bg-gray-800 text-white text-sm md:text-base w-full">
+                <th className="py-3 px-6 border w-5/12">Library Card Image</th>
+                <th className="py-3 px-6 border w-2/12">Library Name</th>
+                <th className="py-3 px-6 border w-1/12">Owner Name</th>
+                <th className="py-3 px-6 border w-2/12">Location</th>
+                <th className="py-3 px-6 border w-2/12">Approved Status</th>
             </tr>
           </thead>
 
@@ -63,11 +64,11 @@ const ManageAdmin = () => {
                 className="cursor-pointer hover:bg-gray-200 transition duration-300 text-center"
                 onClick={() => navigate(`/admin/manage-rooms/${lib.id}`)}
               >
-                <td className="py-3 px-6 border flex justify-center items-center">
+                <td className="py-3 px-2 border flex justify-center items-center">
                   <img
                     src={lib.cardimage || lib.images?.[0] || "https://via.placeholder.com/300"}
                     alt={lib.name}
-                    className="h-40 w-64 object-cover rounded-md"
+                    className="h-32 w-full object-cover rounded-md"
                   />
                 </td>
                 <td className="py-3 px-6 border">{lib.name}</td>
