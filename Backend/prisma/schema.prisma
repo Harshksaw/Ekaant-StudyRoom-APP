@@ -109,6 +109,7 @@ model Library {
   uploadLeaseAgreement  String?
   offlinePaymentPermission Boolean   @default(false)
 
+
   amenities             Amenities?
   bookings              Booking[]     @relation("LibraryBookings")
   distances             Distance[]
