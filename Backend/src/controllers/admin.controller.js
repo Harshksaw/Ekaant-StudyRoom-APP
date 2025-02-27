@@ -41,6 +41,7 @@ async function RegisterAdmin(req, res, next) {
       PanNumber,
       Address,
       username,
+
     } = req.body;
 
     const passportPhoto =
@@ -88,6 +89,7 @@ async function RegisterAdmin(req, res, next) {
     //     });
     //   }
     // }
+    
 
     const uploadToS3 = (file, folder) => {
       const params = {

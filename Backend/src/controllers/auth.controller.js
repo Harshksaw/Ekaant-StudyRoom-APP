@@ -196,6 +196,87 @@ async function signIn(req, res, next) {
   }
 }
 
+// wrapping existing functions with try-catch blocks
+async function getUser(req, res, next) {
+  try {
+    const access_token = req.headers["access-token"];
+    if (!access_token) {
+      return next(
+        new ErrorHandler("Please login to access this resource", 400)
+      );
+    }
+
+    const user = await getUserById(req.user.id);
+
+    if (!user) return res.status(404).send({ message: "User not found" });
+
+    res.send({ user });
+  } catch (error) {
+    console.error("Error in getUser:", error);
+    res.status(500).send({ message: "Internal server error" });
+  }
+}
+
+async function signUp(req, res) {
+  try {
+    let images;
+
+    if (req.file && req.file.path) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'profileimages'
+      });
+      images = result.secure_url;
+    } else {
+      const username = req.body.username || '';
+      const initials = username.length > 1 ? `${username[0]}${username[1]}` : username[0] || '';
+      images = `https://eu.ui-avatars.com/api/?name=${initials}&size=250`;
+    }
+    const existingUser = await prisma.user.findUnique({
+      where: { email: req.body.email },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'User already registered',
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    const newUser = await prisma.user.create({
+      data: {  
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword, 
+        phoneNumber: req.body.phoneNumber,
+        accountType: req.body.accountType,
+        image: images,
+      },
+    });
+
+    const user_id = newUser.id;
+    console.log("🚀 ~ signUp ~ user_id:", user_id)
+
+    const token = jwt.sign({ user_id }, JWT_SECRET);
+
+    return res.status(StatusCodes.CREATED).json({
+      success: true,
+      message: "User created successfully",
+      error: {},
+      data: newUser,
+      token: token,
+    });
+  } catch (error) {
+    console.log("error is ", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "User already registered",
+      error: error.message,
+      data: {},
+    });
+  }
+}
 // Example usage (assuming a web framework like Express)
 async function sendOtp(req, res) {
   const { phoneNumber } = req.body;

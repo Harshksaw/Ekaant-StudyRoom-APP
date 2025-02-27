@@ -68,6 +68,7 @@ function Signup() {
     uploadAadharCard: null,
     panCard: "",
     uploadPanCard: null,
+    passportPhoto: null,
     address: {
       line1: "",
       line2: "",
@@ -140,25 +141,43 @@ function Signup() {
   const sendOtp = async () => {
     const { phone } = userInfo;
 
-    toast("Sent OTP", {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+ 
 
     const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, {
       phoneNumber: phone,
       Admin: true,
     });
     if (res.status === 200) {
-      console.log("OTP sent successfully");
+      toast("Sent OTP", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
+    }
+    if (res.status !== 200) {
+
+      setLoading(false);
+      toast.error("Something went wrong", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
     }
   };
+
+
   const verifyOTP = async () => {
     console.log("verfication start user OTP");
     const otp = userOTP;
@@ -533,6 +552,7 @@ function Signup() {
           progress: undefined,
           theme: "light",
         });
+        return;
       }
       createUser();
     }
@@ -629,6 +649,13 @@ function Signup() {
         }
 
         // Continue with the registration process if no errors
+
+        const createUserName = `${userDetails.fullName
+          .split(" ")
+          .join("")
+          .toLowerCase()}${userDetails.dob}${Math.floor(Math.random() * 1000)}`;
+
+
         const formData = new FormData();
         formData.append("phoneNumber", userInfo.phone.toString());
         formData.append("email", userInfo.email);
@@ -734,7 +761,7 @@ function Signup() {
             nextStep={nextStep}
             userInfo={userInfo}
             setUserInfo={setUserInfo}
-            // sendOTP={sendOtp}
+
           />
         );
       case 2:
