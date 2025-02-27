@@ -33,8 +33,7 @@ model Admin {
   profileImage         String?
   resetPasswordExpires DateTime?
   phoneNumber          String             @db.VarChar(10)
-  AddharNumber         String
-  PanNumber            String
+
   createdAt            DateTime           @default(now())
   fullName             String
   updatedAt            DateTime           @updatedAt

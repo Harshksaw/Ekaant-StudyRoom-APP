@@ -496,6 +496,52 @@ const getLibraryById = async (req, res) => {
   }
 };
 
+const getLibraryAdminById = async (req, res) => {
+  const { id } = req.body;
+
+try {
+
+  const room   = await prisma.library.findFirst({
+    where: {
+      id: parseInt(id),
+    },
+    include: {
+      rooms: {
+        include: {
+          seats: {
+            include: {
+              timeSlots: true,
+            },
+          },
+        },
+      },
+      libraryOwner : {
+        include:{
+          adhaarCardDetails: true,
+          panCardDetails: true,
+        }
+      },
+      amenities: true,
+
+    },
+  });
+
+  res.status(200).json({  
+    success: true,
+    message: "Library data",
+    data: room,
+  });
+  
+} catch (error) {
+  
+  console.error("Error ", error);
+  res.status(500).json({ error: "cannot get room" });
+  
+}
+
+
+}
+
 const getLibraryRooms = async (req, res) => {
   const { id } = req.body;
   console.log(id);
@@ -1015,6 +1061,31 @@ async function updateAmenity(req, res) {
     });
   }
 }
+
+
+const LibraryOfflineAllowance = async (req, res) => {
+  const { libraryId, offlineAllowance } = req.body;
+  try {
+
+
+    const library = await prisma.library.findFirst({
+      where: {
+        id: parseInt(libraryId),
+      },
+      update: {
+        offlineAllowance: offlineAllowance,
+      },
+    });
+    
+  } catch (error) {
+    
+    console.error("Error updating library offline allowance:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update library offline allowance.",
+    });
+  }
+}
 module.exports = {
   editRoomName,
   pingAdmin,
@@ -1039,5 +1110,7 @@ module.exports = {
   createReview,
   getReviews,
   calculateDistances,
-  updateAmenity
+  updateAmenity,
+  getLibraryAdminById,
+  LibraryOfflineAllowance,
 };

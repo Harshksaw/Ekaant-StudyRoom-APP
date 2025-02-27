@@ -58,6 +58,10 @@ Library.post("/getAllLibrary", LibraryController.getAllLibrary);
 Library.get("/getLibrarybyUserId", LibraryController.getLibraryByUserId);
 Library.post("/updateStatus", LibraryController.updateApproveStatus);
 Library.post("/getLibraryById", LibraryController.getLibraryById);
+Library.post("/getLibraryAdminById", LibraryController.getLibraryAdminById);
+
+Library.post("/LibraryOfflineAllowance", LibraryController.LibraryOfflineAllowance);
+
 Library.post("/getAdminLibraries", LibraryController.getAdminLibraries);
 Library.post("/getAllBookings", LibraryController.getAllBookings);
 Library.post("/deleteRoomLib", LibraryController.deleteRoom);

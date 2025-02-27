@@ -21,7 +21,7 @@ CREATE TABLE "Location" (
     "location" TEXT NOT NULL,
     "locationImage" TEXT,
     "coords" DOUBLE PRECISION[],
-    "appId" INTEGER NOT NULL,
+    "appId" SERIAL NOT NULL,
 
     CONSTRAINT "Location_pkey" PRIMARY KEY ("id")
 );
@@ -31,19 +31,19 @@ CREATE TABLE "Admin" (
     "id" SERIAL NOT NULL,
     "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "phoneNumber" VARCHAR(10) NOT NULL,
     "Dob" TIMESTAMP(3),
     "password" TEXT NOT NULL,
     "accountType" TEXT NOT NULL DEFAULT 'Admin',
-    "fullName" TEXT NOT NULL,
-    "AddharNumber" TEXT NOT NULL,
-    "PanNumber" TEXT NOT NULL,
     "address" JSONB NOT NULL,
-    "passportPhoto" TEXT,
     "profileImage" TEXT,
     "resetPasswordExpires" TIMESTAMP(3),
+    "phoneNumber" VARCHAR(10) NOT NULL,
+    "AddharNumber" TEXT NOT NULL,
+    "PanNumber" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "fullName" TEXT NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "passportPhoto" TEXT,
 
     CONSTRAINT "Admin_pkey" PRIMARY KEY ("id")
 );
@@ -73,12 +73,12 @@ CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "phoneNumber" VARCHAR(10) NOT NULL,
     "password" TEXT NOT NULL,
     "accountType" TEXT NOT NULL,
     "additionalDetails" TEXT[],
     "image" TEXT,
     "resetPasswordExpires" TIMESTAMP(3),
+    "phoneNumber" VARCHAR(10) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -92,27 +92,28 @@ CREATE TABLE "Library" (
     "shortDescription" TEXT NOT NULL,
     "cardImage" TEXT,
     "images" TEXT[],
-    "Price" INTEGER,
     "address" JSONB,
     "commingSoonMessage" TEXT DEFAULT 'false',
-    "coords" DOUBLE PRECISION[],
     "deleted" BOOLEAN NOT NULL DEFAULT false,
     "comingSoon" BOOLEAN NOT NULL DEFAULT false,
     "approved" BOOLEAN NOT NULL DEFAULT false,
     "legal" TEXT,
-    "gstNumber" TEXT,
-    "gstCertificateFile" TEXT,
-    "cinNumber" TEXT,
+    "registrationFees" INTEGER NOT NULL DEFAULT 500,
     "cinCertificateFile" TEXT,
-    "tanNumber" TEXT,
-    "tanCertificateFile" TEXT,
-    "msmeNumber" TEXT,
+    "cinNumber" TEXT,
+    "gstCertificateFile" TEXT,
+    "gstNumber" TEXT,
     "msmeCertificateFile" TEXT,
+    "msmeNumber" TEXT,
+    "tanCertificateFile" TEXT,
+    "tanNumber" TEXT,
+    "coords" DOUBLE PRECISION[],
+    "Price" INTEGER,
+    "avgRating" DOUBLE PRECISION,
     "propertyType" TEXT,
     "uploadElectricityBill" TEXT,
     "uploadLeaseAgreement" TEXT,
-    "registrationFees" INTEGER NOT NULL DEFAULT 500,
-    "avgRating" DOUBLE PRECISION,
+    "offlineBookingAllowed" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Library_pkey" PRIMARY KEY ("id")
 );
@@ -121,10 +122,10 @@ CREATE TABLE "Library" (
 CREATE TABLE "Room" (
     "id" SERIAL NOT NULL,
     "libraryId" INTEGER NOT NULL,
-    "roomName" TEXT,
     "roomNo" INTEGER NOT NULL,
     "Ac" BOOLEAN NOT NULL DEFAULT false,
-    "doorPosition" INTEGER[] DEFAULT ARRAY[0, 0, 0, 0, 0]::Int[],
+    "doorPosition" INTEGER[] DEFAULT ARRAY[0, 0, 0, 0, 0]::INTEGER[],
+    "roomName" TEXT,
 
     CONSTRAINT "Room_pkey" PRIMARY KEY ("id")
 );
@@ -133,10 +134,10 @@ CREATE TABLE "Room" (
 CREATE TABLE "Seat" (
     "id" SERIAL NOT NULL,
     "seatId" TEXT NOT NULL,
-    "seatName" TEXT,
     "seatLabel" TEXT NOT NULL,
-    "rotation" INTEGER NOT NULL DEFAULT 0,
     "roomId" INTEGER NOT NULL,
+    "rotation" INTEGER NOT NULL DEFAULT 0,
+    "seatName" TEXT,
 
     CONSTRAINT "Seat_pkey" PRIMARY KEY ("id")
 );
@@ -150,9 +151,9 @@ CREATE TABLE "TimeSlot" (
     "booked" BOOLEAN NOT NULL DEFAULT false,
     "bookedById" INTEGER,
     "bookingSource" TEXT NOT NULL DEFAULT 'app',
-    "price" INTEGER NOT NULL DEFAULT 0,
     "bookingEndDate" TIMESTAMP(3),
     "seatId" INTEGER NOT NULL,
+    "price" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "TimeSlot_pkey" PRIMARY KEY ("id")
 );
@@ -160,21 +161,21 @@ CREATE TABLE "TimeSlot" (
 -- CreateTable
 CREATE TABLE "Booking" (
     "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
     "libraryId" INTEGER NOT NULL,
-    "initialPrice" DOUBLE PRECISION NOT NULL,
-    "finalPrice" DOUBLE PRECISION NOT NULL,
-    "paid" BOOLEAN NOT NULL DEFAULT false,
-    "timeSlotDetails" JSONB,
-    "roomNo" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "approved" BOOLEAN NOT NULL DEFAULT false,
     "bookedSeat" JSONB NOT NULL,
     "bookingDate" TIMESTAMP(3) NOT NULL,
     "bookingFinalDate" TIMESTAMP(3),
     "bookingPeriod" INTEGER NOT NULL DEFAULT 1,
-    "transactionDetails" JSONB,
     "bookingStatus" "BookingStatus" NOT NULL DEFAULT 'PENDING',
-    "approved" BOOLEAN NOT NULL DEFAULT false,
+    "finalPrice" DOUBLE PRECISION NOT NULL,
+    "initialPrice" DOUBLE PRECISION NOT NULL,
+    "paid" BOOLEAN NOT NULL DEFAULT false,
+    "roomNo" INTEGER NOT NULL,
+    "timeSlotDetails" JSONB,
     "timeStamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "transactionDetails" JSONB,
 
     CONSTRAINT "Booking_pkey" PRIMARY KEY ("id")
 );
@@ -184,9 +185,9 @@ CREATE TABLE "Friend" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT,
-    "phoneNumber" TEXT,
     "relationship" TEXT,
     "userId" INTEGER,
+    "phoneNumber" TEXT,
 
     CONSTRAINT "Friend_pkey" PRIMARY KEY ("id")
 );
@@ -215,8 +216,8 @@ CREATE TABLE "Review" (
 -- CreateTable
 CREATE TABLE "Amenities" (
     "id" SERIAL NOT NULL,
-    "amenities" JSONB NOT NULL DEFAULT '[]',
     "libraryId" INTEGER NOT NULL,
+    "amenities" JSONB NOT NULL DEFAULT '[]',
 
     CONSTRAINT "Amenities_pkey" PRIMARY KEY ("id")
 );
@@ -224,9 +225,9 @@ CREATE TABLE "Amenities" (
 -- CreateTable
 CREATE TABLE "PhoneOtp" (
     "id" SERIAL NOT NULL,
-    "phoneNumber" TEXT NOT NULL,
     "phoneotp" TEXT,
     "createdAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "phoneNumber" TEXT NOT NULL,
 
     CONSTRAINT "PhoneOtp_pkey" PRIMARY KEY ("id")
 );
@@ -260,11 +261,11 @@ CREATE TABLE "Invoice" (
     "bookingPeriod" INTEGER NOT NULL,
     "bookingStatus" TEXT NOT NULL,
     "approved" BOOLEAN NOT NULL,
-    "timeStamp" TIMESTAMP,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "timeStamp" TIMESTAMP(6),
     "bookingFinalDate" TIMESTAMP(3) NOT NULL,
     "seatLabel" TEXT NOT NULL,
     "timeSlotDetails" JSONB,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Invoice_pkey" PRIMARY KEY ("id")
 );
@@ -291,9 +292,9 @@ CREATE TABLE "Transaction" (
     "adminId" INTEGER,
     "libraryId" INTEGER,
     "bookingId" INTEGER,
+    "expiresAt" TIMESTAMP(3),
     "isOfflinePayment" BOOLEAN DEFAULT false,
     "offlinePaymentStatus" "OfflinePaymentStatus",
-    "expiresAt" TIMESTAMP(3),
 
     CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
 );
@@ -369,10 +370,10 @@ ALTER TABLE "TimeSlot" ADD CONSTRAINT "TimeSlot_bookedById_fkey" FOREIGN KEY ("b
 ALTER TABLE "TimeSlot" ADD CONSTRAINT "TimeSlot_seatId_fkey" FOREIGN KEY ("seatId") REFERENCES "Seat"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Booking" ADD CONSTRAINT "Booking_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Booking" ADD CONSTRAINT "Booking_libraryId_fkey" FOREIGN KEY ("libraryId") REFERENCES "Library"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Booking" ADD CONSTRAINT "Booking_libraryId_fkey" FOREIGN KEY ("libraryId") REFERENCES "Library"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Booking" ADD CONSTRAINT "Booking_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Friend" ADD CONSTRAINT "Friend_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -384,10 +385,10 @@ ALTER TABLE "BookingFriend" ADD CONSTRAINT "BookingFriend_bookingId_fkey" FOREIG
 ALTER TABLE "BookingFriend" ADD CONSTRAINT "BookingFriend_friendId_fkey" FOREIGN KEY ("friendId") REFERENCES "Friend"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Review" ADD CONSTRAINT "Review_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Review" ADD CONSTRAINT "Review_libraryId_fkey" FOREIGN KEY ("libraryId") REFERENCES "Library"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Review" ADD CONSTRAINT "Review_libraryId_fkey" FOREIGN KEY ("libraryId") REFERENCES "Library"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Review" ADD CONSTRAINT "Review_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Amenities" ADD CONSTRAINT "Amenities_libraryId_fkey" FOREIGN KEY ("libraryId") REFERENCES "Library"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -402,16 +403,16 @@ ALTER TABLE "Invoice" ADD CONSTRAINT "Invoice_libraryId_fkey" FOREIGN KEY ("libr
 ALTER TABLE "Distance" ADD CONSTRAINT "Distance_libraryId_fkey" FOREIGN KEY ("libraryId") REFERENCES "Library"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "Admin"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "Admin"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_bookingId_fkey" FOREIGN KEY ("bookingId") REFERENCES "Booking"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_libraryId_fkey" FOREIGN KEY ("libraryId") REFERENCES "Library"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_bookingId_fkey" FOREIGN KEY ("bookingId") REFERENCES "Booking"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_LibraryBookings" ADD CONSTRAINT "_LibraryBookings_A_fkey" FOREIGN KEY ("A") REFERENCES "Admin"("id") ON DELETE CASCADE ON UPDATE CASCADE;
