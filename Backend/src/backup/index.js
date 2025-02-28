@@ -25,7 +25,7 @@ const backupDatabase = (req, res) => {
 
       // Setup Google Drive API
       const auth = new google.auth.GoogleAuth({
-        keyFile: './ekaant.json', // Update with your credentials path
+        keyFile: '../ekaant.json', // Update with your credentials path
         scopes: ['https://www.googleapis.com/auth/drive'],
       });
 
