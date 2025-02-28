@@ -28,7 +28,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "react-native-toast-notifications";
 import RazorpayCheckout from "react-native-razorpay";
 
-import getLocationName from "@/utils/location";
+
 import { h, vw, w } from "@/constants/size";
 import ff from "@/constants/fonts";
 
@@ -310,9 +310,12 @@ const CheckoutScreen: React.FC = () => {
       </View>
     );
   }
-
+console.log(libraryData, "libraryData")
 
   const PaymentModal = () => (
+
+
+    console.log(libraryData.data.offlinePaymentPermission, "libraryData1111"),
     <Modal transparent animationType="slide" visible={showPaymentModal} onRequestClose={() => setShowPaymentModal(false)}
     >
       <View style={modalStyles.container}>
@@ -330,7 +333,7 @@ const CheckoutScreen: React.FC = () => {
 
 
           {
-            libraryData?.offlinePaymentPermission && (
+            libraryData?.data.offlinePaymentPermission && (
               <TouchableOpacity
             style={[modalStyles.button, modalStyles.offlineButton]}
             onPress={() => {
@@ -808,8 +811,7 @@ const CheckoutScreen: React.FC = () => {
           </View>
         </TouchableOpacity>
       </View>
-
-      <PaymentModal />
+      {PaymentModal()}
     </SafeAreaView>
   );
 };
