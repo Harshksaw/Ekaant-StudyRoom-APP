@@ -152,10 +152,16 @@ export default function Bookings() {
               }}
             >
 
-              {assets && assets[0] && <Image
-                style={{ width: 300, height: 250 }}
-                source={ assets[0]}
-              />}
+              <Image
+              source={{
+                uri:"https://res.cloudinary.com/dbnnlqq5v/image/upload/No_Booking_ffpfaz.svg"
+              }}
+              style={{
+                width: 250,
+                height: 250,
+                borderRadius: 10,
+                aspectRatio: 1 / 1}}
+              />
          
               <Text
                 style={{

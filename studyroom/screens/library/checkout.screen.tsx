@@ -563,7 +563,7 @@ console.log(libraryData, "libraryData")
               >
                 Seat No.{" "}
                 {/* {formatSeatLabel(BookedData?.bookedSeat?.seatId)}{" "} */}
-                {BookedData?.bookedSeat.seatLabel}
+                {BookedData?.bookedSeat.seatName}
               </Text>
             </View>
           </View>
