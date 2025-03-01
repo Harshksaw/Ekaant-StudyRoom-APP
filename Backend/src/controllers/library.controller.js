@@ -481,7 +481,7 @@ const getLibraryById = async (req, res) => {
         },
         amenities: {
           include:{
-            id:true,
+
             amenities: true,
           }
         },
