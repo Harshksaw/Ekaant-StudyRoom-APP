@@ -220,14 +220,14 @@ const BookingScreen: React.FC = () => {
         dispatch(setTransaction({ transactionId: response.data.data.transactionId }));
 
 
-        if (response.status === 200 || response.status === 201) {
-          Toast.show("Booking Successful", {
-            type: "success",
+        // if (response.status === 200 || response.status === 201) {
+        //   Toast.show("Booking Successful", {
+        //     type: "success",
 
-              placement:"top",
-              duration: 3000,
-          });
-        }
+        //       placement:"top",
+        //       duration: 3000,
+        //   });
+        // }
 
         return response.data;
       } catch (error) {

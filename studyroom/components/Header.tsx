@@ -78,14 +78,27 @@ const Header = ({ color }: any) => {
 
           <View 
           style={{
-            padding:2
+            // padding:2
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+
           }}
           >
+<Image
+  source={{uri: "https://res.cloudinary.com/dbnnlqq5v/image/upload/v1740811934/Group_1000004709_hbdjhh.png"} } // Ensure correct path
+  style={{
+    width: 68,  // Adjust width as needed
+    height: 50,  // Adjust height as needed
+    alignSelf: "center",
 
-            <HeaderIcon/>
+
+  }}
+  
+/>
          
 
-            <Text
+            {/* <Text
               style={{
                 fontSize: 12,
                 fontWeight: "bold",
@@ -93,7 +106,7 @@ const Header = ({ color }: any) => {
               }}
             >
               EKAANT
-            </Text>
+            </Text> */}
           </View>
 
 
