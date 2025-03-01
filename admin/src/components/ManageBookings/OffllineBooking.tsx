@@ -98,6 +98,7 @@ const AdminOfflinePayments = () => {
                 <th className="p-3 text-left">Library</th>
                 <th className="p-3 text-left">Seat</th>
                 <th className="p-3 text-left">Time Slot</th>
+                <th className="p-3 text-left">Amount</th>
                 <th className="p-3 text-left">Time Left</th>
                 <th className="p-3 text-left">Actions</th>
               </tr>
@@ -115,7 +116,10 @@ const AdminOfflinePayments = () => {
                   <td className="p-3">{payment.library.name}</td>
                   <td className="p-3">{payment.bookedSeat.seatLabel}</td>
                   <td className="p-3">
-                    {payment.timeSlotDetails.from} - {payment.timeSlotDetails.to}
+                    {payment.timeSlotDetails[0]?.from} - {payment.timeSlotDetails[0]?.to}
+                  </td>
+                  <td className="p-3">
+                    {payment?.price}
                   </td>
                   <td className="p-3 text-red-600 font-semibold">
                     {payment.remainingTime} sec

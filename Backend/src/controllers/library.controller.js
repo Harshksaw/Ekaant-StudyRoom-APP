@@ -479,7 +479,12 @@ const getLibraryById = async (req, res) => {
             },
           },
         },
-        amenities: true,
+        amenities: {
+          include:{
+            id:true,
+            amenities: true,
+          }
+        },
         libraryOwner: true,
 
       },

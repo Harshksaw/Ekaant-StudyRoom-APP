@@ -48,6 +48,7 @@ const CheckoutScreen: React.FC = () => {
   const BookedData = JSON.parse(params?.params?.item);
 
 
+
   if (!BookedData) {
     return (
       <View>
@@ -315,7 +316,7 @@ console.log(libraryData, "libraryData")
   const PaymentModal = () => (
 
 
-    console.log(libraryData.data.offlinePaymentPermission, "libraryData1111"),
+    // console.log(libraryData?.data.offlinePaymentPermission, "libraryData1111")
     <Modal transparent animationType="slide" visible={showPaymentModal} onRequestClose={() => setShowPaymentModal(false)}
     >
       <View style={modalStyles.container}>
@@ -333,7 +334,7 @@ console.log(libraryData, "libraryData")
 
 
           {
-            libraryData?.data.offlinePaymentPermission && (
+            !libraryData?.data.offlinePaymentPermission && (
               <TouchableOpacity
             style={[modalStyles.button, modalStyles.offlineButton]}
             onPress={() => {
@@ -357,6 +358,14 @@ console.log(libraryData, "libraryData")
       </View>
     </Modal>
   );
+
+  console.log(BookedData?.libraryId[0], "---")
+
+  // Check if the library has AC as an amenity
+  const hasAc = Array.isArray(libraryData?.data?.amenities?.amenities) 
+  ? libraryData?.data?.amenities?.amenities.includes("ac") 
+  : false;
+  console.log(hasAc)
   return (
     <SafeAreaView
       style={{
@@ -493,7 +502,7 @@ console.log(libraryData, "libraryData")
                     letterSpacing: 0.5,
                   }}
                 >
-                  A/C Rooms - {BookedData?.libraryId[0]?.Ac ? "Yes" : "No"}
+                  A/C Rooms - {hasAc ? "Yes" : "No"}
                 </Text>
               </View>
             </View>

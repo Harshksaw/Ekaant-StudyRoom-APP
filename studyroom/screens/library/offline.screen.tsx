@@ -60,6 +60,13 @@ useEffect(() => {
             router.replace('/(tabs)/bookings')
 
           }
+
+          if (data.status === "CANCELED") {
+            setStatus("CANCELED")
+            clearInterval(statusInterval)
+            Toast.show("Payment Canceled", { type: 'error'  , duration: 3000})
+            router.replace('/(tabs)/bookings')
+          }
         })
         .catch(error => console.error("Axios error:", error))
     }, 5000)
