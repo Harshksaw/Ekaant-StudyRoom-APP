@@ -3,6 +3,7 @@ import axios from "axios";
 import { BACKEND } from "../../../../studyroom/utils/config";
 
 import { toast } from "react-toastify";
+import { BASEURL } from "@/lib/utils";
 
 const AdminOfflinePayments = () => {
   const [offlinePayments, setOfflinePayments] = useState([]);
@@ -16,7 +17,7 @@ const AdminOfflinePayments = () => {
   const getOfflinePayments = async () => {
     try {
       const response = await axios.get(
-        `${BACKEND}/api/v1/Booking/libraryOfflinePayments/${adminId}`
+        `${BASEURL}/api/v1/Booking/libraryOfflinePayments/${adminId}`
       );
       if (response.data.offlinePayments.length === 0) {
         toast.info("No pending offline payments", { duration: 3000 });
@@ -59,7 +60,7 @@ const AdminOfflinePayments = () => {
   const handleApprove = (transactionId: string) => {
     axios
       .post(
-        `${BACKEND}/api/v1/Booking/approveOffline/${transactionId}`,
+        `${BASEURL}/api/v1/Booking/approveOffline/${transactionId}`,
        
        
       )
