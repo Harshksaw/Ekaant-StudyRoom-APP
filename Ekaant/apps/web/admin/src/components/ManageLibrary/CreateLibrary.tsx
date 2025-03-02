@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Seats from "../seatinglayout/SeatLayout.tsx";
+import Seats from "../seatinglayout/SeatLayout.js";
 import { BASEURL } from "@/lib/utils.ts";
-import LocationSelector from "./LocationSelector.tsx";
+import LocationSelector from "./LocationSelector.js";
 import axios from "axios";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
