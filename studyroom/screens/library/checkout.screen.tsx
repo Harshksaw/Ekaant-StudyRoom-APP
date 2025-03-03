@@ -36,10 +36,10 @@ const CheckoutScreen: React.FC = () => {
   const userDetails = useSelector((state: any) => state.user);
   const [bookingId, setBookingId] = useState(null);
   const [userData, setUserData] = useState<any>(null);
-  console.log("🚀 ~ userData:", userData)
+  // console.log("🚀 ~ userData:", userData)
   const [libraryData, setLibraryData] = useState(null);
   const [location, setLocation] = useState<String | null>(null);
-  // console.log("🚀 ~ location:", location)
+  // // console.log("🚀 ~ location:", location)
 
   //getting data  from booking screen
   const [libraryId, setLibraryId] = useState(null);
@@ -58,7 +58,7 @@ const CheckoutScreen: React.FC = () => {
   }
 
   const BookingDataId = BookedData.bookingId.data.bookingId
-  console.log("🚀 ~ BookingDataId:", BookingDataId)
+  // console.log("🚀 ~ BookingDataId:", BookingDataId)
 
   // const BookingDate = BookedData?.bookingDate
   const BookingMonths = BookedData?.bookingPeriod;
@@ -166,7 +166,7 @@ const CheckoutScreen: React.FC = () => {
         amount: BookedData.totalAmount,
         BookedData,
       });
-      console.log("🚀 ~ handleOfflinePayment ~ res", res);
+      // console.log("🚀 ~ handleOfflinePayment ~ res", res);
   
       if (res.status === 429) {
         Toast.show("Error", {
@@ -203,7 +203,9 @@ const CheckoutScreen: React.FC = () => {
       image:
         "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png", //logo
       currency: "INR",
-      key: "rzp_live_1BtXgGebBeYRTh",
+      key: "rzp_test_kait7HP5ns9gQU",
+      // key: "rzp_live_1BtXgGebBeYRTh",
+      
       amount: `${PaymentPrice * 100}`,
       name: "Ekaant",
       order_id: "",
@@ -249,18 +251,18 @@ const CheckoutScreen: React.FC = () => {
       Toast.show("Booking ID is missing");
     }
     try {
-      // console.log("🚀 ~ confirmPayment ~ BookedData.timeSlot[0]:", BookedData.timeSlot[0])
+      console.log("🚀 ~ confirmPayment ~ BookedData.timeSlot[0]:", BookedData.bookingId)
       const data = {
         libraryId: BookedData.libraryId.id,
         roomNo: BookedData.roomNo,
         bookedSeat: BookedData.timeSlot[0],
-        bookingId: BookedData.bookingId,
+        bookingId: BookedData.bookingId?.data.bookingId,
         BookedData: BookedData,
       };
-      // console.log("🚀 ~ confirmPayment ~ data:", data)
+      // // console.log("🚀 ~ confirmPayment ~ data:", data)
       // console.log(bookingId, "-1-1-11-", BookedData)
       const res = await axios.post(
-        `${BACKEND}/api/v1/booking/confirm/${bookingId}`,
+        `${BACKEND}/api/v1/booking/confirm/${BookedData.bookingId?.data.bookingId}`,
         data
       );
 
@@ -334,7 +336,7 @@ console.log(libraryData, "libraryData")
 
 
           {
-            !libraryData?.data.offlinePaymentPermission && (
+            libraryData?.data.offlinePaymentPermission && (
               <TouchableOpacity
             style={[modalStyles.button, modalStyles.offlineButton]}
             onPress={() => {
