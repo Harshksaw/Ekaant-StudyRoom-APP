@@ -336,7 +336,7 @@ console.log(libraryData, "libraryData")
 
 
           {
-            !libraryData?.data.offlinePaymentPermission && (
+            libraryData?.data.offlinePaymentPermission && (
               <TouchableOpacity
             style={[modalStyles.button, modalStyles.offlineButton]}
             onPress={() => {

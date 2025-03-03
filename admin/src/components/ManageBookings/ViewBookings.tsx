@@ -2,6 +2,7 @@ import { BASEURL } from "@/lib/utils";
 import axios from "axios";
 import React from "react";
 
+
 const ViewBookings = () => {
   const [bookings, setBookings] = React.useState<any[]>([]); // Changed initial state to an empty array
   const [isLoading, setIsLoading] = React.useState(true);
@@ -36,51 +37,65 @@ const ViewBookings = () => {
       ) : (
         <div className="flex flex-col h-full">
           <div className="overflow-y-auto flex-1 min-h-96 justify-center flex-col p-4">
-            <table className="min-w-full bg-white border border-gray-300 h-full">
-              <thead className="bg-white">
-                <tr>
-                  <th className="py-2 px-4 border-b">Email</th>
-                  <th className="py-2 px-4 border-b">Phone Number</th>
-                  <th className="py-2 px-4 border-b">Booked Seat</th>
-                  <th className="py-2 px-4 border-b">Booking Date</th>
-                  <th className="py-2 px-4 border-b">Period/Months</th>
-                  <th className="py-2 px-4 border-b">Time</th>
-                  <th className="py-2 px-4 border-b">Room No</th>
-                  <th className="py-2 px-4 border-b">Price</th>
-                  <th className="py-2 px-4 border-b">Booked For</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-700">
-                {bookings.map((item: any, index: number) => (
-                  <tr key={index} className="hover:bg-gray-100">
-                    <td className="py-2 px-4 border-b">{item?.user?.email || "N/A"}</td>
-                    <td className="py-2 px-4 border-b">{item?.user?.phoneNumber || "N/A"}</td>
-                    <td className="py-2 px-4 border-b">{item?.bookedSeat?.seatLabel || "N/A"}</td>
-                    <td className="py-2 px-4 border-b">{item?.bookingDate?.slice(0, 10) || "N/A"}</td>
-                    <td className="py-2 px-4 border-b">{item?.bookingPeriod || "N/A"}</td>
-                    <td className="py-2 px-4 border-b">
-                      {Array.isArray(item?.timeSlotDetails) ? (
-                        item?.timeSlotDetails.map((slot: any, idx: number) => (
-                          <div key={idx}>
-                            {slot?.from || "N/A"} - {slot?.to || "N/A"}
-                          </div>
-                        ))
-                      ) : (
-                        "N/A"
-                      )}
-                    </td>
-                    <td className="py-2 px-4 border-b">{item?.roomNo || "N/A"}</td>
-                    <td className="py-2 px-4 border-b">Rs {item?.finalPrice || "0"}</td>
-                    <td className="py-2 px-4 border-b">
-                      {item?.forFriend
-                        ? `${item?.forFriend?.name || "N/A"} (Friend)`
-                        : `${item?.user?.username || "SELF"} (SELF)`}
-                      {item?.forFriend ? `Booked By (${item?.userId?.username || "N/A"})` : ""}
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white border border-gray-300 h-full">
+                <thead className="bg-white">
+                  <tr>
+                    <th className="py-2 px-4 border-b">Email/Phone Number</th>
+
+                    <th className="py-2 px-4 border-b">Booked Seat</th>
+                    <th className="py-2 px-4 border-b">Booking Date</th>
+                    <th className="py-2 px-4 border-b">Months</th>
+                    <th className="py-2 px-4 border-b w-2/12">Time</th>
+                    <th className="py-2 px-4 border-b">Room No</th>
+                    <th className="py-2 px-4 border-b">Price/(Payment Mode)</th>
+                    <th className="py-2 px-4 border-b">Booked For</th>
+
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="text-gray-700 ">
+                  {bookings.map((item: any, index: number) => (
+                    <tr key={index} className="hover:bg-gray-100">
+                      <td className="py-2 px-4 border-b text-center">
+                        <div title={item?.user?.email || "N/A"}>
+                          {item?.user?.email ? item.user.email.length > 20 ? `${item.user.email.slice(0, 25)}...` : item.user.email : "N/A"}
+                        </div>
+                        <div>{item?.user?.phoneNumber || "N/A"}</div>
+                      </td>
+                      <td className="py-2 px-4 border-b text-center">{item?.bookedSeat?.seatLabel || "N/A"}</td>
+                      <td className="py-2 px-4 border-b text-center">{item?.bookingDate?.slice(0, 10) || "N/A"}</td>
+                      <td className="py-2 px-4 border-b text-center">{item?.bookingPeriod || "N/A"}</td>
+                      <td className="py-2 px-4 border-b text-center">
+                        {Array.isArray(item?.timeSlotDetails) ? (
+                          <div>
+                            {item?.timeSlotDetails.map((slot: any, idx: number) => (
+                              <div key={idx}>
+                                {slot?.from || "N/A"} - {slot?.to || "N/A"}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          "N/A"
+                        )}
+                      </td>
+                      <td className="py-2 px-4 border-b text-center">{item?.roomNo || "N/A"}</td>
+                      <td className="py-2 px-4 border-b text-center">
+                        <div>Rs {item?.finalPrice || "0"}</div>
+                        <div>
+                          {item.transactions[0]?.isOfflinePayment ? "Offline" : "Online"}
+                        </div>
+                      </td>
+                      <td className="py-2 px-4 border-b text-center">
+                        {item?.forFriend
+                          ? `${item?.forFriend?.name || "N/A"} (Friend)`
+                          : `${item?.user?.username || "SELF"} (SELF)`}
+                        {item?.forFriend ? `Booked By (${item?.userId?.username || "N/A"})` : ""}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

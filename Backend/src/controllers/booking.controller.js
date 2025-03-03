@@ -238,10 +238,14 @@ async function getBookingByLibId(req, res) {
     //   res.status(StatusCodes.BAD_REQUEST).json({ message: "lib_id not found" });
     // }
     const bookings = await prisma.booking.findMany({
-      where: { user_Id: user_id },
+      where: { user_Id: user_id, paid: true , bookingStatus: "CONFIRMED" },
       include: {
-        user: true, // Include the related User model
+        user: true, 
+
+        transactions:true
+     
       },
+
 
 
       orderBy: {
