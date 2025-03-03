@@ -79,47 +79,45 @@ model User {
 }
 
 model Library {
-  id                    Int           @id @default(autoincrement())
-  libraryOwnerId        Int?
-  name                  String
-  longDescription       String?
-  shortDescription      String
-  cardImage             String?
-  images                String[]
-  address               Json?
-  commingSoonMessage    String?       @default("false")
-  deleted               Boolean       @default(false)
-  comingSoon            Boolean       @default(false)
-  approved              Boolean       @default(false)
-  legal                 String?
-  registrationFees      Int           @default(500)
-  cinCertificateFile    String?
-  cinNumber             String?
-  gstCertificateFile    String?
-  gstNumber             String?
-  msmeCertificateFile   String?
-  msmeNumber            String?
-  tanCertificateFile    String?
-  tanNumber             String?
-  coords                Float[]
-  Price                 Int?
-  avgRating             Float?
-  propertyType          String?
-  uploadElectricityBill String?
-  uploadLeaseAgreement  String?
-  offlinePaymentPermission Boolean   @default(false)
-
-
-  amenities             Amenities?
-  bookings              Booking[]     @relation("LibraryBookings")
-  distances             Distance[]
-  invoices              Invoice[]     @relation("LibraryInvoices")
-  libraryOwner          Admin?        @relation("AdminOwnedLibraries", fields: [libraryOwnerId], references: [id], onDelete: Cascade)
-  reviews               Review[]      @relation("Reviews")
-  rooms                 Room[]        @relation("LibraryRooms")
-  transaction           Transaction[]
-  admins                Admin[]       @relation("LibraryBookings")
-  users                 User[]        @relation("OwnedProperties")
+  id                       Int           @id @default(autoincrement())
+  libraryOwnerId           Int?
+  name                     String
+  longDescription          String?
+  shortDescription         String
+  cardImage                String?
+  images                   String[]
+  address                  Json?
+  commingSoonMessage       String?       @default("false")
+  deleted                  Boolean       @default(false)
+  comingSoon               Boolean       @default(false)
+  approved                 Boolean       @default(false)
+  legal                    String?
+  registrationFees         Int           @default(500)
+  cinCertificateFile       String?
+  cinNumber                String?
+  gstCertificateFile       String?
+  gstNumber                String?
+  msmeCertificateFile      String?
+  msmeNumber               String?
+  tanCertificateFile       String?
+  tanNumber                String?
+  coords                   Float[]
+  Price                    Int?
+  avgRating                Float?
+  propertyType             String?
+  uploadElectricityBill    String?
+  uploadLeaseAgreement     String?
+  offlinePaymentPermission Boolean       @default(false)
+  amenities                Amenities?
+  bookings                 Booking[]     @relation("LibraryBookings")
+  distances                Distance[]
+  invoices                 Invoice[]     @relation("LibraryInvoices")
+  libraryOwner             Admin?        @relation("AdminOwnedLibraries", fields: [libraryOwnerId], references: [id], onDelete: Cascade)
+  reviews                  Review[]      @relation("Reviews")
+  rooms                    Room[]        @relation("LibraryRooms")
+  transaction              Transaction[]
+  admins                   Admin[]       @relation("LibraryBookings")
+  users                    User[]        @relation("OwnedProperties")
 }
 
 model Room {
