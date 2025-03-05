@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASEURL } from "../../lib/utils";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Navigate, Router, useNavigate } from "react-router-dom";
 
 const fetchLibraries = async () => {
   try {
@@ -30,15 +30,15 @@ const fetchRoomsByLibraryId = async (libraryId: string) => {
 };
 
 // Function to fetch seats by room ID
-// const fetchSeatsByRoomId = async (roomId: string) => {
-//   try {
-//     const response = await axios.post(`${BASEURL}/api/v1/seat/getSeatsByRoomId`, { roomId });
-//     return response.data.data;
-//   } catch (error) {
-//     console.error("Error fetching seats:", error);
-//     return [];
-//   }
-// };
+const fetchSeatsByRoomId = async (roomId: string) => {
+  try {
+    const response = await axios.post(`${BASEURL}/api/v1/seat/getSeatsByRoomId`, { roomId });
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching seats:", error);
+    return [];
+  }
+};
 
 // Component to display bookings
 const LibraryBookings = () => {
@@ -51,7 +51,7 @@ const LibraryBookings = () => {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedSeat, setSelectedSeat] = useState<any>(null);
-
+  console.log("🚀 ~ LibraryBookings ~ selectedSeat:", selectedSeat)
   const [bookingData, setBookingData] = useState<any>({ name: '', email: '', phoneNumber: '', month: '', timeSlot: '' });
   const navigate = useNavigate();
 
@@ -95,10 +95,15 @@ const LibraryBookings = () => {
     }
   }, [selectedRoom]);
 
-  const handleBookSeat = (seat: any) => {
+
+  const handleBookSeat = async(seat: any) => {
+
     setSelectedSeat(seat);
-    setBookingData({ name: '', email: '', phoneNumber: '', month: '', timeSlot: '' }); // Clear previous booking data
     setIsModalOpen(true);
+
+
+
+
   };
   
 
@@ -107,12 +112,14 @@ const LibraryBookings = () => {
       // await unbookSeat(seatId);
       toast.success('Seat unbooked successfully');
       // Refresh seats
-      // const seats = await fetchSeatsByRoomId(selectedRoom!);
+      const seats = await fetchSeatsByRoomId(selectedRoom!);
       setSeats(seats);
     } catch (error) {
       toast.error('Error unbooking seat');
     }
   };
+
+
   const getSeatMatrix = () => {
     if (!seats || seats.length === 0) return [];
 
@@ -128,52 +135,32 @@ const LibraryBookings = () => {
 
     return matrix;
   };
-const bookSeat = async (seatId: string, bookingData: any) => {
-  try {
 
-    toast.loading('Booking seat...');
-
-    const adminId = await localStorage.getItem("userId");
-  const response = await axios.post(`${BASEURL}/api/v1/booking/adminBooking`, {
-    libraryId:parseInt( selectedLibrary),
-    adminId: parseInt(adminId),
-
-    seatId,
-
-
-    roomNo: parseInt(selectedRoom),
-    name: bookingData.name,
-    email: bookingData.email,
-    phoneNumber: bookingData.phoneNumber,
-    month: bookingData.month,
-    timeSlot: parseInt(bookingData.timeSlot),
-
-  });
-  toast.dismiss()
-  setSelectedRoom(null)
-  setSelectedLibrary(null)
-
-    return response.data.data;
-
-  } catch (error) {
-    toast.dismiss()
-
-    toast.error('Error booking seat', error.response ? error.response.data : error.message, {
-      autoClose: 5000,
-    });
-    console.error("Error booking seat:", error);
-    return null;
-  }
-}
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await bookSeat(selectedSeat.id, bookingData);
+      // await bookSeat(selectedSeat.id, bookingData);
+
+       
+    const res =  await axios.post(`${BASEURL}/api/v1/booking/adminBooking`, {
+      libraryId:parseInt(selectedLibrary),
+      roomId: selectedRoom,
+      seatId: selectedSeat.id,
+      name: bookingData.name,
+      email: bookingData.email,
+      phoneNumber: bookingData.phoneNumber,
+      month: bookingData.month,
+      timeSlot: bookingData.timeSlot,
+    })
+
+    console.log("res------------", res)
       toast.success('Seat booked successfully');
       setIsModalOpen(false);
       // Refresh seats
       // const seats = await fetchSeatsByRoomId(selectedRoom!);
       setSeats(seats);
+
+
     } catch (error) {
       toast.error('Error booking seat');
     }
@@ -181,67 +168,98 @@ const bookSeat = async (seatId: string, bookingData: any) => {
 
   return (
     <div className="flex-1 min-h-96 justify-center flex-col p-4">
-      {/* <div className="text-xl mb-4">Bookings</div>
-      <div className="overflow-y-auto max-h-96">
-        <table className="min-w-full bg-white border border-gray-300">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b">Name</th>
-              <th className="py-2 px-4 border-b">Booked Seat</th>
-              <th className="py-2 px-4 border-b">Booking Date</th>
-              <th className="py-2 px-4 border-b">Period/Months</th>
-              <th className="py-2 px-4 border-b">Time</th>
-              <th className="py-2 px-4 border-b">Room No</th>
-              <th className="py-2 px-4 border-b">Price</th>
-              <th className="py-2 px-4 border-b">Booked For</th>
-            </tr>
-          </thead>
-          <tbody>
-            {librarybookings.map((item: any) => (
-              <tr key={item?.id} className="hover:bg-gray-100">
-                <td className="py-2 px-4 border-b">{item?.userId.username}</td>
-                <td className="py-2 px-4 border-b">
-                  label - {item?.bookedSeat?.seatLabel}
-                </td>
-                <td className="py-2 px-4 border-b">
-                  {item?.bookingDate.slice(0, 10)}
-                </td>
-                <td className="py-2 px-4 border-b">{item?.bookingPeriod}</td>
-                <td className="py-2 px-4 border-b">
-                  {item?.timeSlotDetails.map((slot: any, index: number) => (
-                    <div key={index}>
-                      {slot.from} - {slot.to}
-                    </div>
-                  ))}
-                </td>
-                <td className="py-2 px-4 border-b">{item?.roomNo}</td>
-                <td className="py-2 px-4 border-b">Rs{item?.finalPrice}</td>
-                <td className="py-2 px-4 border-b">
-                  {item?.forFriend
-                    ? `${item?.forFriend?.name}  (Friend)`
-                    : `${item?.userId.username}(SELF)`}
-                  {item?.forFriend
-                    ? `Booked By (${item?.userId.username})`
-                    : ""}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div> */}
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="library">
+          Select Library
+        </label>
+        <select
+          id="library"
+          value={selectedLibrary || ""}
+          onChange={(e) => setSelectedLibrary(e.target.value)}
+          className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+        >
+          <option value="" disabled>Select a library</option>
+          {libraries.map((library) => (
+            <option key={library.id} value={library.id}>
+              {library.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
-<div className="flex flex-col items-center justify-center h-[80vh]  text-center">
-     
-     <h1 className="text-2xl ">Booki</h1>
-               <p className="text-xl md:text-6xl font-bold  mb-8">
-               Coming Soon!
-               </p>
-           <div
-             className="w-32 h-32 md:w-40 md:h-40 bg-blue-500 rounded-full flex items-center justify-center animate-pulse"
-           >
-             <span className="text-white font-bold text-lg"></span>
-           </div>
-         </div>
+      {selectedLibrary && (
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="room">
+            Select Room
+          </label>
+          <select
+            id="room"
+            value={selectedRoom || ""}
+            onChange={(e) => setSelectedRoom(e.target.value)}
+            className="block appearance-none w-full bg-white border
+             border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow 
+             leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="" disabled>Select a room</option>
+            {rooms.map((room) => (
+              <option key={room.id} value={room.id}>
+                Room No: {room.roomNo}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {selectedRoom && (
+        <div className="mt-4 bg-blue-50 rounded-md">
+          <h2 className="text-xl font-bold mb-4 text-center ">Seat Layout</h2>
+            <div className="overflow-x-auto"></div>
+            {getSeatMatrix().map((row, rowIndex) => (
+              <div key={rowIndex} className="flex gap-4 justify-center overflow-auto  ">
+              {row.map((seat, colIndex) => (
+                <div key={colIndex} className={`border p-4 h-32 m-5 w-32 flex flex-col items-center justify-center rounded-md border-black ${!seat ? 'invisible' : ''}`}>
+                {seat ? (
+                <>
+                <p className="font-bold">Seat: {seat.seatLabel}</p>
+                <p className="text-sm">Booked: {seat.timeSlots[0].booked ? "Yes" : "No"}</p>
+                {
+                  console.log(seat.timeSlots[0].booked)
+                }
+                {seat.timeSlots[0].booked ? (
+                  <button
+                  onClick={() => handleUnbookSeat(seat.id)}
+                  className="px-4 py-2 mt-2 bg-red-500 text-white rounded"
+                  >
+                  Unbook
+                  </button>
+                ) : (
+                  <button
+                  onClick={() => handleBookSeat(seat)}
+                  className="px-4 py-2 mt-2 bg-green-500 text-white rounded"
+                  >
+                  Book
+                  </button>
+                )}
+                </>
+                ) : (
+                <div className="border p-4"></div>
+                )}
+                </div>
+              ))}
+              </div>
+            ))}
+            </div>
+
+      )}
+
+<CustomModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleBookingSubmit}
+        bookingData={bookingData}
+        setBookingData={setBookingData}
+        timeSlots={selectedSeat ? selectedSeat.timeSlots : []}
+      />
     </div>
   );
 };

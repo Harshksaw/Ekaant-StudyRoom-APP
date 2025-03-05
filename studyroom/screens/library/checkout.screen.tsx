@@ -203,8 +203,8 @@ const CheckoutScreen: React.FC = () => {
       image:
         "https://res.cloudinary.com/dgheyg3iv/image/upload/v1720931194/dmym7wh5u0vvhp2i1tki.png", //logo
       currency: "INR",
-      key: "rzp_test_kait7HP5ns9gQU",
-      // key: "rzp_live_1BtXgGebBeYRTh",
+      // key: "rzp_test_kait7HP5ns9gQU",
+      key: "rzp_live_1BtXgGebBeYRTh",
       
       amount: `${PaymentPrice * 100}`,
       name: "Ekaant",

@@ -115,6 +115,8 @@ function App() {
             {/* Manage Seats & Reports */}
             <Route path="/manage-seats" element={<ManageSeats />} />
             <Route path="/report" element={<Report />} />
+
+            <Route path="/manage-booking/adminbookings" element={<LibraryBookings />} />
           </Route>
         )}
 

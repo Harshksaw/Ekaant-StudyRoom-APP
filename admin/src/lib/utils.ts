@@ -9,10 +9,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const BASEURL='https://api.studyekaant.com'
+// export const BASEURL='https://api.studyekaant.com'
 
 
-// export const BASEURL='http://127.0.0.1:3009'
+export const BASEURL='http://127.0.0.1:3009'
 
 
 const fetchCities = async () => {

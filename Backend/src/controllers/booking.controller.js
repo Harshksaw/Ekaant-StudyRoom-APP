@@ -445,15 +445,17 @@ async function adminBooking(req, res) {
     }
 
     const seat = await prisma.seat.findFirst({
-      where: { roomId: room.id, id: seatId },
+      where: {  id: seatId },
     });
+
+    console.log("🚀 ~ adminBooking ~ seat:", seat)
 
     if (!seat) {
       return res.status(404).json({ error: "Seat not found" });
     }
     // Find the time slot
     const timeSlotData = await prisma.timeSlot.findFirst({
-      where: { seatId: seatId, id: timeSlot },
+      where: { seatId: seatId, id: parseInt(timeSlot) },
     });
     console.log("🚀 ~ adminBooking ~ timeSlotData:", timeSlotData)
 
@@ -481,13 +483,14 @@ async function adminBooking(req, res) {
     // Create the booking
     const booking = await prisma.booking.create({
       data: {
-        userId: adminId, // Assuming admin is also a user
+        userId: 11, // Assuming admin is also a user
         libraryId,
         initialPrice: timeSlotData.price,
         finalPrice: timeSlotData.price,
         paid: true,
         timeSlotDetails: JSON.stringify(timeSlotData),
-        roomNo,
+        roomNo: room.roomNo,
+        // library: { connect: { id: libraryId } },
 
         transactionDetails: {
           transactionId: transaction.id,
