@@ -28,7 +28,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "react-native-toast-notifications";
 import RazorpayCheckout from "react-native-razorpay";
 
-
 import { h, vw, w } from "@/constants/size";
 import ff from "@/constants/fonts";
 
@@ -47,8 +46,6 @@ const CheckoutScreen: React.FC = () => {
 
   const BookedData = JSON.parse(params?.params?.item);
 
-
-
   if (!BookedData) {
     return (
       <View>
@@ -57,7 +54,7 @@ const CheckoutScreen: React.FC = () => {
     );
   }
 
-  const BookingDataId = BookedData.bookingId.data.bookingId
+  const BookingDataId = BookedData.bookingId.data.bookingId;
   // console.log("🚀 ~ BookingDataId:", BookingDataId)
 
   // const BookingDate = BookedData?.bookingDate
@@ -139,7 +136,7 @@ const CheckoutScreen: React.FC = () => {
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
 
   const PaymentPrice = finalAmount;
-  console.log(BookedData, "------")
+  console.log(BookedData, "------");
   useEffect(() => {
     if (isinvoiceComplete) {
       router.push({
@@ -154,10 +151,8 @@ const CheckoutScreen: React.FC = () => {
     }
   }, [isPaymentComplete]);
 
-
   const userId = userData?.data?.user_id?.id;
   const handleOfflinePayment = async () => {
-
     try {
       const res = await axios.post(`${BACKEND}/api/v1/booking/createOffline`, {
         libraryId: BookedData.libraryId.id,
@@ -167,7 +162,7 @@ const CheckoutScreen: React.FC = () => {
         BookedData,
       });
       // console.log("🚀 ~ handleOfflinePayment ~ res", res);
-  
+
       if (res.status === 429) {
         Toast.show("Error", {
           dangerColor: "red",
@@ -176,7 +171,7 @@ const CheckoutScreen: React.FC = () => {
         });
         return;
       }
-      
+
       router.push({
         pathname: "/library/offline.payment",
         params: {
@@ -184,17 +179,14 @@ const CheckoutScreen: React.FC = () => {
         },
       });
     } catch (error) {
-
-      Toast.show("Daily limit reached." , {
+      Toast.show("Daily limit reached.", {
         dangerColor: "red",
         placement: "top",
         duration: 4000,
         icon: <Ionicons name="alert-circle" size={24} color="red" />,
       });
     }
-
   };
-
 
   const handlePayment = async () => {
     setIsPaymentProcessing(true);
@@ -205,7 +197,6 @@ const CheckoutScreen: React.FC = () => {
       currency: "INR",
       // key: "rzp_test_kait7HP5ns9gQU",
       key: "rzp_live_1BtXgGebBeYRTh",
-      
       amount: `${PaymentPrice * 100}`,
       name: "Ekaant",
       order_id: "",
@@ -251,7 +242,10 @@ const CheckoutScreen: React.FC = () => {
       Toast.show("Booking ID is missing");
     }
     try {
-      console.log("🚀 ~ confirmPayment ~ BookedData.timeSlot[0]:", BookedData.bookingId)
+      console.log(
+        "🚀 ~ confirmPayment ~ BookedData.timeSlot[0]:",
+        BookedData.bookingId
+      );
       const data = {
         libraryId: BookedData.libraryId.id,
         roomNo: BookedData.roomNo,
@@ -313,13 +307,15 @@ const CheckoutScreen: React.FC = () => {
       </View>
     );
   }
-console.log(libraryData, "libraryData")
+  console.log(libraryData, "libraryData");
 
   const PaymentModal = () => (
-
-
     // console.log(libraryData?.data.offlinePaymentPermission, "libraryData1111")
-    <Modal transparent animationType="slide" visible={showPaymentModal} onRequestClose={() => setShowPaymentModal(false)}
+    <Modal
+      transparent
+      animationType="slide"
+      visible={showPaymentModal}
+      onRequestClose={() => setShowPaymentModal(false)}
     >
       <View style={modalStyles.container}>
         <View style={modalStyles.modalContent}>
@@ -334,22 +330,18 @@ console.log(libraryData, "libraryData")
             <Text style={modalStyles.buttonText}>Online Payment</Text>
           </TouchableOpacity>
 
+          {libraryData?.data.offlinePaymentPermission && (
+            <TouchableOpacity
+              style={[modalStyles.button, modalStyles.offlineButton]}
+              onPress={() => {
+                handleOfflinePayment();
+                setShowPaymentModal(false);
+              }}
+            >
+              <Text style={modalStyles.buttonText}>Offline Payment</Text>
+            </TouchableOpacity>
+          )}
 
-          {
-            libraryData?.data.offlinePaymentPermission && (
-              <TouchableOpacity
-            style={[modalStyles.button, modalStyles.offlineButton]}
-            onPress={() => {
-              handleOfflinePayment();
-              setShowPaymentModal(false);
-            }}
-          >
-            <Text style={modalStyles.buttonText}>Offline Payment</Text>
-          </TouchableOpacity>
-
-            )
-          }
-          
           <TouchableOpacity
             onPress={() => setShowPaymentModal(false)}
             style={modalStyles.closeButton}
@@ -361,13 +353,13 @@ console.log(libraryData, "libraryData")
     </Modal>
   );
 
-  console.log(BookedData?.libraryId[0], "---")
+  console.log(BookedData?.libraryId[0], "---");
 
   // Check if the library has AC as an amenity
-  const hasAc = Array.isArray(libraryData?.data?.amenities?.amenities) 
-  ? libraryData?.data?.amenities?.amenities.includes("ac") 
-  : false;
-  console.log(hasAc)
+  const hasAc = Array.isArray(libraryData?.data?.amenities?.amenities)
+    ? libraryData?.data?.amenities?.amenities.includes("ac")
+    : false;
+  console.log(hasAc);
   return (
     <SafeAreaView
       style={{

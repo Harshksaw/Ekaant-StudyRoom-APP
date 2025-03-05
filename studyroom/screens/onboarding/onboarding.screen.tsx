@@ -27,10 +27,10 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Slider from "@/components/Slider";
-import { TextOptions } from '../../node_modules/@types/istanbul-reports/index.d';
+import { TextOptions } from "../../node_modules/@types/istanbul-reports/index.d";
 
 const { width, height } = Dimensions.get("screen");
-const isTablet = Platform.OS === 'ios' && (width >= 768 );
+const isTablet = Platform.OS === "ios" && width >= 768;
 
 export default function OnBoardingScreen() {
   const scale = useSharedValue(0);
@@ -116,7 +116,7 @@ export default function OnBoardingScreen() {
           dotSize: 8.86,
           activeColor: "rgba(0, 119, 182, 1)",
           color: "#6FC8E2",
-          bottomOffset: h(330),
+          bottomOffset: h(370),
           activeDotStyle: {
             width: 23,
             height: 8.86,
@@ -135,7 +135,7 @@ export default function OnBoardingScreen() {
           return (
             <ImageBackground
               style={{
-                width: isTablet ? width : vw ,
+                width: isTablet ? width : vw,
                 height: isTablet ? height : vh,
               }}
               source={item?.image}
@@ -195,12 +195,12 @@ export default function OnBoardingScreen() {
 
                 <View
                   style={{
-                    flexDirection: index !== 0 && index !== 3 ? "row" : "column",
+                    flexDirection:
+                      index !== 0 && index !== 3 ? "row" : "column",
                     justifyContent: "space-between",
                     width: "90%",
                     marginTop: height * (isTablet ? 0.08 : 0.04),
                     alignSelf: "center",
-
                   }}
                 >
                   {index !== 0 && index !== 3 && (
@@ -221,7 +221,6 @@ export default function OnBoardingScreen() {
                   )}
 
                   <TouchableOpacity
-
                     style={{ alignSelf: "center", overflow: "hidden" }}
                     onPress={() => {
                       if (index === 3) {
@@ -232,9 +231,7 @@ export default function OnBoardingScreen() {
                     }}
                   >
                     <Button
-
                       text={index === 3 ? "Continue" : "Next"}
-                
                       width={
                         index === 0 || index === 3
                           ? width * (isTablet ? 0.6 : 0.75)
@@ -301,13 +298,12 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     textAlign: "center",
-
   },
   welcomeButtonStyle: {
     backgroundColor: "#2467EC",
     width: responsiveWidth(88),
     height: responsiveHeight(5.5),
-    
+
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",

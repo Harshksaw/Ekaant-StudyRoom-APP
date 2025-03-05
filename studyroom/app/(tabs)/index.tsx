@@ -45,13 +45,12 @@ import { Toast } from "react-native-toast-notifications";
 import ff from "@/constants/fonts";
 import Slider from "@/components/Slider";
 import { h, w } from "@/constants/size";
-import NoConnection from "../(routes)/NoConnection";
 
 export default function index() {
   const width = Dimensions.get("window").width;
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<any[]>([]);
-  const [notAvailable, setNotAvailable] = useState(false);
+  // const [notAvailable, setNotAvailable] = useState(false);
   const [notListed, setNotListed] = useState(false);
   const [reload, setReload] = useState(false);
   const toggleNotListedModal = () => setNotListed(!notListed);
@@ -60,19 +59,17 @@ export default function index() {
   const dispatch = useDispatch();
   const [bannerImage, setBannerImage] = useState([]);
   const [locationData, setLocationData] = useState(null);
-  const [totalLibraries, setTotalLibraries] = useState(0);
 
   const [selectedLocation, setSelectedLocation] = useState("");
   const [allfetched, setAllfetched] = useState(false);
-  const { width: screenWidth, height: screenHeight, } = Dimensions.get("window");
-  const isTablet = screenWidth >= 768 || screenHeight >= 768;
+  const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+  const isTablet = screenWidth >= 768;
 
   const [page, setPage] = useState(1);
-  const [limit] = useState(3);
+  const [limit] = useState(10);
   const handleLocationChange = (location) => {
     setSelectedLocation(location);
   };
-  var count = 0;
 
   const getAppData = async () => {
     // TODO, tanstackquery
@@ -101,44 +98,33 @@ export default function index() {
     setSelectedLocation(location);
   };
 
-  const fetchLibraryDate = async () => {
+  const fetchLibraryDate = async (isFresh: string | null = null) => {
     const res = await getUserData();
 
     dispatch(setUserDetails(res));
     setIsLoading(true);
-    setReload(false);
-
     try {
-      if (selectedLocation === "") {
-        // Toast.show("Please select a location", {
-        //   type: "error",
-        //   duration: 3000,
-        // });
-        // router.push("/(routes)/location");
-        return;
-      }
-
       const fetchedData = await fetchRoomData({
         selectedLocation,
         page,
         limit,
       });
-      setTotalLibraries(fetchedData.totalLibraries);
+      setAllfetched(
+        fetchedData.totalLibraries === [...data, ...fetchedData.data].length
+      );
 
-      setData((prevData) => [...prevData, ...fetchedData.data]);
-
-      if (fetchedData.totalLibraries == data.length) {
-      }
+      setData(
+        isFresh
+          ? fetchedData.data
+          : (prevData) => [...prevData, ...fetchedData.data]
+      );
     } catch (error) {
       Toast.show("Failed to fetch room data", {
         type: "error",
         duration: 3000,
       });
-      setData(null);
 
-      setNotAvailable(true);
-      // Handle the error as needed, e.g., set an error state, show a message, etc.
-      // For example, setError("Failed to load data. Please try again later.");
+      console.log(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -178,15 +164,15 @@ export default function index() {
   useEffect(() => {
     fetchSelectedLocation();
     getAppData();
+  }, []);
 
-    if (selectedLocation && selectedLocation !== "") {
-      fetchLibraryDate();
-    }
-
-    if (totalLibraries == data.length && totalLibraries != 0) {
-      setAllfetched(true);
-    }
-  }, [reload, selectedLocation, page]);
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!!selectedLocation) {
+        fetchLibraryDate();
+      }
+    }, [selectedLocation, page])
+  );
 
   const reCallLibrary = () => {
     if (!allfetched) {
@@ -217,7 +203,7 @@ export default function index() {
         borderWidth: 1.5,
         borderColor: "#dcd8da",
         marginBottom: h(isTablet ? 20 : 10),
-        padding: w(isTablet ? 5 : 2.5),
+        padding: 5,
         overflow: "hidden",
       }}
       onPress={
@@ -257,7 +243,7 @@ export default function index() {
                 flexDirection: "column",
                 overflow: "hidden",
 
-                 justifyContent:isTablet?'center':'flex-start',
+                justifyContent: isTablet ? "center" : "flex-start",
               }}
             >
               <Text
@@ -297,7 +283,7 @@ export default function index() {
                 </Text>
               </Animated.View>
             </View>
-  
+
             <View
               style={{
                 flex: 1,
@@ -336,7 +322,6 @@ export default function index() {
       )}
     </TouchableOpacity>
   );
-  
 
   const userDetails = useSelector((state: any) => state.user);
 
@@ -348,22 +333,15 @@ export default function index() {
   const username =
     parsedUser?.user?.username.split(" ")[0] ||
     parsedUser?.data.user?.username.split(" ")[0];
-  const onRefresh = useCallback(async() => {
+
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await getAppData();
-    await fetchSelectedLocation();
-    if (!selectedLocation) {
-      AsyncStorage.getItem("selectedLocation");
-    }
-    // selectedLocation &&
-    await fetchLibraryDate();
+    fetchLibraryDate("fresh");
 
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
-  }, []);
-
-  const [scrollIndex, setScrollIndex] = useState<number>(0);
+  }, [selectedLocation]);
 
   const Carasoul = useMemo(() => {
     return (
@@ -405,7 +383,7 @@ export default function index() {
         }}
       />
     );
-  }, [width, bannerImage, scrollIndex]);
+  }, [width, bannerImage]);
 
   return (
     <SafeAreaView
@@ -439,7 +417,7 @@ export default function index() {
         onEndReached={reCallLibrary}
         ListHeaderComponent={
           <View key={index}>
-            <View style={{ height: h(270) }} >
+            <View style={{ height: h(270) }}>
               <Text
                 style={{
                   fontSize: 30,
@@ -546,9 +524,7 @@ export default function index() {
         }
       />
 
-      {isLoading && <ActivityIndicator 
-   
-      size="large" color="#0000ff" />}
+      {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
     </SafeAreaView>
   );
 }

@@ -50,9 +50,9 @@ const LoginScreen: React.FC = () => {
   const [attempts, setAttempts] = useState(0);
   const [isFocused, setFocused] = useState(0);
   const [isKeyboard, setIsKeyboard] = useState<boolean>(false);
-  
+
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     const getme = async () => {
       const res = await axios.get(`${BACKEND}/me`);
@@ -62,7 +62,7 @@ const LoginScreen: React.FC = () => {
     };
     getme();
   }, []);
-  
+
   const handleOtpChange = (text: string, index: number) => {
     const newOtp = [...otp];
     newOtp[index] = text;
@@ -77,7 +77,7 @@ const LoginScreen: React.FC = () => {
       setFocused(index + 1);
     }
   };
-  
+
   const loginWithOtp = async (text?: string) => {
     setLoading(true);
     try {
@@ -87,7 +87,10 @@ const LoginScreen: React.FC = () => {
       });
       setLoading(false);
       if (response.status === 200) {
-        await AsyncStorage.setItem("token", JSON.stringify(response.data.token));
+        await AsyncStorage.setItem(
+          "token",
+          JSON.stringify(response.data.token)
+        );
         await AsyncStorage.setItem("userData", JSON.stringify(response.data));
         dispatch(login({ user: response.data, token: response.data.token }));
         Toast.show("Login Successful", {
@@ -98,7 +101,10 @@ const LoginScreen: React.FC = () => {
         router.dismissAll();
         router.replace("/(routes)/location");
       } else {
-        console.log("🚀 ~ loginWithOtp ~ response.data.message:", response.data.message)
+        console.log(
+          "🚀 ~ loginWithOtp ~ response.data.message:",
+          response.data.message
+        );
         Toast.show(response.data.message, {
           type: "danger",
           placement: "top",
@@ -123,7 +129,7 @@ const LoginScreen: React.FC = () => {
       }
     }
   };
-  
+
   const loginHandler = async () => {
     setLoading(true);
     if (!phoneNumber || !password) {
@@ -134,7 +140,7 @@ const LoginScreen: React.FC = () => {
         duration: 2000,
       });
     }
-  
+
     try {
       const response = await axios.post(`${BACKEND}/api/v1/auth/signin`, {
         phoneNumber,
@@ -142,7 +148,10 @@ const LoginScreen: React.FC = () => {
       });
       setLoading(false);
       if (response.data.success) {
-        await AsyncStorage.setItem("token", JSON.stringify(response.data.token));
+        await AsyncStorage.setItem(
+          "token",
+          JSON.stringify(response.data.token)
+        );
         await AsyncStorage.setItem("userData", JSON.stringify(response.data));
         dispatch(login({ user: response.data, token: response.data.token }));
         Toast.show("Login Successful", {
@@ -151,7 +160,8 @@ const LoginScreen: React.FC = () => {
           duration: 2000,
         });
         router.dismissAll();
-        router.replace("/(tabs)");
+        // router.replace("/(tabs)");
+        router.replace("/(routes)/location");
       } else {
         Toast.show(response.data.message, {
           type: "danger",
@@ -176,20 +186,20 @@ const LoginScreen: React.FC = () => {
       }
     }
   };
-  
+
   const handleKeyPress = (e: any, index: number) => {
     if (e.nativeEvent.key === "Backspace" && otp[index] === "" && index > 0) {
       inputRefs[index - 1].current.focus();
       setFocused(index - 1);
     }
   };
-  
+
   const handlePhoneNumberChange = (text: string) => {
     // Ensure only numeric input and limit to 10 digits
     const cleanedText = text.replace(/[^0-9]/g, "").slice(0, 10);
     setPhoneNumber(cleanedText);
   };
-  
+
   const sendOtp = async () => {
     setLoading(true);
     if (isBlocked) {
@@ -204,14 +214,14 @@ const LoginScreen: React.FC = () => {
       setLoading(false);
       return;
     }
-  
+
     if (phoneNumber.length === 10) {
       Toast.show("Sending OTP...", {
         type: "info",
         placement: "top",
         duration: 2000,
       });
-  
+
       await axios
         .post(`${BACKEND}/api/v1/auth/otp`, { phoneNumber })
         .then((res) => {
@@ -252,7 +262,7 @@ const LoginScreen: React.FC = () => {
       });
     }
   };
-  
+
   const handleLogin = async () => {
     if (isOtp) {
       loginWithOtp();
@@ -272,22 +282,28 @@ const LoginScreen: React.FC = () => {
       });
     }
   };
-  
+
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
-      setIsKeyboard(true);
-    });
-  
-    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
-      setIsKeyboard(false);
-    });
-  
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsKeyboard(true);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsKeyboard(false);
+      }
+    );
+
     return () => {
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
     };
   }, []);
-  
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
@@ -313,7 +329,7 @@ const LoginScreen: React.FC = () => {
           style={{ position: "absolute", top: "25%", right: 0 }}
           source={require("../../../assets/images/bubblle 03.png")}
         />
-  
+
         <View
           style={{
             flex: 1,
@@ -345,7 +361,7 @@ const LoginScreen: React.FC = () => {
           >
             Good to See You back!
           </Text>
-  
+
           {!isOtp && (
             <View
               style={{
@@ -471,7 +487,7 @@ const LoginScreen: React.FC = () => {
                 >
                   🇮🇳 |
                 </Text>
-  
+
                 <View
                   style={{
                     flex: 1,
@@ -515,13 +531,15 @@ const LoginScreen: React.FC = () => {
                   onPress={() => setPasswordVisibility(!passwordVisibility)}
                 >
                   <Ionicons
-                    name={passwordVisibility ? "eye-off-outline" : "eye-outline"}
+                    name={
+                      passwordVisibility ? "eye-off-outline" : "eye-outline"
+                    }
                     size={25}
                   />
                 </TouchableOpacity>
               </View>
             )}
-  
+
             {isOtp && (
               <>
                 <Text
@@ -553,7 +571,8 @@ const LoginScreen: React.FC = () => {
                         width: isTablet ? 60 : 50,
                         height: isTablet ? 60 : 50,
                         borderWidth: 1,
-                        borderColor: isFocused === index ? "#2467EC" : "lightgray",
+                        borderColor:
+                          isFocused === index ? "#2467EC" : "lightgray",
                         borderRadius: 10,
                         backgroundColor: "white",
                         textAlign: "center",
@@ -582,7 +601,7 @@ const LoginScreen: React.FC = () => {
               </>
             )}
           </View>
-  
+
           <TouchableOpacity
             style={{
               borderRadius: 8,
@@ -599,9 +618,14 @@ const LoginScreen: React.FC = () => {
               width={isTablet ? w(350) : w(300)}
             />
           </TouchableOpacity>
-  
+
           <View style={styles.signupRedirect}>
-            <Text style={{ fontSize: isTablet ? 20 : 18, fontFamily: ff.deckRegular }}>
+            <Text
+              style={{
+                fontSize: isTablet ? 20 : 18,
+                fontFamily: ff.deckRegular,
+              }}
+            >
               Don't have an account?
             </Text>
             <TouchableOpacity onPress={() => router.push("/(routes)/signup")}>
@@ -618,7 +642,7 @@ const LoginScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
         </View>
-  
+
         <Image
           style={{
             position: "absolute",
@@ -631,7 +655,7 @@ const LoginScreen: React.FC = () => {
     </TouchableWithoutFeedback>
   );
 };
-  
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -679,5 +703,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-  
+
 export default LoginScreen;
