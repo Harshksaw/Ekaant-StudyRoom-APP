@@ -109,7 +109,7 @@ const BookingScreen: React.FC = () => {
     setTotalAmount(totalPrice * selectedMonth);
   }, [selectedSlots, selectedMonth]);
 
-  const handleSeatSelect = (seatDataFromChild) => {
+  const handleSeatSelect = (seatDataFromChild: any) => {
     setSelectedSeat(seatDataFromChild);
   };
 
@@ -147,20 +147,8 @@ const BookingScreen: React.FC = () => {
     };
     dispatch(setBookingDetails(details));
   };
-  const handleData = (data: DataItem[]) => {
-    return data?.map((item) => {
-      if (item.from === "12:00 AM" && item.to === "12:00 PM") {
-        // Modify the item to indicate 24/7 availability
-        // This is just an example, adjust according to your needs
-        return { ...item, availability: "24/7" };
-      }
-      return item;
-    });
-  };
 
-  const available = handleData(
-    selectedSeat?.timeSlots.filter((slot) => slot.booked === false)
-  );
+  const isPartiallyBooked = selectedSeat?.timeSlots.some((slot) => slot.booked);
 
   const PreBook = async () => {
     const userId = JSON.parse(userSelect)?.data.user.id;
@@ -501,7 +489,8 @@ const BookingScreen: React.FC = () => {
       >
         {data && data[currentRoomNo - 1].seats.length !== 0 && (
           <Seats
-            onSeatSelect={handleSeatSelect}
+            onSeatSelect={setSelectedSeat}
+            selectedSeat={selectedSeat}
             door={data[currentRoomNo - 1].doorPosition}
             SeatLayout={data[currentRoomNo - 1].seats}
             currentRoom={currentRoomNo}
@@ -569,7 +558,7 @@ const BookingScreen: React.FC = () => {
               return;
             }
             if (!selectedSeat) {
-              Toast.show("Please Select Another Seat");
+              Toast.show("Please Select a Seat for booking");
               return;
             }
             setIsModalVisible(true);
@@ -716,81 +705,49 @@ const BookingScreen: React.FC = () => {
                   gap: 10,
                 }}
               >
-                {available?.map((slot, index) => {
+                {selectedSeat?.timeSlots?.map((slot) => {
                   const selected = selectedSlots.some(
                     (selectedSlot) => selectedSlot?.id === slot.id
                   );
-                  if (slot?.availability && slot?.from !== null) {
-                    return (
-                      <View
-                        key={slot.id}
-                        style={{
-                          maxWidth: 70,
-                          marginHorizontal: 50,
-                        }}
-                      >
-                        <TouchableOpacity
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            flexWrap: "wrap",
-                            padding: 10,
-                            gap: 5,
-                            backgroundColor: selected ? "#0077B6" : "#fff",
-                            borderWidth: 1,
-                            borderRadius: 3,
-                            borderColor: "#a09f9f",
-                            alignItems: "center",
-                          }}
-                          onPress={() => handleSelectSlot(slot)}
-                        >
-                          <Text
-                            style={{
-                              textAlign: "center",
-                              fontSize: w(13),
-                              fontFamily: ff.deckMedium,
-                              color: selected ? "#fff" : "#000",
-                            }}
-                          >
-                            {slot.availability}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    );
-                  } else if (slot?.from !== null) {
-                    // Render regular time slots
 
-                    return (
-                      <View key={slot.id}>
-                        <TouchableOpacity
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            flexWrap: "wrap",
-                            padding: 10,
-                            gap: 5,
-                            backgroundColor: selected ? "#0077B6" : "#fff",
-                            borderWidth: 1,
-                            borderRadius: 3,
-                            borderColor: "#a09f9f",
-                            alignItems: "center",
-                          }}
-                          onPress={() => handleSelectSlot(slot)} // Step 3: Attach event handler
-                        >
-                          <Text
-                            style={{
-                              textAlign: "center",
-                              fontSize: w(13),
-                              fontFamily: ff.deckMedium,
-                              color: selected ? "#fff" : "#000",
-                            }}
-                          >
-                            {displayTimeRange(slot.from, slot.to)}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    );
+                  if (
+                    slot.from === "12:00 AM" &&
+                    slot.to === "11:59 PM" &&
+                    isPartiallyBooked
+                  ) {
+                    return;
                   }
+
+                  return (
+                    <View key={slot.id}>
+                      <TouchableOpacity
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          flexWrap: "wrap",
+                          padding: 10,
+                          gap: 5,
+                          backgroundColor: selected ? "#0077B6" : "#fff",
+                          borderWidth: 1,
+                          borderRadius: 3,
+                          borderColor: "#a09f9f",
+                          alignItems: "center",
+                        }}
+                        onPress={() => handleSelectSlot(slot)} // Step 3: Attach event handler
+                      >
+                        <Text
+                          style={{
+                            textAlign: "center",
+                            fontSize: w(13),
+                            fontFamily: ff.deckMedium,
+                            color: selected ? "#fff" : "#000",
+                          }}
+                        >
+                          {displayTimeRange(slot.from, slot.to)}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  );
                 })}
               </View>
             </View>

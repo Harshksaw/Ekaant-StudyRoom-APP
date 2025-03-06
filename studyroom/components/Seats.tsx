@@ -14,7 +14,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 const windowWidth = Dimensions.get("window").width;
 
-const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
+const Seat = ({ seatData, isSelected, onSeatSelect, rotation }) => {
   // console.log("🚀 ~ Seat ~ roation:", rotation);
 
   const isFullyBooked = seatData.timeSlots.filter((slot) => {
@@ -47,9 +47,13 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
   );
 };
 
-const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
-  const [selectedSeat, setSelectedSeat] = useState(null);
-
+const SeatsComponent = ({
+  layout,
+  selectedSeat,
+  bookedSeats,
+  onSeatSelect,
+  door,
+}: any) => {
   // console.log(door);
 
   const getDoorPosition = () => {
@@ -84,10 +88,10 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
 
   const handleSelect = (seatData) => {
     if (selectedSeat && seatData.seatId === selectedSeat.seatId) {
-      setSelectedSeat(null);
+      onSeatSelect(null);
       onSeatSelect(null);
     } else {
-      setSelectedSeat(seatData);
+      onSeatSelect(seatData);
       onSeatSelect(seatData);
     }
   };
@@ -119,16 +123,12 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
           if (seat) {
             const isSelected =
               selectedSeat && seat.seatId === selectedSeat.seatId;
-            const isBooked = bookedSeats.some(
-              (bookedSeat) => bookedSeat.seatId === seat.seatId
-            );
 
             return (
               <Seat
                 key={`${rowIndex}-${colIndex}`}
                 seatData={seat}
                 isSelected={isSelected}
-                isBooked={isBooked}
                 onSeatSelect={handleSelect}
                 rotation={seat?.rotation}
               />
@@ -221,20 +221,18 @@ const SeatsComponent = ({ layout, bookedSeats, onSeatSelect, door }: any) => {
 export default function Seats({
   onSeatSelect,
   SeatLayout,
+  selectedSeat,
   currentRoom,
   door,
 }: any) {
-  const handleSeatSelect = (selectedSeat: any) => {
-    onSeatSelect(selectedSeat);
-  };
-
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
       <SeatsComponent
         layout={SeatLayout}
         bookedSeats={[]}
         door={door}
-        onSeatSelect={handleSeatSelect}
+        selectedSeat={selectedSeat}
+        onSeatSelect={onSeatSelect}
         currentRoom={currentRoom}
       />
     </ScrollView>
