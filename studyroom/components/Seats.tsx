@@ -16,7 +16,11 @@ const windowWidth = Dimensions.get("window").width;
 
 const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
   // console.log("🚀 ~ Seat ~ roation:", rotation);
-  const isFullyBooked = seatData.timeSlots.every((slot) => slot.booked);
+
+  const isFullyBooked = seatData.timeSlots.filter((slot) => {
+    return slot.booked && slot.from === "12:00 AM" && slot.to === "11:59 PM";
+  }).length;
+
   const isPartiallyBooked = seatData.timeSlots.some((slot) => slot.booked);
 
   const getIcon = () => {
@@ -31,6 +35,7 @@ const Seat = ({ seatData, isSelected, isBooked, onSeatSelect, rotation }) => {
 
   return (
     <TouchableOpacity
+      disabled={!!isFullyBooked}
       onPress={() => onSeatSelect(seatData)}
       style={styles.seat(isFullyBooked, isSelected, rotation)}
     >

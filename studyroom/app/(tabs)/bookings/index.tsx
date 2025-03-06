@@ -68,9 +68,7 @@ export default function Bookings() {
     }
   };
 
-
-  const assets = useAssets([
-    require("../../../assets/booking.png")])
+  const assets = useAssets([require("../../../assets/booking.png")]);
 
   useEffect(() => {
     const getBookingData = async () => {
@@ -136,6 +134,7 @@ export default function Bookings() {
             marginTop: 15,
             marginHorizontal: 10,
             paddingHorizontal: 10,
+            marginBottom: 70,
           }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -148,21 +147,21 @@ export default function Bookings() {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: 100,
+                // marginTop: 100,
               }}
             >
-
               <Image
-              source={{
-                uri:"https://res.cloudinary.com/dbnnlqq5v/image/upload/No_Booking_ffpfaz.svg"
-              }}
-              style={{
-                width: 250,
-                height: 250,
-                borderRadius: 10,
-                aspectRatio: 1 / 1}}
+                source={{
+                  uri: "https://res.cloudinary.com/dbnnlqq5v/image/upload/No_Booking_ffpfaz.svg",
+                }}
+                style={{
+                  width: 250,
+                  height: 250,
+                  borderRadius: 10,
+                  aspectRatio: 1 / 1,
+                }}
               />
-         
+
               <Text
                 style={{
                   fontSize: 30,
@@ -270,7 +269,6 @@ export default function Bookings() {
                       <View
                         style={{
                           flexDirection: "row",
-
                           gap: 3,
                         }}
                       >
@@ -292,7 +290,7 @@ export default function Bookings() {
                           </Text>
                           <Text
                             style={{
-                              fontSize:w(isTablet ? 8 : 10),
+                              fontSize: w(isTablet ? 8 : 10),
                               fontFamily: ff.deckRegular,
                               lineHeight: 18.21,
                               textAlign: "left",
@@ -307,7 +305,6 @@ export default function Bookings() {
                     <View
                       style={{
                         flex: 1,
-                        height: 10,
                         width: 200,
                         flexDirection: "row",
                         paddingRight: 20,

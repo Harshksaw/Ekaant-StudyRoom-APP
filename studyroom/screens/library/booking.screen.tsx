@@ -1,9 +1,5 @@
-import Button from "@/components/Button";
-import moment from "moment";
 import Seats from "@/components/Seats";
-
-
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Entypo, Feather, Ionicons } from "@expo/vector-icons";
 import { Platform } from "react-native";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
@@ -25,11 +21,7 @@ import {
 import { setBookingDetails } from "@/redux/bookingSlice";
 import { useRoute } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
-
-import ToggleBookingButton from "@/components/ToggleBooking";
 import { Toast } from "react-native-toast-notifications";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
 import Header from "@/components/Header";
@@ -49,7 +41,7 @@ const BookingScreen: React.FC = () => {
   const bookingData = useSelector((state: any) => state.booking);
   const userDetails = useSelector((state: any) => state.user);
 
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any[] | null>(null);
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -208,17 +200,20 @@ const BookingScreen: React.FC = () => {
           }
         );
 
-
         console.log("🚀 ~ PreBook ~ bookingId:", response.data);
         const bookingId = response.data.data.id;
 
         setBookingId(bookingId);
 
         dispatch(resetTransaction());
-         
-        console.log("🚀 ~ PreBook ~ response.data.data.transactionId:1", response.data.data.transactionId)
-        dispatch(setTransaction({ transactionId: response.data.data.transactionId }));
 
+        console.log(
+          "🚀 ~ PreBook ~ response.data.data.transactionId:1",
+          response.data.data.transactionId
+        );
+        dispatch(
+          setTransaction({ transactionId: response.data.data.transactionId })
+        );
 
         // if (response.status === 200 || response.status === 201) {
         //   Toast.show("Booking Successful", {
@@ -277,7 +272,6 @@ const BookingScreen: React.FC = () => {
     fetchRooms().then((data) => {
       setData(data.rooms);
       setLoading(false);
-
     });
   }, []);
 
@@ -316,7 +310,7 @@ const BookingScreen: React.FC = () => {
     try {
       setBookingLoader(true);
 
-      console.log(selectedMonth,"----")
+      console.log(selectedMonth, "----");
 
       // Check if userDetails.user is defined
       if (!userDetails || !userDetails.user) {
@@ -438,7 +432,7 @@ const BookingScreen: React.FC = () => {
           position: "relative",
           marginHorizontal: w(20),
           marginBottom: h(10),
-          zIndex:999
+          zIndex: 999,
         }}
       >
         <TouchableOpacity
@@ -449,11 +443,14 @@ const BookingScreen: React.FC = () => {
             paddingVertical: w(7),
             paddingHorizontal: w(10),
             borderRadius: 5,
+            gap: 7,
+            flexDirection: "row",
           }}
         >
           <Text style={{ fontSize: w(12), fontFamily: ff.deckMedium }}>
             Hall {currentRoomNo}
           </Text>
+          <Entypo name="chevron-thin-down" />
         </TouchableOpacity>
         {showRooms && (
           <View
@@ -655,43 +652,43 @@ const BookingScreen: React.FC = () => {
               </Text>
 
               <View
-  style={{
-    position: "relative",
-    left: w(28),
-    marginTop: 10,
-    width: "70%",
-    alignSelf: "center",
-    ...(Platform.OS === "ios" ? { marginTop: 20 } : {}), // Adjust marginTop for iOS
-  }}
->
-  <View
-    style={{
-      position: "absolute",
-      left: w(-12),
-      top: w(12),
-      ...(Platform.OS === "ios" ? { top: w(90) } : {}), // Adjust top for iOS
-    }}
-  >
-    <Feather name="calendar" size={w(25)} />
-  </View>
-  <Picker
-    style={{ width: "80%", marginLeft: w(15) }}
-    selectedValue={selectedMonth}
-    onValueChange={(itemValue, itemIndex) => {
-      console.log("🚀 ~ itemValue:", itemValue)
-      setSelectedMonth(parseInt(itemValue));
-    }}
-  >
-    {Array.from({ length: 12 }, (_, i) => (
-      <Picker.Item
-        key={i}
-        label={`${i + 1} month${i === 0 ? "" : "s"}`}
-        value={`${i + 1}`}
-      />
-    ))}
-  </Picker>
-</View>
-</View>
+                style={{
+                  position: "relative",
+                  left: w(28),
+                  marginTop: 10,
+                  width: "70%",
+                  alignSelf: "center",
+                  ...(Platform.OS === "ios" ? { marginTop: 20 } : {}), // Adjust marginTop for iOS
+                }}
+              >
+                <View
+                  style={{
+                    position: "absolute",
+                    left: w(-12),
+                    top: w(12),
+                    ...(Platform.OS === "ios" ? { top: w(90) } : {}), // Adjust top for iOS
+                  }}
+                >
+                  <Feather name="calendar" size={w(25)} />
+                </View>
+                <Picker
+                  style={{ width: "80%", marginLeft: w(15) }}
+                  selectedValue={selectedMonth}
+                  onValueChange={(itemValue, itemIndex) => {
+                    console.log("🚀 ~ itemValue:", itemValue);
+                    setSelectedMonth(parseInt(itemValue));
+                  }}
+                >
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <Picker.Item
+                      key={i}
+                      label={`${i + 1} month${i === 0 ? "" : "s"}`}
+                      value={`${i + 1}`}
+                    />
+                  ))}
+                </Picker>
+              </View>
+            </View>
 
             <View
               style={{
