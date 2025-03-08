@@ -16,6 +16,7 @@ import {
   Easing,
   ScrollView,
   Modal,
+  ToastAndroid,
 } from "react-native";
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -36,11 +37,10 @@ const CheckoutScreen: React.FC = () => {
 
   const [showMonths, setShowMonths] = useState(false);
 
-  const params = useRoute();
+  const { params } = useRoute();
 
-  const [BookedData, setBookedData] = useState(
-    JSON.parse(params?.params?.item)
-  );
+  const param = JSON.parse(params?.item);
+  const [BookedData, setBookedData] = useState(param);
 
   if (!BookedData) {
     return (
@@ -63,8 +63,6 @@ const CheckoutScreen: React.FC = () => {
 
   const [initialPrice, setInitialPrice] = useState(0);
   const [RegistrationFees, setRegistrationFees] = useState(0);
-  const [finalAmount, setFinalAmount] = useState(0);
-
   const [paymentStatus, setPaymentStatus] = useState(false);
   const [paymentData, setPaymentData] = useState(null); // Payment data
   const [paymentId, setPaymentId] = useState(null); // Payment data
@@ -73,7 +71,7 @@ const CheckoutScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
   const [data, setData] = useState<any[] | null>(null);
-  const [roomNumber, setRoomNumber] = useState<number>(1);
+  const [roomNumber, setRoomNumber] = useState<number>(param.roomNo);
   const [selectedSeat, setSelectedSeat] = useState(null);
 
   const [showSeats, setShowSeats] = useState<boolean>(false);
@@ -101,8 +99,6 @@ const CheckoutScreen: React.FC = () => {
 
     setRegistrationFees(BookedData?.libraryId?.registrationFees);
     setInitialPrice(BookedData?.price);
-
-    setFinalAmount(BookedData?.totalAmount);
     const getLibraryData = async () => {
       setLocation(BookedData?.libraryId?.address);
 
@@ -153,13 +149,12 @@ const CheckoutScreen: React.FC = () => {
 
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
 
-  const PaymentPrice = finalAmount;
   useEffect(() => {
     if (isinvoiceComplete) {
       router.push({
         pathname: "/library/invoice.screen",
         params: {
-          price: JSON.stringify(PaymentPrice),
+          price: JSON.stringify(BookedData?.totalAmount),
           paymentData: JSON.stringify(paymentData),
           paymentId: JSON.stringify(paymentId),
           bookingId: JSON.stringify(bookingId),
@@ -214,7 +209,7 @@ const CheckoutScreen: React.FC = () => {
       currency: "INR",
       // key: "rzp_test_kait7HP5ns9gQU",
       key: "rzp_live_1BtXgGebBeYRTh",
-      amount: `${PaymentPrice * 100}`,
+      amount: `${BookedData?.totalAmount * 100}`,
       name: "Ekaant",
       order_id: "",
       prefill: {
@@ -493,7 +488,7 @@ const CheckoutScreen: React.FC = () => {
                   {BookedData.bookingPeriod > 1 ? "s" : ""}
                 </Text>
 
-                <Feather name="edit" size={13} />
+                <Feather name="edit" size={13} color={"#0088ff"} />
               </TouchableOpacity>
 
               <Modal
@@ -522,10 +517,21 @@ const CheckoutScreen: React.FC = () => {
                       <TouchableOpacity
                         key={i}
                         onPress={() => {
+                          const oneMonthPrice =
+                            BookedData.price / param.bookingPeriod;
+
+                          const totalAmount = (i + 1) * oneMonthPrice;
+
+                          console.log(totalAmount, oneMonthPrice);
+
                           setBookedData((pre) => ({
                             ...pre,
                             bookingPeriod: i + 1,
+                            totalAmount:
+                              (i + 1) * oneMonthPrice +
+                              BookedData.registrationFees,
                           }));
+
                           setShowMonths(false);
                         }}
                         style={{
@@ -534,11 +540,18 @@ const CheckoutScreen: React.FC = () => {
                           paddingStart: 10,
                           borderBottomWidth: 1,
                           borderColor: "#0000005c",
+                          backgroundColor:
+                            BookedData.bookingPeriod === i + 1
+                              ? "#0088ff"
+                              : "transparent",
                         }}
                       >
                         <Text
                           style={{
-                            color: "#000",
+                            color:
+                              BookedData.bookingPeriod === i + 1
+                                ? "#fff"
+                                : "#000",
                             fontSize: w(14),
                             fontFamily: ff.deckMedium,
                           }}
@@ -547,6 +560,30 @@ const CheckoutScreen: React.FC = () => {
                         </Text>
                       </TouchableOpacity>
                     ))}
+
+                    <TouchableOpacity
+                      onPress={() => setShowMonths(false)}
+                      style={{
+                        paddingHorizontal: w(12),
+                        borderRadius: 5,
+                        flexDirection: "row",
+                        backgroundColor: "red",
+                        alignSelf: "flex-end",
+                        margin: 10,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: w(15),
+                          fontFamily: ff.deckMedium,
+                          marginVertical: 7,
+                          color: "#fff",
+                          letterSpacing: 0.3,
+                        }}
+                      >
+                        close
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </Modal>
@@ -574,7 +611,7 @@ const CheckoutScreen: React.FC = () => {
               marginHorizontal: 20,
               marginTop: 20,
               alignItems: "center",
-              gap: 40,
+              justifyContent: "space-between",
             }}
           >
             <View
@@ -582,7 +619,7 @@ const CheckoutScreen: React.FC = () => {
                 flexDirection: "row",
                 gap: 10,
                 alignItems: "center",
-                width: 150,
+                width: "50%",
               }}
             >
               <Ionicons name="calendar-outline" size={40} color="black" />
@@ -609,7 +646,13 @@ const CheckoutScreen: React.FC = () => {
             </View>
             <TouchableOpacity
               onPress={() => setShowSeats(true)}
-              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                alignItems: "center",
+                width: "50%",
+                alignSelf: "center",
+              }}
             >
               <SeatsCheckout />
               <Text
@@ -617,15 +660,13 @@ const CheckoutScreen: React.FC = () => {
                   flexDirection: "column",
                   flexWrap: "wrap",
                   color: "#000",
-                  fontSize: w(18),
+                  fontSize: w(15),
                   fontFamily: ff.deckRegular,
                 }}
               >
-                Seat No.{" "}
-                {/* {formatSeatLabel(BookedData?.bookedSeat?.seatId)}{" "} */}
-                {BookedData?.bookedSeat.seatName}
+                Seat No. {BookedData?.bookedSeat.seatName}
               </Text>
-              <Feather name="edit" size={15} />
+              <Feather name="edit" size={13} color={"#0088ff"} />
             </TouchableOpacity>
           </View>
           <View
@@ -857,7 +898,7 @@ const CheckoutScreen: React.FC = () => {
                 letterSpacing: 1.5,
               }}
             >
-              Total Amount: ₹{finalAmount}
+              Total Amount: ₹{BookedData?.totalAmount}
             </Text>
             <Animated.View
               style={{
@@ -907,13 +948,12 @@ const CheckoutScreen: React.FC = () => {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                flexDirection: "row",
+              style={{
                 marginVertical: 10,
-                gap: 10,
                 marginHorizontal: w(10),
-                width: "100%",
-                height: h(25),
+              }}
+              contentContainerStyle={{
+                gap: 10,
               }}
             >
               {data?.map((item) => (
@@ -922,10 +962,11 @@ const CheckoutScreen: React.FC = () => {
                   style={{
                     borderWidth: 1,
                     borderColor: "gray",
-                    // paddingVertical: w(7),
-                    paddingHorizontal: w(10),
                     borderRadius: 5,
-                    flexDirection: "row",
+                    height: 30,
+                    paddingTop: 5,
+                    marginBottom: 10,
+                    paddingHorizontal: w(10),
                     backgroundColor:
                       roomNumber === item.roomNo ? "#0088ff" : "transparent",
                   }}
@@ -934,7 +975,7 @@ const CheckoutScreen: React.FC = () => {
                     style={{
                       fontSize: w(15),
                       fontFamily: ff.deckMedium,
-                      marginVertical: 5,
+                      verticalAlign: "middle",
                       color: roomNumber === item.roomNo ? "#fff" : "#393939",
                     }}
                   >
@@ -946,14 +987,15 @@ const CheckoutScreen: React.FC = () => {
             <ScrollView
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{
-                flexDirection: "row", // Ensures the seats are laid out in rows
-                flexWrap: "wrap", // Allows wrapping into multiple lines if needed
+                flexDirection: "row",
+                flexWrap: "wrap",
                 justifyContent: "center",
               }}
             >
               {data && data[roomNumber - 1].seats.length !== 0 && (
                 <Seats
                   onSeatSelect={setSelectedSeat}
+                  onCheckout24_7={param.timeSlot[0]}
                   selectedSeat={selectedSeat ?? BookedData.bookedSeat}
                   door={data[roomNumber - 1].doorPosition}
                   SeatLayout={data[roomNumber - 1].seats}
@@ -999,7 +1041,7 @@ const CheckoutScreen: React.FC = () => {
               <TouchableOpacity
                 onPress={() => {
                   if (!selectedSeat) {
-                    Toast.show("Please Select a seat", { type: "error" });
+                    ToastAndroid.show("Please Select a seat", 2000);
                     return;
                   }
                   setBookedData((pre) => ({

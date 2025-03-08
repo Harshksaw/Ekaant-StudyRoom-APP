@@ -9,12 +9,20 @@ import {
   Text,
   ScrollView,
   Dimensions,
+  ToastAndroid,
 } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
+import { Toast } from "react-native-toast-notifications";
 const windowWidth = Dimensions.get("window").width;
 
-const Seat = ({ seatData, isSelected, onSeatSelect, rotation }) => {
+const Seat = ({
+  seatData,
+  isSelected,
+  onSeatSelect,
+  rotation,
+  onCheckout24_7,
+}) => {
   // console.log("🚀 ~ Seat ~ roation:", rotation);
 
   const isFullyBooked = seatData.timeSlots.filter((slot) => {
@@ -33,10 +41,35 @@ const Seat = ({ seatData, isSelected, onSeatSelect, rotation }) => {
     }
   };
 
+  let is24_7_slot = null;
+  let bookedSlot = null;
+
+  if (!!onCheckout24_7) {
+    is24_7_slot =
+      onCheckout24_7.from === "12:00 AM" && onCheckout24_7.to === "11:59 PM";
+
+    bookedSlot = seatData.timeSlots.find(
+      (i) =>
+        onCheckout24_7.from === i.from && onCheckout24_7.to === i.to && i.booked
+    );
+  }
+
   return (
     <TouchableOpacity
       disabled={!!isFullyBooked}
-      onPress={() => onSeatSelect(seatData)}
+      onPress={() => {
+        if (is24_7_slot && isPartiallyBooked) {
+          ToastAndroid.show(
+            "there is no 24/7 slot available on this seat",
+            2000
+          );
+          return;
+        } else if (bookedSlot) {
+          ToastAndroid.show("selected slot not available on this seat", 2000);
+          return;
+        }
+        onSeatSelect(seatData);
+      }}
       style={styles.seat(isFullyBooked, isSelected, rotation)}
     >
       {getIcon()}
@@ -50,7 +83,7 @@ const Seat = ({ seatData, isSelected, onSeatSelect, rotation }) => {
 const SeatsComponent = ({
   layout,
   selectedSeat,
-  bookedSeats,
+  onCheckout24_7,
   onSeatSelect,
   door,
 }: any) => {
@@ -128,6 +161,7 @@ const SeatsComponent = ({
               <Seat
                 key={`${rowIndex}-${colIndex}`}
                 seatData={seat}
+                onCheckout24_7={onCheckout24_7}
                 isSelected={isSelected}
                 onSeatSelect={handleSelect}
                 rotation={seat?.rotation}
@@ -224,6 +258,7 @@ export default function Seats({
   selectedSeat,
   currentRoom,
   door,
+  onCheckout24_7,
 }: any) {
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
@@ -231,6 +266,7 @@ export default function Seats({
         layout={SeatLayout}
         bookedSeats={[]}
         door={door}
+        onCheckout24_7={onCheckout24_7}
         selectedSeat={selectedSeat}
         onSeatSelect={onSeatSelect}
         currentRoom={currentRoom}

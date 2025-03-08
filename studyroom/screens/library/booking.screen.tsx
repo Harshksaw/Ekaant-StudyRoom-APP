@@ -29,6 +29,7 @@ import { h, vw, w } from "@/constants/size";
 import ff from "@/constants/fonts";
 import { checkPreviousBookings } from "@/utils/bookingapi";
 import { resetTransaction, setTransaction } from "@/redux/transaction";
+import { sortSlots } from "@/utils/utils";
 
 const BookingScreen: React.FC = () => {
   const dispatch = useDispatch();
@@ -686,7 +687,7 @@ const BookingScreen: React.FC = () => {
                   gap: 10,
                 }}
               >
-                {selectedSeat?.timeSlots?.map((slot) => {
+                {sortSlots(selectedSeat?.timeSlots)?.map((slot) => {
                   const selected = selectedSlots.some(
                     (selectedSlot) => selectedSlot?.id === slot.id
                   );
