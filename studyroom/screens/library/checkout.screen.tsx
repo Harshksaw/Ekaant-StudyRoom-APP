@@ -1,9 +1,7 @@
-import { AC, Cash, CheckoutScreenLoc, Note, SeatsCheckout } from "@/assets";
-
+import { CheckoutScreenLoc, Note, SeatsCheckout } from "@/assets";
 import { getDateAfterMonths } from "@/utils/date";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
-
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -20,31 +18,29 @@ import {
   Modal,
 } from "react-native";
 import { useSelector } from "react-redux";
-
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "react-native-toast-notifications";
 import RazorpayCheckout from "react-native-razorpay";
-
 import { h, vw, w } from "@/constants/size";
 import ff from "@/constants/fonts";
+import Seats from "@/components/Seats";
 
 const CheckoutScreen: React.FC = () => {
   const userDetails = useSelector((state: any) => state.user);
   const [bookingId, setBookingId] = useState(null);
   const [userData, setUserData] = useState<any>(null);
-  // console.log("🚀 ~ userData:", userData)
   const [libraryData, setLibraryData] = useState(null);
   const [location, setLocation] = useState<String | null>(null);
-  // // console.log("🚀 ~ location:", location)
 
-  //getting data  from booking screen
-  const [libraryId, setLibraryId] = useState(null);
+  const [showMonths, setShowMonths] = useState(false);
+
   const params = useRoute();
 
-  const BookedData = JSON.parse(params?.params?.item);
+  const [BookedData, setBookedData] = useState(
+    JSON.parse(params?.params?.item)
+  );
 
   if (!BookedData) {
     return (
@@ -55,7 +51,6 @@ const CheckoutScreen: React.FC = () => {
   }
 
   const BookingDataId = BookedData.bookingId.data.bookingId;
-  // console.log("🚀 ~ BookingDataId:", BookingDataId)
 
   // const BookingDate = BookedData?.bookingDate
   const BookingMonths = BookedData?.bookingPeriod;
@@ -77,6 +72,11 @@ const CheckoutScreen: React.FC = () => {
   const [isinvoiceComplete, setinvoiceComplete] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+  const [data, setData] = useState<any[] | null>(null);
+  const [roomNumber, setRoomNumber] = useState<number>(1);
+  const [selectedSeat, setSelectedSeat] = useState(null);
+
+  const [showSeats, setShowSeats] = useState<boolean>(false);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -133,10 +133,27 @@ const CheckoutScreen: React.FC = () => {
     getLibraryData();
   }, []);
 
+  const fetchRooms = async () => {
+    try {
+      const response = await axios.post(
+        `${BACKEND}/api/v1/library/getLibraryRooms`,
+        {
+          id: BookedData.libraryId.id,
+        }
+      );
+      setData(response.data.data.rooms);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRooms();
+  }, []);
+
   const endDate = getDateAfterMonths(BookedDate, BookingMonths);
 
   const PaymentPrice = finalAmount;
-  console.log(BookedData, "------");
   useEffect(() => {
     if (isinvoiceComplete) {
       router.push({
@@ -209,7 +226,6 @@ const CheckoutScreen: React.FC = () => {
 
     try {
       const data = await RazorpayCheckout.open(options);
-      console.log("Payment data:", data);
       setPaymentStatus(true);
       setPaymentData(data);
       setPaymentId(data.razorpay_payment_id);
@@ -242,10 +258,6 @@ const CheckoutScreen: React.FC = () => {
       Toast.show("Booking ID is missing");
     }
     try {
-      console.log(
-        "🚀 ~ confirmPayment ~ BookedData.timeSlot[0]:",
-        BookedData.bookingId
-      );
       const data = {
         libraryId: BookedData.libraryId.id,
         roomNo: BookedData.roomNo,
@@ -307,7 +319,6 @@ const CheckoutScreen: React.FC = () => {
       </View>
     );
   }
-  console.log(libraryData, "libraryData");
 
   const PaymentModal = () => (
     // console.log(libraryData?.data.offlinePaymentPermission, "libraryData1111")
@@ -353,13 +364,10 @@ const CheckoutScreen: React.FC = () => {
     </Modal>
   );
 
-  console.log(BookedData?.libraryId[0], "---");
-
   // Check if the library has AC as an amenity
   const hasAc = Array.isArray(libraryData?.data?.amenities?.amenities)
     ? libraryData?.data?.amenities?.amenities.includes("ac")
     : false;
-  console.log(hasAc);
   return (
     <SafeAreaView
       style={{
@@ -469,7 +477,8 @@ const CheckoutScreen: React.FC = () => {
                 {BookedData?.libraryId?.name || "Library Name"}
               </Text>
 
-              <View
+              <TouchableOpacity
+                onPress={() => setShowMonths(true)}
                 style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
               >
                 <Ionicons name="time-outline" size={20} color="black" />
@@ -483,8 +492,64 @@ const CheckoutScreen: React.FC = () => {
                   Period - {BookedData.bookingPeriod} Month
                   {BookedData.bookingPeriod > 1 ? "s" : ""}
                 </Text>
-              </View>
 
+                <Feather name="edit" size={13} />
+              </TouchableOpacity>
+
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showMonths}
+                onRequestClose={() => setShowMonths(false)}
+              >
+                <View
+                  style={{
+                    width: "100%",
+                    backgroundColor: "rgba(0,0,0,0.5)",
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <View
+                    style={{
+                      width: "80%",
+                      backgroundColor: "#fff",
+                      borderRadius: 5,
+                    }}
+                  >
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <TouchableOpacity
+                        key={i}
+                        onPress={() => {
+                          setBookedData((pre) => ({
+                            ...pre,
+                            bookingPeriod: i + 1,
+                          }));
+                          setShowMonths(false);
+                        }}
+                        style={{
+                          width: "100%",
+                          paddingVertical: 12,
+                          paddingStart: 10,
+                          borderBottomWidth: 1,
+                          borderColor: "#0000005c",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: "#000",
+                            fontSize: w(14),
+                            fontFamily: ff.deckMedium,
+                          }}
+                        >
+                          {`${i + 1} month${i === 0 ? "" : "s"}`}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              </Modal>
               <View
                 style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
               >
@@ -542,7 +607,8 @@ const CheckoutScreen: React.FC = () => {
                 </Text>
               </View>
             </View>
-            <View
+            <TouchableOpacity
+              onPress={() => setShowSeats(true)}
               style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
             >
               <SeatsCheckout />
@@ -559,7 +625,8 @@ const CheckoutScreen: React.FC = () => {
                 {/* {formatSeatLabel(BookedData?.bookedSeat?.seatId)}{" "} */}
                 {BookedData?.bookedSeat.seatName}
               </Text>
-            </View>
+              <Feather name="edit" size={15} />
+            </TouchableOpacity>
           </View>
           <View
             style={{
@@ -815,6 +882,156 @@ const CheckoutScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
       {PaymentModal()}
+
+      <Modal
+        transparent
+        visible={showSeats}
+        onRequestClose={() => setShowSeats(!showSeats)}
+      >
+        <View
+          style={{
+            backgroundColor: "rgba(0,0,0,.5)",
+            justifyContent: "center",
+            alignItems: "center",
+            flex: 1,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#fff",
+              height: "90%",
+              width: "90%",
+              borderRadius: 5,
+            }}
+          >
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                flexDirection: "row",
+                marginVertical: 10,
+                gap: 10,
+                marginHorizontal: w(10),
+                width: "100%",
+                height: h(25),
+              }}
+            >
+              {data?.map((item) => (
+                <TouchableOpacity
+                  onPress={() => setRoomNumber(item.roomNo)}
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "gray",
+                    // paddingVertical: w(7),
+                    paddingHorizontal: w(10),
+                    borderRadius: 5,
+                    flexDirection: "row",
+                    backgroundColor:
+                      roomNumber === item.roomNo ? "#0088ff" : "transparent",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: w(15),
+                      fontFamily: ff.deckMedium,
+                      marginVertical: 5,
+                      color: roomNumber === item.roomNo ? "#fff" : "#393939",
+                    }}
+                  >
+                    Hall {item?.roomNo}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <ScrollView
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                flexDirection: "row", // Ensures the seats are laid out in rows
+                flexWrap: "wrap", // Allows wrapping into multiple lines if needed
+                justifyContent: "center",
+              }}
+            >
+              {data && data[roomNumber - 1].seats.length !== 0 && (
+                <Seats
+                  onSeatSelect={setSelectedSeat}
+                  selectedSeat={selectedSeat ?? BookedData.bookedSeat}
+                  door={data[roomNumber - 1].doorPosition}
+                  SeatLayout={data[roomNumber - 1].seats}
+                  currentRoom={roomNumber}
+                />
+              )}
+            </ScrollView>
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                width: "100%",
+                gap: 15,
+                paddingEnd: w(25),
+                marginVertical: 10,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  setShowSeats(false);
+                  setSelectedSeat(null);
+                }}
+                style={{
+                  paddingHorizontal: w(15),
+                  borderRadius: 5,
+                  flexDirection: "row",
+                  backgroundColor: "red",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: w(15),
+                    fontFamily: ff.deckMedium,
+                    marginVertical: 10,
+                    color: "#fff",
+                    letterSpacing: 0.3,
+                  }}
+                >
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  if (!selectedSeat) {
+                    Toast.show("Please Select a seat", { type: "error" });
+                    return;
+                  }
+                  setBookedData((pre) => ({
+                    ...pre,
+                    bookedSeat: selectedSeat,
+                  }));
+                  setSelectedSeat(null);
+                  setShowSeats(false);
+                }}
+                style={{
+                  paddingHorizontal: w(15),
+                  borderRadius: 5,
+                  flexDirection: "row",
+                  backgroundColor: "#0088ff",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: w(15),
+                    fontFamily: ff.deckMedium,
+                    marginVertical: 10,
+                    color: "#fff",
+                    letterSpacing: 0.3,
+                  }}
+                >
+                  Confirm
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };

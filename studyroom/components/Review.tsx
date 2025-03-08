@@ -18,6 +18,7 @@ import { Toast } from "react-native-toast-notifications";
 import { Image } from "expo-image";
 import ff from "@/constants/fonts";
 import { h, w } from "@/constants/size";
+import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 
 interface Review {
   id: string;
@@ -35,9 +36,13 @@ interface StarProps {
   onPress: () => void;
 }
 
-const Star: React.FC<StarProps> = ({ isFilled, onPress }) => (
+const Star: React.FC<StarProps> = ({ isFilled, onPress, size }) => (
   <TouchableOpacity onPress={onPress}>
-    <StarIcon isFilled={isFilled} fontSize={18} />
+    <AntDesign
+      name={isFilled ? "star" : "staro"}
+      size={size}
+      color={isFilled ? "#FFCB45" : "#303030"}
+    />
   </TouchableOpacity>
 );
 
@@ -50,6 +55,7 @@ interface StarRatingProps {
 const StarRat: React.FC<StarRatingProps> = ({
   initialRating = 0,
   onRatingChange,
+  size = 18,
 }) => {
   const [rating, setRating] = useState<number>(initialRating);
   const handleRatingChange = (newRating: number) => {
@@ -61,6 +67,7 @@ const StarRat: React.FC<StarRatingProps> = ({
   const stars = Array.from({ length: 5 }, (_, index) => (
     <Star
       key={index}
+      size={size}
       isFilled={index < rating}
       onPress={() => handleRatingChange(index + 1)}
     />
@@ -70,10 +77,7 @@ const StarRat: React.FC<StarRatingProps> = ({
     <View
       style={{
         flexDirection: "row",
-        justifyContent: "center",
-        alignContent: "center",
-        padding: 10,
-        marginTop: 10,
+        gap: 5,
       }}
     >
       {stars}
@@ -86,6 +90,8 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
   const [error, setError] = useState<string | null>(null);
   const [rating, setRating] = useState<number>(0);
   const [reviewMessage, setReviewMessage] = useState<string>("");
+
+  const [showReview, setShowReview] = useState<boolean>(false);
 
   const [avgRating, setAvgRating] = useState<number>(0);
 
@@ -234,7 +240,92 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
           {avgRating} reviews{" "}
         </Text>
       </View>
-      <Text style={styles.header}>User Reviews</Text>
+      <View
+        style={{
+          justifyContent: "space-between",
+          flexDirection: "row",
+          alignItems: "center",
+          marginTop: 30,
+        }}
+      >
+        <Text style={styles.header}>User Reviews</Text>
+        <TouchableOpacity
+          onPress={() => setShowReview(!showReview)}
+          style={{
+            borderWidth: 0.5,
+            borderColor: "#00000077",
+            borderRadius: 5,
+            marginEnd: 5,
+            flexDirection: "row",
+            gap: 5,
+            padding: 8,
+            alignItems: "center",
+          }}
+        >
+          <FontAwesome6 name="pen-fancy" />
+
+          <Text
+            style={{
+              fontSize: 15,
+              fontFamily: ff.deckBold,
+              color: "black",
+            }}
+          >
+            {showReview ? "Hide writing" : "Write a Review"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {showReview && (
+        <View style={{ marginHorizontal: 15, marginTop: 20 }}>
+          <KeyboardAvoidingView behavior="padding">
+            <StarRat onRatingChange={handleRating} size={30} />
+
+            <TextInput
+              placeholder="Enter Review"
+              style={{
+                marginTop: 20,
+                borderWidth: 1,
+                borderColor: "#414141",
+                borderRadius: 2,
+                padding: 10,
+                width: "100%",
+                color: "#1f1f1f",
+                textAlignVertical: "top",
+              }}
+              multiline
+              numberOfLines={10}
+              onChangeText={(text) => setReviewMessage(text)}
+            />
+            <TouchableOpacity
+              onPress={createReview}
+              disabled={!(reviewMessage.length > 0 && rating > 0)}
+              style={{
+                backgroundColor: "#0077B6",
+                borderRadius: 2,
+                marginBottom: h(10),
+                opacity: !(reviewMessage.length > 0 && rating > 0) ? 0.5 : 1,
+                marginTop: 15,
+              }}
+            >
+              <Text
+                style={{
+                  padding: w(10),
+                  borderRadius: 20,
+                  fontSize: w(16),
+                  fontFamily: ff.deckSemiBold,
+                  color: "#fff",
+                  letterSpacing: 1,
+                  textAlign: "center",
+                }}
+              >
+                Submit Review
+              </Text>
+            </TouchableOpacity>
+          </KeyboardAvoidingView>
+        </View>
+      )}
+
       <ScrollView
         style={styles.reviewContainer}
         scrollEnabled={true}
@@ -243,9 +334,19 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
         {reviews.length > 0 ? (
           reviews.map((review) => (
             <View style={styles.review} key={review.id}>
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                <Image source={review.user.image} style={styles.reviewImage} />
-                <View style={styles.reviewContent}>
+              <View style={styles.reviewImage}>
+                <Image
+                  source={review.user.image}
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </View>
+              <View style={styles.reviewContent}>
+                <View
+                  style={{
+                    justifyContent: "space-between",
+                    flexDirection: "row",
+                  }}
+                >
                   <Text
                     style={{
                       fontFamily: ff.deckSemiBold,
@@ -255,76 +356,24 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
                   >
                     {review.user.username}
                   </Text>
-                  <Text
-                    style={{
-                      fontFamily: ff.textRegular,
-                      fontSize: w(13),
-                      color: "#7A7A7A",
-                    }}
-                  >
-                    {review.review}
-                  </Text>
+                  <StarRating rating={review.stars} />
                 </View>
+                <Text
+                  style={{
+                    fontFamily: ff.textRegular,
+                    fontSize: w(13),
+                    color: "#7A7A7A",
+                  }}
+                >
+                  {review.review}
+                </Text>
               </View>
-              <StarRating rating={review.stars} />
             </View>
           ))
         ) : (
           <Text style={styles.noReviewsText}>No reviews available</Text>
         )}
       </ScrollView>
-
-      <View>
-        <KeyboardAvoidingView
-          behavior="padding"
-          style={{
-            flexDirection: "column",
-            justifyContent: "center",
-            alignContent: "center",
-            // paddingRight: 20,
-          }}
-        >
-          <StarRat onRatingChange={handleRating} />
-
-          <TextInput
-            placeholder="Enter your review"
-            style={{
-              borderWidth: 1,
-              borderColor: "#bebcbc",
-              borderRadius: 7,
-              padding: 10,
-              textAlign: "center",
-              width: "80%",
-              alignSelf: "center",
-            }}
-            onChangeText={(text) => setReviewMessage(text)}
-            // onEndEditing={createReview}
-          />
-          {reviewMessage.length > 0 && rating > 0 ? (
-            <TouchableOpacity
-              onPress={createReview}
-              style={{
-                backgroundColor: "#F0F0F0",
-                padding: 10,
-                borderRadius: 20,
-                margin: 10,
-                justifyContent: "center",
-                alignItems: "center",
-                alignSelf: "center",
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                borderWidth: 0.3,
-                borderColor: "#dad9d9",
-                elevation: 1,
-              }}
-            >
-              <Text>Submit Review</Text>
-            </TouchableOpacity>
-          ) : (
-            <Text style={styles.errorText}>Fill the review and rating</Text>
-          )}
-        </KeyboardAvoidingView>
-      </View>
     </View>
   );
 };
@@ -335,7 +384,6 @@ const styles = StyleSheet.create({
     margin: 10,
     fontFamily: ff.deckBold,
     color: "black",
-    marginTop: 30,
   },
   reviewContainer: {
     maxHeight: 300, // Limit the height here to make it scrollable
@@ -349,18 +397,22 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     paddingLeft: 5,
     borderColor: "#F3F3F3",
-    justifyContent: "space-between",
   },
   reviewImage: {
     width: w(45),
     height: w(45),
     borderRadius: 50,
     resizeMode: "cover",
+    borderWidth: 1,
+    overflow: "hidden",
+    borderColor: "#00000089",
   },
   reviewContent: {
     flexDirection: "column",
     justifyContent: "space-around",
     borderRadius: 20,
+    marginStart: 20,
+    width: "75%",
   },
   noReviewsText: {
     color: "red",

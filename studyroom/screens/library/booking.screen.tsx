@@ -102,16 +102,9 @@ const BookingScreen: React.FC = () => {
       (acc, slot) => acc + Number(slot.price),
       0
     );
-
     setFinalPrice(totalPrice * selectedMonth);
-    const registrationFees = libraryDetails?.registrationFees || 0;
-
     setTotalAmount(totalPrice * selectedMonth);
   }, [selectedSlots, selectedMonth]);
-
-  const handleSeatSelect = (seatDataFromChild: any) => {
-    setSelectedSeat(seatDataFromChild);
-  };
 
   const handleSelectSlot = (selectedSlot) => {
     if (selectedSlot.from === "12:00 AM" && selectedSlot.to === "11:59 PM") {
@@ -189,9 +182,9 @@ const BookingScreen: React.FC = () => {
         );
 
         console.log("🚀 ~ PreBook ~ bookingId:", response.data);
-        const bookingId = response.data.data.id;
+        // const bookingId = response.data.data.id;
 
-        setBookingId(bookingId);
+        // setBookingId(bookingId);
 
         dispatch(resetTransaction());
 
@@ -251,10 +244,10 @@ const BookingScreen: React.FC = () => {
     }
   };
 
-  const getLib = async () => {
-    const bookingData = useSelector((state: any) => state.booking);
-    return bookingData;
-  };
+  // const getLib = async () => {
+  //   const bookingData = useSelector((state: any) => state.booking);
+  //   return bookingData;
+  // };
 
   useEffect(() => {
     fetchRooms().then((data) => {
@@ -288,6 +281,8 @@ const BookingScreen: React.FC = () => {
     );
   }
 
+  // console.log(selectedSlots, "gg", selectedDate, selectedMonth, "ll");
+
   const displayTimeRange = (from, to) => {
     if (from === "12:00 AM" && to === "11:59 PM") {
       return `24/7`;
@@ -297,9 +292,6 @@ const BookingScreen: React.FC = () => {
   const confirmBooking = async () => {
     try {
       setBookingLoader(true);
-
-      console.log(selectedMonth, "----");
-
       // Check if userDetails.user is defined
       if (!userDetails || !userDetails.user) {
         throw new Error(
@@ -309,7 +301,6 @@ const BookingScreen: React.FC = () => {
 
       const user = JSON.parse(userDetails.user);
       const userId = user?.data?.user?.id;
-      console.log("🚀 ~ confirmBooking ~ userId:", userId);
 
       // Check if userId is defined
       if (!userId) {
@@ -320,12 +311,6 @@ const BookingScreen: React.FC = () => {
       if (!libraryDetails || !libraryDetails?.id) {
         throw new Error("Library details are not properly configured.");
       }
-
-      console.log(
-        "🚀 ~ confirmBooking ~ userDetails.user.id, libraryDetails?.id:",
-        userId,
-        libraryDetails.id
-      );
 
       const Bought = await getBoughtStatus();
       const totalAmount = Bought
@@ -339,7 +324,6 @@ const BookingScreen: React.FC = () => {
 
       if (res) {
         setIsModalVisible(false);
-
         const newBookingData = {
           bookedSeat: selectedSeat,
           registrationFees: libraryDetails?.registrationFees,
@@ -357,7 +341,6 @@ const BookingScreen: React.FC = () => {
           bookingId: res,
           hasBoughtEarlier: Bought,
         };
-        console.log("🚀 ~ confirmBooking ~ Bookdata:", Bookdata);
         router.push({
           pathname: "/library/checkout.screen",
           params: {
@@ -474,8 +457,6 @@ const BookingScreen: React.FC = () => {
             ))}
           </View>
         )}
-
-        {/* <ToggleBookingButton /> */}
       </View>
 
       <ScrollView
