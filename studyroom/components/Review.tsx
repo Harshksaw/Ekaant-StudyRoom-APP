@@ -87,7 +87,7 @@ const StarRat: React.FC<StarRatingProps> = ({
 const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [rating, setRating] = useState<number>(0);
   const [reviewMessage, setReviewMessage] = useState<string>("");
 
@@ -98,25 +98,25 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
   const handleRating = (rating: number) => {
     setRating(rating);
   };
+  const fetchReviews = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${BACKEND}/api/v1/library/getReviews/${libraryId}`
+      );
+
+      setReviews(response.data.data);
+      setAvgRating(response.data.avgRating);
+    } catch (err) {
+      Toast.show(err?.message || "something went wrong", {
+        type: "error",
+        duration: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchReviews = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.post(
-          `${BACKEND}/api/v1/library/getReviews/${libraryId}`
-        );
-
-        setReviews(response.data.data);
-        setAvgRating(response.data.avgRating);
-        setLoading(false);
-      } catch (err) {
-        console.log("Error", err.message);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchReviews();
   }, [libraryId]);
 
@@ -126,64 +126,41 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
     const u = JSON.parse(user);
     // console.log("🚀 ~ createReview ~ u:", u)
     // console.log( "_---",libraryId, reviewMessage, rating, u.data);
-
+    setSubmitLoading(true);
     try {
       const response = await axios.post(
         `${BACKEND}/api/v1/library/createReview/${libraryId}`,
         {
-          user: u.data?.user_id?.id || u.data?.id,
+          user: u.data?.user?.id || u.data?.user_id,
           review: reviewMessage,
           stars: Number(rating),
         }
       );
 
-      // console.log("🚀 ~ createReview ~ response.data", response.data);
-      if (response.status === 200) {
+      if (response.status === 201) {
         Toast.show("Review added successfully", {
           type: "success",
         });
-      }
-      if (response.status === 400) {
+        setShowReview(false);
+        fetchReviews();
+      } else if (response.status === 400) {
         Toast.show("Review already exists", {
           type: "error",
           duration: 3000,
         });
       }
     } catch (err) {
-      console.log("Error", err.message);
-      setError(err.message);
       Toast.show("Review already exists", {
         type: "error",
         duration: 3000,
       });
-
-      setTimeout(() => {
-        setError(null);
-      }, 2000);
     } finally {
-      setLoading(false);
+      setSubmitLoading(false);
     }
   };
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
-  }
-
-  if (error) {
-    return (
-      <Text
-        style={{
-          color: "red",
-          fontSize: 20,
-          textAlign: "center",
-          margin: 20,
-        }}
-      >
-        Retry
-        <ActivityIndicator size="small" color="red" />
-        {/* Error: {error} */}
-      </Text>
-    );
   }
 
   return (
@@ -201,10 +178,10 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
           fontSize: 20,
           fontStyle: "normal",
           fontFamily: ff.deckBold,
-          textAlign: "center",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          marginLeft: 10,
         }}
       >
         Reviews
@@ -212,32 +189,39 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
 
       <View
         style={{
-          marginHorizontal: "auto",
-          flexWrap: "wrap",
-          backgroundColor: "#fff",
-          borderRadius: 12,
-          flexDirection: "row",
-          paddingHorizontal: 50,
+          marginHorizontal: 15,
           paddingVertical: 12,
-          justifyContent: "center",
-          alignSelf: "center",
-          gap: 30,
-          borderWidth: 0.3,
+          borderBottomWidth: 0.3,
           borderColor: "#dad9d9",
-          elevation: 1,
         }}
       >
-        {/* <Text>4.5</Text> */}
-        <StarRating rating={avgRating?.toFixed(0) || 0} />
-        <Text
+        <View
           style={{
-            padding: 0,
-            fontSize: 15,
-            fontFamily: ff.deckRegular,
-            color: "#7A7A7A",
+            flexDirection: "row",
+            gap: 20,
+            alignItems: "center",
+            marginBottom: 10,
           }}
         >
-          {avgRating} reviews{" "}
+          <StarRating rating={avgRating?.toFixed(0) || 0} />
+          <Text
+            style={{
+              fontSize: w(15),
+              fontFamily: ff.deckRegular,
+              color: "#3a3a3a",
+            }}
+          >
+            {(avgRating ?? 0) + "/5"}
+          </Text>
+        </View>
+        <Text
+          style={{
+            fontSize: w(15),
+            fontFamily: ff.deckRegular,
+            color: "#3a3a3a",
+          }}
+        >
+          {reviews.length} reviews
         </Text>
       </View>
       <View
@@ -293,21 +277,31 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
                 color: "#1f1f1f",
                 textAlignVertical: "top",
               }}
+              autoFocus
               multiline
               numberOfLines={10}
               onChangeText={(text) => setReviewMessage(text)}
             />
             <TouchableOpacity
               onPress={createReview}
-              disabled={!(reviewMessage.length > 0 && rating > 0)}
+              disabled={
+                !(reviewMessage.length > 0 && rating > 0) || submitLoading
+              }
               style={{
                 backgroundColor: "#0077B6",
                 borderRadius: 2,
                 marginBottom: h(10),
-                opacity: !(reviewMessage.length > 0 && rating > 0) ? 0.5 : 1,
+                opacity:
+                  !(reviewMessage.length > 0 && rating > 0) || submitLoading
+                    ? 0.5
+                    : 1,
                 marginTop: 15,
+                flexDirection: "row",
+                gap: 10,
+                justifyContent: "center",
               }}
             >
+              {submitLoading && <ActivityIndicator size={"small"} />}
               <Text
                 style={{
                   padding: w(10),
@@ -326,11 +320,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
         </View>
       )}
 
-      <ScrollView
-        style={styles.reviewContainer}
-        scrollEnabled={true}
-        showsHorizontalScrollIndicator={false}
-      >
+      <View style={styles.reviewContainer}>
         {reviews.length > 0 ? (
           reviews.map((review) => (
             <View style={styles.review} key={review.id}>
@@ -373,7 +363,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
         ) : (
           <Text style={styles.noReviewsText}>No reviews available</Text>
         )}
-      </ScrollView>
+      </View>
     </View>
   );
 };
