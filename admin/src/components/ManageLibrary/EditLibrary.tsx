@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { BASEURL } from "@/lib/utils";
 import ClipLoader from "react-spinners/ClipLoader";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { predefinedAmenities } from "@/utils/constants";
 import { FaCloudUploadAlt } from "react-icons/fa";
 interface Room {
@@ -47,6 +47,8 @@ const EditLibrary = () => {
   const [images, setImages] = useState<any>([]);
 
   const [library, setLibrary] = useState<Library | null>(null);
+
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
@@ -288,9 +290,8 @@ const EditLibrary = () => {
             htmlFor="images"
             className="cursor-pointer w-48 mt-3 flex items-center px-4 py-4 gap-2 rounded-xl border border-black hover:bg-blue-600 hover:text-white transition"
           >
-              <FaCloudUploadAlt className="text-2xl"/> 
+            <FaCloudUploadAlt className="text-2xl" />
             Upload Image
-        
           </label>
 
           <input
@@ -315,13 +316,12 @@ const EditLibrary = () => {
               className="mb-4 w-96 h-72 border border-black rounded-xl p-4"
             />
           )}
-               <label
+          <label
             htmlFor="images"
             className="cursor-pointer w-56 mt-3 flex items-center px-4 py-4 gap-2 rounded-xl border border-black hover:bg-blue-600 hover:text-white transition"
           >
-              <FaCloudUploadAlt className="text-2xl"/> 
+            <FaCloudUploadAlt className="text-2xl" />
             Upload Card Image
-        
           </label>
           <input
             id="cardImage"
@@ -379,7 +379,7 @@ const EditLibrary = () => {
           Long Description
         </label>
         <textarea
-            disabled
+          disabled
           id="longdescription"
           value={longdescription}
           onChange={(e) => setLongDescription(e.target.value)}
@@ -395,7 +395,7 @@ const EditLibrary = () => {
           predefinedAmenities.map((amenity) => (
             <div key={amenity} className="flex items-center mb-2">
               <input
-                  disabled
+                disabled
                 id={amenity}
                 name={amenity}
                 type="checkbox"
@@ -542,9 +542,19 @@ const EditLibrary = () => {
               onClick={() => handleRoomNameChange(room)}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline"
             >
-              Save
+              Change Name
             </button>
 
+            <button
+              onClick={() =>
+                navigate(
+                  `/manage-library/create-room/${room?.id}/${room?.roomNo}`
+                )
+              }
+              className="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline"
+            >
+              Edit
+            </button>
             <button
               onClick={() => handleDeleteRoom(room?.id)}
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline"

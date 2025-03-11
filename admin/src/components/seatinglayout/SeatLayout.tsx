@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { MdRotateLeft } from "react-icons/md";
 import { HiOutlineSave } from "react-icons/hi";
@@ -36,12 +36,10 @@ const Seat = ({
       `}
         onClick={handleClick}
       >
-        <div style={isSelected ? style : null} >
-         <div className="m-auto">
-          <Desk/>
-         </div>
-
-         
+        <div style={isSelected ? style : null}>
+          <div className="m-auto">
+            <Desk />
+          </div>
         </div>
       </button>
       {isSelected && (
@@ -77,10 +75,50 @@ interface SeatLayoutData {
 interface SeatsProps {
   onSeatSelect: (seatLayoutData: SeatLayoutData) => void;
   seatLayout?: any;
+  selectedRoom?: any;
 }
-const Seats = ({ onSeatSelect, seatLayout }: SeatsProps) => {
+const Seats = ({ onSeatSelect, selectedRoom }: SeatsProps) => {
   const [rows, setRows] = useState<string>("");
   const [columns, setColumns] = useState<string>("");
+
+  useEffect(() => {
+    if (selectedRoom) {
+      const rows = selectedRoom?.layout?.split(",")[0] ?? "";
+      const columns = selectedRoom?.layout?.split(",")[1] ?? "";
+      const seatLayoutData: any = {
+        rows,
+        columns,
+      };
+
+      const seats = selectedRoom.seats.map((seat) => ({
+        id: seat.seatId,
+        seatId: seat.id,
+        label: seat.seatLabel,
+        seatName: seat.seatName,
+      }));
+
+      seatLayoutData.selectedSeats = seats;
+
+      const angle: any = {};
+      const names: any = {};
+      selectedRoom.seats.forEach((seat) => {
+        angle[seat.seatId] = seat.rotation;
+        names[seat.seatId] = seat.seatName;
+      });
+
+      seatLayoutData.rotationAngles = angle;
+      seatLayoutData.seatNames = names;
+
+      setRotationAngles(angle);
+      setSeatNames(names);
+      setSelectedSeats(seats);
+
+      onSeatSelect(seatLayoutData);
+      setRows(rows);
+      setColumns(columns);
+    }
+  }, [selectedRoom]);
+
   // const [showGrid, setShowGrid] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState<SeatData[]>([]);
   const [rotationAngles, setRotationAngles] = useState<{
@@ -91,6 +129,7 @@ const Seats = ({ onSeatSelect, seatLayout }: SeatsProps) => {
 
   const handleRotate = (seatData: SeatData) => {
     const seatKey = seatData.id;
+
     setRotationAngles((prevAngles) => ({
       ...prevAngles,
       [seatKey]: (prevAngles[seatKey] || 0) + 45,
@@ -159,10 +198,6 @@ const Seats = ({ onSeatSelect, seatLayout }: SeatsProps) => {
     );
   }
 
-  // interface SeatsProps {
-  //   onSeatSelect: (seatLayoutData: SeatLayoutData) => void;
-  // }
-
   const handleSave = () => {
     if (selectedSeats.length === 0) {
       return;
@@ -179,14 +214,13 @@ const Seats = ({ onSeatSelect, seatLayout }: SeatsProps) => {
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent form from refreshing the page
-    // setShowGrid(true); // Show the grid with the specified rows and columns
+    e.preventDefault();
   };
   const matrixSize = 4;
   const matrix = Array.from({ length: matrixSize }, () =>
     Array.from({ length: matrixSize }, () => null)
   );
-  
+
   return (
     <div className="w-full">
       <form onSubmit={handleSubmit} className="flex flex-col w-full mt-8">
@@ -204,7 +238,7 @@ const Seats = ({ onSeatSelect, seatLayout }: SeatsProps) => {
               type="number"
               value={rows}
               min={1}
-              onChange={(e) => setRows(Math.max(1,(e.target.value)))} 
+              onChange={(e) => setRows(Math.max(1, e.target.value))}
               placeholder="Rows"
               className="block !rounded w-full text-gray-700 border border-gray-500 py-3 px-4 leading-tight focus:outline-none focus:bg-white "
             />
@@ -220,7 +254,7 @@ const Seats = ({ onSeatSelect, seatLayout }: SeatsProps) => {
               type="number"
               value={columns}
               min={1}
-              onChange={(e) => setColumns(Math.max(1,(e.target.value)))}
+              onChange={(e) => setColumns(Math.max(1, e.target.value))}
               placeholder="Columns"
               className="block !rounded w-full text-gray-700 border border-gray-500 py-3 px-4 leading-tight focus:outline-none focus:bg-white "
             />

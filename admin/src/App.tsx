@@ -43,7 +43,8 @@ function App() {
 
   useEffect(() => {
     const checkDevice = () => {
-      const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
+      const isMobileDevice =
+        /Mobi|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
       setIsMobile(isMobileDevice);
     };
 
@@ -60,7 +61,9 @@ function App() {
       <div className="flex justify-center items-center h-screen bg-gray-100">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-500">Restricted Access</h1>
-          <p className="mt-4 text-lg">Please open the admin panel on a laptop or desktop.</p>
+          <p className="mt-4 text-lg">
+            Please open the admin panel on a laptop or desktop.
+          </p>
         </div>
       </div>
     );
@@ -68,8 +71,8 @@ function App() {
   return (
     <BrowserRouter basename="/">
       <Routes>
-    {/* ----------------- Public Routes ----------------- */}
-    <Route path="/" element={<Auth type="signin" />} />
+        {/* ----------------- Public Routes ----------------- */}
+        <Route path="/" element={<Auth type="signin" />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Auth type="signin" />} />
         <Route path="/forgot-password" element={<PhoneOtpForm />} />
@@ -79,7 +82,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             {/* Create Operations */}
             <Route
-              path="/manage-library/create-room"
+              path="/manage-library/create-room/:roomId?/:roomNumber?"
               element={<CreateRoom />}
             />
             <Route
@@ -104,10 +107,7 @@ function App() {
               path="/manage-library/view-library/:library_id"
               element={<ViewLibrary />}
             />
-            <Route
-              path="/manage-library/my-library"
-              element={<MyLibrary />}
-            />
+            <Route path="/manage-library/my-library" element={<MyLibrary />} />
             <Route
               path="/manage-library/edit-library/:id"
               element={<EditLibrary />}
@@ -116,7 +116,10 @@ function App() {
             <Route path="/manage-seats" element={<ManageSeats />} />
             <Route path="/report" element={<Report />} />
 
-            <Route path="/manage-booking/adminbookings" element={<LibraryBookings />} />
+            <Route
+              path="/manage-booking/adminbookings"
+              element={<LibraryBookings />}
+            />
           </Route>
         )}
 

@@ -141,8 +141,6 @@ function Signup() {
   const sendOtp = async () => {
     const { phone } = userInfo;
 
- 
-
     const res = await axios.post(`${BASEURL}/api/v1/auth/otp`, {
       phoneNumber: phone,
       Admin: true,
@@ -158,10 +156,8 @@ function Signup() {
         progress: undefined,
         theme: "light",
       });
-
     }
     if (res.status !== 200) {
-
       setLoading(false);
       toast.error("Something went wrong", {
         position: "top-right",
@@ -176,7 +172,6 @@ function Signup() {
       return;
     }
   };
-
 
   const verifyOTP = async () => {
     console.log("verfication start user OTP");
@@ -440,8 +435,8 @@ function Signup() {
       address: libraryDetails.libraryAddress,
       legal: libraryDetails.libraryLegal.registration,
       location: location,
-      coords: location && Array.isArray(location) ? location : [], 
-    
+      coords: location && Array.isArray(location) ? location : [],
+
       gstNumber: libraryDetails.libraryLegal.gst,
       cinNumber: libraryDetails.libraryLegal.cin,
       tanNumber: libraryDetails.libraryLegal.tan,
@@ -655,7 +650,6 @@ function Signup() {
           .join("")
           .toLowerCase()}${userDetails.dob}${Math.floor(Math.random() * 1000)}`;
 
-
         const formData = new FormData();
         formData.append("phoneNumber", userInfo.phone.toString());
         formData.append("email", userInfo.email);
@@ -761,12 +755,11 @@ function Signup() {
             nextStep={nextStep}
             userInfo={userInfo}
             setUserInfo={setUserInfo}
-
           />
         );
       case 2:
         return (
-           <StepTwo
+          <StepTwo
             userOTP={userOTP}
             setOtpInputs={setOtpInputs}
             userEmailOTP={emailOtpInputs}

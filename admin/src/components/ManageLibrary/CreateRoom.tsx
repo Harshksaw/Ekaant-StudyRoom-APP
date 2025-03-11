@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import { getLibraryDataById } from "@/hooks/libraryData";
 import { TbAirConditioning } from "react-icons/tb";
 import { IoBedOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CreateRoom: React.FC = () => {
   const [libraryId, setLibraryId] = React.useState("");
@@ -23,19 +23,13 @@ const CreateRoom: React.FC = () => {
   const [loading, setLoading] = useState(false); // Step 1: Loading state
   // const [rooms, setRooms] = useState([]);
   const [progress, setProgress] = React.useState(13);
-  const [selectedRoom, setSelectedRoom] = useState(0);
 
+  const { roomId, roomNumber } = useParams();
+
+  const emptySlot = { from: null, to: null, price: "" };
   const [selectedLibrary, setSelectedLibrary] = useState<any>(null);
-  const [timeSlots, setTimeSlots] = useState<any[]>([
-    { from: null, to: null, price: "" },
-    { from: null, to: null, price: "" },
-    { from: null, to: null, price: "" },
-    { from: null, to: null, price: "" },
-    { from: null, to: null, price: "" },
-    { from: null, to: null, price: "" },
-    { from: null, to: null, price: "" },
-    { from: null, to: null, price: "" },
-  ]);
+  const [roomData, setRoomData] = useState<any>(null);
+  const [timeSlots, setTimeSlots] = useState<any[]>([emptySlot]);
 
   const [Ac, setAc] = useState(false);
 
@@ -50,35 +44,55 @@ const CreateRoom: React.FC = () => {
     setDoorPositions(newPositions);
   };
 
-  useEffect(() => {
-    const fetchLibrary = async () => {
-      try {
-        const response = await getLibraryDataById();
-        // console.log(response.data.data, "--------");
-        setLibraryData(response.data.data);
-        console.log("data",response.data.data)
-        console.log("data name",response.data.data[0].name)
-        setSelectedRoom(response.data.data?.rooms);
-        setLibraryId(response.data.data[0].id);
-      } catch (error) {
-        console.error("Error fetching library:", error);
-        // Handle error
+  const fetchLibrary = async () => {
+    try {
+      const response = await getLibraryDataById();
+      setLibraryData(response.data.data);
+      setLibraryId(response.data.data[0].id);
+
+      const libraryObject = response.data.data.find(
+        (library) => library?.id === response.data.data[0].id
+      );
+
+      if (roomId) {
+        const room = libraryObject.rooms.find((i) => i.id == roomId);
+        setRoomData(room);
+        setDoorPositions(room?.doorPosition);
+        setTimeSlots(
+          room.timeSlot.map((slot) => ({
+            id: slot.id,
+            from: dayjs(slot.from, "hh:mm A"),
+            to: dayjs(slot.to, "hh:mm A"),
+            price: slot.price.toString(),
+          }))
+        );
+
+        setAc(room.Ac);
+
+        const is24_7_slot = room.timeSlot.find(
+          (slot: any) => slot.from === "12:00 AM" && slot.to === "11:59 PM"
+        );
+
+        if (!!is24_7_slot?.id) {
+          setAutoFill24Hr(true);
+          setPrice24Hr(is24_7_slot.price);
+        }
       }
-    };
+
+      setSelectedLibrary(libraryObject);
+    } catch (error) {
+      console.error("Error fetching library:", error);
+      // Handle error
+    }
+  };
+
+  useEffect(() => {
     fetchLibrary();
   }, []);
 
-  useEffect(() => {
-    // console.log(libraryData, "00000")
-    const libraryObject = libraryData.find(
-      (library) => library?.id === parseInt(libraryId)
-    );
-
-    setSelectedLibrary(libraryObject);
-  }, [libraryId]);
-
   const handleSeatSelect = (seat: any) => {
     toast.success("Seat layout saved");
+
     setSeatLayout(seat);
   };
   const handleTimeChange = (index: any, type: any, newValue: any) => {
@@ -90,10 +104,6 @@ const CreateRoom: React.FC = () => {
 
   const handleLibraryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLibraryId(event.target.value);
-    console.log(
-      "🚀 ~ handleLibraryChange ~ event.target.value:",
-      event.target.value
-    );
   };
 
   function handlePriceChange(index: any, newValue: any) {
@@ -115,29 +125,32 @@ const CreateRoom: React.FC = () => {
         return;
       }
       setLoading(true);
-      const response = await axios.post(
-        `${BASEURL}/api/v1/library/createRoom`,
-        {
-          libraryId: libraryId,
 
-          seatLayout: seatLayout,
-          timeSlot: formattedTimeSlots,
+      let method = "post";
+      let url = "createRoom";
+      if (!!roomId) {
+        method = "put";
+        url = `updateRoom/${roomId}`;
+      }
 
-          ac: Ac,
-          doorPositions: doorPositions,
-        }
-      );
-      console.log(seatLayout, typeof seatLayout);
-      console.log(response.data, "Room Created");
+      await axios[method](`${BASEURL}/api/v1/library/${url}`, {
+        libraryId: libraryId,
+        seatLayout: seatLayout,
+        timeSlot: formattedTimeSlots,
+        ac: Ac,
+        doorPositions: doorPositions,
+      });
+
+      toast.success(`Room ${roomId ? "updated" : "Created"} Successfully`);
+      // navigate("/manage-library/my-library");
     } catch (error) {
       console.error("Error creating room:", error);
       // Handle error
     }
   };
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleSubmit = async () => {
-    console.log(price24Hr);
     try {
       if (autoFill24Hr && (price24Hr === null || price24Hr <= 0)) {
         alert("Please enter a valid price for the 24-hour time slot.");
@@ -165,8 +178,7 @@ const CreateRoom: React.FC = () => {
       await createRoom();
 
       // await addDetails();
-      toast.success("Room Created/updated Successfully");
-      navigate('/manage-library/create-room')
+
       // window.location.reload();
     } catch (error) {
       console.error("Error creating room:", error);
@@ -178,6 +190,7 @@ const CreateRoom: React.FC = () => {
     const timer = setTimeout(() => setProgress(66), 500);
     return () => clearTimeout(timer);
   }, []);
+
   React.useEffect(() => {
     if (
       timeSlots.some((slot) => slot.from === "00:00" && slot.to === "23:59")
@@ -198,14 +211,14 @@ const CreateRoom: React.FC = () => {
   }
 
   const handleAutoFill24HrChange = () => {
-    if (+price24Hr <= 0) {
+    if (+price24Hr <= 0 && !autoFill24Hr) {
       toast.error("Fill the price for 24 hr first");
       return;
     }
     setAutoFill24Hr(!autoFill24Hr);
     if (!autoFill24Hr) {
       const updatedTimeSlots = [...timeSlots];
-      updatedTimeSlots[4] = {
+      updatedTimeSlots[0] = {
         from: dayjs().startOf("day"),
         to: dayjs().endOf("day"),
         price: price24Hr,
@@ -213,7 +226,7 @@ const CreateRoom: React.FC = () => {
       setTimeSlots(updatedTimeSlots);
     } else {
       const updatedTimeSlots = [...timeSlots];
-      updatedTimeSlots[4] = { from: null, to: null, price: 0 }; // Reset the fifth time slot
+      updatedTimeSlots[0] = { from: null, to: null, price: 0 }; // Reset the fifth time slot
       setTimeSlots(updatedTimeSlots);
     }
   };
@@ -245,8 +258,6 @@ const CreateRoom: React.FC = () => {
                 </option>
               ))}
           </select>
-
-       
         </div>
         <label
           className={`flex justify-center gap-3 items-center px-5 h-[2.5rem] border-[1.4px] cursor-pointer ${
@@ -270,12 +281,15 @@ const CreateRoom: React.FC = () => {
           <IoBedOutline />
           <span>Room Number: </span>
           <span className="text-lg bg-blue-600 px-5 rounded text-white">
-            {selectedLibrary?.rooms ? selectedLibrary?.rooms.length + 1 : "1"}
+            {roomNumber ??
+              (selectedLibrary?.rooms
+                ? selectedLibrary?.rooms.length + 1
+                : "1")}
           </span>
         </div>
       </div>
 
-      <Seats onSeatSelect={handleSeatSelect} />
+      <Seats onSeatSelect={handleSeatSelect} selectedRoom={roomData} />
 
       {!!Object.keys(seatLayout).length && (
         <>
@@ -362,6 +376,14 @@ const CreateRoom: React.FC = () => {
                 />
               </div>
             ))}
+
+            <button
+              onClick={() => setTimeSlots((pre) => [...pre, emptySlot])}
+              type="button"
+              className="text-white float-end bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-xl text-sm px-5 py-2.5 text-center me-2 mb-2"
+            >
+              + Add Slot
+            </button>
           </div>
 
           <button
@@ -371,7 +393,14 @@ const CreateRoom: React.FC = () => {
                         disabled:cursor-not-allowed disabled:opacity-80
                         `}
           >
-            <HiOutlineSave /> {loading ? "Submitting..." : "Submit"}
+            <HiOutlineSave />{" "}
+            {roomId
+              ? loading
+                ? "Updating..."
+                : "Update"
+              : loading
+              ? "Submitting..."
+              : "Submit"}
           </button>
         </>
       )}
