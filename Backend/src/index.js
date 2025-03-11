@@ -15,7 +15,7 @@ const backupDatabase = require("./backup");
 
 const prisma = new PrismaClient();
 
-const client = require('prom-client');
+const client = require("prom-client");
 const { metricsMiddleware } = require("./metrics");
 const { cleanupMiddleware } = require("./metrics/cleanupMiddleware");
 const cors = require("cors");
@@ -29,17 +29,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.text());
 
 app.use(express.json({ limit: "50mb" }));
-app.use(cleanupMiddleware)
+app.use(cleanupMiddleware);
 app.use(metricsMiddleware);
 
 app.get("/me", (req, res) => {
   res.status(200).json({ message: "Hello from Problem Service" });
 });
 
-
-
 app.use("/api", apiRouter);
-
 
 // Schedule a task to run every minute
 cron.schedule("0 */3 * * *", async () => {
@@ -69,7 +66,6 @@ cron.schedule("0 */3 * * *", async () => {
 
 app.get("/createBackup", backupDatabase);
 
-
 // Schedule backup every day at 12:00 PM IST (6:30 AM UTC)
 cron.schedule("0 1 * * *", async () => {
   try {
@@ -81,12 +77,10 @@ cron.schedule("0 1 * * *", async () => {
   }
 });
 
-
 async function deleteAllResources(req, res) {
   try {
     const resources = await cloudinary.api.resources();
     const publicIds = resources.resources.map((resource) => resource.public_id);
-    console.log("🚀 ~ deleteAllResources ~ publicIds:", publicIds);
 
     if (publicIds.length > 0) {
       await cloudinary.api.delete_resources(publicIds);
@@ -104,15 +98,12 @@ async function deleteAllResources(req, res) {
 
 app.get("/deleteImages", deleteAllResources);
 
-
 app.get("/metrics", async (req, res) => {
   const metrics = await client.register.metrics();
-  res.set('Content-Type', client.register.contentType);
+  res.set("Content-Type", client.register.contentType);
   res.end(metrics);
-})
+});
 
 app.listen(PORT, async () => {
   console.log(`Server started at PORT: ${PORT}`);
-
-  console.log("Successfully connected to db");
 });

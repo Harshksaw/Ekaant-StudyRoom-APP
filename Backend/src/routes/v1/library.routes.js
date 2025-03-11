@@ -50,17 +50,22 @@ Library.post(
 
 //Create Room
 Library.post("/createRoom", LibraryController.createRoom);
+Library.get("/room/:id", LibraryController.getRoom);
 
-Library.post("/updateRoom", LibraryController.addOrUpdateRoomDetails);
+Library.put("/updateRoom/:id", LibraryController.addOrUpdateRoomDetails);
 
 Library.get("/getLibrary", LibraryController.getLibrary);
 Library.post("/getAllLibrary", LibraryController.getAllLibrary);
+Library.get("/fetch-all-library-admin", LibraryController.getLibrariesForAdmin);
 Library.get("/getLibrarybyUserId", LibraryController.getLibraryByUserId);
 Library.post("/updateStatus", LibraryController.updateApproveStatus);
 Library.post("/getLibraryById", LibraryController.getLibraryById);
 Library.post("/getLibraryAdminById", LibraryController.getLibraryAdminById);
 
-Library.post("/allowLibraryOfflinePayment", LibraryController.LibraryOfflineAllowance);
+Library.post(
+  "/allowLibraryOfflinePayment",
+  LibraryController.LibraryOfflineAllowance
+);
 
 Library.post("/getAdminLibraries", LibraryController.getAdminLibraries);
 Library.post("/getAllBookings", LibraryController.getAllBookings);
@@ -77,6 +82,7 @@ Library.delete("/deleteDummyLibrary/:id", LibraryController.deleteDummy);
 Library.get("/getDummyLibrary", LibraryController.getDummy);
 
 Library.post("/createReview/:libraryId", LibraryController.createReview);
+Library.put("/update-review/:reviewId", LibraryController.updateReview);
 Library.post("/getReviews/:libraryId", LibraryController.getReviews);
 
 Library.get("/calculateDistance", LibraryController.calculateDistances);

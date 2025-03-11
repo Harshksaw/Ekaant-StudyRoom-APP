@@ -10,6 +10,7 @@ datasource db {
 model App {
   id        Int        @id @default(autoincrement())
   Banner    String[]
+  actionId  String?
   locations Location[]
 }
 
@@ -126,6 +127,7 @@ model Room {
   roomNo       Int
   Ac           Boolean @default(false)
   doorPosition Int[]   @default([0, 0, 0, 0, 0])
+  layout       String?
   roomName     String?
   library      Library @relation("LibraryRooms", fields: [libraryId], references: [id], onDelete: Cascade)
   seats        Seat[]  @relation("RoomSeats")

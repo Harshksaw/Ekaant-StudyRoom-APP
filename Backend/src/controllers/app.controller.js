@@ -11,10 +11,12 @@ const express = require("express");
 const App = require("../models/app.model");
 const { getCityCoordinates } = require("../utils/location");
 const cloudinary = require("cloudinary").v2;
-const { exec } = require('child_process');
+const { exec } = require("child_process");
 const ping = (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Ping successful" });
 };
+
+const asyncHandler = require("../utils/asyncHandler");
 
 async function createApp(req, res) {
   try {
@@ -59,22 +61,20 @@ async function createApp(req, res) {
 }
 
 async function getApp(req, res) {
+  const isOnlyBanner = Boolean(req.query.banner);
+
   try {
-   
-
-
     const app = await prisma.app.findFirst({
       include: {
-      locations: {
-        orderBy: {
-        location: 'asc', // Sort locations alphabetically by name
-        },
-      },
+        locations: isOnlyBanner
+          ? false
+          : {
+              orderBy: {
+                location: "asc", // Sort locations alphabetically by name
+              },
+            },
       },
     });
-    // if (app && app.locations) {
-    //   app.locations.sort((a, b) => a.name.localeCompare(b.name));
-    // }
 
     return res.status(StatusCodes.OK).json({
       success: true,
@@ -91,17 +91,55 @@ async function getApp(req, res) {
   }
 }
 
+const removeCarouseImages = asyncHandler(async (req, res) => {
+  const config = await prisma.app.findFirst();
+
+  if (!config) {
+    return res.status(404).json({ error: "App not found" });
+  }
+
+  const updatedBanner = [...config.Banner];
+
+  const bannerIndex = parseInt(req.params.imageId);
+
+  updatedBanner[bannerIndex] = "";
+
+  console.log(updatedBanner, bannerIndex, "updatedBanner");
+
+  const updatedApp = await prisma.app.update({
+    where: {
+      id: parseInt(config.id),
+    },
+    data: {
+      Banner: updatedBanner,
+    },
+  });
+
+  res
+    .status(200)
+    .json({ success: true, message: "slider image removed successfully" });
+});
+
 async function editBanner(req, res) {
   try {
-    const images = req.files.map((file) => file.path);
-    // console.log("🚀 ~ editBanner ~ images:", images);
+    const config = await prisma.app.findFirst();
+
+    const Banner = [...config.Banner];
+
+    if (req.files && req.files.length > 0) {
+      const carouselImages = req.files.map((file) => file.path);
+      req.body.selection?.split("")?.map((item, ind) => {
+        Banner[item] = carouselImages[ind];
+      });
+    }
+
     const app = await prisma.app.update({
       where: {
-        id: 1,
+        id: config.id,
       },
-
       data: {
-        Banner: images,
+        Banner,
+        actionId: req.body.libraries,
       },
     });
 
@@ -145,7 +183,6 @@ async function editLocations(req, res) {
     const { location } = req.body;
     const locationImage = req.file.path;
 
-
     const coord = await getCityCoordinates(location);
     // console.log("🚀 ~ editLocations ~ coord:", coord)
 
@@ -157,18 +194,15 @@ async function editLocations(req, res) {
     };
     console.log("🚀 ~ editLocations ~ locationObj:", locationObj);
 
- 
-  
     const app = await prisma.app.findFirst();
     const updatedLocations = await prisma.location.create({
       data: {
-      ...locationObj,
-      app: {
-        connect: { id: app.id },
-      },
+        ...locationObj,
+        app: {
+          connect: { id: app.id },
+        },
       },
     });
-
 
     return res.status(StatusCodes.OK).json({
       success: true,
@@ -189,7 +223,7 @@ async function getLocations(req, res) {
   try {
     const app = await prisma.app.findFirst({
       include: {
-      locations: true,
+        locations: true,
       },
     });
     return res.status(StatusCodes.OK).json({
@@ -216,50 +250,46 @@ const deleteLocations = async (req, res) => {
     const deletedLocation = await prisma.location.delete({
       where: { id: parseInt(locationId) },
     });
-      res.status(200).json({ message: "Location deleted successfully" })
-
+    res.status(200).json({ message: "Location deleted successfully" });
   } catch (error) {
     console.error("Error deleting locations: ", error);
     res.status(500).json({ message: "Error deleting locations", error });
   }
 };
 
+async function createBackup(req, res) {
+  try {
+    const backupDir = "/backup";
+    const containerName = "postgres:latest";
+    const databaseName = "postgres"; // Or use pg_dumpall -c for all databases
 
-  async function createBackup(req, res) {
-    try {
-      const backupDir = '/backup';
-      const containerName = 'postgres:latest';
-      const databaseName = 'postgres'; // Or use pg_dumpall -c for all databases
-      
+    // Create the backup directory if it doesn't exist
+    fs.mkdirSync(backupDir, { recursive: true });
 
-        // Create the backup directory if it doesn't exist
-        fs.mkdirSync(backupDir, { recursive: true }); 
-      
-        const timestamp = new Date().toISOString().replace(/[-:.]/g, ''); // Format timestamp
-        const backupFilename = `backup_db_${timestamp}.dump`;
-        const backupFilePath = `${backupDir}/${backupFilename}`;
-      
-        // Construct the pg_dump command
-        const command = `docker exec -it ${containerName} pg_dump -U postgres -Fc ${databaseName} > ${backupFilePath}`;
-      
-        // Execute the command
-        exec(command, (error, stdout, stderr) => {
-          if (error) {
-            console.error(`Error creating backup: ${error}`);
-            return res.status(500).json({ error: 'Backup failed' });
-          }
-      
-          console.log(`Backup created successfully: ${backupFilePath}`);
-          res.json({ message: 'Backup created', filename: backupFilename });
-        });
+    const timestamp = new Date().toISOString().replace(/[-:.]/g, ""); // Format timestamp
+    const backupFilename = `backup_db_${timestamp}.dump`;
+    const backupFilePath = `${backupDir}/${backupFilename}`;
 
+    // Construct the pg_dump command
+    const command = `docker exec -it ${containerName} pg_dump -U postgres -Fc ${databaseName} > ${backupFilePath}`;
 
+    // Execute the command
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error creating backup: ${error}`);
+        return res.status(500).json({ error: "Backup failed" });
+      }
 
-    } catch (error) {
-      console.error(`Error in createBackup: ${error.message}`);
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error creating backup', error: error.message });
-    }
+      console.log(`Backup created successfully: ${backupFilePath}`);
+      res.json({ message: "Backup created", filename: backupFilename });
+    });
+  } catch (error) {
+    console.error(`Error in createBackup: ${error.message}`);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Error creating backup", error: error.message });
   }
+}
 
 module.exports = {
   ping,
@@ -271,4 +301,5 @@ module.exports = {
   getLocations,
   deleteLocations,
   createBackup,
+  removeCarouseImages,
 };

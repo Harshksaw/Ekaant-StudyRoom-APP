@@ -36,8 +36,12 @@ const BookingSchema = zod.object({
 });
 
 // Utility function for error responses
-const sendErrorResponse = (res, message, statusCode = StatusCodes.INTERNAL_SERVER_ERROR) => {
-    return res.status(statusCode).json({ success: false, message });
+const sendErrorResponse = (
+  res,
+  message,
+  statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+) => {
+  return res.status(statusCode).json({ success: false, message });
 };
 
 function pingBookingController(req, res) {
@@ -63,9 +67,8 @@ async function hasBoughtEarlier(req, res) {
         userId: userId,
         libraryId: libraryId,
         paid: true,
-        bookingStatus: 'CONFIRMED',
+        bookingStatus: "CONFIRMED",
       },
-
     });
 
     if (previousBooking) {
@@ -106,8 +109,21 @@ async function createBooking(req, res) {
     } = req.body;
 
     // Validate required fields
-    if (!userId || !libraryId || !finalPrice || !timeSlot.length || !roomNo || !bookedSeat || !bookingDate || !bookingPeriod) {
-      return sendErrorResponse(res, "Please provide all the required fields", StatusCodes.BAD_REQUEST);
+    if (
+      !userId ||
+      !libraryId ||
+      !finalPrice ||
+      !timeSlot.length ||
+      !roomNo ||
+      !bookedSeat ||
+      !bookingDate ||
+      !bookingPeriod
+    ) {
+      return sendErrorResponse(
+        res,
+        "Please provide all the required fields",
+        StatusCodes.BAD_REQUEST
+      );
     }
 
     const user = await prisma.user.findFirst({ where: { id: userId } });
@@ -126,7 +142,9 @@ async function createBooking(req, res) {
     });
 
     if (!previousBooking) {
-      const library = await prisma.library.findUnique({ where: { id: libraryId } });
+      const library = await prisma.library.findUnique({
+        where: { id: libraryId },
+      });
       const registrationFee = library.registrationFees || 0;
       totalAmount += registrationFee;
 
@@ -134,8 +152,8 @@ async function createBooking(req, res) {
       await prisma.transaction.create({
         data: {
           amount: registrationFee,
-          type: 'REGISTRATION_FEE',
-          description: 'Registration fee for first-time booking',
+          type: "REGISTRATION_FEE",
+          description: "Registration fee for first-time booking",
           userId,
           libraryId,
         },
@@ -162,8 +180,8 @@ async function createBooking(req, res) {
     const transactionData = await prisma.transaction.create({
       data: {
         amount: finalPrice,
-        type: 'BOOKING_PAYMENT',
-        description: 'Payment for booking',
+        type: "BOOKING_PAYMENT",
+        description: "Payment for booking",
         userId,
         libraryId,
         bookingId: booking.id,
@@ -198,14 +216,16 @@ async function getUserBookings(req, res) {
         friends: true,
       },
       orderBy: {
-        id: 'desc',
+        id: "desc",
       },
     });
 
     return res.status(StatusCodes.OK).json(bookings);
   } catch (error) {
     console.error(`Error fetching bookings: ${error.message}`);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching bookings', error: error.message });
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Error fetching bookings", error: error.message });
   }
 }
 
@@ -238,19 +258,16 @@ async function getBookingByLibId(req, res) {
     //   res.status(StatusCodes.BAD_REQUEST).json({ message: "lib_id not found" });
     // }
     const bookings = await prisma.booking.findMany({
-      where: { user_Id: user_id, paid: true , bookingStatus: "CONFIRMED" },
+      where: { user_Id: user_id, paid: true, bookingStatus: "CONFIRMED" },
       include: {
-        user: true, 
+        user: true,
 
-        transactions:true
-     
+        transactions: true,
       },
 
-
-
       orderBy: {
-        bookingDate: 'desc',
-      }
+        bookingDate: "desc",
+      },
     });
 
     console.log("🚀 ~ getBookingByLibId ~ bookings:", bookings);
@@ -270,23 +287,25 @@ async function findRoomAndSeat(libraryId, roomNo, seatId) {
     console.log(`Finding library with id: ${libraryId}`);
     const library = await prisma.library.findUnique({
       where: { id: libraryId },
-      include: { rooms: { include: { seats: { include: { timeSlots: true } } } } },
+      include: {
+        rooms: { include: { seats: { include: { timeSlots: true } } } },
+      },
     });
 
     if (!library) {
-      throw new Error('Library not found');
+      throw new Error("Library not found");
     }
 
     console.log(`Finding room with roomNo: ${roomNo}`);
-    const room = library.rooms.find(room => room.roomNo === roomNo);
+    const room = library.rooms.find((room) => room.roomNo === roomNo);
     if (!room) {
-      throw new Error('Room not found');
+      throw new Error("Room not found");
     }
 
     console.log(`Finding seat with id: ${seatId}`);
-    const seat = room.seats.find(seat => seat.id === seatId);
+    const seat = room.seats.find((seat) => seat.id === seatId);
     if (!seat) {
-      throw new Error('Seat not found');
+      throw new Error("Seat not found");
     }
 
     return { room, seat };
@@ -296,13 +315,15 @@ async function findRoomAndSeat(libraryId, roomNo, seatId) {
   }
 }
 
-
 async function confirmBooking(req, res) {
   try {
     const { libraryId, roomNo, bookedSeat, bookingId, BookedData } = req.body;
-    console.log(`Confirming booking for libraryId: ${libraryId}, roomNo: ${roomNo}, bookedSeat: ${bookedSeat}, bookingId: ${bookingId}`);
-    
-    const { room, seat } = await findRoomAndSeat(libraryId, roomNo, bookedSeat.seatId);
+
+    const { room, seat } = await findRoomAndSeat(
+      libraryId,
+      roomNo,
+      bookedSeat.seatId
+    );
     // console.log(`Found room: ${room.id}, seat: ${seat}`);
 
     const timeSlotId = BookedData.timeSlot[0].slotId;
@@ -351,7 +372,9 @@ async function confirmBooking(req, res) {
     // Ensure bookingId is parsed as an integer
     const parsedBookingId = parseInt(bookingId, 10);
     if (isNaN(parsedBookingId)) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: "Invalid booking ID" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Invalid booking ID" });
     }
 
     console.log(`Updating booking with id: ${parsedBookingId}`);
@@ -362,10 +385,10 @@ async function confirmBooking(req, res) {
       data: {
         approved: true,
         bookingStatus: "CONFIRMED",
-        paid: true
-      }
+        paid: true,
+      },
     });
-    console.log("🚀 ~ confirmBooking ~ booking:", booking)
+    console.log("🚀 ~ confirmBooking ~ booking:", booking);
 
     console.log(`Creating invoice for bookingId: ${booking.id}`);
     const libraryAddress = `${BookedData.libraryId.address.line1}, ${BookedData.libraryId.address.line2}, ${BookedData.libraryId.address.city}, ${BookedData.libraryId.address.state}, ${BookedData.libraryId.address.pincode}`;
@@ -384,20 +407,28 @@ async function confirmBooking(req, res) {
         paid: true,
         bookingDate: BookedData.bookingDate,
         bookingPeriod: BookedData.bookingPeriod,
-        bookingStatus: 'Paid',
+        bookingStatus: "Paid",
         approved: BookedData.libraryId.approved,
-        bookingFinalDate: new Date(new Date(BookedData.bookingDate).setMonth(new Date(BookedData.bookingDate).getMonth() + BookedData.bookingPeriod)),
+        bookingFinalDate: new Date(
+          new Date(BookedData.bookingDate).setMonth(
+            new Date(BookedData.bookingDate).getMonth() +
+              BookedData.bookingPeriod
+          )
+        ),
         seatLabel: BookedData.bookedSeat.seatLabel,
         timeSlotDetails: JSON.stringify(BookedData.timeSlot),
       },
     });
 
     console.log("Invoice created successfully:", invoice);
-    return res.status(StatusCodes.OK).json({ message: 'Booking confirmed successfully' });
-
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: "Booking confirmed successfully" });
   } catch (error) {
     console.error(`Error confirming booking: ${error.message}`);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error confirming booking', error: error.message });
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Error confirming booking", error: error.message });
   }
 }
 async function generateInvoice(req, res) {
@@ -427,28 +458,36 @@ async function generateInvoice(req, res) {
   }
 }
 
-
 async function adminBooking(req, res) {
   try {
     //create booking via admin ,and bloakc the seat
 
-    const { libraryId, roomNo, seatId, timeSlot, name, email, phoneNumber, adminId } = req.body;
-    console.log("🚀 ~ adminBooking ~ req.body", req.body)
+    const {
+      libraryId,
+      roomNo,
+      seatId,
+      timeSlot,
+      name,
+      email,
+      phoneNumber,
+      adminId,
+    } = req.body;
+    console.log("🚀 ~ adminBooking ~ req.body", req.body);
 
     const room = await prisma.room.findFirst({
       where: { libraryId, id: roomNo },
     });
-    console.log("🚀 ~ adminBooking ~ room:", room)
+    console.log("🚀 ~ adminBooking ~ room:", room);
 
     if (!room) {
       return res.status(404).json({ error: "Room not found" });
     }
 
     const seat = await prisma.seat.findFirst({
-      where: {  id: seatId },
+      where: { id: seatId },
     });
 
-    console.log("🚀 ~ adminBooking ~ seat:", seat)
+    console.log("🚀 ~ adminBooking ~ seat:", seat);
 
     if (!seat) {
       return res.status(404).json({ error: "Seat not found" });
@@ -457,7 +496,7 @@ async function adminBooking(req, res) {
     const timeSlotData = await prisma.timeSlot.findFirst({
       where: { seatId: seatId, id: parseInt(timeSlot) },
     });
-    console.log("🚀 ~ adminBooking ~ timeSlotData:", timeSlotData)
+    console.log("🚀 ~ adminBooking ~ timeSlotData:", timeSlotData);
 
     if (!timeSlotData) {
       return res.status(404).json({ error: "Time slot not found" });
@@ -466,7 +505,6 @@ async function adminBooking(req, res) {
     if (timeSlotData.booked) {
       return res.status(400).json({ error: "Time slot already booked" });
     }
-
 
     // Create the transaction
     const transaction = await prisma.transaction.create({
@@ -497,14 +535,13 @@ async function adminBooking(req, res) {
           transactionDate: new Date(),
           bookedFor: name,
           email,
-          phoneNumber
+          phoneNumber,
         },
         bookedSeat: JSON.stringify(seat),
         bookingDate: new Date(),
         bookingPeriod: 1, // Assuming 1 month booking period
         bookingStatus: "CONFIRMED",
         approved: true,
-
       },
     });
 
@@ -517,7 +554,13 @@ async function adminBooking(req, res) {
     // Block the seat by updating the time slot
     await prisma.timeSlot.update({
       where: { id: timeSlotData.id },
-      data: { booked: true, bookedById: adminId, bookingEndDate: new Date(new Date().setMonth(new Date().getMonth() + 1)) },
+      data: {
+        booked: true,
+        bookedById: adminId,
+        bookingEndDate: new Date(
+          new Date().setMonth(new Date().getMonth() + 1)
+        ),
+      },
     });
 
     return res.status(200).json({
@@ -526,9 +569,6 @@ async function adminBooking(req, res) {
       booking,
       transaction,
     });
-
-
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -538,7 +578,6 @@ async function adminBooking(req, res) {
     });
   }
 }
-
 
 // offlineBooking: Creates an offline payment request
 async function offlineBooking(req, res) {
@@ -572,7 +611,7 @@ async function offlineBooking(req, res) {
 
     // ✅ Fetch booking details
     const bookingTable = await prisma.booking.findUnique({
-      where: { id: bookingId }
+      where: { id: bookingId },
     });
     console.debug("DEBUG: Booking table retrieved:", bookingTable);
 
@@ -582,12 +621,16 @@ async function offlineBooking(req, res) {
     }
 
     const { roomNo, bookedSeat } = bookingTable;
-    console.debug("DEBUG: Extracted roomNo and bookedSeat from bookingTable:", roomNo, bookedSeat);
+    console.debug(
+      "DEBUG: Extracted roomNo and bookedSeat from bookingTable:",
+      roomNo,
+      bookedSeat
+    );
 
     // ✅ Set booking to PENDING until payment is approved
     const updatedBooking = await prisma.booking.update({
       where: { id: bookingId },
-      data: { approved: false, bookingStatus: 'PENDING' },
+      data: { approved: false, bookingStatus: "PENDING" },
     });
     console.debug("DEBUG: Booking updated:", updatedBooking);
 
@@ -597,8 +640,8 @@ async function offlineBooking(req, res) {
         bookingId,
         userId,
         libraryId,
-        amount
-      }
+        amount,
+      },
     });
 
     const gracePeriod = 10 * 1000; // 10 seconds
@@ -606,18 +649,22 @@ async function offlineBooking(req, res) {
 
     console.debug("DEBUG: Creating transaction for offline booking");
     if (transaction) {
-      console.debug("DEBUG: Offline transaction already exists, updating expiry...");
+      console.debug(
+        "DEBUG: Offline transaction already exists, updating expiry..."
+      );
       transaction = await prisma.transaction.update({
         where: { transactionId: transaction.transactionId },
         data: {
           expiresAt,
           isOfflinePayment: true,
           offlinePaymentStatus: "PENDING",
-          description: `Offline payment request for booking ${bookingId} at library ${libraryId} by user ${userId} at ${new Date().toISOString()}`
-        }
+          description: `Offline payment request for booking ${bookingId} at library ${libraryId} by user ${userId} at ${new Date().toISOString()}`,
+        },
       });
     } else {
-      console.debug("DEBUG: No existing offline transaction found, creating a new one...");
+      console.debug(
+        "DEBUG: No existing offline transaction found, creating a new one..."
+      );
       transaction = await prisma.transaction.create({
         data: {
           userId,
@@ -628,8 +675,8 @@ async function offlineBooking(req, res) {
           type: "OFFLINE_BOOKING",
           isOfflinePayment: true,
           offlinePaymentStatus: "PENDING",
-          expiresAt
-        }
+          expiresAt,
+        },
       });
     }
 
@@ -643,23 +690,29 @@ async function offlineBooking(req, res) {
 
     // ✅ Schedule a timeout to cancel the booking if payment expires
     setTimeout(async () => {
-      console.debug("DEBUG: Checking expiry for transaction:", transaction.transactionId);
+      console.debug(
+        "DEBUG: Checking expiry for transaction:",
+        transaction.transactionId
+      );
 
       const updatedTransaction = await prisma.transaction.findUnique({
-        where: { transactionId: transaction.transactionId }
+        where: { transactionId: transaction.transactionId },
       });
 
-      if (updatedTransaction.offlinePaymentStatus === "PENDING" && updatedTransaction.expiresAt < new Date()) {
+      if (
+        updatedTransaction.offlinePaymentStatus === "PENDING" &&
+        updatedTransaction.expiresAt < new Date()
+      ) {
         console.debug("DEBUG: Transaction expired, cancelling booking...");
 
         await prisma.transaction.update({
           where: { transactionId: transaction.transactionId },
-          data: { offlinePaymentStatus: "CANCELED" }
+          data: { offlinePaymentStatus: "CANCELED" },
         });
 
         await prisma.booking.update({
           where: { id: bookingId },
-          data: { bookingStatus: "CANCELLED", approved: false }
+          data: { bookingStatus: "CANCELLED", approved: false },
         });
 
         console.debug("DEBUG: Booking cancelled due to expired payment.");
@@ -682,60 +735,61 @@ async function offlineStatus(req, res) {
   try {
     // Use query parameters instead of route params for flexibility
     const { transactionId } = req.query;
-    
+
     if (!transactionId) {
       return res.status(400).json({ error: "transactionId is required" });
     }
 
     const transaction = await prisma.transaction.findUnique({
-      where: { transactionId }
+      where: { transactionId },
     });
 
     if (!transaction) {
       return res.status(404).json({ error: "Transaction not found" });
     }
-    
+
     // Check if the transaction has expired
     const now = new Date();
     let status = transaction.offlinePaymentStatus;
-    
+
     // If it's still pending but has expired, update to CANCELED
-    if (status === "PENDING" && transaction.expiresAt && new Date(transaction.expiresAt) < now) {
+    if (
+      status === "PENDING" &&
+      transaction.expiresAt &&
+      new Date(transaction.expiresAt) < now
+    ) {
       status = "CANCELED";
-      
+
       await prisma.transaction.update({
         where: { transactionId },
-        data: { offlinePaymentStatus: "CANCELED" }
+        data: { offlinePaymentStatus: "CANCELED" },
       });
-      
+
       // If there's an associated booking that's still confirmed, cancel it
       if (transaction.bookingId) {
         const booking = await prisma.booking.findUnique({
-          where: { id: transaction.bookingId }
+          where: { id: transaction.bookingId },
         });
-        
-        if (booking && booking.bookingStatus === 'CONFIRMED') {
+
+        if (booking && booking.bookingStatus === "CONFIRMED") {
           await prisma.booking.update({
             where: { id: transaction.bookingId },
-            data: { bookingStatus: 'CANCELLED', approved: false }
+            data: { bookingStatus: "CANCELLED", approved: false },
           });
         }
       }
     }
 
-    return res.status(200).json({ 
-      status, 
+    return res.status(200).json({
+      status,
       isExpired: status === "CANCELED",
-      expiresAt: transaction.expiresAt
+      expiresAt: transaction.expiresAt,
     });
   } catch (error) {
     console.error("Error in offlineStatus:", error);
     return res.status(500).json({ error: error.message });
   }
 }
-
-
-
 
 // approveOfflinePayment: Admin approves the offline payment,
 // which updates the transaction status to APPROVED and confirms the booking.
@@ -765,7 +819,9 @@ const approveOfflinePayment = async (req, res) => {
       if (transaction.offlinePaymentStatus !== "PENDING")
         throw new Error("Payment already processed");
 
-      console.debug(`DEBUG: Found transaction: ${transactionId}, processing approval...`);
+      console.debug(
+        `DEBUG: Found transaction: ${transactionId}, processing approval...`
+      );
 
       // 2️⃣ Ensure the booking exists and has seat/timeSlot details
       const booking = transaction.booking;
@@ -774,7 +830,9 @@ const approveOfflinePayment = async (req, res) => {
 
       const seatId = booking.bookedSeat.id;
       const timeSlotId = booking.timeSlotDetails[0]?.slotId;
-      console.debug(`DEBUG: Booking found for seatId: ${seatId}, timeSlotId: ${timeSlotId}`);
+      console.debug(
+        `DEBUG: Booking found for seatId: ${seatId}, timeSlotId: ${timeSlotId}`
+      );
 
       // 3️⃣ Prevent double booking by ensuring the time slot is not already booked
       const existingTimeSlot = await prisma.timeSlot.findFirst({
@@ -807,17 +865,21 @@ const approveOfflinePayment = async (req, res) => {
       // 6️⃣ Update booking to CONFIRMED now that payment is approved
       await prisma.booking.update({
         where: { id: booking.id },
-        data: { bookingStatus: "CONFIRMED", paid: true }
+        data: { bookingStatus: "CONFIRMED", paid: true },
       });
 
-      console.debug(`DEBUG: Seat successfully booked: seatId ${seatId}, timeSlotId ${timeSlotId}`);
+      console.debug(
+        `DEBUG: Seat successfully booked: seatId ${seatId}, timeSlotId ${timeSlotId}`
+      );
 
       // 7️⃣ Create Invoice
       const library = booking.library || {};
       const user = booking.user || {};
 
       const libraryAddress = library.address
-        ? `${library.address.line1 || ''}, ${library.address.line2 || ''}, ${library.address.city || ''}, ${library.address.state || ''}, ${library.address.pincode || ''}`
+        ? `${library.address.line1 || ""}, ${library.address.line2 || ""}, ${
+            library.address.city || ""
+          }, ${library.address.state || ""}, ${library.address.pincode || ""}`
         : "Address Not Available";
 
       const invoice = await prisma.invoice.create({
@@ -833,13 +895,16 @@ const approveOfflinePayment = async (req, res) => {
           initialPrice: booking.initialPrice || 0,
           finalPrice: booking.finalPrice || 0,
           paid: true,
-          bookingDate: booking.bookingDate ? new Date(booking.bookingDate) : new Date(),
+          bookingDate: booking.bookingDate
+            ? new Date(booking.bookingDate)
+            : new Date(),
           bookingPeriod: booking.bookingPeriod || 1,
           bookingStatus: "CONFIRMED",
           approved: library.approved || false,
           bookingFinalDate: new Date(
             new Date(booking.bookingDate || new Date()).setMonth(
-              new Date(booking.bookingDate || new Date()).getMonth() + (booking.bookingPeriod || 1)
+              new Date(booking.bookingDate || new Date()).getMonth() +
+                (booking.bookingPeriod || 1)
             )
           ),
           seatLabel: booking.bookedSeat?.seatLabel || "N/A",
@@ -858,24 +923,26 @@ const approveOfflinePayment = async (req, res) => {
       invoice: result.invoice,
       transaction: result.transaction,
     });
-
   } catch (error) {
     console.error(`ERROR: Approving offline payment failed: ${error.message}`);
-    return res.status(500).json({ error: error.message || "Internal server error" });
+    return res
+      .status(500)
+      .json({ error: error.message || "Internal server error" });
   }
 };
-
 
 const listOfflinePaymentRequests = async (req, res) => {
   const { adminId } = req.params; // Assuming admin authentication is in place
 
   try {
-    console.debug(`DEBUG: Fetching offline payment requests for adminId: ${adminId}`);
+    console.debug(
+      `DEBUG: Fetching offline payment requests for adminId: ${adminId}`
+    );
 
     // 1️⃣ Find all libraries owned by this admin
     const ownedLibraries = await prisma.library.findMany({
       where: { libraryOwnerId: parseInt(adminId) },
-      select: { id: true }
+      select: { id: true },
     });
 
     if (ownedLibraries.length === 0) {
@@ -883,7 +950,7 @@ const listOfflinePaymentRequests = async (req, res) => {
       return res.json({ success: true, offlinePayments: [] });
     }
 
-    const libraryIds = ownedLibraries.map(lib => lib.id);
+    const libraryIds = ownedLibraries.map((lib) => lib.id);
     console.debug(`DEBUG: Admin owns libraries with IDs: ${libraryIds}`);
 
     // 2️⃣ Fetch pending transactions only for these libraries
@@ -891,11 +958,11 @@ const listOfflinePaymentRequests = async (req, res) => {
       where: {
         offlinePaymentStatus: "PENDING",
         expiresAt: { gt: new Date() }, // Only show requests that haven't expired
-        libraryId: { in: libraryIds } // Only fetch requests for admin's libraries
+        libraryId: { in: libraryIds }, // Only fetch requests for admin's libraries
       },
       include: {
         user: {
-          select: { id: true, username: true, email: true, phoneNumber: true }
+          select: { id: true, username: true, email: true, phoneNumber: true },
         },
         booking: {
           select: {
@@ -903,17 +970,19 @@ const listOfflinePaymentRequests = async (req, res) => {
             library: { select: { id: true, name: true } },
             bookedSeat: true,
             timeSlotDetails: true,
-            bookingDate: true
-          }
-        }
+            bookingDate: true,
+          },
+        },
       },
-      orderBy: { expiresAt: "asc" } // Sort by earliest expiration
+      orderBy: { expiresAt: "asc" }, // Sort by earliest expiration
     });
 
-    console.debug(`DEBUG: Found ${transactions.length} pending transactions for admin ${adminId}`);
+    console.debug(
+      `DEBUG: Found ${transactions.length} pending transactions for admin ${adminId}`
+    );
 
     // 3️⃣ Format data to include a countdown timer
-    const formattedTransactions = transactions.map(transaction => ({
+    const formattedTransactions = transactions.map((transaction) => ({
       transactionId: transaction.transactionId,
       user: transaction.user,
       price: transaction.amount,
@@ -921,18 +990,20 @@ const listOfflinePaymentRequests = async (req, res) => {
       bookedSeat: transaction.booking?.bookedSeat,
       timeSlotDetails: transaction.booking?.timeSlotDetails,
       expiresAt: transaction.expiresAt,
-      remainingTime: Math.max(0, Math.floor((new Date(transaction.expiresAt) - new Date()) / 1000)) // Convert to seconds
+      remainingTime: Math.max(
+        0,
+        Math.floor((new Date(transaction.expiresAt) - new Date()) / 1000)
+      ), // Convert to seconds
     }));
 
     return res.json({ success: true, offlinePayments: formattedTransactions });
-
   } catch (error) {
-    console.error(`ERROR: Fetching offline payment requests failed: ${error.message}`);
+    console.error(
+      `ERROR: Fetching offline payment requests failed: ${error.message}`
+    );
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-
-
 
 module.exports = {
   createBooking,
@@ -947,5 +1018,5 @@ module.exports = {
   offlineBooking,
   offlineStatus,
   approveOfflinePayment,
-  listOfflinePaymentRequests
+  listOfflinePaymentRequests,
 };
