@@ -6,24 +6,14 @@ import { useDropzone } from "react-dropzone";
 import { FaTrash } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
 
+const initialData = [null, null, null, null, null];
+
 const BannerUploadForm = () => {
-  const [banners, setBanners] = useState<string[] | null[]>([
-    null,
-    null,
-    null,
-    null,
-    null,
-  ]);
+  const [banners, setBanners] = useState<string[] | null[]>(initialData);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [libraries, setLibraries] = useState<any[]>([]);
-  const [selectedLibrary, setSelectedLibrary] = useState<any[]>([
-    null,
-    null,
-    null,
-    null,
-    null,
-  ]);
+  const [selectedLibrary, setSelectedLibrary] = useState<any[]>(initialData);
 
   const getImages = async () => {
     try {
@@ -31,7 +21,11 @@ const BannerUploadForm = () => {
       setBanners((prev) =>
         prev.map((_, ind) => res.data.data.Banner[ind] ?? null)
       );
-      setSelectedLibrary(JSON.parse(res.data.data.actionId));
+      setSelectedLibrary(
+        res.data.data.actionId
+          ? JSON.parse(res.data.data.actionId)
+          : initialData
+      );
     } catch (error) {
       console.error("Failed to fetch banner image data:", error);
     }
@@ -217,7 +211,7 @@ const BannerUploadForm = () => {
                     {libraries.map((item) => (
                       <option
                         value={item.id}
-                        selected={item.id === selectedLibrary[ind]}
+                        selected={item.id === selectedLibrary?.[ind]}
                       >
                         {item.name}
                       </option>

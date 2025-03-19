@@ -8,7 +8,6 @@ import { HiOutlineSave } from "react-icons/hi";
 
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs from "dayjs";
-import { Progress } from "@/components/ui/progress";
 import { toast } from "react-toastify";
 import { getLibraryDataById } from "@/hooks/libraryData";
 import { TbAirConditioning } from "react-icons/tb";
@@ -21,8 +20,6 @@ const CreateRoom: React.FC = () => {
   const [seatLayout, setSeatLayout] = React.useState({});
 
   const [loading, setLoading] = useState(false); // Step 1: Loading state
-  // const [rooms, setRooms] = useState([]);
-  const [progress, setProgress] = React.useState(13);
 
   const { roomId, roomNumber } = useParams();
 
@@ -77,6 +74,15 @@ const CreateRoom: React.FC = () => {
           setAutoFill24Hr(true);
           setPrice24Hr(is24_7_slot.price);
         }
+      } else {
+        setRoomData(null);
+        setDoorPositions([0, 1, 0, 0, 0]);
+        setTimeSlots([]);
+        setSeatLayout({});
+        setRoomData(null);
+        setAc(false);
+        setAutoFill24Hr(false);
+        setPrice24Hr("");
       }
 
       setSelectedLibrary(libraryObject);
@@ -88,7 +94,7 @@ const CreateRoom: React.FC = () => {
 
   useEffect(() => {
     fetchLibrary();
-  }, []);
+  }, [roomId]);
 
   const handleSeatSelect = (seat: any) => {
     toast.success("Seat layout saved");
@@ -143,7 +149,9 @@ const CreateRoom: React.FC = () => {
 
       toast.success(`Room ${roomId ? "updated" : "Created"} Successfully`);
       // navigate("/manage-library/my-library");
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error creating room:", error);
       // Handle error
     }
@@ -187,11 +195,6 @@ const CreateRoom: React.FC = () => {
   };
 
   React.useEffect(() => {
-    const timer = setTimeout(() => setProgress(66), 500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  React.useEffect(() => {
     if (
       timeSlots.some((slot) => slot.from === "00:00" && slot.to === "23:59")
     ) {
@@ -206,9 +209,6 @@ const CreateRoom: React.FC = () => {
       ]);
     }
   }, [timeSlots]);
-  if (loading) {
-    return <Progress value={progress} className="w-[60%]" />;
-  }
 
   const handleAutoFill24HrChange = () => {
     if (+price24Hr <= 0 && !autoFill24Hr) {
