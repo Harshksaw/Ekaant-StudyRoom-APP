@@ -10,6 +10,8 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   ScrollView,
+  Modal,
+  ToastAndroid,
 } from "react-native";
 import StarRating from "./Ratinstar";
 import { StarIcon } from "@/assets";
@@ -18,7 +20,7 @@ import { Toast } from "react-native-toast-notifications";
 import { Image } from "expo-image";
 import ff from "@/constants/fonts";
 import { h, w } from "@/constants/size";
-import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome6 } from "@expo/vector-icons";
 
 interface Review {
   id: string;
@@ -90,6 +92,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [rating, setRating] = useState<number>(0);
   const [reviewMessage, setReviewMessage] = useState<string>("");
+  const [editMode, setEditMode] = useState<boolean>(false);
 
   const [showReview, setShowReview] = useState<boolean>(false);
 
@@ -124,24 +127,27 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
     const user = await AsyncStorage.getItem("userData");
     // console.log("🚀 ~ createReview ~ user:", user)
     const u = JSON.parse(user);
-    // console.log("🚀 ~ createReview ~ u:", u)
-    // console.log( "_---",libraryId, reviewMessage, rating, u.data);
     setSubmitLoading(true);
+
+    let url = `createReview/${libraryId}`;
+    let method = "post";
+    if (editMode) {
+      url = `update-review/${editMode}`;
+      method = "put";
+    }
+
     try {
-      const response = await axios.post(
-        `${BACKEND}/api/v1/library/createReview/${libraryId}`,
-        {
-          user: u.data?.user?.id || u.data?.user_id,
-          review: reviewMessage,
-          stars: Number(rating),
-        }
-      );
+      const response = await axios[method](`${BACKEND}/api/v1/library/${url}`, {
+        user: u.data?.user?.id || u.data?.user_id,
+        review: reviewMessage,
+        stars: Number(rating),
+      });
 
       if (response.status === 201) {
-        Toast.show("Review added successfully", {
+        Toast.show(`Review ${editMode ? "updated" : "added"} successfully`, {
           type: "success",
         });
-        setShowReview(false);
+        onCloseReview();
         fetchReviews();
       } else if (response.status === 400) {
         Toast.show("Review already exists", {
@@ -150,13 +156,21 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
         });
       }
     } catch (err) {
-      Toast.show("Review already exists", {
-        type: "error",
-        duration: 3000,
-      });
+      if (err.status === 400) {
+        ToastAndroid.show("Review already exists", 2000);
+      } else {
+        ToastAndroid.show(err.message, 2000);
+      }
     } finally {
       setSubmitLoading(false);
     }
+  };
+
+  const onCloseReview = () => {
+    setEditMode(false);
+    setReviewMessage("");
+    setRating(0);
+    setShowReview(false);
   };
 
   if (loading) {
@@ -261,63 +275,97 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
       </View>
 
       {showReview && (
-        <View style={{ marginHorizontal: 15, marginTop: 20 }}>
-          <KeyboardAvoidingView behavior="padding">
-            <StarRat onRatingChange={handleRating} size={30} />
-
-            <TextInput
-              placeholder="Enter Review"
-              style={{
-                marginTop: 20,
-                borderWidth: 1,
-                borderColor: "#414141",
-                borderRadius: 2,
-                padding: 10,
-                width: "100%",
-                color: "#1f1f1f",
-                textAlignVertical: "top",
-              }}
-              autoFocus
-              multiline
-              numberOfLines={10}
-              onChangeText={(text) => setReviewMessage(text)}
-            />
-            <TouchableOpacity
-              onPress={createReview}
-              disabled={
-                !(reviewMessage.length > 0 && rating > 0) || submitLoading
-              }
-              style={{
-                backgroundColor: "#0077B6",
-                borderRadius: 2,
-                marginBottom: h(10),
-                opacity:
-                  !(reviewMessage.length > 0 && rating > 0) || submitLoading
-                    ? 0.5
-                    : 1,
-                marginTop: 15,
-                flexDirection: "row",
-                gap: 10,
-                justifyContent: "center",
-              }}
-            >
-              {submitLoading && <ActivityIndicator size={"small"} />}
-              <Text
+        <Modal visible={showReview} onRequestClose={onCloseReview}>
+          <View style={{ marginHorizontal: 25, marginTop: 20 }}>
+            <KeyboardAvoidingView behavior="padding">
+              <View
                 style={{
-                  padding: w(10),
-                  borderRadius: 20,
-                  fontSize: w(16),
-                  fontFamily: ff.deckSemiBold,
-                  color: "#fff",
-                  letterSpacing: 1,
-                  textAlign: "center",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: h(30),
                 }}
               >
-                Submit Review
-              </Text>
-            </TouchableOpacity>
-          </KeyboardAvoidingView>
-        </View>
+                <TouchableOpacity onPress={onCloseReview}>
+                  <AntDesign name="arrowleft" size={w(25)} />
+                </TouchableOpacity>
+
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: w(25),
+                    fontFamily: ff.deckMedium,
+                  }}
+                >
+                  Write Review
+                </Text>
+                <AntDesign
+                  name="arrowleft"
+                  size={w(25)}
+                  style={{ opacity: 0 }}
+                />
+              </View>
+              <StarRat
+                initialRating={rating}
+                onRatingChange={handleRating}
+                size={30}
+              />
+
+              <TextInput
+                placeholder="Enter Review"
+                style={{
+                  marginTop: 20,
+                  borderWidth: 1,
+                  borderColor: "#414141",
+                  borderRadius: 2,
+                  padding: 10,
+                  width: "100%",
+                  color: "#1f1f1f",
+                  textAlignVertical: "top",
+                }}
+                value={reviewMessage}
+                autoFocus
+                multiline
+                numberOfLines={10}
+                onChangeText={(text) => setReviewMessage(text)}
+              />
+              <TouchableOpacity
+                onPress={createReview}
+                disabled={
+                  !(reviewMessage.length > 0 && rating > 0) || submitLoading
+                }
+                style={{
+                  backgroundColor: "#0077B6",
+                  borderRadius: 2,
+                  marginBottom: h(10),
+                  opacity:
+                    !(reviewMessage.length > 0 && rating > 0) || submitLoading
+                      ? 0.5
+                      : 1,
+                  marginTop: 15,
+                  flexDirection: "row",
+                  gap: 10,
+                  justifyContent: "center",
+                }}
+              >
+                {submitLoading && <ActivityIndicator size={"small"} />}
+                <Text
+                  style={{
+                    padding: w(10),
+                    borderRadius: 20,
+                    fontSize: w(16),
+                    fontFamily: ff.deckSemiBold,
+                    color: "#fff",
+                    letterSpacing: 1,
+                    textAlign: "center",
+                  }}
+                >
+                  Submit Review
+                </Text>
+              </TouchableOpacity>
+            </KeyboardAvoidingView>
+          </View>
+        </Modal>
       )}
 
       <View style={styles.reviewContainer}>
@@ -346,7 +394,19 @@ const ReviewList: React.FC<ReviewListProps> = ({ libraryId }) => {
                   >
                     {review.user.username}
                   </Text>
-                  <StarRating rating={review.stars} />
+                  <View style={{ flexDirection: "row", gap: 5 }}>
+                    <StarRating rating={review.stars} />
+                    <TouchableOpacity
+                      onPress={() => {
+                        setEditMode(true);
+                        setReviewMessage(review?.review);
+                        setRating(review.stars);
+                        setShowReview(true);
+                      }}
+                    >
+                      <Feather name="edit" size={13} color={"#0088ff"} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 <Text
                   style={{

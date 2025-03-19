@@ -12,6 +12,7 @@ import {
   FlatList,
   Animated,
   Easing,
+  Linking,
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -58,6 +59,7 @@ export default function index() {
 
   const dispatch = useDispatch();
   const [bannerImage, setBannerImage] = useState([]);
+  const [actionsId, setActionsId] = useState([]);
   const [locationData, setLocationData] = useState(null);
 
   const [selectedLocation, setSelectedLocation] = useState("");
@@ -76,8 +78,8 @@ export default function index() {
     try {
       const response = await axios.get(`${BACKEND}/api/v1/app/getApp`);
 
+      setActionsId(JSON.parse(response.data?.data?.actionId ?? "[]"));
       setBannerImage(response.data.data.Banner);
-
       setLocationData(response.data.data.locations);
     } catch (error) {
       setBannerImage([]);
@@ -211,7 +213,7 @@ export default function index() {
           ? () =>
               router.push({
                 pathname: "/(routes)/card-details",
-                params: { item: JSON.stringify(item) },
+                params: { id: item.id },
               })
           : () => toggleNotListedModal()
       }
@@ -368,17 +370,33 @@ export default function index() {
         }}
         renderItem={({ item, index }) => {
           return (
-            <Image
+            <TouchableOpacity
               key={index}
-              source={item}
-              style={{
-                marginTop: -50,
-                width: width * 0.95,
-                height: height * 0.25,
-                borderRadius: 20,
-                objectFit: "cover",
+              activeOpacity={0.9}
+              onPress={() => {
+                if (!!actionsId[index]) {
+                  if (typeof actionsId[index] === "number") {
+                    router.push({
+                      pathname: "/(routes)/card-details",
+                      params: { id: actionsId[index] },
+                    });
+                  } else if (typeof actionsId[index] === "string") {
+                    Linking.openURL(actionsId[index]);
+                  }
+                }
               }}
-            />
+            >
+              <Image
+                source={item}
+                style={{
+                  marginTop: -50,
+                  width: width * 0.95,
+                  height: height * 0.25,
+                  borderRadius: 20,
+                  objectFit: "cover",
+                }}
+              />
+            </TouchableOpacity>
           );
         }}
       />
@@ -416,7 +434,7 @@ export default function index() {
         style={{ paddingHorizontal: w(10) }}
         onEndReached={reCallLibrary}
         ListHeaderComponent={
-          <View key={index}>
+          <View>
             <View style={{ height: h(270) }}>
               <Text
                 style={{
@@ -494,18 +512,20 @@ export default function index() {
           </View>
         }
         ListEmptyComponent={
-          <TouchableOpacity onPress={() => setReload(true)}>
-            <Text
-              style={{
-                textAlign: "center",
-                paddingTop: 50,
-                fontSize: 25,
-                color: "red",
-              }}
-            >
-              No listings available at the moment.
-            </Text>
-          </TouchableOpacity>
+          isLoading ? null : (
+            <TouchableOpacity onPress={() => setReload(true)}>
+              <Text
+                style={{
+                  textAlign: "center",
+                  paddingTop: 50,
+                  fontSize: 25,
+                  color: "red",
+                }}
+              >
+                No listings available at the moment.
+              </Text>
+            </TouchableOpacity>
+          )
         }
         ListFooterComponent={
           allfetched ? (

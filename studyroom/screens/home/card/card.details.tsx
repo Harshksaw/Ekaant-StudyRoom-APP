@@ -20,9 +20,7 @@ import {
 import Carousel from "@/components/Slider";
 
 import { router } from "expo-router";
-import getLocationName from "@/utils/location";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Toast } from "react-native-toast-notifications";
 import axios from "axios";
 import { BACKEND } from "@/utils/config";
 import ReviewList from "@/components/Review";
@@ -36,8 +34,7 @@ interface CardDetailScreenProps {
 
 const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
   const width = Dimensions.get("window").width;
-  const [userReviews, setUserReviews] = useState([]);
-  const params = useRoute();
+  const { params } = useRoute();
 
   const translateX = useRef(new Animated.Value(-vw + vw * 0.5)).current;
 
@@ -56,57 +53,26 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
     ).start();
   }, []);
 
-  // console.log("🚀 ~ params.params.item:", params.params.item)
-  const libData = JSON.parse(params.params.item);
-  const data = { ...libData, _id: libData.id };
+  const [data, setData] = useState({});
+
+  const getLibraryById = async () => {
+    try {
+      const res = await axios.post(`${BACKEND}/api/v1/library/getLibraryById`, {
+        id: params?.id,
+      });
+
+      if (res.status === 200) {
+        const library = res.data.data;
+        setData({ ...library, _id: library.id });
+        setCity(library?.address?.city);
+      }
+    } catch (error) {}
+  };
 
   const [city, setCity] = useState("Delhi");
 
-  const seat = data.seatLayout;
-  const locationData = async () => {
-    try {
-      // Assuming data.location might be null or undefined, leading to issues when accessed
-      if (!data.location || data.location.length < 2) {
-        return; // Exit the function if location data is not valid
-      }
-
-      const res = await getLocationName(data.location[0], data.location[1]);
-      // console.log("🚀 ~ locationData ~ res:", res);
-
-      // Check if res is not null before setting it
-      if (res !== null) {
-        setCity(res);
-      } else {
-        setCity(data.address.city);
-        // Handle null case, maybe set a default value or handle it as needed
-      }
-    } catch (error) {
-      console.error("Error in locationData:", error);
-      // Additional error handling logic here
-      // For example, setting city to a default value or updating the UI to reflect the error
-    }
-  };
-
-  const getUserReviews = async () => {
-    // Fetch user reviews here
-    try {
-      // console.log("🚀 ~ getUserReviews ~ data:", data.id);
-      const res = await axios.post(
-        `${BACKEND}/api/v1/library/getReviews/${data.id}`
-      );
-      // // console.log("🚀 ~ getUserReviews ~ res:", res.data)
-
-      setUserReviews(res.data);
-    } catch (error) {
-      Toast.show("Error fetching user reviews");
-    }
-  };
-
   useEffect(() => {
-    // console.log("🚀 ~ useEffect ~ data", data);
-    // locationData();
-    setCity(data.address.city);
-    // getUserReviews();
+    getLibraryById();
   }, []);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -121,9 +87,6 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
       params: { item: JSON.stringify(data), location: JSON.stringify(city) },
     });
   };
-
-  // console.log("🚀 ~ data.amenities:", data.amenities.amenities)
-  // const { id, libraryId, ...filteredAmenities } = data.amenities || {};
 
   const trueAmenities = data?.amenities?.amenities;
 
@@ -148,7 +111,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
             animated: true,
             dotIncreaseSize: 1.2,
           }}
-          data={data.images}
+          data={data?.images}
           buttonsConfig={{
             disabled: true,
           }}
@@ -160,7 +123,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
         />
       </>
     );
-  }, [width, data.images]);
+  }, [width, data]);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -168,7 +131,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
         showsVerticalScrollIndicator={false}
         style={{}}
       >
-        <View style={{ flex: 1 }}>{Carasoul}</View>
+        {data.images && <View style={{ flex: 1 }}>{Carasoul}</View>}
 
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -336,7 +299,7 @@ const CardDetailScreen: React.FC<CardDetailScreenProps> = ({}) => {
 
             {/* //ratings */}
           </View>
-          <ReviewList libraryId={data.id} />
+          <ReviewList libraryId={params?.id} />
 
           <View
             style={{
